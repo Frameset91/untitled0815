@@ -12,8 +12,6 @@ public class CommunicationServer {
 private static CommunicationServer singleton = null;
 private String serverfilepath;
 private String spielerfilepath;
-
-
 private File spielerFile;
 private File serverFile;
 
@@ -58,9 +56,22 @@ public static void main(String[] args){
 	}
 	
 	
+	public void enable(){
+		
+	}
+	
+	public void disable (){
+		
+	}
+	
+	
 	public void read(){
 		//Serverfile auslesen
-		XmlParser.readXML(serverFile);
+		ServerMessage msg = null;
+		while (msg == null){
+		msg = XmlParser.readXML(serverFile);
+		}
+		System.out.println(msg.getFreigabe());
 		
 		
 	}
