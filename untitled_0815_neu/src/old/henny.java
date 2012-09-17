@@ -1,5 +1,6 @@
+package old;
 
-public class nora {
+public class henny {
 
 	/**
 	 * @param args
