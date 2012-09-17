@@ -1,5 +1,5 @@
 
-public class log {
+public class Log {
 
 	/**
 	 * @param args
