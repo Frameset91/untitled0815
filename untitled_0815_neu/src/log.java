@@ -5,7 +5,8 @@ public class log {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		// TODO Auto-generated method stub
+		//Singleton nimmt String entgegen
+		//In Textdatei schreiben
 
 	}
 
