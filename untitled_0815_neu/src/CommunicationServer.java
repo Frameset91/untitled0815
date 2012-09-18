@@ -13,14 +13,14 @@ public class CommunicationServer {
 	private static CommunicationServer singleton = null;
 	private String serverfilepath;
 	private String spielerfilepath;
+	private int timeout = 300;
 	private File spielerFile;
 	private File serverFile;
 	private boolean working;
 
+
 	public static void main(String[] args) {
-		CommunicationServer referenz;
-		referenz = CommunicationServer.getInstance();
-		referenz.read();
+	CommunicationServer.getInstance().enable(300);
 	}
 
 	/**
@@ -29,6 +29,7 @@ public class CommunicationServer {
 	private CommunicationServer(String server, String spieler) {
 		this.serverfilepath = server;
 		this.spielerfilepath = spieler;
+		this.timeout = timeout;
 
 		spielerFile = new File(spielerfilepath);
 		serverFile = new File(serverfilepath);
@@ -42,30 +43,35 @@ public class CommunicationServer {
 	 */
 	public static CommunicationServer getInstance() {
 		// Wenn noch kein Objekt besteht, Objekt erzeugen
+		
 		if (singleton == null) {
 			singleton = new CommunicationServer(
-					"C:/Users/D055345/wiprojekt/WIProjektTestLokal/server.xml",
+					"server.xml",
 					"spieler.txt");
 		}
+		
 
 		// Objekt zurückliefern
 		return singleton;
 
 	}
 
+	public int getTimeout() {
+		return timeout;
+	}
+
 	/**
 	 * Startet die Abfrage der Serverdatei
 	 */
-	public void enable() {
-		this.working = true;
+	public void enable(int timeout) {
+		ReadServerFile.run(this.getInstance());
 	}
 
 	/**
 	 * Beendet die Abfrage der Serverdatei
 	 */
 	public void disable() {
-		this.working = false;
-
+		this.working =false;
 	}
 
 	/**
@@ -73,21 +79,40 @@ public class CommunicationServer {
 	 */
 	public void ueberwachen() {
 		// Auslesen der Datei
+		System.out.println("Ueberwachen startet");
+		while (this.working = true){
+			
 		ServerMessage msg = this.read();
+		System.out.println(msg.getFreigabe());
+		System.out.println(msg.getSatzstatus());
+		
+		
+		
 		// Wenn Freigabe erfolgt ist - Set Objekt benachrichtigen
 		if (msg.getFreigabe().equals("true")) {
 			// Event senden
 			// Gegenerzug auslesen
 			// msg.getGegnerzug();
+			break;
 		}
 		//Satz ist beendet
 		if(msg.getSatzstatus().equals("beendet")){
 			//Event senden
+			break;
 		}
 		// Sieger ist bestimmt
 		if (!msg.getSieger().equals("offen")){
-			
+			break;
 		}
+		}
+		try {
+			Thread.sleep(300);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		
+		}
+		System.out.println("Ende While schleife");
 		
 	}
 
@@ -124,3 +149,11 @@ public class CommunicationServer {
 	}
 
 }
+
+class ReadServerFile extends Thread{
+	public static void run(CommunicationServer singleton){
+		System.out.println("Thread startet");
+		singleton.ueberwachen();
+	}
+}
+

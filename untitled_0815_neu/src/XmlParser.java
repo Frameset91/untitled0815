@@ -18,7 +18,7 @@ public class XmlParser {
 			// doc.getDocumentElement().getNodeName());
 			NodeList nList = doc.getElementsByTagName(doc.getDocumentElement()
 					.getNodeName());
-			System.out.println("-----------------------");
+//			System.out.println("-----------------------");
 
 			msg = new ServerMessage();
 			for (int temp = 0; temp < nList.getLength(); temp++) {
