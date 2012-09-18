@@ -59,6 +59,18 @@ public class DBConnection {
 
 	}
 
+	public void saveMove() {
+
+	}
+
+	public void saveGame() {
+
+	}
+
+	public void loadGame() {
+
+	}
+
 	/**
 	 * Sendet ein anderes Statement, das keine Rueckgabe erzeugt
 	 * 
