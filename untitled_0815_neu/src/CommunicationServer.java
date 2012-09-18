@@ -21,6 +21,15 @@ public class CommunicationServer {
 
 	public static void main(String[] args) {
 	CommunicationServer.getInstance().enable(300);
+	try {
+		Thread.sleep(500);
+	} catch (InterruptedException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	}
+	System.out.println("----------------THREAD schlieﬂen!-------------------");
+//	CommunicationServer.getInstance().disable();
+	
 	}
 
 	/**
@@ -64,7 +73,10 @@ public class CommunicationServer {
 	 * Startet die Abfrage der Serverdatei
 	 */
 	public void enable(int timeout) {
-		ReadServerFile.run(this.getInstance());
+		this.timeout = timeout;
+		Thread bla = new Thread(new ReadServerFile() );
+		bla.start();
+		
 	}
 
 	/**
@@ -104,14 +116,14 @@ public class CommunicationServer {
 		if (!msg.getSieger().equals("offen")){
 			break;
 		}
-		}
+		
 		try {
-			Thread.sleep(300);
+			Thread.sleep(this.timeout);
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		
-		}
+		}}
 		System.out.println("Ende While schleife");
 		
 	}
@@ -151,9 +163,14 @@ public class CommunicationServer {
 }
 
 class ReadServerFile extends Thread{
-	public static void run(CommunicationServer singleton){
+	@Override
+	public void run(){
 		System.out.println("Thread startet");
-		singleton.ueberwachen();
+		CommunicationServer.getInstance().ueberwachen();
 	}
-}
 
+	
+
+
+
+}
