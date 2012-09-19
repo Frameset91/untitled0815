@@ -14,31 +14,25 @@ public class XmlParser {
 			Document doc = dBuilder.parse(file);
 			doc.getDocumentElement().normalize();
 
-			// System.out.println("Root element :" +
-			// doc.getDocumentElement().getNodeName());
+			
+			// alle Elemente des XML Files in NodeList einfügen
 			NodeList nList = doc.getElementsByTagName(doc.getDocumentElement()
 					.getNodeName());
-//			System.out.println("-----------------------");
 
+			// create ServerMessage instance
 			msg = new ServerMessage();
+
+			// jedes Node Element behandeln
 			for (int temp = 0; temp < nList.getLength(); temp++) {
-
+				// Node Element aus Liste erzeugen
 				Node nNode = nList.item(temp);
+				
+				//Wenn ein ELEMENT und kein KOPF Node
 				if (nNode.getNodeType() == Node.ELEMENT_NODE) {
-
 					Element eElement = (Element) nNode;
-
-					// System.out.println("freigabe : " +
-					// getTagValue("freigabe", eElement));
 					msg.setFreigabe(getTagValue("freigabe", eElement));
-					// System.out.println("satzstatus : " +
-					// getTagValue("satzstatus", eElement));
 					msg.setSatzstatus(getTagValue("satzstatus", eElement));
-					// System.out.println("gegnerzug : " +
-					// getTagValue("gegnerzug", eElement));
 					msg.setGegnerzug(getTagValue("gegnerzug", eElement));
-					// System.out.println("sieger : " + getTagValue("sieger",
-					// eElement));
 					msg.setSieger(getTagValue("sieger", eElement));
 
 				}
@@ -51,6 +45,12 @@ public class XmlParser {
 		return msg;
 	}
 
+	/**
+	 * Diese Methode liefert den Wert eines Tags im XML File
+	 * @param sTag String Name des Tags
+	 * @param eElement
+	 * @return String Wert des Tags
+	 */
 	private static String getTagValue(String sTag, Element eElement) {
 		NodeList nlList = eElement.getElementsByTagName(sTag).item(0)
 				.getChildNodes();
