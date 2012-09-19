@@ -58,18 +58,7 @@ public class DBConnection {
 		return result;
 
 	}
-
-	public void saveMove() {
-
-	}
-
-	public void saveGame() {
-
-	}
-
-	public void loadGame() {
-
-	}
+	
 
 	/**
 	 * Sendet ein anderes Statement, das keine Rueckgabe erzeugt
@@ -86,6 +75,59 @@ public class DBConnection {
 			e.printStackTrace();
 		}
 	}
+	
+	
+	
+	
+
+	/**
+	 * Methode, die alle Moves eines Satzes auf der DB persistiert
+	 * 
+	 * Es fehlt eine Beschreibunf für alle Moves --> Ein Array müsste global definiert werden
+	 * @param move
+	 * @return
+	 */
+	public boolean saveAllMove(int gameID, int setID) {
+		boolean result = true;
+//		try {
+//			Statement stmnt = this.con.createStatement();
+//			result = stmnt
+//					.execute("INSERT INTO move (gameID,setID,role,column,datetime) VALUES ("
+//							+ gameID
+//							+ ","
+//							+ setID
+//							+ ","
+//							+ role
+//							+ ","
+//							+ column
+//							+ "," + datetime + ")");
+//		} catch (Exception e) {
+//			result = false;
+//			e.printStackTrace();
+//		}
+		return result;
+	}
+	
+	public void loadAllMoves(int gameID, int setID) {
+		
+	}
+
+	public void saveGame() {
+
+	}
+
+	public void loadGame() {
+
+	}
+	
+	public void saveSet() {
+		
+	}
+	
+	public void loadSet(){
+		
+	}
+
 
 	/**
 	 * nur zu Testzwecken
