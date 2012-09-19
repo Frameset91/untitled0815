@@ -13,11 +13,7 @@ import java.util.EventObject;
 import java.util.Iterator;
 import java.util.List;
 
-class MyEvent extends EventObject {
-	public MyEvent(Object source) {
-		super(source);
-	}
-}
+
 
 public class CommunicationServer {
 	// Singleton Referenz
@@ -126,7 +122,7 @@ public class CommunicationServer {
 		
 		this.serverFile = new File(this.serverfilepath);
 		
-		this.bla = new Thread(new ReadServerFile());
+		this.bla = new Thread(new ReadServerFileThread());
 		this.bla.start();
 
 	}
@@ -227,7 +223,7 @@ public class CommunicationServer {
  * 
  */
 
-class ReadServerFile extends Thread {
+class ReadServerFileThread extends Thread {
 	@Override
 	public void run() {
 		System.out.println("Thread startet");
