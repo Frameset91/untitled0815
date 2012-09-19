@@ -1,0 +1,5 @@
+Gegner opp (für opponent)
+Satz set
+Spiel game
+spielzug move 
+Zugzeit timeLimit
