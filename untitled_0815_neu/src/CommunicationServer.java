@@ -23,10 +23,10 @@ public class CommunicationServer {
 	// Singleton Referenz
 	private static CommunicationServer singleton = null;
 	private String serverfilepath;
-	private String spielerfilepath;
+	private String agentfilepath;
 	private int timeout;
-	private File spielerFile;
 	private File serverFile;
+	private File agentFile;
 	private Thread bla;
 
 	/**
@@ -73,7 +73,7 @@ public class CommunicationServer {
 
 	public static void main(String[] args) {
 //		
-		CommunicationServer.getInstance().enable(300);
+		CommunicationServer.getInstance().enableReading(300,"server.xml");
 		try {
 			Thread.sleep(500);
 		} catch (InterruptedException e) {
@@ -90,14 +90,8 @@ public class CommunicationServer {
 	/**
 	 * privater Konstruktor Erzeugung der Singletoninstanz
 	 */
-	private CommunicationServer(String server, String spieler) {
-		this.serverfilepath = server;
-		this.spielerfilepath = spieler;
+	private CommunicationServer() {
 		
-
-		spielerFile = new File(spielerfilepath);
-		serverFile = new File(serverfilepath);
-
 	}
 
 	/**
@@ -109,7 +103,7 @@ public class CommunicationServer {
 		// Wenn noch kein Objekt besteht, Objekt erzeugen
 
 		if (singleton == null) {
-			singleton = new CommunicationServer("server.xml", "spieler.txt");
+			singleton = new CommunicationServer();
 		}
 
 		// Objekt zurückliefern
@@ -124,8 +118,14 @@ public class CommunicationServer {
 	/**
 	 * Startet die Abfrage der Serverdatei in einem neuen Thread
 	 */
-	public void enable(int timeout) {
+	public void enableReading(int timeout, String serverFilePath) {
 		this.timeout = timeout;
+		
+		this.serverfilepath = serverFilePath;
+		
+		
+		this.serverFile = new File(this.serverfilepath);
+		
 		this.bla = new Thread(new ReadServerFile());
 		this.bla.start();
 
@@ -134,7 +134,7 @@ public class CommunicationServer {
 	/**
 	 * Beendet die Abfrage der Serverdatei
 	 */
-	public void disable() {
+	public void disableReading() {
 		this.bla.stop();
 	}
 
@@ -199,10 +199,12 @@ public class CommunicationServer {
 	 * @param spalte
 	 *            Nummer der Spalte, in die der naechste STein gelgt wird
 	 */
-	public void write(int spalte) {
+	public void write(int spalte,String agentFilePath) {
 		if (spalte > -1 && spalte < 7) {
 			try {
-				FileWriter schreiber = new FileWriter(this.spielerFile);
+				this.agentfilepath = agentFilePath;
+				this.agentFile = new File(this.agentfilepath);
+				FileWriter schreiber = new FileWriter(this.agentFile);
 				schreiber.write(Integer.toString(spalte));
 				schreiber.flush();
 				schreiber.close();
