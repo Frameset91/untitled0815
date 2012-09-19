@@ -1,16 +1,16 @@
-import org.hsqldb.types.TimestampData;
-
+import java.sql.Timestamp;
 
 /**
  * @author Sascha
  *
  */
 public class Move {
-	private TimestampData time;
+	private Timestamp time;
 	private Game.GameRole role;
 	private int column;
+	private int moveID; //Database primary key
 	
-	public Move(Game.GameRole role, int column, TimestampData time){
+	public Move(Game.GameRole role, int column, Timestamp time){
 		this.role = role;
 		this.column = column;
 		this.time = time;
@@ -19,7 +19,7 @@ public class Move {
 	/**
 	 * @return the time
 	 */
-	public TimestampData getTime() {
+	public Timestamp getTime() {
 		return time;
 	}
 	/**
@@ -35,7 +35,14 @@ public class Move {
 		return column;
 	}
 	
-	public void save(){
-		//TODO: In Datenbank speichern
+	/**
+	 * @return the moveID
+	 */
+	public int getMoveID() {
+		return moveID;
+	}
+	
+	public void save(int gameID, int setID){
+		//TODO: In Datenbank speichern (Primarykey = GameID + SetID + Timestamp von Move)
 	}
 }
