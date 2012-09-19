@@ -7,7 +7,7 @@ Stand 17.09.2012
 1. Gui - Nora
 2. DB + DB Connection - Henny
 3. KI - Johannes
-4. Parallele Programmierung (Threads und Events in Java) - Johannes
+4. Parallele Programmierung (Threads und Events in Java) - Sascha
 5. Spielablauf - Sascha
 6. Log - Alex
 7. Kommunikation mit Server - Björn
