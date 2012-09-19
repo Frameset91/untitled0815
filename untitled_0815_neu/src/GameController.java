@@ -1,8 +1,8 @@
 
-public class ProgramController {
+public class GameController {
 
-	private GameView gameView;
-	private GameModel gameModel;
+	//private GameView gameView;
+	private Game game;
 	
 	public enum gameRole{
 		x,o
@@ -17,7 +17,7 @@ public class ProgramController {
 	}
 	
 	private void newGame(int cols, int rows, gameRole role, int sets){
-		gameModel = new GameModel(); 
+		game = new Game(); 
 		
 	}
 
