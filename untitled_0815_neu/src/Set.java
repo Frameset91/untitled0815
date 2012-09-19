@@ -13,7 +13,7 @@ public class Set {
 	private List<Move> moves;
 	private Timestamp startTime;
 	private Timestamp endTime;
-	private int setID; //Database primary key
+	//private int setID; //Database primary key
 	private Status status;
 	private Game.GameRole[][] field; 
 	private Game.GameRole winner;
@@ -72,14 +72,14 @@ public class Set {
 	
 	public void save(int gameID){
 		endTime = new Timestamp(new Date().getTime());
-		//TODO: In Datenbank speichern (Primarykey = GameID + SetID), erzeugt setID an Moves weitergeben 
+		//TODO: In Datenbank speichern (Primarykey = GameID + SetID), erzeugte setID an Moves weitergeben 
 		
 		
 		//alle Moves speichern 
 		ListIterator<Move> iterator = moves.listIterator();
 		while (iterator.hasNext())
 		{
-		    iterator.next().save(gameID, setID);
+//		    iterator.next().save(gameID, setID);
 		}
 	}
 
