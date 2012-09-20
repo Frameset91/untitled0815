@@ -1,0 +1,26 @@
+@CHARSET "ISO-8859-1";
+
+
+
+.grid{
+	/*	-fx-background-color: blue;
+	-fx-alignment: center-left;
+	-fx-grid-lines-visible: false;*/
+	-fx-padding: 30;
+
+}
+
+.token{
+	-fx-fill: white;
+	-fx-effect: innershadow(two-pass-box, grey, 10, 0.5, 0, 0);
+}
+
+.token-yellow{
+	-fx-fill: yellow;
+	-fx-effect: innershadow(two-pass-box, grey, 10, 0.5, 0, 0);
+}
+
+.token-red{
+	-fx-fill: red;
+	-fx-effect: innershadow(two-pass-box, grey, 10, 0.5, 0, 0);
+}
