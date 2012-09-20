@@ -13,16 +13,16 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 
-public class GUI02 extends Application {	
+public class GUI03 extends Application {	
 	
 	public void init(Stage stage){
 		Group root = new Group();
 		Scene scene = new Scene(root);
 		scene.getStylesheets().add("test.css");
 		stage.setScene(scene);
+		stage.setResizable(false);
 		
-		BorderPane borderpane = new BorderPane();
-		borderpane.setPrefSize(500,450);
+		BorderPane borderpane = new BorderPane(); //setzt Layout/ Anordnung fest
 		
 	// Das Menü
 		MenuBar menuBar = new MenuBar();
@@ -51,14 +51,16 @@ public class GUI02 extends Application {
 		borderpane.setTop(menuBar);
 		
 	//Anzeige, welcher Spieler man ist
-		HBox hSpieler = new HBox(10);
-		Circle tokenSpieler = new Circle(20.0f);
-		Circle tokenGegner = new Circle(20.0f);
-		tokenSpieler.getStyleClass().add("token");
-		tokenGegner.getStyleClass().add("token");
+		VBox spielanzeige = new VBox(); // zeigt Spieleranzeige und Spielfeld untereinander an
+		
+		HBox hSpieler = new HBox(20);
+		hSpieler.getStyleClass().add("spielanzeige");
+		Circle tokenSpieler = new Circle(15.0f);
+		Circle tokenGegner = new Circle(15.0f);
+		tokenSpieler.getStyleClass().add("token-red");
+		tokenGegner.getStyleClass().add("token-yellow");
 		hSpieler.getChildren().addAll(new Label("Spieler:"), tokenSpieler, new Label("Gegner:"), tokenGegner);
-		hSpieler.setLayoutX(50);
-		hSpieler.setLayoutY(100);
+		
 	//Spielfeld
 	    GridPane grid = new GridPane();
 		Circle spielfeld[][] = new Circle[7][6];
@@ -80,35 +82,63 @@ public class GUI02 extends Application {
 	        grid.add(spielfeld[i][j], i, j);
 	      }
 	    }
-	    BorderPane.setAlignment(grid, Pos.CENTER_LEFT);
-	    borderpane.setLeft(grid);
+	    
+		spielanzeige.getChildren().addAll(hSpieler, grid);
+	    borderpane.setLeft(spielanzeige);
 
-	    // Statusanzeige
+	// Rechte Spalte
+	    VBox boxrechts = new VBox(10);
+	    
+	    Button neuerSatz = new Button("neuen Satz spielen");
+	     
+		// Spielstand
+	    VBox spielstand = new VBox(0);
+	    spielstand.getStyleClass().add("spielanzeige");
+		Label ergebnis = new Label("Spielstand:");
+		ergebnis.getStyleClass().add("punkte");
+		HBox punkte = new HBox(10);
+	    Label punkteSpieler = new Label("0");
+	    punkteSpieler.getStyleClass().add("punkte");
+	    Label punkteGegner = new Label("0");
+	    punkteGegner.getStyleClass().add("punkte");
+	    Label vs = new Label(" : ");
+	    vs.getStyleClass().add("punkte");
+	    punkte.getChildren().addAll(punkteSpieler, vs, punkteGegner);
+	    spielstand.getChildren().addAll(ergebnis, punkte);
+	    
+	    Label statistikLabel = new Label("Statistik:");
+	    
+	    // Tabelle
+	    GridPane statistik = new GridPane();
+	    statistik.setGridLinesVisible(true);
+	    statistik.getColumnConstraints().add(new ColumnConstraints(60));	
+	    statistik.getColumnConstraints().add(new ColumnConstraints(80));	
+	    int zeilen=3;
+	    for(int i=0; i<=zeilen; i++){
+		     statistik.getRowConstraints().add(new RowConstraints(20));
+	    }
+	    statistik.add(new Label("Satznr."), 0, 0);
+	    statistik.add(new Label("Zeit"), 0, 1);
+	    statistik.add(new Label("..."), 0, 2);
+	    
+	    boxrechts.getChildren().addAll(spielstand, neuerSatz, statistikLabel, statistik);
+	    boxrechts.setMaxHeight(0);
+	    borderpane.setCenter(boxrechts);
+	    
+	// Statusanzeige
 	    Label status = new Label("Satzstatus: Satz spielen");
 	    status.getStyleClass().add("satzstatus");
-	    BorderPane.setAlignment(status, Pos.CENTER);
+	    BorderPane.setAlignment(status, Pos.CENTER_LEFT);
 	    borderpane.setBottom(status);
-
-	    // Statistik: Satznummer, Zeit, ...
-	    VBox boxstats = new VBox(2);
-	    BorderPane.setAlignment(boxstats, Pos.TOP_LEFT);
-	    
-	    Label stats = new Label("Statistik:");
-	    boxstats.getChildren().add(stats);
-	    
-	    GridPane statistik = new GridPane();
-	    
-	    
-	    borderpane.setCenter(boxstats);
 	    
 	    
 		// Gruppe füllen
-		root.getChildren().addAll(hSpieler, borderpane);
+		root.getChildren().addAll(borderpane);
 	}
 	
 	@Override public void start (Stage stage) throws Exception{
 		init(stage);
-		stage.setHeight(500);
+		stage.setHeight(450);
 		stage.setWidth(500);
 		stage.setTitle("4 Gewinnt - untitled0815");
 		stage.show();
