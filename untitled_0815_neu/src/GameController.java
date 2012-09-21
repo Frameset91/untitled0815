@@ -1,6 +1,8 @@
 import java.util.*;
 import java.sql.Timestamp;
 
+import javafx.application.Application;
+
 
 public class GameController implements GameEventListener{
 
@@ -9,6 +11,7 @@ public class GameController implements GameEventListener{
 	private Game game;
 	private CommunicationServer comServ;
 	private Game.GameRole role;
+	private GUI02 gui2;
 
 	
 	
@@ -17,13 +20,18 @@ public class GameController implements GameEventListener{
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		// TODO: Hauptmenü GUI erzeugen, Handler registrieren
 		
+		new GameController();
 				
 
 	}
 	
 	public GameController(){
+		// TODO: Hauptmenü GUI erzeugen, Handler registrieren
+		
+
+		Application.launch(GUI02.class);
+		
 		comServ = CommunicationServer.getInstance();
 		comServ.addEventListener(this);
 	}
