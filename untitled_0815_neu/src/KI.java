@@ -1,14 +1,7 @@
 /**
- * 
- */
-
-/**
  * @author Johannes Riedel
  *
  */
-
-//ick brauche: das Spielfeld, den neuen Zug
-// zum Beispiel: 
 
 public class KI {
 	 final int NONE = 0; 
