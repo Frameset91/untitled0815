@@ -1,18 +1,16 @@
-import javafx.beans.property.SimpleBooleanProperty;
-
 /**
  * kapselt das Spielfeld mit allen Chips/Steinen
  * true = eigene Rolle
  * false = Gegner
  * null = kein Stein gesetzt
- * @author Sascha
+ * @author Johannes
  *
  */
-public class GameField {
-	private SimpleBooleanProperty[][] field;
+public class JohannesGameField {
+	private Boolean[][] field;
 	
-	public GameField(int cols, int rows){
-		field = new SimpleBooleanProperty[cols][rows];
+	public JohannesGameField(int cols, int rows){
+		field = new Boolean[cols][rows];
 		
 	}
 	
@@ -21,15 +19,15 @@ public class GameField {
 		for(int i=0; i<field[col].length; i++){
 			if (field[col][i] == null){
 				if(move.getRole() == ownRole)
-					field[col][i].setValue(true);
+					field[col][i]= true;
 				else
-					field[col][i].setValue(false);
+					field[col][i]= false;
 				break;
 			}
 		}		
 	}
 	
-	public SimpleBooleanProperty[][] getField(){
+	public Boolean[][] getField(){
 		return field;
 	}
 }
