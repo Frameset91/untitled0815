@@ -1,10 +1,31 @@
 import java.sql.Timestamp;
 import java.util.*;
 
+import javafx.beans.InvalidationListener;
+import javafx.beans.Observable;
 
 
-public class Set {
+
+public class Set implements Observable{
 	
+	/* (non-Javadoc)
+	 * @see javafx.beans.Observable#addListener(javafx.beans.InvalidationListener)
+	 */
+	@Override
+	public void addListener(InvalidationListener arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	/* (non-Javadoc)
+	 * @see javafx.beans.Observable#removeListener(javafx.beans.InvalidationListener)
+	 */
+	@Override
+	public void removeListener(InvalidationListener arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
 	public enum Status{
 		//TODO!
 		a,b,c,d
