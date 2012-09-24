@@ -1,4 +1,5 @@
 /**
+ * afuhafuafasdjhk
  * Hier werden Settings und Konstanten gesammelt
  * @author Johannes
  * 
