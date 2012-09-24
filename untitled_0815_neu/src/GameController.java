@@ -20,24 +20,21 @@ public class GameController implements GameEventListener{
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		
-		new GameController();
-				
-
+		new GameController();	
 	}
 	
 	public GameController(){
 		// TODO: Hauptmenü GUI erzeugen, Handler registrieren
 		
 
-		Application.launch(GUI02.class);
+		Application.launch(GUI02.class);		
 		
 		comServ = CommunicationServer.getInstance();
 		comServ.addEventListener(this);
 	}
 	
-	private void newGame(int cols, int rows, Game.GameRole role, int sets){		
-		game = new Game(cols, rows, role); 		
+	private void newGame(int cols, int rows, Game.GameRole role, int sets, String oppName){		
+		game = new Game(cols, rows, role, oppName); 		
 	}
 	
 	/* (non-Javadoc)

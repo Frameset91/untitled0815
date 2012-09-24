@@ -6,26 +6,8 @@ import javafx.beans.Observable;
 
 
 
-public class Set implements Observable{
+public class Set{
 	
-	/* (non-Javadoc)
-	 * @see javafx.beans.Observable#addListener(javafx.beans.InvalidationListener)
-	 */
-	@Override
-	public void addListener(InvalidationListener arg0) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	/* (non-Javadoc)
-	 * @see javafx.beans.Observable#removeListener(javafx.beans.InvalidationListener)
-	 */
-	@Override
-	public void removeListener(InvalidationListener arg0) {
-		// TODO Auto-generated method stub
-		
-	}
-
 	public enum Status{
 		//TODO!
 		a,b,c,d
@@ -36,7 +18,7 @@ public class Set implements Observable{
 	private Timestamp endTime;
 	//private int setID; //Database primary key
 	private Status status;
-	private Game.GameRole[][] field; 
+	private GameField field; 
 	private Game.GameRole winner;
 	
 	/**
@@ -77,18 +59,19 @@ public class Set implements Observable{
 	/**
 	 * @return the field
 	 */
-	public Game.GameRole[][] getField() {
+	public GameField getField() {
 		return field;
 	}
 
 	public Set(int cols, int rows){
-		field = new Game.GameRole[cols][rows];
+		field = new GameField(cols,rows);
 		startTime = new Timestamp(new Date().getTime());
 		
 	}
 	
-	public void addMove(Move move){
+	public void addMove(Move move, Game.GameRole ownRole){
 		moves.add(move);
+		field.addMove(move, ownRole);
 	}
 	
 	public void save(int gameID){
