@@ -19,4 +19,8 @@ public class GameField {
 			}
 		}		
 	}
+	
+	public Boolean[][] getField(){
+		return field;
+	}
 }
