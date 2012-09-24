@@ -1,9 +1,14 @@
+import javafx.beans.InvalidationListener;
+import javafx.beans.property.*;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
+
 
 public class GameField {
-	private Boolean[][] field;
+	private SimpleBooleanProperty[][] field;
 	
 	public GameField(int cols, int rows){
-		field = new Boolean[cols][rows];
+		field = new SimpleBooleanProperty[cols][rows];
 		
 	}
 	
@@ -12,15 +17,16 @@ public class GameField {
 		for(int i=0; i<field[col].length; i++){
 			if (field[col][i] == null){
 				if(move.getRole() == ownRole)
-					field[col][i]= true;
+					field[col][i].setValue(true);
 				else
-					field[col][i]= false;
+					field[col][i].setValue(false);
 				break;
 			}
 		}		
 	}
 	
-	public Boolean[][] getField(){
+	public SimpleBooleanProperty[][] getField(){
 		return field;
 	}
+
 }
