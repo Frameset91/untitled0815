@@ -7,7 +7,11 @@ import javafx.application.*;
 import javafx.scene.*;				//Scene bildet "Leinwände" in dem Rahmen
 import javafx.stage.*;				//Stage ist der "Rahmen" der Applikation
 import javafx.scene.control.*;		//Für das Menü
+import javafx.scene.effect.Lighting;
+import javafx.scene.paint.Color;
 import javafx.scene.shape.*;
+import javafx.scene.text.Font;
+import javafx.scene.text.Text;
 import javafx.scene.layout.*;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -15,12 +19,12 @@ import javafx.geometry.Pos;
 
 public class GUI03 extends Application {	
 	
-	public void init(Stage stage){
+	public void init(Stage mainstage){
 		Group root = new Group();
 		Scene scene = new Scene(root);
 		scene.getStylesheets().add("test.css");
-		stage.setScene(scene);
-		stage.setResizable(false);
+		mainstage.setScene(scene);
+		mainstage.setResizable(false);
 		
 		BorderPane borderpane = new BorderPane(); //setzt Layout/ Anordnung fest
 		
@@ -36,17 +40,47 @@ public class GUI03 extends Application {
 		final Menu optionen = new Menu("Optionen");
 		
 		//3. Menüpunkt
-		final Menu hilfe = new Menu("Hilfe");
-		
+		final MenuItem anleitung = new MenuItem("Spielanleitung");
+		final Menu hilfe = MenuBuilder.create().text("Hilfe").items(anleitung).build();
 				
-		//Menüpunkte zusammenführen
-		menuBar.getMenus().addAll(datei, optionen,hilfe);
-
-		
 		//Menupünkt "Schließen"
 		schließen.setOnAction(new EventHandler<ActionEvent>(){
 			public void handle(ActionEvent close){System.exit(0);}
 		});
+		
+		//Menüpunkt "Spielanleitung"
+		anleitung.setOnAction(new EventHandler<ActionEvent>(){
+			@Override public void handle(ActionEvent anleitung){
+				//Fenster mit Anleitung öffnen
+				final Stage stageAnleitung = new Stage();
+				Group rootAnleitung = new Group();
+				Scene sceneAnleitung = new Scene(rootAnleitung, 400,400, Color.WHITESMOKE);
+				stageAnleitung.setScene(sceneAnleitung);
+				stageAnleitung.centerOnScreen();
+				stageAnleitung.show();
+				
+				//Inhalt
+				Text ueberschrift = new Text(20, 20,"\"4 Gewinnt\"");
+				ueberschrift.setFill(Color.BLACK);
+				ueberschrift.setEffect(new Lighting());
+				ueberschrift.setFont(Font.font(Font.getDefault().getFamily(), 20));
+				Label text = new Label("Ententententententententententententente");
+				Button close = new Button("Schließen");
+				close.setOnAction(new EventHandler<ActionEvent>(){
+					public void handle(ActionEvent close){
+						stageAnleitung.close();
+					}
+				});
+				
+				//Anordnen
+				VBox textUndButton = new VBox(100);
+				textUndButton.getChildren().addAll(ueberschrift,text, close);
+				rootAnleitung.getChildren().add(textUndButton);
+			}
+		});
+		
+		//Menüpunkte zusammenführen
+		menuBar.getMenus().addAll(datei, optionen,hilfe);
 		
 		borderpane.setTop(menuBar);
 		
@@ -54,7 +88,7 @@ public class GUI03 extends Application {
 		VBox spielanzeige = new VBox(); // zeigt Spieleranzeige und Spielfeld untereinander an
 		
 		HBox hSpieler = new HBox(20);
-		hSpieler.getStyleClass().add("spielanzeige");
+		hSpieler.setStyle("-fx-padding: 10; -fx-font-size: 16; -fx-font-weight: bold;");
 		Circle tokenSpieler = new Circle(15.0f);
 		Circle tokenGegner = new Circle(15.0f);
 		tokenSpieler.getStyleClass().add("token-red");
@@ -70,7 +104,7 @@ public class GUI03 extends Application {
 	    grid.setVgap(3);
 	    grid.setMaxHeight(200);
 	    grid.setMaxWidth(250);
-		grid.getStyleClass().add("grid");
+	    grid.setStyle("-fx-padding: 20;");
 		
 	    for (int i = 0; i < 7; i++)
 	    {
@@ -93,7 +127,7 @@ public class GUI03 extends Application {
 	     
 		// Spielstand
 	    VBox spielstand = new VBox(0);
-	    spielstand.getStyleClass().add("spielanzeige");
+	    spielstand.setStyle("-fx-padding: 10;");
 		Label ergebnis = new Label("Spielstand:");
 		ergebnis.getStyleClass().add("punkte");
 		HBox punkte = new HBox(10);
@@ -127,7 +161,7 @@ public class GUI03 extends Application {
 	    
 	// Statusanzeige
 	    Label status = new Label("Satzstatus: Satz spielen");
-	    status.getStyleClass().add("satzstatus");
+	    status.setStyle("-fx-padding: 20; -fx-font-size: 15; -fx-font-weight: bold;");
 	    BorderPane.setAlignment(status, Pos.CENTER_LEFT);
 	    borderpane.setBottom(status);
 	    
@@ -136,12 +170,12 @@ public class GUI03 extends Application {
 		root.getChildren().addAll(borderpane);
 	}
 	
-	@Override public void start (Stage stage) throws Exception{
-		init(stage);
-		stage.setHeight(450);
-		stage.setWidth(500);
-		stage.setTitle("4 Gewinnt - untitled0815");
-		stage.show();
+	@Override public void start (Stage mainstage) throws Exception{
+		init(mainstage);
+		mainstage.setHeight(450);
+		mainstage.setWidth(500);
+		mainstage.setTitle("4 Gewinnt - untitled0815");
+		mainstage.show();
 		
 	}
 	

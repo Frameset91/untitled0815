@@ -1,15 +1,5 @@
 @CHARSET "ISO-8859-1";
 
-
-
-.grid{
-	/*	-fx-background-color: blue;
-	-fx-alignment: center-left;
-	-fx-grid-lines-visible: false;*/
-	-fx-padding: 20;
-
-}
-
 .token{
 	-fx-fill: white;
 	-fx-effect: innershadow(two-pass-box, grey, 10, 0.5, 0, 0);
@@ -23,21 +13,6 @@
 .token-red{
 	-fx-fill: red;
 	-fx-effect: innershadow(two-pass-box, grey, 10, 0.5, 0, 0);
-}
-
-.spielanzeige{
-	-fx-padding: 10,0,0,0;
-}
-
-.hSpieler{
-	-fx-padding: 20;
-	-fx-font-size: 16;
-	-fx-font-weight: bold;
-}
-.satzstatus{
-	-fx-padding: 20;
-	-fx-font-size: 15;
-	-fx-font-weight: bold;
 }
 
 .punkte{
