@@ -1,6 +1,6 @@
 /**
  * afuhafuafasdjhk
- * JohannesHier werden Settings und Konstanten gesammelt
+ * SaschaHier werden Settings und Konstanten gesammelt
  * @author Johannes
  * test
  */
