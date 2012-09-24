@@ -1,4 +1,11 @@
-
+/**
+ * kapselt das Spielfeld mit allen Chips/Steinen
+ * true = eigene Rolle
+ * false = Gegner
+ * null = kein Stein gesetzt
+ * @author Sascha
+ *
+ */
 public class GameField {
 	private Boolean[][] field;
 	
