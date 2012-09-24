@@ -1,6 +1,7 @@
 Gegner opp (für opponent)
 Satz set
 Spiel game
+Spielfeld Gamefield
 Spieler role
 spielzug move 
 Zugzeit timeLimit
