@@ -8,10 +8,10 @@ public class GameController implements GameEventListener{
 
 	
 	//private GameView gameView;
-	private Game game;
+	private Game model;
 	private CommunicationServer comServ;
 	private Game.GameRole role;
-	private GUI02 gui2;
+	private SaschasTestGUI view;
 
 	
 	
@@ -19,22 +19,32 @@ public class GameController implements GameEventListener{
 	/**
 	 * @param args
 	 */
-	public static void main(String[] args) {
-		new GameController();	
-	}
+//	public static void main(String[] args) {
+//		new GameController();	
+//	}
 	
-	public GameController(){
-		// TODO: Hauptmenü GUI erzeugen, Handler registrieren
+	public GameController(SaschasTestGUI view, Game model){
+		//initialisierung des Controllers
+		this.model = model;
+		this.view = view;
 		
-
-		Application.launch(GUI02.class);		
+		//Registrierung für Events beim View
+		//TODO
 		
+		//Weitere Objekte erzeugen und für Events registrieren
+		
+		//Communication Server
 		comServ = CommunicationServer.getInstance();
 		comServ.addEventListener(this);
+		
+		//KI 
+		//TODO
+		
+			
 	}
 	
-	private void newGame(int cols, int rows, Game.GameRole role, int sets, String oppName){		
-		game = new Game(cols, rows, role, oppName); 		
+	private void newGame(int cols, int rows, Game.GameRole role, String oppName){		
+		model = new Game(cols, rows, role, oppName); 		
 	}
 	
 	/* (non-Javadoc)

@@ -6,7 +6,7 @@ public class Game {
 		x,o
 	}
 	
-	private List<Set> sets;
+	private ArrayList<Set> sets;
 	private int cols;
 	private int rows;
 	private GameRole role;
@@ -20,12 +20,18 @@ public class Game {
 		this.rows = rows;
 		this.role = role;
 		this.oppName = oppName;
+		sets = new ArrayList<Set>();
+		sets.add(new Set(cols,rows));
 	}
 	
 	public Set newSet(){
 		Set set = new Set(cols, rows); 
 		sets.add(set);
 		return set;
+	}
+	
+	public Set getLatestSet(){
+		return sets.get(sets.size()-1);		
 	}
 	
 	public void addMove(Move move){

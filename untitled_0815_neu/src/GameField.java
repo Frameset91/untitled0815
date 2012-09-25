@@ -14,13 +14,18 @@ public class GameField {
 	
 	public GameField(int cols, int rows){
 		field = new SimpleStringProperty[cols][rows];
+		for(int i = 0; i < field.length; i++){
+			for(int j = 0; j< field[0].length; j++){
+				field[i][j] = new SimpleStringProperty(Constants.emptyToken);				
+			}
+		}
 		
 	}
 	
 	public void addMove(Move move){
 		int col = move.getColumn();
 		for(int i=0; i<field[col].length; i++){
-			if (field[col][i] == null){
+			if (field[col][i].getValue() == Constants.emptyToken){
 				if(move.getRole() == Game.GameRole.x)
 					field[col][i].setValue(Constants.xToken);
 				else
@@ -30,7 +35,7 @@ public class GameField {
 		}		
 	}
 	
-	public SimpleStringProperty[][] getField(){
+	public SimpleStringProperty[][] getPropertyField(){
 		return field;
 	}
 	
@@ -38,7 +43,7 @@ public class GameField {
 		Boolean[][] array = new Boolean[field.length][field[0].length];
 		for(int i = 0; i < field.length; i++){
 			for(int j = 0; j< field[0].length; j++){
-				if(field[i][j] != null){
+				if(field[i][j].getValue() != Constants.emptyToken){
 					if(field[i][j].getValue() == Constants.xToken)
 						array[i][j] = true;
 					else
