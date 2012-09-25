@@ -2,8 +2,9 @@ import javafx.beans.property.SimpleStringProperty;
 
 /**
  * kapselt das Spielfeld mit allen Chips/Steinen
- * true = eigene Rolle
- * false = Gegner
+ * Als Boolean:
+ * true = x
+ * false = o
  * null = kein Stein gesetzt
  * @author Sascha
  *
@@ -38,7 +39,10 @@ public class GameField {
 		for(int i = 0; i < field.length; i++){
 			for(int j = 0; j< field[0].length; j++){
 				if(field[i][j] != null){
-					//if(field[i][j]) eigene Rolle relevant?
+					if(field[i][j].getValue() == Constants.xToken)
+						array[i][j] = true;
+					else
+						array[i][j] = false;
 				}
 				else
 					break;
