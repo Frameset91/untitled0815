@@ -69,9 +69,9 @@ public class Set{
 		
 	}
 	
-	public void addMove(Move move, Game.GameRole ownRole){
+	public void addMove(Move move){
 		moves.add(move);
-		field.addMove(move, ownRole);
+		field.addMove(move);
 	}
 	
 	public void save(int gameID){

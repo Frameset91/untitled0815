@@ -10,4 +10,9 @@ public class Constants {
 	
 	static final int gamefieldcolcount = 7;
 	static final int gamefieldrowcount = 6;
+	
+	//Styles
+	static final String xToken = "token-yellow";
+	static final String oToken = "token-red";
+
 }

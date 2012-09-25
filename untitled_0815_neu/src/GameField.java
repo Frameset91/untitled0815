@@ -1,4 +1,4 @@
-import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.property.SimpleStringProperty;
 
 /**
  * kapselt das Spielfeld mit allen Chips/Steinen
@@ -9,27 +9,41 @@ import javafx.beans.property.SimpleBooleanProperty;
  *
  */
 public class GameField {
-	private SimpleBooleanProperty[][] field;
+	private SimpleStringProperty[][] field;
 	
 	public GameField(int cols, int rows){
-		field = new SimpleBooleanProperty[cols][rows];
+		field = new SimpleStringProperty[cols][rows];
 		
 	}
 	
-	public void addMove(Move move, Game.GameRole ownRole){
+	public void addMove(Move move){
 		int col = move.getColumn();
 		for(int i=0; i<field[col].length; i++){
 			if (field[col][i] == null){
-				if(move.getRole() == ownRole)
-					field[col][i].setValue(true);
+				if(move.getRole() == Game.GameRole.x)
+					field[col][i].setValue(Constants.xToken);
 				else
-					field[col][i].setValue(false);
+					field[col][i].setValue(Constants.oToken);
 				break;
 			}
 		}		
 	}
 	
-	public SimpleBooleanProperty[][] getField(){
+	public SimpleStringProperty[][] getField(){
 		return field;
+	}
+	
+	public Boolean[][] getBoolField(Game.GameRole ownRole){
+		Boolean[][] array = new Boolean[field.length][field[0].length];
+		for(int i = 0; i < field.length; i++){
+			for(int j = 0; j< field[0].length; j++){
+				if(field[i][j] != null){
+					//if(field[i][j]) eigene Rolle relevant?
+				}
+				else
+					break;
+			}
+		}
+		return array;
 	}
 }

@@ -22,12 +22,14 @@ public class Game {
 		this.oppName = oppName;
 	}
 	
-	public void newSet(){
-		sets.add(new Set(cols, rows));
+	public Set newSet(){
+		Set set = new Set(cols, rows); 
+		sets.add(set);
+		return set;
 	}
 	
 	public void addMove(Move move){
-		sets.get(sets.size()-1).addMove(move, role);
+		sets.get(sets.size()-1).addMove(move);
 	}
 	
 	public void save(){

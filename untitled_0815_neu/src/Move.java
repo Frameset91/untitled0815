@@ -20,8 +20,8 @@ public class Move {
 		this.role = role;
 		this.column = column;
 		
-		java.util.Date date= new java.util.Date();
-		this.time = new Timestamp(date.getTime());
+		//java.util.Date date= new java.util.Date();
+		this.time = new Timestamp(new java.util.Date().getTime());
 	}
 	
 	/**
