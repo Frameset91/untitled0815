@@ -6,17 +6,17 @@ import java.sql.Timestamp;
  */
 public class Move {
 	private Timestamp time;
-	private Game.GameRole role;
+	private String role;
 	private int column;
 	private int moveID; //Database primary key
 	
-	public Move(Game.GameRole role, int column, Timestamp time){
+	public Move(String role, int column, Timestamp time){
 		this.role = role;
 		this.column = column;
 		this.time = time;
 	}
 	
-	public Move(Game.GameRole role, int column){
+	public Move(String role, int column){
 		this.role = role;
 		this.column = column;
 		
@@ -33,7 +33,7 @@ public class Move {
 	/**
 	 * @return the role
 	 */
-	public Game.GameRole getRole() {
+	public String getRole() {
 		return role;
 	}
 	/**

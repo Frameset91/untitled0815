@@ -20,7 +20,7 @@ import javafx.geometry.Pos;
 //import javafx.animation.FadeTransition;
 //import javafx.util.Duration;
 
-public class GUI03 {	
+public class GUI03 implements IGameView{	
 	
 	private Circle[][] spielfeld;
 	
@@ -449,7 +449,7 @@ public class GUI03 {
 //	fade.play();}
 	
 	//API um Databinding zu erstellen
-	
+	@Override
 	public void bindField(GameField field){
 	  for (int i = 0; i < Constants.gamefieldcolcount; i++)
 	    {
@@ -458,5 +458,11 @@ public class GUI03 {
 	    	  spielfeld[i][j].styleProperty().bind(field.getPropertyField()[i][Constants.gamefieldrowcount -1 -j]);
 	      }
 	    }		
+	}
+	
+	@Override
+	public void bindGame(Game model) {
+		// TODO Auto-generated method stub
+		
 	}
 }

@@ -11,6 +11,9 @@ public class Constants {
 	static final int gamefieldcolcount = 7;
 	static final int gamefieldrowcount = 6;
 	
+	static final String xRole = "X";
+	static final String oRole = "O";
+	
 	//Styles
 //	static final String xToken = "token-yellow";
 //	static final String oToken = "token-red";

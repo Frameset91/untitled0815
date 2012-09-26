@@ -3,28 +3,25 @@ import javafx.stage.Stage;
 
 
 public class SaschasTestApp extends Application {
-	private SaschasTestGUI view;
+	private IGameView view;
 	private GameController controller;
-	private Game model;
 	
 
-	@Override public void start (Stage stage) throws Exception{
-		model = new Game(Constants.gamefieldcolcount,Constants.gamefieldrowcount,Game.GameRole.x, "looserOpp");
-		view = new SaschasTestGUI();
+	@Override public void start (Stage mainstage) throws Exception{
+			view = new SaschasTestGUI();
 //		controller = new GameController(view, model);
 		
 		
-		view.init(stage, model);
-		stage.setHeight(500);
-		stage.setWidth(500);
-		stage.setTitle("4 Gewinnt - untitled0815");
-		stage.show();
+		view.init(mainstage);
+		mainstage.setHeight(550);
+		mainstage.setWidth(820);
+		mainstage.setTitle("4 Gewinnt - untitled0815");
+		mainstage.show();
+		//view.play();
 		
-		
-		//Tests
-	    model.addMove(new Move(Game.GameRole.o, 1));
-	    model.addMove(new Move(Game.GameRole.x, 1));
-		
+		controller = new GameController(view);
+
+	   
 	}
 
 	/**

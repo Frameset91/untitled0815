@@ -26,7 +26,7 @@ public class GameField {
 		int col = move.getColumn();
 		for(int i=0; i<field[col].length; i++){
 			if (field[col][i].getValue() == Constants.emptyToken){
-				if(move.getRole() == Game.GameRole.x)
+				if(move.getRole() == Constants.xRole)
 					field[col][i].setValue(Constants.xToken);
 				else
 					field[col][i].setValue(Constants.oToken);
@@ -39,7 +39,7 @@ public class GameField {
 		return field;
 	}
 	
-	public Boolean[][] getBoolField(Game.GameRole ownRole){
+	public Boolean[][] getBoolField(){
 		Boolean[][] array = new Boolean[field.length][field[0].length];
 		for(int i = 0; i < field.length; i++){
 			for(int j = 0; j< field[0].length; j++){

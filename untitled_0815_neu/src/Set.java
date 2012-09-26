@@ -19,7 +19,7 @@ public class Set{
 	//private int setID; //Database primary key
 	private Status status;
 	private GameField field; 
-	private Game.GameRole winner;
+	private String winner;
 	
 	
 
@@ -65,14 +65,14 @@ public class Set{
 	/**
 	 * @return the winner
 	 */
-	public Game.GameRole getWinner() {
+	public String getWinner() {
 		return winner;
 	}
 
 	/**
 	 * @param winner the winner to set
 	 */
-	public void setWinner(Game.GameRole winner) {
+	public void setWinner(String winner) {
 		this.winner = winner;
 	}
 
