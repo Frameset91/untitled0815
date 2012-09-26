@@ -127,7 +127,7 @@ public class GUI03 extends Application {
 		verzeichnispfad.setMaxWidth(150);
 		
 		//Stepper Field für File-Abfrage
-        HBox timeout1 = new HBox();
+        HBox timeout1 = new HBox(2);
     	VBox pfeile1 = new VBox();
     	Button hoch1 = new Button("ᴧ"); hoch1.setMaxSize(10, 10);
     	hoch1.getStyleClass().add("timeoutButton");
@@ -159,7 +159,7 @@ public class GUI03 extends Application {
     	});
     
     	//Stepper Field für Zugzeit
-    	HBox timeout2 = new HBox();
+    	HBox timeout2 = new HBox(2);
     	VBox pfeile2 = new VBox();
     	Button hoch2 = new Button("ᴧ"); hoch2.setMaxSize(10, 10);
     	hoch2.getStyleClass().add("timeoutButton");
@@ -227,11 +227,12 @@ public class GUI03 extends Application {
 		//Spieleranzeige
 		HBox hSpieler = new HBox(20);
 		hSpieler.setStyle("-fx-font-size: 16; -fx-font-weight: bold;");
+		final Label gegner = new Label("Gegner:");
 		Circle tokenSpieler = new Circle(15.0f);
 		Circle tokenGegner = new Circle(15.0f);
 		tokenSpieler.getStyleClass().add("token-red");
 		tokenGegner.getStyleClass().add("token-yellow");
-		hSpieler.getChildren().addAll(new Label("Spieler:"), tokenSpieler, new Label("Gegner:"), tokenGegner);
+		hSpieler.getChildren().addAll(new Label("untitled0815:"), tokenSpieler, gegner, tokenGegner);
 		
 		
 		// Spielstand
@@ -248,7 +249,7 @@ public class GUI03 extends Application {
 	    
 	//Spielfeld
 	    GridPane feld = new GridPane();
-		Circle spielfeld[][] = new Circle[7][6];
+		final Circle spielfeld[][] = new Circle[7][7];
 	    
 	    //Abstände zwischen Feldern
 	    feld.setHgap(3);
@@ -263,25 +264,41 @@ public class GUI03 extends Application {
 	      {
 	        spielfeld[i][j] = new Circle(20.0f);
 	        spielfeld[i][j].getStyleClass().add("token");
-	        String ii = String.valueOf(i);
-	        String jj = String.valueOf(j);
-	        spielfeld[i][j].setId("token" + ii + jj);
 	        feld.add(spielfeld[i][j], i, j);
 	      }
 	    }
 	    
-	    for (int i = 0; i < 7; i++)
-	    {
-	      for (int j = 0; j < 6; j++)
-	      {
-	    	  spielfeld[i][0].getStyleClass().add("token-red");
-	    	  spielfeld[i][1].getStyleClass().add("token-yellow");
-	    	  spielfeld[i][2].getStyleClass().add("token-red");
-	    	  spielfeld[i][3].getStyleClass().add("token-yellow");
-	    	  spielfeld[i][4].getStyleClass().add("token-red");
-	    	  spielfeld[i][5].getStyleClass().add("token-yellow");
-	      }
-	    }
+//	    for (int i = 0; i < 7; i++)
+//	    {
+//	      for (int j = 0; j < 6; j++)
+//	      {
+//	    	  spielfeld[i][0].getStyleClass().add("token-red");
+//	    	  spielfeld[i][1].getStyleClass().add("token-yellow");
+//	    	  spielfeld[i][2].getStyleClass().add("token-red");
+//	    	  spielfeld[i][3].getStyleClass().add("token-yellow");
+//	    	  spielfeld[i][4].getStyleClass().add("token-red");
+//	    	  spielfeld[i][5].getStyleClass().add("token-yellow");
+//	      }
+//	    }
+	    
+	    //Test, um Spielfeld zu füllen
+//	    Button steinsetzen = new Button("Stein setzen");
+//    	steinsetzen.setOnMouseClicked(new EventHandler<MouseEvent>(){
+//    		public void handle(MouseEvent arg0){
+//    			int spalte=5;
+//    			int zeile;
+//    			for (zeile=5; zeile>=0;){
+//    				String c = String.valueOf(spielfeld[spalte][zeile].getStyleClass());
+//        			if(c!="token"){
+//        				zeile--;
+//        			}
+//        			else{
+//        				spielfeld[spalte][zeile].getStyleClass().add("token-yellow");
+//        			}
+//    			}
+//    		}
+//    	});
+	    
 	    
 		spielanzeige.getChildren().addAll(hSpieler, spielstandAnzeige, feld);
 	    spielflaeche.setLeft(spielanzeige);
@@ -370,6 +387,7 @@ public class GUI03 extends Application {
 					fileabfrage.setDisable(true);
 					zugzeit.setDisable(true);
 					spielStarten.setText("Spiel beenden");
+					gegner.setText(gegnername.getText());
 					punkteSpieler.setText(spielstandSpieler.getText());
 					punkteGegner.setText(spielstandGegner.getText());
 					neuerSatz.setDisable(false);
@@ -379,10 +397,10 @@ public class GUI03 extends Application {
 				else{
 					rolleX.setDisable(false);
 					rolleO.setDisable(false);
-					spielstandSpieler.setDisable(false);
-					spielstandGegner.setDisable(false);
-					gegnername.setDisable(false);
-					verzeichnispfad.setDisable(false);
+					spielstandSpieler.setDisable(false); spielstandSpieler.setText("0");
+					spielstandGegner.setDisable(false); spielstandGegner.setText("0");
+					gegnername.setDisable(false); gegnername.setText("Name...");
+					verzeichnispfad.setDisable(false); verzeichnispfad.setText("C:\\...");
 					fileabfrage.setDisable(false);
 					zugzeit.setDisable(false);
 					spielStarten.setText("Spiel starten");
