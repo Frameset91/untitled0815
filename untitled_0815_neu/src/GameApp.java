@@ -12,8 +12,6 @@ public class GameApp extends Application {
 		
 		view = new GUI03();
 		
-		
-		
 		view.init(mainstage);
 		mainstage.setHeight(550);
 		mainstage.setWidth(820);
