@@ -2,7 +2,7 @@
  * @author Johannes Riedel
  *
  */
-
+/*
 public class KI {
 	 final int NONE = 0; 
 	 final int OPP = 1;
@@ -64,3 +64,4 @@ public class KI {
 
 
 }
+*/
