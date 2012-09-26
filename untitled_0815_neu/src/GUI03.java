@@ -3,10 +3,10 @@
 	 * @param args
 	 */
 
-import javafx.application.*;
+//import javafx.application.*;
 import javafx.scene.*;				//Scene bildet "Leinwände" in dem Rahmen
 import javafx.stage.*;				//Stage ist der "Rahmen" der Applikation
-import javafx.scene.control.*;		//Für das Menü
+import javafx.scene.control.*;
 import javafx.scene.effect.Lighting;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.*;
@@ -17,11 +17,15 @@ import javafx.scene.layout.*;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
+//import javafx.animation.FadeTransition;
+//import javafx.animation.FadeTransitionBuilder;
+//import javafx.util.Duration;
 
 public class GUI03 {	
 	
 	private Circle[][] spielfeld;
 	
+	//private FadeTransition fade;
 	
 	public void init(Stage mainstage){
 		Group root = new Group();
@@ -44,11 +48,13 @@ public class GUI03 {
 		final Menu datei = MenuBuilder.create().text("Datei").items(neuesSpiel, spielLaden, schließen).build();
 		
 		//2. Menüpunkt
-		final Menu optionen = new Menu("Optionen"); //Spielsteuerung einbinden
+		final MenuItem opt = new MenuItem("Hier kommen die möglichen Spielsteuerungen hin");
+		final Menu optionen = MenuBuilder.create().text("Optionen").items(opt).build(); //Spielsteuerung einbinden
 		
 		//3. Menüpunkt
 		final MenuItem anleitung = new MenuItem("Spielanleitung");
-		final Menu hilfe = MenuBuilder.create().text("Hilfe").items(anleitung).build();
+		final MenuItem steuerung = new MenuItem("Spielsteuerung");
+		final Menu hilfe = MenuBuilder.create().text("Hilfe").items(anleitung, steuerung).build();
 				
 		//Menupünkt "Schließen"
 		schließen.setOnAction(new EventHandler<ActionEvent>(){
@@ -102,14 +108,17 @@ public class GUI03 {
 		spieleinstellungen.setStyle("-fx-font-size: 15; -fx-font-weight: bold;");
 		
 		//Spielerrolle definieren (X oder O)
-		final ToggleButton rolleX = new ToggleButton("X");
-		final ToggleButton rolleO = new ToggleButton("O");
-		ToggleGroup rolleSetzen = new ToggleGroup();
-		rolleX.setToggleGroup(rolleSetzen);
-		rolleO.setToggleGroup(rolleSetzen);
-		HBox rolle = new HBox();
-		rolle.getStyleClass().addAll("textfeld");
-		rolle.getChildren().addAll(rolleX, rolleO);
+		final ChoiceBox<String> rolle = new ChoiceBox<String>();
+		rolle.getItems().addAll("X", "O");
+		rolle.getSelectionModel().selectFirst();
+//		final ToggleButton rolleX = new ToggleButton("X");
+//		final ToggleButton rolleO = new ToggleButton("O");
+//		ToggleGroup rolleSetzen = new ToggleGroup();
+//		rolleX.setToggleGroup(rolleSetzen);
+//		rolleO.setToggleGroup(rolleSetzen);
+//		HBox rolle = new HBox();
+//		rolle.getStyleClass().addAll("textfeld");
+//		rolle.getChildren().addAll(rolleX, rolleO);
 		
 		//Spielstand definieren
 		HBox spielstandEinstellen = new HBox();
@@ -137,10 +146,10 @@ public class GUI03 {
     	Button runter1 = new Button("v"); runter1.setMaxSize(10, 10);
     	runter1.getStyleClass().add("timeoutButton");
     	pfeile1.getChildren().addAll(hoch1, runter1);
-		final TextField fileabfrage = new TextField("0");
-		fileabfrage.setMaxWidth(30);
+		final TextField fileabfrage = new TextField("300");
+		fileabfrage.setMaxWidth(40);
 		fileabfrage.getStyleClass().addAll("textfeld", "timeout");
-    	timeout1.getChildren().addAll(fileabfrage, pfeile1, new Label("s"));
+    	timeout1.getChildren().addAll(fileabfrage, pfeile1, new Label("ms"));
 
     	hoch1.setOnMouseClicked(new EventHandler<MouseEvent>(){
     		public void handle(MouseEvent arg0){
@@ -169,10 +178,10 @@ public class GUI03 {
     	Button runter2 = new Button("v"); runter2.setMaxSize(10, 10);
     	runter2.getStyleClass().add("timeoutButton");
     	pfeile2.getChildren().addAll(hoch2, runter2);
-    	final TextField zugzeit = new TextField("0");
-    	zugzeit.setMaxWidth(30);
+    	final TextField zugzeit = new TextField("200");
+    	zugzeit.setMaxWidth(40);
     	zugzeit.getStyleClass().addAll("textfeld", "timeout");
-    	timeout2.getChildren().addAll(zugzeit, pfeile2, new Label("s"));
+    	timeout2.getChildren().addAll(zugzeit, pfeile2, new Label("ms"));
 
     	hoch2.setOnMouseClicked(new EventHandler<MouseEvent>(){
     		public void handle(MouseEvent arg0){
@@ -237,6 +246,9 @@ public class GUI03 {
 		tokenGegner.getStyleClass().add("token-yellow");
 		hSpieler.getChildren().addAll(new Label("untitled0815:"), tokenSpieler, gegner, tokenGegner);
 		
+        //Animation, welcher Spieler am Zug ist
+		//fade= FadeTransitionBuilder.create().duration(Duration.seconds(1)).node(tokenSpieler).fromValue(1).toValue(0.3).cycleCount(10).autoReverse(true).build();
+        //fade= FadeTransitionBuilder.create().duration(Duration.seconds(1)).node(tokenGegner).fromValue(1).toValue(0.3).cycleCount(10).autoReverse(true).build();
 		
 		// Spielstand
 	    HBox spielstandAnzeige = new HBox();
@@ -271,19 +283,6 @@ public class GUI03 {
 	        feld.add(spielfeld[i][j], i, j);
 	      }
 	    }
-	    
-//	    for (int i = 0; i < 7; i++)
-//	    {
-//	      for (int j = 0; j < 6; j++)
-//	      {
-//	    	  spielfeld[i][0].getStyleClass().add("token-red");
-//	    	  spielfeld[i][1].getStyleClass().add("token-yellow");
-//	    	  spielfeld[i][2].getStyleClass().add("token-red");
-//	    	  spielfeld[i][3].getStyleClass().add("token-yellow");
-//	    	  spielfeld[i][4].getStyleClass().add("token-red");
-//	    	  spielfeld[i][5].getStyleClass().add("token-yellow");
-//	      }
-//	    }
 	    
 	    //Test, um Spielfeld zu füllen
 //	    Button steinsetzen = new Button("Stein setzen");
@@ -382,8 +381,7 @@ public class GUI03 {
 		spielStarten.setOnMouseClicked(new EventHandler<MouseEvent>(){
 			public void handle(MouseEvent arg0){
 				if (spielStarten.getText()=="Spiel starten"){
-					rolleX.setDisable(true);
-					rolleO.setDisable(true);
+					rolle.setDisable(true);
 					spielstandSpieler.setDisable(true);
 					spielstandGegner.setDisable(true);
 					gegnername.setDisable(true);
@@ -391,7 +389,7 @@ public class GUI03 {
 					fileabfrage.setDisable(true);
 					zugzeit.setDisable(true);
 					spielStarten.setText("Spiel beenden");
-					gegner.setText(gegnername.getText());
+					gegner.setText(gegnername.getText()+":");
 					punkteSpieler.setText(spielstandSpieler.getText());
 					punkteGegner.setText(spielstandGegner.getText());
 					neuerSatz.setDisable(false);
@@ -399,8 +397,7 @@ public class GUI03 {
 					logAnzeigen.setDisable(false);
 				}
 				else{
-					rolleX.setDisable(false);
-					rolleO.setDisable(false);
+					rolle.setDisable(false);
 					spielstandSpieler.setDisable(false); spielstandSpieler.setText("0");
 					spielstandGegner.setDisable(false); spielstandGegner.setText("0");
 					gegnername.setDisable(false); gegnername.setText("Name...");
@@ -411,11 +408,19 @@ public class GUI03 {
 					neuerSatz.setDisable(true);
 					satzAbbrechen.setDisable(true);
 					logAnzeigen.setDisable(true);
+					gegner.setText("Gegner:");
+					punkteSpieler.setText("");
+					punkteGegner.setText("");
 				}
 
 			}
 		});
 	}
+
+
+
+//public void play(){
+//	fade.play();}
 	
 	//API um Databinding zu erstellen
 	
