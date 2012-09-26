@@ -11,7 +11,7 @@ public class GameController implements GameEventListener{
 	private Game model;
 	private CommunicationServer comServ;
 	private Game.GameRole role;
-	private SaschasTestGUI view;
+	private GUI03 view;
 
 	
 	
@@ -23,9 +23,8 @@ public class GameController implements GameEventListener{
 //		new GameController();	
 //	}
 	
-	public GameController(SaschasTestGUI view, Game model){
+	public GameController(GUI03 view){
 		//initialisierung des Controllers
-		this.model = model;
 		this.view = view;
 		
 		//Registrierung für Events beim View
@@ -40,7 +39,14 @@ public class GameController implements GameEventListener{
 		//KI 
 		//TODO
 		
-			
+	    //-------TEST--------
+		//Spielstart
+		newGame(Constants.gamefieldcolcount,Constants.gamefieldrowcount,Game.GameRole.x, "looserOpp");
+		//Satz starten
+		view.bindField(model.newSet().getField());
+		//Moves ausführen
+	    model.addMove(new Move(Game.GameRole.o, 1));
+	    model.addMove(new Move(Game.GameRole.x, 1));
 	}
 	
 	private void newGame(int cols, int rows, Game.GameRole role, String oppName){		

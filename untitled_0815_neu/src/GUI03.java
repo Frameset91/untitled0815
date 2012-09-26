@@ -18,7 +18,10 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 
-public class GUI03 extends Application {	
+public class GUI03 {	
+	
+	private Circle[][] spielfeld;
+	
 	
 	public void init(Stage mainstage){
 		Group root = new Group();
@@ -249,7 +252,8 @@ public class GUI03 extends Application {
 	    
 	//Spielfeld
 	    GridPane feld = new GridPane();
-		final Circle spielfeld[][] = new Circle[7][7];
+		//final Circle spielfeld[][] = new Circle[7][7];
+	    spielfeld = new Circle[7][7];
 	    
 	    //Abstände zwischen Feldern
 	    feld.setHgap(3);
@@ -258,9 +262,9 @@ public class GUI03 extends Application {
 	    feld.setMaxWidth(250);
 	    feld.setStyle("-fx-padding:5; -fx-background-color: blue;");
 		
-	    for (int i = 0; i < 7; i++)
+	    for (int i = 0; i < Constants.gamefieldcolcount; i++)
 	    {
-	      for (int j = 0; j < 6; j++)
+	      for (int j = 0; j < Constants.gamefieldrowcount; j++)
 	      {
 	        spielfeld[i][j] = new Circle(20.0f);
 	        spielfeld[i][j].getStyleClass().add("token");
@@ -413,16 +417,15 @@ public class GUI03 extends Application {
 		});
 	}
 	
+	//API um Databinding zu erstellen
 	
-	@Override public void start (Stage mainstage) throws Exception{
-		init(mainstage);
-		mainstage.setHeight(550);
-		mainstage.setWidth(820);
-		mainstage.setTitle("4 Gewinnt - untitled0815");
-		mainstage.show();
+	public void bindField(GameField field){
+	  for (int i = 0; i < Constants.gamefieldcolcount; i++)
+	    {
+	      for (int j = 0; j < Constants.gamefieldrowcount; j++)
+	      {
+	    	  spielfeld[i][j].styleProperty().bind(field.getPropertyField()[i][Constants.gamefieldrowcount -1 -j]);
+	      }
+	    }		
 	}
-	
-	public static void main(String[] args) {launch(args);}
-
-	
 }

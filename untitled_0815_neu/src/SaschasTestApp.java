@@ -11,7 +11,7 @@ public class SaschasTestApp extends Application {
 	@Override public void start (Stage stage) throws Exception{
 		model = new Game(Constants.gamefieldcolcount,Constants.gamefieldrowcount,Game.GameRole.x, "looserOpp");
 		view = new SaschasTestGUI();
-		controller = new GameController(view, model);
+//		controller = new GameController(view, model);
 		
 		
 		view.init(stage, model);
