@@ -18,14 +18,11 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 //import javafx.animation.FadeTransition;
-//import javafx.animation.FadeTransitionBuilder;
 //import javafx.util.Duration;
 
 public class GUI03 {	
 	
 	private Circle[][] spielfeld;
-	
-	//private FadeTransition fade;
 	
 	public void init(Stage mainstage){
 		Group root = new Group();
@@ -119,6 +116,7 @@ public class GUI03 {
 //		HBox rolle = new HBox();
 //		rolle.getStyleClass().addAll("textfeld");
 //		rolle.getChildren().addAll(rolleX, rolleO);
+		
 		
 		//Spielstand definieren
 		HBox spielstandEinstellen = new HBox();
@@ -240,16 +238,44 @@ public class GUI03 {
 		HBox hSpieler = new HBox(20);
 		hSpieler.setStyle("-fx-font-size: 16; -fx-font-weight: bold;");
 		final Label gegner = new Label("Gegner:");
-		Circle tokenSpieler = new Circle(15.0f);
-		Circle tokenGegner = new Circle(15.0f);
+		final Circle tokenSpieler = new Circle(15.0f);
+		final Circle tokenGegner = new Circle(15.0f);
 		tokenSpieler.getStyleClass().add("token-red");
 		tokenGegner.getStyleClass().add("token-yellow");
-		hSpieler.getChildren().addAll(new Label("untitled0815:"), tokenSpieler, gegner, tokenGegner);
 		
         //Animation, welcher Spieler am Zug ist
-		//fade= FadeTransitionBuilder.create().duration(Duration.seconds(1)).node(tokenSpieler).fromValue(1).toValue(0.3).cycleCount(10).autoReverse(true).build();
-        //fade= FadeTransitionBuilder.create().duration(Duration.seconds(1)).node(tokenGegner).fromValue(1).toValue(0.3).cycleCount(10).autoReverse(true).build();
-		
+//		final FadeTransition fadeSp = new FadeTransition();
+//		fadeSp.setAutoReverse(true);
+//		fadeSp.setDuration(Duration.seconds(1));
+//		fadeSp.setNode(tokenSpieler);
+//		fadeSp.setFromValue(1);
+//		fadeSp.setToValue(0.3);fadeSp.setCycleCount(10);
+//		fadeSp.setAutoReverse(true);
+//		final FadeTransition fadeGeg = new FadeTransition();
+//		fadeGeg.setAutoReverse(true);
+//		fadeGeg.setDuration(Duration.seconds(1));
+//		fadeGeg.setNode(tokenGegner);
+//		fadeGeg.setFromValue(1);
+//		fadeGeg.setToValue(0.3);fadeGeg.setCycleCount(10);
+//		fadeGeg.setAutoReverse(true);
+//
+//		Button rot = new Button("r");
+//    	rot.setOnMouseClicked(new EventHandler<MouseEvent>(){
+//    		public void handle(MouseEvent arg0){
+//    				fadeSp.play();
+//    				fadeGeg.stop();			
+//			}
+//		});
+//		Button gelb = new Button("g");
+//    	gelb.setOnMouseClicked(new EventHandler<MouseEvent>(){
+//    		public void handle(MouseEvent arg0){
+//    				fadeSp.stop();
+//    				fadeGeg.play();			
+//			}
+//		});
+//		
+		hSpieler.getChildren().addAll(new Label("untitled0815:"), tokenSpieler, gegner, tokenGegner);
+        		
 		// Spielstand
 	    HBox spielstandAnzeige = new HBox();
 		Label spielstand = new Label("Spielstand:");
@@ -272,7 +298,7 @@ public class GUI03 {
 	    feld.setVgap(3);
 	    feld.setMaxHeight(200);
 	    feld.setMaxWidth(250);
-	    feld.setStyle("-fx-padding:5; -fx-background-color: blue;");
+	    feld.setStyle("-fx-padding:5; -fx-background-color: #1a3399;");
 		
 	    for (int i = 0; i < Constants.gamefieldcolcount; i++)
 	    {
