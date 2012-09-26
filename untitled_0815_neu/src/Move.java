@@ -16,6 +16,14 @@ public class Move {
 		this.time = time;
 	}
 	
+	public Move(Game.GameRole role, int column){
+		this.role = role;
+		this.column = column;
+		
+		//java.util.Date date= new java.util.Date();
+		this.time = new Timestamp(new java.util.Date().getTime());
+	}
+	
 	/**
 	 * @return the time
 	 */
@@ -45,4 +53,5 @@ public class Move {
 	public void save(int gameID, int setID){
 		//TODO: In Datenbank speichern (Primarykey = GameID + SetID + Timestamp von Move)
 	}
+	
 }
