@@ -11,22 +11,13 @@ public class GameController implements GameEventListener{
 	private Game model;
 	private CommunicationServer comServ;
 	private String role;
-//	private GUI03 view;
 	private IGameView view;
 
 
 	
 	
 	
-	/**
-	 * @param args
-	 */
-//	public static void main(String[] args) {
-//		new GameController();	
-//	}
-	
-//	public GameController(GUI03 view){
-		public GameController(IGameView view){
+	public GameController(IGameView view){
 		//initialisierung des Controllers
 		this.view = view;
 		
@@ -45,15 +36,17 @@ public class GameController implements GameEventListener{
 	    //-------TEST--------
 		//Spielstart
 		newGame(Constants.gamefieldcolcount,Constants.gamefieldrowcount);
+		view.bindGame(model);
 		//Satz starten
 		view.bindField(model.newSet().getField());
 		//Moves ausführen
 	    model.addMove(new Move(Constants.oRole, 1));
 	    model.addMove(new Move(Constants.xRole, 1));
+	    
+	    
 	}
 	
 	private void newGame(int cols, int rows){		
-//		model = new Game(cols, rows, role, oppName); 
 		model = new Game(cols, rows); 
 	}
 	

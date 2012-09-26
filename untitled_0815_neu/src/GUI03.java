@@ -23,6 +23,15 @@ import javafx.geometry.Pos;
 public class GUI03 implements IGameView{	
 	
 	private Circle[][] spielfeld;
+	private ChoiceBox<String> rolle;
+	private TextField verzeichnispfad;
+	private TextField gegnername;
+	private Label punkteSpieler;
+	private Label punkteGegner;	
+	private TextField fileabfrage;
+	private TextField zugzeit;
+	private Circle tokenSpieler;
+	private Circle tokenGegner;
 	
 	public void init(Stage mainstage){
 		Group root = new Group();
@@ -105,7 +114,8 @@ public class GUI03 implements IGameView{
 		spieleinstellungen.setStyle("-fx-font-size: 15; -fx-font-weight: bold;");
 		
 		//Spielerrolle definieren (X oder O)
-		final ChoiceBox<String> rolle = new ChoiceBox<String>();
+//		final ChoiceBox<String> rolle = new ChoiceBox<String>();
+		rolle = new ChoiceBox<String>();
 		rolle.getItems().addAll("X", "O");
 		rolle.getSelectionModel().selectFirst();
 //		final ToggleButton rolleX = new ToggleButton("X");
@@ -129,10 +139,12 @@ public class GUI03 implements IGameView{
 		spielstandEinstellen.getChildren().addAll(spielstandSpieler, spielstandGegner);
 		
 		//Eingabefelder
-		final TextField gegnername = new TextField("Name...");
+//		final TextField gegnername = new TextField("Name...");
+		gegnername = new TextField("Name...");
 		gegnername.getStyleClass().add("textfeld");
 		gegnername.setMaxWidth(150);
-		final TextField verzeichnispfad = new TextField("C:\\...");
+//		final TextField verzeichnispfad = new TextField("C:\\...");
+		verzeichnispfad = new TextField("C:\\...");
 		verzeichnispfad.getStyleClass().add("textfeld");
 		verzeichnispfad.setMaxWidth(150);
 		
@@ -144,7 +156,8 @@ public class GUI03 implements IGameView{
     	Button runter1 = new Button("v"); runter1.setMaxSize(10, 10);
     	runter1.getStyleClass().add("timeoutButton");
     	pfeile1.getChildren().addAll(hoch1, runter1);
-		final TextField fileabfrage = new TextField("300");
+//		final TextField fileabfrage = new TextField("300");
+    	fileabfrage = new TextField("300");
 		fileabfrage.setMaxWidth(40);
 		fileabfrage.getStyleClass().addAll("textfeld", "timeout");
     	timeout1.getChildren().addAll(fileabfrage, pfeile1, new Label("ms"));
@@ -176,7 +189,8 @@ public class GUI03 implements IGameView{
     	Button runter2 = new Button("v"); runter2.setMaxSize(10, 10);
     	runter2.getStyleClass().add("timeoutButton");
     	pfeile2.getChildren().addAll(hoch2, runter2);
-    	final TextField zugzeit = new TextField("200");
+//    	final TextField zugzeit = new TextField("200");
+    	zugzeit = new TextField("200");
     	zugzeit.setMaxWidth(40);
     	zugzeit.getStyleClass().addAll("textfeld", "timeout");
     	timeout2.getChildren().addAll(zugzeit, pfeile2, new Label("ms"));
@@ -238,8 +252,10 @@ public class GUI03 implements IGameView{
 		HBox hSpieler = new HBox(20);
 		hSpieler.setStyle("-fx-font-size: 16; -fx-font-weight: bold;");
 		final Label gegner = new Label("Gegner:");
-		final Circle tokenSpieler = new Circle(15.0f);
-		final Circle tokenGegner = new Circle(15.0f);
+//		final Circle tokenSpieler = new Circle(15.0f);
+		tokenSpieler = new Circle(15.0f);
+//		final Circle tokenGegner = new Circle(15.0f);
+		tokenGegner = new Circle(15.0f);
 		tokenSpieler.getStyleClass().add("token-red");
 		tokenGegner.getStyleClass().add("token-yellow");
 		
@@ -280,9 +296,11 @@ public class GUI03 implements IGameView{
 	    HBox spielstandAnzeige = new HBox();
 		Label spielstand = new Label("Spielstand:");
 		spielstand.getStyleClass().add("punkte");
-	    final Label punkteSpieler = new Label();
+//	    final Label punkteSpieler = new Label();
+		punkteSpieler = new Label();
 	    punkteSpieler.getStyleClass().add("punkte");
-	    final Label punkteGegner = new Label();
+//	    final Label punkteGegner = new Label();
+	    punkteGegner = new Label();
 	    punkteGegner.getStyleClass().add("punkte");
 		Label vs = new Label(" : ");
 	    vs.getStyleClass().add("punkte");
@@ -462,7 +480,16 @@ public class GUI03 implements IGameView{
 	
 	@Override
 	public void bindGame(Game model) {
-		// TODO Auto-generated method stub
+		rolle.valueProperty().bindBidirectional(model.getRole());
+		verzeichnispfad.textProperty().bindBidirectional(model.getPath());
+		gegnername.textProperty().bindBidirectional(model.getOppName());
+//		TODO Converter String<->Int
+//		punkteGegner.textProperty().bindBidirectional(model.getOppPoints(), ((StringConverter)new IntegerStringConverter()));
+//		punkteSpieler.textProperty().bind(model.getOwnPoints());
+//		zugzeit.textProperty()
+//		fileabfrage.textProperty()
 		
+		tokenGegner.styleProperty().bind(model.getOppToken());
+		tokenSpieler.styleProperty().bind(model.getOwnToken());
 	}
 }

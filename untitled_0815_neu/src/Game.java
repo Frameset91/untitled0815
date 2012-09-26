@@ -2,6 +2,8 @@ import java.util.*;
 
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 
 
 public class Game {
@@ -17,26 +19,58 @@ public class Game {
 	private SimpleIntegerProperty oppPoints;
 	private SimpleStringProperty oppName;
 	private SimpleStringProperty path;
+	private SimpleIntegerProperty timeoutServer;
+	private SimpleIntegerProperty timeoutDraw;
+	private SimpleStringProperty oppToken;
+	private SimpleStringProperty ownToken;
 	//private int numberOfSets;
 	
-	public Game(int cols, int rows, String role, String oppName){
-		this.cols = cols;
-		this.rows = rows;
-		this.role.setValue(role);
-		this.oppName.setValue(oppName);
-		sets = new ArrayList<Set>();
-		sets.add(new Set(cols,rows));
-	}
+//	public Game(int cols, int rows, String role, String oppName){
+//		this.cols = cols;
+//		this.rows = rows;
+//		this.role.setValue(role);
+//		this.oppName.setValue(oppName);
+//		sets = new ArrayList<Set>();
+//		sets.add(new Set(cols,rows));
+//	}
 	
 	public Game(int cols, int rows){
 		this.cols = cols;
 		this.rows = rows;
-//		this.role = 
-		this.oppName = new SimpleStringProperty();
+		oppName = new SimpleStringProperty();
+		oppToken = new SimpleStringProperty(Constants.oToken);
+		ownToken = new SimpleStringProperty(Constants.xToken);
+		role = new SimpleStringProperty();
+		role.addListener(new ChangeListener<String>() {
+
+			/* (non-Javadoc)
+			 * @see javafx.beans.value.ChangeListener#changed(javafx.beans.value.ObservableValue, java.lang.Object, java.lang.Object)
+			 */
+			@Override
+			public void changed(ObservableValue<? extends String> arg0,
+					String arg1, String arg2) {
+				String newRole = arg0.getValue();
+				if(newRole.equals(Constants.oRole)){
+					ownToken.setValue(Constants.oToken);
+					oppToken.setValue(Constants.xToken);
+				}else{
+					ownToken.setValue(Constants.xToken);
+					oppToken.setValue(Constants.oToken);
+				}
+				
+			}
+			
+		});
+		timeoutDraw = new SimpleIntegerProperty(2000);
+		timeoutServer = new SimpleIntegerProperty(300);
+		path = new SimpleStringProperty();
+		ownPoints = new SimpleIntegerProperty(0);
+		oppPoints = new SimpleIntegerProperty(0);
 		sets = new ArrayList<Set>();
 		sets.add(new Set(cols,rows));
 	}
 	
+
 	public Set newSet(){
 		Set set = new Set(cols, rows); 
 		sets.add(set);
@@ -63,7 +97,35 @@ public class Game {
 		}
 	}
 	//get set
+	
+	/**
+	 * @return the oppToken
+	 */
+	public SimpleStringProperty getOppToken() {
+		return oppToken;
+	}
 
+	/**
+	 * @return the ownToken
+	 */
+	public SimpleStringProperty getOwnToken() {
+		return ownToken;
+	}
+
+	/**
+	 * @return the timeoutServer
+	 */
+	public SimpleIntegerProperty getTimeoutServer() {
+		return timeoutServer;
+	}
+
+	/**
+	 * @return the timeoutDraw
+	 */
+	public SimpleIntegerProperty getTimeoutDraw() {
+		return timeoutDraw;
+	}
+	
 	public SimpleStringProperty getRole() {
 		return role;
 	}
