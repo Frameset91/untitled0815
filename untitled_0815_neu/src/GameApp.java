@@ -17,6 +17,7 @@ public class GameApp extends Application {
 		mainstage.setWidth(820);
 		mainstage.setTitle("4 Gewinnt - untitled0815");
 		mainstage.show();
+		//view.play();
 		
 		controller = new GameController(view);
 		
