@@ -459,7 +459,8 @@ public class GUI03 implements IGameView{
 					fileabfrage.setDisable(true);
 					zugzeit.setDisable(true);
 					spielStarten.setText("Spiel beenden");
-					gegner.setText(gegnername.getText()+":");
+					//gegner.setText(gegnername.getText()+":");
+					gegner.textProperty().bind(gegnername.textProperty());
 					punkteSpieler.setText(spielstandSpieler.getText());
 					punkteGegner.setText(spielstandGegner.getText());
 					neuerSatz.setDisable(false);
@@ -481,6 +482,7 @@ public class GUI03 implements IGameView{
 					neuerSatz.setDisable(true);
 					satzAbbrechen.setDisable(true);
 					logAnzeigen.setDisable(true);
+					gegner.textProperty().unbind();
 					gegner.setText("Gegner:");
 					punkteSpieler.setText("");
 					punkteGegner.setText("");
@@ -506,11 +508,13 @@ public class GUI03 implements IGameView{
 	      for (int j = 0; j < Constants.gamefieldrowcount; j++)
 	      {
 	    	  spielfeld[i][j].styleProperty().bind(field.getPropertyField()[i][Constants.gamefieldrowcount -1 -j]);
+	    	  spielfeld[i][j].styleProperty().setValue("");
+	    	  spielfeld[i][j].getStyleClass().add("token");
 	      }
 	    }		
 	}
 	
-	public void undbindField(GameField field){
+	public void unbindField(GameField field){
 		for (int i = 0; i < Constants.gamefieldcolcount; i++)
 	    {
 	      for (int j = 0; j < Constants.gamefieldrowcount; j++)

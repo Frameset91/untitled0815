@@ -46,7 +46,11 @@ public class GameController implements GameEventListener, IUIEventListener{
 	
 	private void newGame(int cols, int rows){		
 		//unbind old model
-		
+		if(model != null){
+			view.unbindField(model.getLatestSet().getField());
+			view.unbindGame(model);
+			model.save();
+		}
 		
 		//create new model		
 		model = new Game(cols, rows);
@@ -79,6 +83,13 @@ public class GameController implements GameEventListener, IUIEventListener{
 			//Moves ausführen
 		    model.addMove(new Move(Constants.oRole, 1));
 		    model.addMove(new Move(Constants.xRole, 1));
+			break;
+		case EndSet:
+			view.unbindField(model.getLatestSet().getField());
+			model.save();
+			break;
+		case EndGame:
+			
 			break;
 		default:
 			break;

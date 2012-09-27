@@ -459,6 +459,7 @@ private ArrayList<IUIEventListener> _listeners = new ArrayList<IUIEventListener>
 					neuerSatz.setDisable(true);
 					satzAbbrechen.setDisable(true);
 					logAnzeigen.setDisable(true);
+					gegner.textProperty().unbind();
 					gegner.setText("Gegner:");
 					punkteSpieler.setText("");
 					punkteGegner.setText("");
@@ -492,12 +493,14 @@ private ArrayList<IUIEventListener> _listeners = new ArrayList<IUIEventListener>
 	    }		
 	}
 	
-	public void undbindField(GameField field){
+	public void unbindField(GameField field){
 		for (int i = 0; i < Constants.gamefieldcolcount; i++)
 	    {
 	      for (int j = 0; j < Constants.gamefieldrowcount; j++)
 	      {
 	    	  spielfeld[i][j].styleProperty().unbindBidirectional(field.getPropertyField()[i][Constants.gamefieldrowcount -1 -j]);
+	    	  spielfeld[i][j].styleProperty().setValue("");
+	    	  spielfeld[i][j].getStyleClass().add("token");
 	      }
 	    }
 	}

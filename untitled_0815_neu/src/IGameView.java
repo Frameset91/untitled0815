@@ -6,7 +6,7 @@ public interface IGameView {
 
 	public abstract void bindField(GameField field);
 	
-	public abstract void undbindField(GameField field);
+	public abstract void unbindField(GameField field);
 
 	public abstract void bindGame(Game model);
 	
