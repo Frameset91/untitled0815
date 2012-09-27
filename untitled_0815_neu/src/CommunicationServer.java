@@ -1,8 +1,5 @@
 /**
  * Diese Klasse fungiert zur Kommunikation mit dem Server und der Benachrichtigung der KI.
- */
-
-/**
  * @author Bjoern List
  *
  */
@@ -20,22 +17,33 @@ public class CommunicationServer extends Thread {
 	private File serverFile;
 	private File agentFile;
 	private Thread bla;
-
-	/**
-	 * Begin Eventsource Deklaration
-	 */
 	private List<GameEventListener> _listeners = new ArrayList<GameEventListener>();
 
+	
+	
+	/**
+	 * Listener f¸r Events hinzuf¸gen
+	 * @param listener
+	 */
 	public synchronized void addEventListener(GameEventListener listener) {
 		_listeners.add(listener);
 	}
 
+	/**
+	 * Listener f¸r Events lˆschen
+	 * @param listener 
+	 */
+	
 	public synchronized void removeEventListener(GameEventListener listener) {
 		_listeners.remove(listener);
 	}
 
-	// call this method whenever you want to notify
-	// the event listeners of the particular event
+	/**
+	 * call this method whenever you want to notify
+	 * the event listeners of the particular event
+	 * @param type Typ des Events
+	 */
+	
 	@SuppressWarnings("rawtypes")
 	private synchronized void fireEvent(byte type) {
 		GameEvent event = new GameEvent(this, type);
@@ -45,9 +53,7 @@ public class CommunicationServer extends Thread {
 		}
 	}
 
-	/**
-	 * Ende Event Source Deklaration
-	 */
+	
 
 	/**
 	 * Methode - getInstance liefert die Referenz auf den Singleton zur¸ck
@@ -70,34 +76,6 @@ public class CommunicationServer extends Thread {
 	 * privater Konstruktor Erzeugung der Singletoninstanz
 	 */
 	private CommunicationServer() {
-
-	}
-
-	/**
-	 * Methode zum Test des CommunicationServers
-	 * 
-	 * Erl‰uterung: CommunicationServer wird durch enable Methode gestartet.
-	 * ‹bergabeparameter bestimmt die Zeit zwischen 2 Pr¸fungen des Serverfiles
-	 * --> Abfrage wird in einem neuem Thread gestartet, sendet ein Event bei
-	 * Ereignis und beendet sich
-	 * 
-	 * Thread kann von auﬂen durch disable Methode gestoppt werden
-	 * 
-	 * @param args
-	 */
-
-	public static void main(String[] args) {
-		//
-		CommunicationServer.getInstance().enableReading(300, "server.xml");
-		try {
-			Thread.sleep(500);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
-		System.out
-				.println("----------------THREAD schlieﬂen!-------------------");
-		CommunicationServer.getInstance().writeMove((byte) 2, "spieler.txt");
-		// CommunicationServer.getInstance().disable();
 
 	}
 
@@ -130,6 +108,7 @@ public class CommunicationServer extends Thread {
 
 	/**
 	 * Ueberwachung der Serverdatei
+	 * Meldung an alle Event Listener auslˆsen
 	 */
 	public void ueberwachen() {
 		// Auslesen der Datei
@@ -207,6 +186,34 @@ public class CommunicationServer extends Thread {
 			System.out.println("Fehler - falsche Spalte ausgewaehlt");
 		}
 
+	}
+
+	/**
+	 * Methode zum Test des CommunicationServers
+	 * 
+	 * Erl‰uterung: CommunicationServer wird durch enable Methode gestartet.
+	 * ‹bergabeparameter bestimmt die Zeit zwischen 2 Pr¸fungen des Serverfiles
+	 * --> Abfrage wird in einem neuem Thread gestartet, sendet ein Event bei
+	 * Ereignis und beendet sich
+	 * 
+	 * Thread kann von auﬂen durch disable Methode gestoppt werden
+	 * 
+	 * @param args
+	 */
+	
+	public static void main(String[] args) {
+		//
+		CommunicationServer.getInstance().enableReading(300, "server.xml");
+		try {
+			Thread.sleep(500);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		System.out
+				.println("----------------THREAD schlieﬂen!-------------------");
+		CommunicationServer.getInstance().writeMove((byte) 2, "spieler.txt");
+		// CommunicationServer.getInstance().disable();
+	
 	}
 
 }
