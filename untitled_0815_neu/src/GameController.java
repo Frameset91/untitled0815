@@ -1,16 +1,10 @@
-import java.util.*;
-import java.sql.Timestamp;
-
-import javafx.application.Application;
-
-
-public class GameController implements GameEventListener{
+public class GameController implements GameEventListener, IUIEventListener{
 
 	
 	//private GameView gameView;
 	private Game model;
 	private CommunicationServer comServ;
-	private String role;
+
 	private IGameView view;
 
 
@@ -21,8 +15,12 @@ public class GameController implements GameEventListener{
 		//initialisierung des Controllers
 		this.view = view;
 		
+		//Game Objekt initialisieren und an das UI binden (zur Eingabe der Spieleinstellungen)
+		newGame(Constants.gamefieldcolcount,Constants.gamefieldrowcount);
+		this.view.bindGame(model);
+		
 		//Registrierung für Events beim View
-		//TODO
+		this.view.addEventListener(this);
 		
 		//Weitere Objekte erzeugen und für Events registrieren
 		
@@ -30,18 +28,19 @@ public class GameController implements GameEventListener{
 		comServ = CommunicationServer.getInstance();
 		comServ.addEventListener(this);
 		
+		
 		//KI 
 		//TODO
 		
 	    //-------TEST--------
 		//Spielstart
-		newGame(Constants.gamefieldcolcount,Constants.gamefieldrowcount);
-		view.bindGame(model);
+		
+		
 		//Satz starten
-		view.bindField(model.newSet().getField());
-		//Moves ausführen
-	    model.addMove(new Move(Constants.oRole, 1));
-	    model.addMove(new Move(Constants.xRole, 1));
+//		this.view.bindField(model.newSet().getField());
+//		//Moves ausführen
+//	    model.addMove(new Move(Constants.oRole, 1));
+//	    model.addMove(new Move(Constants.xRole, 1));
 	    
 	    
 	}
@@ -56,6 +55,28 @@ public class GameController implements GameEventListener{
 	@Override
 	public void handleEvent(GameEvent event) {
 		//TODO: Behandlung der Events vom ComServ. 
+		
+	}
+	
+	@Override
+	public void handleEvent(UIEvent event) {
+		switch (event.getType()) {
+		case StartGame:
+			model.save();			
+			break;
+		case StartSet:
+			view.bindField(model.newSet().getField());
+			//TODO ComServer starten
+			
+			
+			//TEST
+			//Moves ausführen
+		    model.addMove(new Move(Constants.oRole, 1));
+		    model.addMove(new Move(Constants.xRole, 1));
+			break;
+		default:
+			break;
+		}
 		
 	}
 	

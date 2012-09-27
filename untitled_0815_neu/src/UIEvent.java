@@ -2,6 +2,11 @@ import java.util.EventObject;
 
 
 public class UIEvent extends EventObject {
+	public enum Type{
+		//Was kann durch das Event übermittlet werden?
+		StartGame, LoadGame, EndGame, StartSet, EndSet
+	}
+	
 	/**
 	 * 
 	 */
@@ -35,9 +40,6 @@ public class UIEvent extends EventObject {
 		return args;
 	}
 	
-	public enum Type{
-		//Was kann durch das Event übermittlet werden?
-		StartGame, LoadGame, EndGame, StartSet, EndSet
-	}
+	
 
 }

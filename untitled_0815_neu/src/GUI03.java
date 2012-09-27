@@ -4,6 +4,9 @@
 	 */
 
 //import javafx.application.*;
+import java.util.ArrayList;
+import java.util.Iterator;
+
 import javafx.scene.*;				//Scene bildet "Leinwände" in dem Rahmen
 import javafx.stage.*;				//Stage ist der "Rahmen" der Applikation
 import javafx.scene.control.*;
@@ -32,6 +35,9 @@ public class GUI03 implements IGameView{
 	private TextField zugzeit;
 	private Circle tokenSpieler;
 	private Circle tokenGegner;
+	
+	//Eventhandling
+	private ArrayList<IUIEventListener> _listeners = new ArrayList<IUIEventListener>();
 	
 	public void init(Stage mainstage){
 		Group root = new Group();
@@ -491,5 +497,22 @@ public class GUI03 implements IGameView{
 		
 		tokenGegner.styleProperty().bind(model.getOppToken());
 		tokenSpieler.styleProperty().bind(model.getOwnToken());
+	}
+	
+	//Eventhandling
+	public void fireUIEvent(UIEvent.Type type, String[] args){
+		UIEvent event = new UIEvent(this,type, args);
+		Iterator<IUIEventListener> i = _listeners.iterator();
+		while (i.hasNext()) {
+			(i.next()).handleEvent(event);
+		}
+	}
+	
+	public synchronized void addEventListener(IUIEventListener listener) {
+		_listeners.add(listener);
+	}
+
+	public synchronized void removeEventListener(IUIEventListener listener) {
+		_listeners.remove(listener);
 	}
 }

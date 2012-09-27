@@ -4,6 +4,10 @@
  */
 
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
 import javafx.scene.*;				//Scene bildet "Leinwände" in dem Rahmen
 import javafx.stage.*;				//Stage ist der "Rahmen" der Applikation
 import javafx.scene.control.*;		//Für das Menü
@@ -32,6 +36,9 @@ private TextField fileabfrage;
 private TextField zugzeit;
 private Circle tokenSpieler;
 private Circle tokenGegner;
+
+//Eventhandling
+private ArrayList<IUIEventListener> _listeners = new ArrayList<IUIEventListener>();
 
 	//private FadeTransition fade;
 	
@@ -416,6 +423,9 @@ private Circle tokenGegner;
 					neuerSatz.setDisable(false);
 					satzAbbrechen.setDisable(false);
 					logAnzeigen.setDisable(false);
+					
+					//Event
+					//fireUIEvent(UIEvent.Type.StartGame,);
 				}
 				else{
 					rolle.setDisable(false);
@@ -476,6 +486,22 @@ private Circle tokenGegner;
 		tokenGegner.styleProperty().bind(model.getOppToken());
 		tokenSpieler.styleProperty().bind(model.getOwnToken());
 		
+	}
+	
+	public void fireUIEvent(UIEvent.Type type, String[] args){
+		UIEvent event = new UIEvent(this,type, args);
+		Iterator<IUIEventListener> i = _listeners.iterator();
+		while (i.hasNext()) {
+			(i.next()).handleEvent(event);
+		}
+	}
+	
+	public synchronized void addEventListener(IUIEventListener listener) {
+		_listeners.add(listener);
+	}
+
+	public synchronized void removeEventListener(IUIEventListener listener) {
+		_listeners.remove(listener);
 	}
 }
 	
