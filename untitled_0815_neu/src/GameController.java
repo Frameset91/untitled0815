@@ -17,7 +17,6 @@ public class GameController implements GameEventListener, IUIEventListener{
 		
 		//Game Objekt initialisieren und an das UI binden (zur Eingabe der Spieleinstellungen)
 		newGame(Constants.gamefieldcolcount,Constants.gamefieldrowcount);
-		this.view.bindGame(model);
 		
 		//Registrierung für Events beim View
 		this.view.addEventListener(this);
@@ -46,7 +45,14 @@ public class GameController implements GameEventListener, IUIEventListener{
 	}
 	
 	private void newGame(int cols, int rows){		
-		model = new Game(cols, rows); 
+		//unbind old model
+		
+		
+		//create new model		
+		model = new Game(cols, rows);
+		
+		//bind new model		
+		view.bindGame(model);
 	}
 	
 	/* (non-Javadoc)

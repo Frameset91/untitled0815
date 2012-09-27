@@ -339,6 +339,16 @@ private ArrayList<IUIEventListener> _listeners = new ArrayList<IUIEventListener>
 	    
 	    final Button neuerSatz = new Button("neuen Satz spielen");
 	    neuerSatz.setDisable(true);
+	    
+	    neuerSatz.setOnMouseClicked(new EventHandler<MouseEvent>() {
+
+			@Override
+			public void handle(MouseEvent arg0) {
+				fireUIEvent(UIEvent.Type.StartSet);
+				
+			}
+	    	
+		});
 	    	    
 		final Button satzAbbrechen = new Button("Satz abbrechen");
 		satzAbbrechen.setDisable(true);
@@ -417,7 +427,8 @@ private ArrayList<IUIEventListener> _listeners = new ArrayList<IUIEventListener>
 					fileabfrage.setDisable(true);
 					zugzeit.setDisable(true);
 					spielStarten.setText("Spiel beenden");
-					gegner.setText(gegnername.getText()+":");
+					//gegner.setText(gegnername.getText()+":");
+					gegner.textProperty().bind(gegnername.textProperty());
 					punkteSpieler.setText(spielstandSpieler.getText());
 					punkteGegner.setText(spielstandGegner.getText());
 					neuerSatz.setDisable(false);
@@ -425,7 +436,7 @@ private ArrayList<IUIEventListener> _listeners = new ArrayList<IUIEventListener>
 					logAnzeigen.setDisable(false);
 					
 					//Event
-					//fireUIEvent(UIEvent.Type.StartGame,);
+					fireUIEvent(UIEvent.Type.StartGame);
 				}
 				else{
 					rolle.setDisable(false);
@@ -442,6 +453,9 @@ private ArrayList<IUIEventListener> _listeners = new ArrayList<IUIEventListener>
 					gegner.setText("Gegner:");
 					punkteSpieler.setText("");
 					punkteGegner.setText("");
+					
+					//Event
+					fireUIEvent(UIEvent.Type.EndGame);
 				}
 
 			}
@@ -488,7 +502,22 @@ private ArrayList<IUIEventListener> _listeners = new ArrayList<IUIEventListener>
 		
 	}
 	
-	public void fireUIEvent(UIEvent.Type type, String[] args){
+	public void unbindGame(Game model){
+		rolle.valueProperty().unbindBidirectional(model.getRole());
+		verzeichnispfad.textProperty().unbindBidirectional(model.getPath());
+		gegnername.textProperty().unbindBidirectional(model.getOppName());
+//		TODO Converter
+		punkteGegner.textProperty().unbindBidirectional(model.getOppPoints());
+		punkteSpieler.textProperty().unbindBidirectional(model.getOwnPoints());
+		zugzeit.textProperty().unbindBidirectional(model.getTimeoutDraw());
+		fileabfrage.textProperty().unbindBidirectional(model.getTimeoutServer());
+		
+		tokenGegner.styleProperty().unbind();
+		tokenSpieler.styleProperty().unbind();
+	}
+	
+	public void fireUIEvent(UIEvent.Type type){
+		String[] args = new String[0];
 		UIEvent event = new UIEvent(this,type, args);
 		Iterator<IUIEventListener> i = _listeners.iterator();
 		while (i.hasNext()) {
