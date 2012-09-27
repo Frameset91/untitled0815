@@ -6,7 +6,6 @@
 
 import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.List;
 
 import javafx.scene.*;				//Scene bildet "Leinwände" in dem Rahmen
 import javafx.stage.*;				//Stage ist der "Rahmen" der Applikation
@@ -339,7 +338,7 @@ private ArrayList<IUIEventListener> _listeners = new ArrayList<IUIEventListener>
 	    
 	    final Button neuerSatz = new Button("neuen Satz spielen");
 	    neuerSatz.setDisable(true);
-	    
+	    //Event
 	    neuerSatz.setOnMouseClicked(new EventHandler<MouseEvent>() {
 
 			@Override
@@ -352,6 +351,16 @@ private ArrayList<IUIEventListener> _listeners = new ArrayList<IUIEventListener>
 	    	    
 		final Button satzAbbrechen = new Button("Satz abbrechen");
 		satzAbbrechen.setDisable(true);
+		//Event
+		satzAbbrechen.setOnMouseClicked(new EventHandler<MouseEvent>() {
+
+			@Override
+			public void handle(MouseEvent arg0) {
+				fireUIEvent(UIEvent.Type.EndSet);
+				
+			}
+	    	
+		});
 		
 	    Label statistikLabel = new Label("Statistik:");
 	    
@@ -478,9 +487,19 @@ private ArrayList<IUIEventListener> _listeners = new ArrayList<IUIEventListener>
 	    {
 	      for (int j = 0; j < Constants.gamefieldrowcount; j++)
 	      {
-	    	  spielfeld[i][j].styleProperty().bind(field.getPropertyField()[i][Constants.gamefieldrowcount -1 -j]);
+	    	  spielfeld[i][j].styleProperty().bindBidirectional(field.getPropertyField()[i][Constants.gamefieldrowcount -1 -j]);
 	      }
 	    }		
+	}
+	
+	public void undbindField(GameField field){
+		for (int i = 0; i < Constants.gamefieldcolcount; i++)
+	    {
+	      for (int j = 0; j < Constants.gamefieldrowcount; j++)
+	      {
+	    	  spielfeld[i][j].styleProperty().unbindBidirectional(field.getPropertyField()[i][Constants.gamefieldrowcount -1 -j]);
+	      }
+	    }
 	}
 	
 	/* (non-Javadoc)

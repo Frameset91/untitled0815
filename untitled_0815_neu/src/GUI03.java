@@ -361,9 +361,29 @@ public class GUI03 implements IGameView{
 	    
 	    final Button neuerSatz = new Button("neuen Satz spielen");
 	    neuerSatz.setDisable(true);
+	    //Event 
+	    neuerSatz.setOnMouseClicked(new EventHandler<MouseEvent>() {
+
+			@Override
+			public void handle(MouseEvent arg0) {
+				fireUIEvent(UIEvent.Type.StartSet);
+				
+			}
+	    	
+		});
 	    	    
 		final Button satzAbbrechen = new Button("Satz abbrechen");
 		satzAbbrechen.setDisable(true);
+		//Event
+		satzAbbrechen.setOnMouseClicked(new EventHandler<MouseEvent>() {
+
+			@Override
+			public void handle(MouseEvent arg0) {
+				fireUIEvent(UIEvent.Type.EndSet);
+				
+			}
+	    	
+		});
 		
 	    Label statistikLabel = new Label("Statistik:");
 	    
@@ -445,6 +465,9 @@ public class GUI03 implements IGameView{
 					neuerSatz.setDisable(false);
 					satzAbbrechen.setDisable(false);
 					logAnzeigen.setDisable(false);
+					
+					//Event
+					fireUIEvent(UIEvent.Type.StartGame);
 				}
 				else{
 					rolle.setDisable(false);
@@ -461,6 +484,9 @@ public class GUI03 implements IGameView{
 					gegner.setText("Gegner:");
 					punkteSpieler.setText("");
 					punkteGegner.setText("");
+					
+					//Event
+					fireUIEvent(UIEvent.Type.EndGame);
 				}
 
 			}
@@ -484,12 +510,25 @@ public class GUI03 implements IGameView{
 	    }		
 	}
 	
+	public void undbindField(GameField field){
+		for (int i = 0; i < Constants.gamefieldcolcount; i++)
+	    {
+	      for (int j = 0; j < Constants.gamefieldrowcount; j++)
+	      {
+	    	  spielfeld[i][j].styleProperty().unbindBidirectional(field.getPropertyField()[i][Constants.gamefieldrowcount -1 -j]);
+	      }
+	    }
+	}
+	
+	/* (non-Javadoc)
+	 * @see IGameView#bindGame(Game)
+	 */
 	@Override
-	public void bindGame(Game model) {
+	public void bindGame(Game model){
 		rolle.valueProperty().bindBidirectional(model.getRole());
 		verzeichnispfad.textProperty().bindBidirectional(model.getPath());
 		gegnername.textProperty().bindBidirectional(model.getOppName());
-//		TODO Converter String<->Int
+//		TODO Converter
 //		punkteGegner.textProperty().bindBidirectional(model.getOppPoints(), ((StringConverter)new IntegerStringConverter()));
 //		punkteSpieler.textProperty().bind(model.getOwnPoints());
 //		zugzeit.textProperty()
@@ -497,10 +536,26 @@ public class GUI03 implements IGameView{
 		
 		tokenGegner.styleProperty().bind(model.getOppToken());
 		tokenSpieler.styleProperty().bind(model.getOwnToken());
+		
+	}
+	
+	public void unbindGame(Game model){
+		rolle.valueProperty().unbindBidirectional(model.getRole());
+		verzeichnispfad.textProperty().unbindBidirectional(model.getPath());
+		gegnername.textProperty().unbindBidirectional(model.getOppName());
+//		TODO Converter
+		punkteGegner.textProperty().unbindBidirectional(model.getOppPoints());
+		punkteSpieler.textProperty().unbindBidirectional(model.getOwnPoints());
+		zugzeit.textProperty().unbindBidirectional(model.getTimeoutDraw());
+		fileabfrage.textProperty().unbindBidirectional(model.getTimeoutServer());
+		
+		tokenGegner.styleProperty().unbind();
+		tokenSpieler.styleProperty().unbind();
 	}
 	
 	//Eventhandling
-	public void fireUIEvent(UIEvent.Type type, String[] args){
+	public void fireUIEvent(UIEvent.Type type){
+		String[] args = new String[0];
 		UIEvent event = new UIEvent(this,type, args);
 		Iterator<IUIEventListener> i = _listeners.iterator();
 		while (i.hasNext()) {
