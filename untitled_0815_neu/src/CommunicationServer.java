@@ -15,7 +15,7 @@ import java.util.List;
 
 
 
-public class CommunicationServer {
+public class CommunicationServer extends Thread{
 	// Singleton Referenz
 	private static CommunicationServer singleton = null;
 	private String serverfilepath;
@@ -195,7 +195,7 @@ public class CommunicationServer {
 	 * @param spalte
 	 *            Nummer der Spalte, in die der naechste STein gelgt wird
 	 */
-	public void write(int spalte,String agentFilePath) {
+	public void writeMove(int spalte,String agentFilePath) {
 		if (spalte > -1 && spalte < 7) {
 			try {
 				this.agentfilepath = agentFilePath;
@@ -213,7 +213,10 @@ public class CommunicationServer {
 		}
 
 	}
+	
+	
 
+	
 }
 
 /**
