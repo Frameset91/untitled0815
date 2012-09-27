@@ -1,4 +1,9 @@
-
+/*
+ * Diese Klasse beschreibt eine neue Nachricht des Servers an die Agenten
+ * 
+ * @author Bjoern List 
+ * 
+ */
 public class ServerMessage {
 private String freigabe;
 private String satzstatus;
