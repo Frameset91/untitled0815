@@ -14,7 +14,7 @@ public class JohannesGameField {
 		
 	}
 	
-	public void addMove(Move move, Game.GameRole ownRole){
+	public void addMove(Move move, String ownRole){
 		int col = move.getColumn();
 		for(int i=0; i<field[col].length; i++){
 			if (field[col][i] == null){
