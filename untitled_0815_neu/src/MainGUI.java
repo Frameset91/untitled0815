@@ -21,6 +21,7 @@ import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
+import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
@@ -355,17 +356,39 @@ public class MainGUI implements IGameView{
 	    satz.setDisable(true);
 	    //Event 
 	    satz.setOnMouseClicked(new EventHandler<MouseEvent>() {
-			public void handle(MouseEvent arg0) {
+	   	public void handle(MouseEvent arg0) {
 				if(satz.getText()=="Satz abbrechen"){
-					fireGameEvent(GameEvent.Type.EndSet);
-					satz.setText("neuen Satz spielen");
-				}
+					Task aufgabe = new Task<Void>() {
+						@Override
+						protected Void call() throws Exception {
+							// TODO Auto-generated method stub
+							fireGameEvent(GameEvent.Type.EndSet);
+							satz.setText("neuen Satz spielen");
+							return null;
+						} // ENde call()	
+					};
+					new Thread(aufgabe).start();// ENde New task
+				} // Ende if
 				else{
+					Task aufgabe2 = new Task<Void>() {
+
+						@Override
+						protected Void call() throws Exception {
+							// TODO Auto-generated method stub
+
 					fireGameEvent(GameEvent.Type.StartSet);
 					satz.setText("Satz abbrechen");
-				}	
-			}
-		});
+				
+					
+					return null;
+				} // ENde call()
+	    		
+	    	};// ENde new task};
+	    	new Thread(aufgabe2).start();
+				} // Ende else
+	   	} // ende handle
+	    });
+				
 	    	    
 //		final Button satzAbbrechen = new Button("Satz abbrechen");
 //		satzAbbrechen.setDisable(true);
