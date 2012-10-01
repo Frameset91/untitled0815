@@ -9,10 +9,6 @@ public class GameController implements GameEventListener, IUIEventListener{
 
 	private IGameView view;
 
-
-	
-	
-	
 	public GameController(IGameView view){
 		//initialisierung des Controllers
 		this.view = view;
@@ -33,16 +29,6 @@ public class GameController implements GameEventListener, IUIEventListener{
 		//KI 
 		//TODO
 		
-	    //-------TEST--------
-		//Spielstart
-		
-		
-		//Satz starten
-//		this.view.bindField(model.newSet().getField());
-//		//Moves ausführen
-//	    model.addMove(new Move(Constants.oRole, 1));
-//	    model.addMove(new Move(Constants.xRole, 1));
-	    
 	    
 	}
 	
@@ -95,8 +81,7 @@ public class GameController implements GameEventListener, IUIEventListener{
 					model.addMove(new Move(Constants.oRole, r.nextInt(7)));
 				}else{
 					model.addMove(new Move(Constants.xRole, r.nextInt(7)));
-				}
-				
+				}				
 			}
 		    
 			break;
