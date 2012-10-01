@@ -1,5 +1,9 @@
 package utilities;
 
+import UIEvent.Type;
+
+
+
 
 /**
  * Event class, that contains information about a generic event.
@@ -12,15 +16,36 @@ public class GameEvent {
     private boolean inQueue   = false;
     private Object context    = null;
     private Object userInfo   = null;
+    public enum Type{
+		//Was kann durch das Event übermittlet werden?
+		StartGame, LoadGame, EndGame, StartSet, EndSet
+	}
+	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	private Type type;
+	private String[] args;
 
    /**
     * Create a new event
     * 
     * @param name       name of the event
     */
-    public GameEvent(String name) {
+    public GameEvent(String name,Type t, String[] args) {
         this.name = name;
+        type = t;
+		this.args = args;
     }
+    public Type getType() {
+		return type;
+	}
+
+	public String[] getArgs() {
+		return args;
+	}
+	
 
     /**
      * Create a new event

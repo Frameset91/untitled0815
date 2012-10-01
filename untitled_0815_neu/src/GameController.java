@@ -1,6 +1,8 @@
 import java.util.*;
 
-public class GameController implements GameEventListener_old, IUIEventListener{
+import utilities.*;
+
+public class GameController implements GameEventListener, IUIEventListener{
 
 	
 	//private GameView gameView;
@@ -17,13 +19,23 @@ public class GameController implements GameEventListener_old, IUIEventListener{
 		newGame(Constants.gamefieldcolcount,Constants.gamefieldrowcount);
 		
 		//Registrierung für Events beim View
-		this.view.addEventListener(this);
+		// TODO		
+//		this.view.addEventListener(this);
 		
 		//Weitere Objekte erzeugen und für Events registrieren
 		
 		//Communication Server
 		comServ = CommunicationServer.getInstance();
-		comServ.addEventListener(this);
+		
+		//Dispatcher
+		EventDispatcher Dispatcher = EventDispatcher.getInstance();
+		try {
+			Dispatcher.addListener("GameEvent", this);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 		
 		
 		//KI 
@@ -50,52 +62,55 @@ public class GameController implements GameEventListener_old, IUIEventListener{
 	/* (non-Javadoc)
 	 * @see GameEventListener#handleEvent(GameEvent)
 	 */
-	@Override
-	public void handleEvent(GameEvent event) {
-		//TODO: Behandlung der Events vom ComServ. 
-		
-	}
+	
 	
 	@Override
-	public void handleEvent(UIEvent event) {
-		switch (event.getType()) {
-		case StartGame:
-			model.save();			
-			break;
-		case StartSet:
-			if(model.getLatestSet() != null){
-				view.unbindField(model.getLatestSet().getField());
-				model.save();
-			}
-			
-			view.bindField(model.newSet().getField());
-			//TODO ComServer starten
-			
-			
-			//TEST
-			//Moves ausführen
-			Random r = new Random();
-			
-			for(int i = 0; i < 15; i++){
-				if(i%2 == 1){
-					model.addMove(new Move(Constants.oRole, r.nextInt(7)));
-				}else{
-					model.addMove(new Move(Constants.xRole, r.nextInt(7)));
-				}				
-			}
-		    
-			break;
-		case EndSet:
-//			view.unbindField(model.getLatestSet().getField());
-			model.save();
-			break;
-		case EndGame:
-			
-			break;
-		default:
-			break;
+	public void handleEvent(GameEvent event) {
+		System.out.println("Event erhalten");
+//		switch (event.getType()) {
+//		case StartGame:
+//			model.save();			
+//			break;
+//		case StartSet:
+//			if(model.getLatestSet() != null){
+//				view.unbindField(model.getLatestSet().getField());
+//				model.save();
+//			}
+//			
+//			view.bindField(model.newSet().getField());
+//			//TODO ComServer starten
+//			
+//			
+//			//TEST
+//			//Moves ausführen
+//			Random r = new Random();
+//			
+//			for(int i = 0; i < 15; i++){
+//				if(i%2 == 1){
+//					model.addMove(new Move(Constants.oRole, r.nextInt(7)));
+//				}else{
+//					model.addMove(new Move(Constants.xRole, r.nextInt(7)));
+//				}				
+//			}
+//		    
+//			break;
+//		case EndSet:
+////			view.unbindField(model.getLatestSet().getField());
+//			model.save();
+//			break;
+//		case EndGame:
+//			
+//			break;
+//		default:
+//			break;
 		}
 		
+	
+
+	@Override
+	public void handleEvent(UIEvent e) {
+		// TODO Auto-generated method stub
+		System.out.println("GameEvent erhalten");
 	}
 	
 }

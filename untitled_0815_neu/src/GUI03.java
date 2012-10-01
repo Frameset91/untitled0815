@@ -7,6 +7,8 @@
 import java.util.ArrayList;
 import java.util.Iterator;
 
+import utilities.*;
+
 import javafx.scene.*;				//Scene bildet "Leinwände" in dem Rahmen
 import javafx.stage.*;				//Stage ist der "Rahmen" der Applikation
 import javafx.scene.control.*;
@@ -365,11 +367,11 @@ public class GUI03 implements IGameView{
 	    satz.setOnMouseClicked(new EventHandler<MouseEvent>() {
 			public void handle(MouseEvent arg0) {
 				if(satz.getText()=="Satz abbrechen"){
-					fireUIEvent(UIEvent.Type.EndSet);
+					fireGameEvent(GameEvent.Type.EndSet);
 					satz.setText("neuen Satz spielen");
 				}
 				else{
-					fireUIEvent(UIEvent.Type.StartSet);
+					fireGameEvent(GameEvent.Type.StartSet);
 					satz.setText("Satz abbrechen");
 				}	
 			}
@@ -473,7 +475,7 @@ public class GUI03 implements IGameView{
 					logAnzeigen.setDisable(false);
 					
 					//Event
-					fireUIEvent(UIEvent.Type.StartGame);
+					fireGameEvent(GameEvent.Type.StartGame);
 				}
 				else{
 					neuesSpiel.setDisable(false);
@@ -495,7 +497,7 @@ public class GUI03 implements IGameView{
 					punkteGegner.setText("");
 					
 					//Event
-					fireUIEvent(UIEvent.Type.EndGame);
+					fireGameEvent(GameEvent.Type.EndGame);
 				}
 
 			}
@@ -567,20 +569,22 @@ public class GUI03 implements IGameView{
 	}
 	
 	//Eventhandling
-	public void fireUIEvent(UIEvent.Type type){
+	public void fireGameEvent(GameEvent.Type type){
 		String[] args = new String[0];
-		UIEvent event = new UIEvent(this,type, args);
-		Iterator<IUIEventListener> i = _listeners.iterator();
-		while (i.hasNext()) {
-			(i.next()).handleEvent(event);
+		GameEvent event = new GameEvent(type.toString(),type, args);
+		try {
+			EventDispatcher.getInstance().triggerEvent(type.toString(), true);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
+//		Iterator<IUIEventListener> i = _listeners.iterator();
+//		while (i.hasNext()) {
+//			(i.next()).handleEvent(event);
+//		}
+		
+		
 	}
 	
-	public synchronized void addEventListener(IUIEventListener listener) {
-		_listeners.add(listener);
-	}
-
-	public synchronized void removeEventListener(IUIEventListener listener) {
-		_listeners.remove(listener);
-	}
+	
 }

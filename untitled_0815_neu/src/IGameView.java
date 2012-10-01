@@ -12,8 +12,6 @@ public interface IGameView {
 	
 	public abstract void unbindGame(Game model);
 	
-	public abstract void addEventListener(IUIEventListener listener);
 	
-	public abstract void removeEventListener(IUIEventListener listener);
 
 }
