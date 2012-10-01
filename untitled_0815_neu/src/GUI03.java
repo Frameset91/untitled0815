@@ -44,7 +44,7 @@ public class GUI03 implements IGameView{
 		Scene scene = new Scene(root);
 		scene.getStylesheets().add("test.css");
 		mainstage.setScene(scene);
-		//mainstage.setResizable(false);
+		mainstage.setResizable(false);
 		
 		BorderPane borderpane = new BorderPane(); //setzt Layout/ Anordnung fest
 		
@@ -164,7 +164,7 @@ public class GUI03 implements IGameView{
     	pfeile1.getChildren().addAll(hoch1, runter1);
 //		final TextField fileabfrage = new TextField("300");
     	fileabfrage = new TextField("300");
-		fileabfrage.setMaxWidth(40);
+		fileabfrage.setMaxWidth(60);
 		fileabfrage.getStyleClass().addAll("textfeld", "timeout");
     	timeout1.getChildren().addAll(fileabfrage, pfeile1, new Label("ms"));
 
@@ -196,8 +196,8 @@ public class GUI03 implements IGameView{
     	runter2.getStyleClass().add("timeoutButton");
     	pfeile2.getChildren().addAll(hoch2, runter2);
 //    	final TextField zugzeit = new TextField("200");
-    	zugzeit = new TextField("200");
-    	zugzeit.setMaxWidth(40);
+    	zugzeit = new TextField("2000");
+    	zugzeit.setMaxWidth(60);
     	zugzeit.getStyleClass().addAll("textfeld", "timeout");
     	timeout2.getChildren().addAll(zugzeit, pfeile2, new Label("ms"));
 
@@ -359,31 +359,34 @@ public class GUI03 implements IGameView{
 	// Rechte Spalte
 	    VBox boxrechts = new VBox(10);
 	    
-	    final Button neuerSatz = new Button("neuen Satz spielen");
-	    neuerSatz.setDisable(true);
+	    final Button satz = new Button("neuen Satz spielen");
+	    satz.setDisable(true);
 	    //Event 
-	    neuerSatz.setOnMouseClicked(new EventHandler<MouseEvent>() {
-
-			@Override
+	    satz.setOnMouseClicked(new EventHandler<MouseEvent>() {
 			public void handle(MouseEvent arg0) {
-				fireUIEvent(UIEvent.Type.StartSet);
-				
+				if(satz.getText()=="Satz abbrechen"){
+					fireUIEvent(UIEvent.Type.EndSet);
+					satz.setText("neuen Satz spielen");
+				}
+				else{
+					fireUIEvent(UIEvent.Type.StartSet);
+					satz.setText("Satz abbrechen");
+				}	
 			}
-	    	
 		});
 	    	    
-		final Button satzAbbrechen = new Button("Satz abbrechen");
-		satzAbbrechen.setDisable(true);
-		//Event
-		satzAbbrechen.setOnMouseClicked(new EventHandler<MouseEvent>() {
-
-			@Override
-			public void handle(MouseEvent arg0) {
-				fireUIEvent(UIEvent.Type.EndSet);
-				
-			}
-	    	
-		});
+//		final Button satzAbbrechen = new Button("Satz abbrechen");
+//		satzAbbrechen.setDisable(true);
+//		//Event
+//		satzAbbrechen.setOnMouseClicked(new EventHandler<MouseEvent>() {
+//
+//			@Override
+//			public void handle(MouseEvent arg0) {
+//				fireUIEvent(UIEvent.Type.EndSet);
+//				
+//			}
+//	    	
+//		});
 		
 	    Label statistikLabel = new Label("Statistik:");
 	    
@@ -429,7 +432,7 @@ public class GUI03 implements IGameView{
 	    });
 	    logAnzeigen.setDisable(true);
 	    
-	    boxrechts.getChildren().addAll(neuerSatz, satzAbbrechen, statistikLabel, statistik, logAnzeigen);
+	    boxrechts.getChildren().addAll(satz, statistikLabel, statistik, logAnzeigen);
 	    boxrechts.setMaxHeight(0);
 	    spielflaeche.setCenter(boxrechts);
 	    
@@ -463,8 +466,8 @@ public class GUI03 implements IGameView{
 					gegner.textProperty().bind(gegnername.textProperty());
 					punkteSpieler.setText(spielstandSpieler.getText());
 					punkteGegner.setText(spielstandGegner.getText());
-					neuerSatz.setDisable(false);
-					satzAbbrechen.setDisable(false);
+					satz.setDisable(false);
+					//satzAbbrechen.setDisable(false);
 					logAnzeigen.setDisable(false);
 					
 					//Event
@@ -479,8 +482,8 @@ public class GUI03 implements IGameView{
 					fileabfrage.setDisable(false);
 					zugzeit.setDisable(false);
 					spielStarten.setText("Spiel starten");
-					neuerSatz.setDisable(true);
-					satzAbbrechen.setDisable(true);
+					satz.setDisable(true);
+					//satzAbbrechen.setDisable(true);
 					logAnzeigen.setDisable(true);
 					gegner.textProperty().unbind();
 					gegner.setText("Gegner:");
@@ -508,8 +511,6 @@ public class GUI03 implements IGameView{
 	      for (int j = 0; j < Constants.gamefieldrowcount; j++)
 	      {
 	    	  spielfeld[i][j].styleProperty().bind(field.getPropertyField()[i][Constants.gamefieldrowcount -1 -j]);
-	    	  spielfeld[i][j].styleProperty().setValue("");
-	    	  spielfeld[i][j].getStyleClass().add("token");
 	      }
 	    }		
 	}
@@ -520,6 +521,10 @@ public class GUI03 implements IGameView{
 	      for (int j = 0; j < Constants.gamefieldrowcount; j++)
 	      {
 	    	  spielfeld[i][j].styleProperty().unbindBidirectional(field.getPropertyField()[i][Constants.gamefieldrowcount -1 -j]);
+	    	  if(spielfeld[i][j].styleProperty().isBound())
+	    		  spielfeld[i][j].styleProperty().unbind();
+	    	  spielfeld[i][j].styleProperty().setValue("");
+	    	  spielfeld[i][j].getStyleClass().add("token");
 	      }
 	    }
 	}
