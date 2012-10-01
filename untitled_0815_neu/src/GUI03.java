@@ -56,8 +56,9 @@ public class GUI03 implements IGameView{
 		//1. Menüpunkt
 		final MenuItem neuesSpiel = new MenuItem("Neues Spiel");
 		final MenuItem spielLaden = new MenuItem("Spiel laden");
+		final MenuItem spielBeenden = new MenuItem("Spiel beenden"); spielBeenden.setDisable(true);
 		final MenuItem schließen = new MenuItem("Schließen");
-		final Menu datei = MenuBuilder.create().text("Datei").items(neuesSpiel, spielLaden, schließen).build();
+		final Menu datei = MenuBuilder.create().text("Datei").items(neuesSpiel, spielLaden, spielBeenden, schließen).build();
 		
 		//2. Menüpunkt
 		final MenuItem opt = new MenuItem("Hier kommen die möglichen Spielsteuerungen hin");
@@ -454,6 +455,9 @@ public class GUI03 implements IGameView{
 		spielStarten.setOnMouseClicked(new EventHandler<MouseEvent>(){
 			public void handle(MouseEvent arg0){
 				if (spielStarten.getText()=="Spiel starten"){
+					neuesSpiel.setDisable(true);
+					spielLaden.setDisable(true);
+					spielBeenden.setDisable(false);
 					rolle.setDisable(true);
 					spielstandSpieler.setDisable(true);
 					spielstandGegner.setDisable(true);
@@ -474,6 +478,9 @@ public class GUI03 implements IGameView{
 					fireUIEvent(UIEvent.Type.StartGame);
 				}
 				else{
+					neuesSpiel.setDisable(false);
+					spielLaden.setDisable(false);
+					spielBeenden.setDisable(true);
 					rolle.setDisable(false);
 					spielstandSpieler.setDisable(false); spielstandSpieler.setText("0");
 					spielstandGegner.setDisable(false); spielstandGegner.setText("0");
