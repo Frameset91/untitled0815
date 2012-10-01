@@ -511,8 +511,6 @@ public class GUI03 implements IGameView{
 	      for (int j = 0; j < Constants.gamefieldrowcount; j++)
 	      {
 	    	  spielfeld[i][j].styleProperty().bind(field.getPropertyField()[i][Constants.gamefieldrowcount -1 -j]);
-	    	  spielfeld[i][j].styleProperty().setValue("");
-	    	  spielfeld[i][j].getStyleClass().add("token");
 	      }
 	    }		
 	}
@@ -523,6 +521,8 @@ public class GUI03 implements IGameView{
 	      for (int j = 0; j < Constants.gamefieldrowcount; j++)
 	      {
 	    	  spielfeld[i][j].styleProperty().unbindBidirectional(field.getPropertyField()[i][Constants.gamefieldrowcount -1 -j]);
+	    	  spielfeld[i][j].styleProperty().setValue("");
+	    	  spielfeld[i][j].getStyleClass().add("token");
 	      }
 	    }
 	}
