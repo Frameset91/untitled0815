@@ -1,6 +1,6 @@
 import java.util.*;
 
-public class GameController implements GameEventListener, IUIEventListener{
+public class GameController implements GameEventListener_old, IUIEventListener{
 
 	
 	//private GameView gameView;

@@ -6,7 +6,7 @@ package utilities;
  * 
  * @author Stephan Schmidt <stephan.schmidt@schlund.de>
  */
-public class Event {
+public class GameEvent {
     private String name       =  null;
     private boolean cancelled = false;
     private boolean inQueue   = false;
@@ -18,7 +18,7 @@ public class Event {
     * 
     * @param name       name of the event
     */
-    public Event(String name) {
+    public GameEvent(String name) {
         this.name = name;
     }
 
@@ -28,7 +28,7 @@ public class Event {
      * @param name       name of the event
      * @param context    context of the event
      */
-    public Event(String name, Object context) {
+    public GameEvent(String name, Object context) {
         this.name    = name;
         this.context = context;
     }
@@ -40,7 +40,7 @@ public class Event {
      * @param context    context of the event
      * @param userInfo   user info for the event
      */
-    public Event(String name, Object context, Object userInfo) {
+    public GameEvent(String name, Object context, Object userInfo) {
         this.name     = name;
         this.context  = context;
         this.userInfo = userInfo;

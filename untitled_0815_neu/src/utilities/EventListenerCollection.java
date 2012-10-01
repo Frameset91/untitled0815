@@ -22,7 +22,7 @@ public class EventListenerCollection {
     * @param listener       Listener to add
     * @return               amount of event listeners in this collection
     */
-    public int addListener(EventListener listener, boolean autoRemove) {
+    public int addListener(GameEventListener listener, boolean autoRemove) {
 
         EventListenerContainer container = new EventListenerContainer(listener);
         container.enableAutoRemove(autoRemove);
@@ -37,8 +37,8 @@ public class EventListenerCollection {
     * @param e      event to propagate
     * @return       event
     */
-    public Event propagate(Event e) throws Exception {
-        ArrayList<EventListener> remove = new ArrayList<EventListener>();
+    public GameEvent propagate(GameEvent e) throws Exception {
+        ArrayList<GameEventListener> remove = new ArrayList<GameEventListener>();
         for (int i = 0; i < this.listeners.size(); i++) {
             EventListenerContainer container = (EventListenerContainer)this.listeners.get(i);
             container.getListener().handleEvent(e);
@@ -53,7 +53,7 @@ public class EventListenerCollection {
         }
         // remove the listeners that have been set to autoRemove
         for (Iterator iter = remove.iterator(); iter.hasNext();) {
-            EventListener listener = (EventListener) iter.next();
+            GameEventListener listener = (GameEventListener) iter.next();
             this.removeListener(listener);
         }
         return e;
@@ -95,7 +95,7 @@ public class EventListenerCollection {
      * @param listener      listener to remove   
      * @return
      */
-     public EventListenerContainer removeListener(EventListener listener) {
+     public EventListenerContainer removeListener(GameEventListener listener) {
          for (Iterator iter = this.listeners.iterator(); iter.hasNext();) {
             EventListenerContainer container = (EventListenerContainer) iter.next();
             if (container.getListener().equals(listener)) {

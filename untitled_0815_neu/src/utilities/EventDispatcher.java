@@ -108,7 +108,7 @@ public class EventDispatcher {
      * @param listener       instance of the event listener
      * @throws Exception 
      */
-     public void addListener(String eventName, EventListener listener) throws Exception {
+     public void addListener(String eventName, GameEventListener listener) throws Exception {
          this.addListener(eventName, listener, false);
      }
 
@@ -120,7 +120,7 @@ public class EventDispatcher {
     * @param autoRemove     whether to remove the listener after the first event it has handled
     * @throws Exception 
     */
-    public void addListener(String eventName, EventListener listener, boolean autoRemove) throws Exception {
+    public void addListener(String eventName, GameEventListener listener, boolean autoRemove) throws Exception {
         if (!this.listeners.containsKey(eventName)) {
             this.listeners.put(eventName, new EventListenerCollection());
         }
@@ -131,7 +131,7 @@ public class EventDispatcher {
         ArrayList events = this.queue.getQueuedEvents(eventName);
         
         for (Iterator iter = events.iterator(); iter.hasNext();) {
-            Event e = (Event)iter.next();
+            GameEvent e = (GameEvent)iter.next();
             this.propagate(e, false);
         }
     }
@@ -143,7 +143,7 @@ public class EventDispatcher {
     * @param className      the class name of the listener
     * @return
     */
-    public EventListener removeEventListener(String eventName, String className) {
+    public GameEventListener removeEventListener(String eventName, String className) {
         if (!this.listeners.containsKey(eventName)) {
             return null;
         }
@@ -162,7 +162,7 @@ public class EventDispatcher {
      * @param listener       the event listener object
      * @return
      */
-     public EventListener removeEventListener(String eventName, EventListener listener) {
+     public GameEventListener removeEventListener(String eventName, GameEventListener listener) {
          if (!this.listeners.containsKey(eventName)) {
              return null;
          }
@@ -181,7 +181,7 @@ public class EventDispatcher {
      * @param listener       instance of the event listener
      * @throws Exception 
      */
-     public void addGlobalListener(EventListener listener) throws Exception {
+     public void addGlobalListener(GameEventListener listener) throws Exception {
          this.addGlobalListener(listener, false);
      }
 
@@ -193,14 +193,14 @@ public class EventDispatcher {
      * @param autoRemove     whether to remove the listener after the first event it has handled
      * @throws Exception 
      */
-     public void addGlobalListener(EventListener listener, boolean autoRemove) throws Exception {
+     public void addGlobalListener(GameEventListener listener, boolean autoRemove) throws Exception {
          this.globalListeners.addListener(listener, autoRemove);
          
          // check the event queue
          ArrayList events = this.queue.getQueuedEvents();
          
          for (Iterator iter = events.iterator(); iter.hasNext();) {
-             Event e = (Event)iter.next();
+             GameEvent e = (GameEvent)iter.next();
              this.propagate(e, false);
          }
      }
@@ -211,7 +211,7 @@ public class EventDispatcher {
     * @param listener       the event listener object
     * @return               
     */
-     public EventListener removeGlobalEventListener(EventListener listener) {
+     public GameEventListener removeGlobalEventListener(GameEventListener listener) {
          EventListenerContainer container = (EventListenerContainer)this.globalListeners.removeListener(listener);
          if (container != null) {
              return container.getListener();
@@ -225,7 +225,7 @@ public class EventDispatcher {
       * @param className       the classname of the event listener
       * @return
       */
-       public EventListener removeGlobalEventListener(String className) {
+       public GameEventListener removeGlobalEventListener(String className) {
            EventListenerContainer container = (EventListenerContainer)this.globalListeners.removeListener(className);
            if (container != null) {
                return container.getListener();
@@ -242,7 +242,7 @@ public class EventDispatcher {
      * @return   The event object
      * @throws Exception 
      */
-     public Event triggerEvent(Event e) throws Exception {
+     public GameEvent triggerEvent(GameEvent e) throws Exception {
          return this.propagate(e, false);
      }
 
@@ -255,7 +255,7 @@ public class EventDispatcher {
     * @return       The event object
     * @throws Exception 
     */
-    public Event triggerEvent(Event e, boolean queue) throws Exception {
+    public GameEvent triggerEvent(GameEvent e, boolean queue) throws Exception {
         return this.propagate(e, queue);
     }
     
@@ -268,8 +268,8 @@ public class EventDispatcher {
     * @return       The Event object
     * @throws Exception 
     */
-    public Event triggerEvent(String name) throws Exception {
-        Event e = new Event(name);
+    public GameEvent triggerEvent(String name) throws Exception {
+        GameEvent e = new GameEvent(name);
         return this.propagate(e, false);
     }
 
@@ -281,8 +281,8 @@ public class EventDispatcher {
     * @return       The Event object
     * @throws Exception 
     */
-    public Event triggerEvent(String name, boolean queue) throws Exception {
-        Event e = new Event(name);
+    public GameEvent triggerEvent(String name, boolean queue) throws Exception {
+        GameEvent e = new GameEvent(name);
         return this.propagate(e, queue);
     }
 
@@ -295,8 +295,8 @@ public class EventDispatcher {
      * @return          The Event object
      * @throws Exception 
      */
-    public Event triggerEvent(String name, boolean queue, Object context) throws Exception {
-        Event e = new Event(name, context);
+    public GameEvent triggerEvent(String name, boolean queue, Object context) throws Exception {
+        GameEvent e = new GameEvent(name, context);
         return this.propagate(e, queue);
     }
 
@@ -310,8 +310,8 @@ public class EventDispatcher {
      * @return          The Event object
      * @throws Exception 
      */
-    public Event triggerEvent(String name, boolean queue, Object context, Object userInfo) throws Exception {
-        Event e = new Event(name, context, userInfo);
+    public GameEvent triggerEvent(String name, boolean queue, Object context, Object userInfo) throws Exception {
+        GameEvent e = new GameEvent(name, context, userInfo);
         return this.propagate(e, queue);
     }
 
@@ -322,7 +322,7 @@ public class EventDispatcher {
     * @param queue  Whether you want the event to be queued or not
     * @return       The modified event
     */
-    private Event propagate(Event e, boolean queue) throws Exception {
+    private GameEvent propagate(GameEvent e, boolean queue) throws Exception {
         if (this.listeners.containsKey(e.getName())) {
             EventListenerCollection col = (EventListenerCollection)this.listeners.get(e.getName());
             col.propagate(e);

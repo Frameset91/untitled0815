@@ -14,7 +14,7 @@ class EventQueue {
    /**
     * All queued events
     */
-    ArrayList<Event> events = new ArrayList<Event>();
+    ArrayList<GameEvent> events = new ArrayList<GameEvent>();
     
    /**
     * Add a new event to the queue.
@@ -24,7 +24,7 @@ class EventQueue {
     * 
     * @param e      Event that will be added
     */
-    public void addEvent(Event e) {
+    public void addEvent(GameEvent e) {
         e.queueEvent();
         this.events.add(e);
     }
@@ -45,10 +45,10 @@ class EventQueue {
     * @return   queued events
     */
     public ArrayList getQueuedEvents(String eventName) {
-        ArrayList<Event> qEvents = new ArrayList<Event>();
+        ArrayList<GameEvent> qEvents = new ArrayList<GameEvent>();
         
         for (Iterator iter = this.events.iterator(); iter.hasNext();) {
-            Event e = (Event)iter.next();
+            GameEvent e = (GameEvent)iter.next();
             if (e.getName().equals(eventName)) {
                 qEvents.add(e);
             }

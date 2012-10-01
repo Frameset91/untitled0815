@@ -13,14 +13,14 @@ import java.util.EventObject;
  * @author Bjoern List
  *
  */
-public class GameEvent extends EventObject {
+public class GameEvent_old extends EventObject {
 	private int type;
 
 	public int getType() {
 		return type;
 	}
 
-	public GameEvent(Object source,int type) {
+	public GameEvent_old(Object source,int type) {
 		super(source);
 		this.type = type;
 		// TODO Auto-generated constructor stub

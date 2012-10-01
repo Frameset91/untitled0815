@@ -4,7 +4,7 @@
  *
  */
 
-public interface GameEventListener{
+public interface GameEventListener_old{
 
 		public void handleEvent(GameEvent event);
 }

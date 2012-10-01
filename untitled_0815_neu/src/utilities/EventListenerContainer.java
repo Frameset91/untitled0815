@@ -15,7 +15,7 @@ public class EventListenerContainer {
     /**
      * The actual event listener
      */
-    private EventListener listener = null;
+    private GameEventListener listener = null;
     
     /**
      * Whether to use autoRemove
@@ -28,7 +28,7 @@ public class EventListenerContainer {
      * 
      * @param listener
      */
-    public EventListenerContainer(EventListener listener) {
+    public EventListenerContainer(GameEventListener listener) {
         this.listener = listener;
     }
     
@@ -55,7 +55,7 @@ public class EventListenerContainer {
      * 
      * @return
      */
-    public EventListener getListener() {
+    public GameEventListener getListener() {
         return this.listener;
     }
 }

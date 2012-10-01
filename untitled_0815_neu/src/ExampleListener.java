@@ -1,5 +1,8 @@
 import java.util.EventObject;
 
+import utilities.GameEvent;
+import utilities.GameEventListener;
+
 /**
  * Diese Methode beschreibt beispielhaft, wie ein die Behandlung von einem Event aussehen kann.
  * Das Interface GameEventListener wurde implementiert.
@@ -14,17 +17,16 @@ import java.util.EventObject;
 
 public class ExampleListener implements GameEventListener {
 
-	
 	@Override
-	public void handleEvent(GameEvent event) {
+	public void handleEvent(GameEvent e) throws Exception {
 		// TODO Auto-generated method stub
-			System.out.println("EventListener---------");
-			System.out.println("Event erhalten");
-//			System.out.println("Typ: " + Integer.toString(event.getType());
-
-		
-	}
+		System.out.println("Event erhalten");
 		
 	}
 
+	
+	
+		
+	}
+		
 
