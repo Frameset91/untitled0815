@@ -359,31 +359,34 @@ public class GUI03 implements IGameView{
 	// Rechte Spalte
 	    VBox boxrechts = new VBox(10);
 	    
-	    final Button neuerSatz = new Button("neuen Satz spielen");
-	    neuerSatz.setDisable(true);
+	    final Button satz = new Button("neuen Satz spielen");
+	    satz.setDisable(true);
 	    //Event 
-	    neuerSatz.setOnMouseClicked(new EventHandler<MouseEvent>() {
-
-			@Override
+	    satz.setOnMouseClicked(new EventHandler<MouseEvent>() {
 			public void handle(MouseEvent arg0) {
-				fireUIEvent(UIEvent.Type.StartSet);
-				
+				if(satz.getText()=="Satz abbrechen"){
+					fireUIEvent(UIEvent.Type.EndSet);
+					satz.setText("neuen Satz spielen");
+				}
+				else{
+					fireUIEvent(UIEvent.Type.StartSet);
+					satz.setText("Satz abbrechen");
+				}	
 			}
-	    	
 		});
 	    	    
-		final Button satzAbbrechen = new Button("Satz abbrechen");
-		satzAbbrechen.setDisable(true);
-		//Event
-		satzAbbrechen.setOnMouseClicked(new EventHandler<MouseEvent>() {
-
-			@Override
-			public void handle(MouseEvent arg0) {
-				fireUIEvent(UIEvent.Type.EndSet);
-				
-			}
-	    	
-		});
+//		final Button satzAbbrechen = new Button("Satz abbrechen");
+//		satzAbbrechen.setDisable(true);
+//		//Event
+//		satzAbbrechen.setOnMouseClicked(new EventHandler<MouseEvent>() {
+//
+//			@Override
+//			public void handle(MouseEvent arg0) {
+//				fireUIEvent(UIEvent.Type.EndSet);
+//				
+//			}
+//	    	
+//		});
 		
 	    Label statistikLabel = new Label("Statistik:");
 	    
@@ -429,7 +432,7 @@ public class GUI03 implements IGameView{
 	    });
 	    logAnzeigen.setDisable(true);
 	    
-	    boxrechts.getChildren().addAll(neuerSatz, satzAbbrechen, statistikLabel, statistik, logAnzeigen);
+	    boxrechts.getChildren().addAll(satz, statistikLabel, statistik, logAnzeigen);
 	    boxrechts.setMaxHeight(0);
 	    spielflaeche.setCenter(boxrechts);
 	    
@@ -463,8 +466,8 @@ public class GUI03 implements IGameView{
 					gegner.textProperty().bind(gegnername.textProperty());
 					punkteSpieler.setText(spielstandSpieler.getText());
 					punkteGegner.setText(spielstandGegner.getText());
-					neuerSatz.setDisable(false);
-					satzAbbrechen.setDisable(false);
+					satz.setDisable(false);
+					//satzAbbrechen.setDisable(false);
 					logAnzeigen.setDisable(false);
 					
 					//Event
@@ -479,8 +482,8 @@ public class GUI03 implements IGameView{
 					fileabfrage.setDisable(false);
 					zugzeit.setDisable(false);
 					spielStarten.setText("Spiel starten");
-					neuerSatz.setDisable(true);
-					satzAbbrechen.setDisable(true);
+					satz.setDisable(true);
+					//satzAbbrechen.setDisable(true);
 					logAnzeigen.setDisable(true);
 					gegner.textProperty().unbind();
 					gegner.setText("Gegner:");
