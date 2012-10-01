@@ -1,6 +1,6 @@
 package utilities;
 
-import UIEvent.Type;
+
 
 
 
@@ -45,6 +45,11 @@ public class GameEvent {
 	public String[] getArgs() {
 		return args;
 	}
+	
+	public GameEvent(String name) {
+        this.name = name;
+         }
+   
 	
 
     /**

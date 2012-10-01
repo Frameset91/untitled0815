@@ -3,6 +3,7 @@
  * @author Bjoern List
  *
  */
+import utilities.*;
 
 public interface GameEventListener_old{
 
