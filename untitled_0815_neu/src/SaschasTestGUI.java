@@ -514,7 +514,8 @@ private ArrayList<IUIEventListener> _listeners = new ArrayList<IUIEventListener>
 		verzeichnispfad.textProperty().bindBidirectional(model.getPath());
 		gegnername.textProperty().bindBidirectional(model.getOppName());
 //		TODO Converter
-//		punkteGegner.textProperty().bindBidirectional(model.getOppPoints(), ((StringConverter)new IntegerStringConverter()));
+		IntegerStringConverter temp = new IntegerStringConverter();
+//		punkteGegner.textProperty().bindBidirectional(model.getOppPoints(),(Class<T>) temp.getClass());
 //		punkteSpieler.textProperty().bind(model.getOwnPoints());
 //		zugzeit.textProperty()
 //		fileabfrage.textProperty()
