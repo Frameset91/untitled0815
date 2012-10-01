@@ -17,7 +17,7 @@ public class CommunicationServer extends Thread {
 	private File serverFile;
 	private File agentFile;
 	private Thread bla;
-	private List<GameEventListener> _listeners = new ArrayList<GameEventListener>();
+	private List<GameEventListener_old> _listeners = new ArrayList<GameEventListener_old>();
 
 	
 	
@@ -25,7 +25,7 @@ public class CommunicationServer extends Thread {
 	 * Listener für Events hinzufügen
 	 * @param listener
 	 */
-	public synchronized void addEventListener(GameEventListener listener) {
+	public synchronized void addEventListener(GameEventListener_old listener) {
 		_listeners.add(listener);
 	}
 
@@ -34,7 +34,7 @@ public class CommunicationServer extends Thread {
 	 * @param listener 
 	 */
 	
-	public synchronized void removeEventListener(GameEventListener listener) {
+	public synchronized void removeEventListener(GameEventListener_old listener) {
 		_listeners.remove(listener);
 	}
 
@@ -49,7 +49,7 @@ public class CommunicationServer extends Thread {
 		GameEvent event = new GameEvent(this, type);
 		Iterator i = _listeners.iterator();
 		while (i.hasNext()) {
-			((GameEventListener) i.next()).handleEvent(event);
+			((GameEventListener_old) i.next()).handleEvent(event);
 		}
 	}
 
