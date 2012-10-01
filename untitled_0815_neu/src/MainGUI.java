@@ -507,7 +507,7 @@ public class MainGUI implements IGameView{
 		});
 	}
 
-
+	
 //public void play(){
 //	fade.play();}
 	
