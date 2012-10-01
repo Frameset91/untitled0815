@@ -10,6 +10,7 @@ import java.util.Iterator;
 import javafx.scene.*;				//Scene bildet "Leinwände" in dem Rahmen
 import javafx.stage.*;				//Stage ist der "Rahmen" der Applikation
 import javafx.scene.control.*;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.effect.Lighting;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.*;
@@ -17,6 +18,9 @@ import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
@@ -35,6 +39,8 @@ public class MainGUI implements IGameView{
 	private TextField zugzeit;
 	private Circle tokenSpieler;
 	private Circle tokenGegner;
+	private TableView logTable = new TableView();
+	
 	
 	//Eventhandling
 	private ArrayList<IUIEventListener> _listeners = new ArrayList<IUIEventListener>();
@@ -337,25 +343,7 @@ public class MainGUI implements IGameView{
 	        feld.add(spielfeld[i][j], i, j);
 	      }
 	    }
-	    
-	    //Test, um Spielfeld zu füllen
-//	    Button steinsetzen = new Button("Stein setzen");
-//    	steinsetzen.setOnMouseClicked(new EventHandler<MouseEvent>(){
-//    		public void handle(MouseEvent arg0){
-//    			int spalte=5;
-//    			int zeile;
-//    			for (zeile=5; zeile>=0;){
-//    				String c = String.valueOf(spielfeld[spalte][zeile].getStyleClass());
-//        			if(c!="token"){
-//        				zeile--;
-//        			}
-//        			else{
-//        				spielfeld[spalte][zeile].getStyleClass().add("token-yellow");
-//        			}
-//    			}
-//    		}
-//    	});
-	    
+	    	    
 	    
 		spielanzeige.getChildren().addAll(hSpieler, spielstandAnzeige, feld);
 	    spielflaeche.setLeft(spielanzeige);
@@ -407,21 +395,24 @@ public class MainGUI implements IGameView{
 	    statistik.add(new Label("Zeit"), 0, 1);
 	    statistik.add(new Label("..."), 0, 2);
 	    
+		//Tabelle für die Logs
+		TableColumn spalte1 = new TableColumn("Log-Eintrag");
+		spalte1.setEditable(true);
+		logTable.getColumns().add(spalte1);
+	    
 	    final Button logAnzeigen = new Button("Log anzeigen");
 	    logAnzeigen.setOnMouseClicked(new EventHandler<MouseEvent>(){
 	    	public void handle(MouseEvent arg0){
 	    		//Fenster mit Log öffnen
 				final Stage stageAnleitung = new Stage();
 				Group rootLog = new Group();
-				Scene sceneLog = new Scene(rootLog, 400,400, Color.WHITESMOKE);
+				Scene sceneLog = new Scene(rootLog, 400,500, Color.WHITESMOKE);
 				stageAnleitung.setScene(sceneLog);
 				stageAnleitung.centerOnScreen();
 				stageAnleitung.show();
 				
-				//Inhalt
+			//Inhalt
 				Text ueberschrift = new Text(20, 20,"Log");
-				ueberschrift.setFill(Color.BLACK);
-				ueberschrift.setEffect(new Lighting());
 				Button close = new Button("Schließen");
 				close.setOnAction(new EventHandler<ActionEvent>(){
 					public void handle(ActionEvent close){
@@ -429,8 +420,8 @@ public class MainGUI implements IGameView{
 					}
 				});
 				//Anordnen
-				VBox textUndButton = new VBox(100);
-				textUndButton.getChildren().addAll(ueberschrift, close);
+				VBox textUndButton = new VBox(10);
+				textUndButton.getChildren().addAll(ueberschrift, logTable, close);
 				rootLog.getChildren().add(textUndButton);
 	    	}
 	    });
@@ -515,7 +506,6 @@ public class MainGUI implements IGameView{
 			}
 		});
 	}
-
 
 
 //public void play(){

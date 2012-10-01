@@ -14,4 +14,10 @@
 	<natures>
 		<nature>org.eclipse.jdt.core.javanature</nature>
 	</natures>
+	<variableList>
+		<variable>
+			<name>BLA</name>
+			<value>file:/C:/Program%20Files/Java/jdk1.7.0_07/jre/lib</value>
+		</variable>
+	</variableList>
 </projectDescription>
