@@ -96,6 +96,7 @@ public class GameController implements GameEventListener, IUIEventListener{
 				}else{
 					model.addMove(new Move(Constants.xRole, r.nextInt(7)));
 				}
+				
 			}
 		    
 			break;
