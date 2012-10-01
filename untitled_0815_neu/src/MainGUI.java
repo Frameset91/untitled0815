@@ -23,7 +23,7 @@ import javafx.geometry.Pos;
 //import javafx.animation.FadeTransition;
 //import javafx.util.Duration;
 
-public class GUI03 implements IGameView{	
+public class MainGUI implements IGameView{	
 	
 	private Circle[][] spielfeld;
 	private ChoiceBox<String> rolle;
@@ -55,13 +55,15 @@ public class GUI03 implements IGameView{
 		
 		//1. Menüpunkt
 		final MenuItem neuesSpiel = new MenuItem("Neues Spiel");
-		final MenuItem spielLaden = new MenuItem("Spiel laden");
+		final MenuItem laden = new MenuItem("Spiel laden");
+		final MenuItem spielBeenden = new MenuItem("Spiel beenden");
+		spielBeenden.setDisable(true);
 		final MenuItem schließen = new MenuItem("Schließen");
-		final Menu datei = MenuBuilder.create().text("Datei").items(neuesSpiel, spielLaden, schließen).build();
+		final Menu datei = MenuBuilder.create().text("Datei").items(neuesSpiel, laden, spielBeenden, schließen).build();
 		
 		//2. Menüpunkt
-		final MenuItem opt = new MenuItem("Hier kommen die möglichen Spielsteuerungen hin");
-		final Menu optionen = MenuBuilder.create().text("Optionen").items(opt).build(); //Spielsteuerung einbinden
+		//final MenuItem opt = new MenuItem("Hier kommen die möglichen Spielsteuerungen hin");
+		//final Menu optionen = MenuBuilder.create().text("Optionen").items(opt).build(); //Spielsteuerung einbinden
 		
 		//3. Menüpunkt
 		final MenuItem anleitung = new MenuItem("Spielanleitung");
@@ -105,7 +107,7 @@ public class GUI03 implements IGameView{
 		});
 		
 		//Menüpunkte zusammenführen
-		menuBar.getMenus().addAll(datei,optionen, hilfe);
+		menuBar.getMenus().addAll(datei, hilfe);
 		
 		borderpane.setTop(menuBar);
 		
@@ -157,9 +159,9 @@ public class GUI03 implements IGameView{
 		//Stepper Field für File-Abfrage
         HBox timeout1 = new HBox(2);
     	VBox pfeile1 = new VBox();
-    	Button hoch1 = new Button("^"); hoch1.setMaxSize(10, 10);
+    	final Button hoch1 = new Button("^"); hoch1.setMaxSize(10, 10);
     	hoch1.getStyleClass().add("timeoutButton");
-    	Button runter1 = new Button("v"); runter1.setMaxSize(10, 10);
+    	final Button runter1 = new Button("v"); runter1.setMaxSize(10, 10);
     	runter1.getStyleClass().add("timeoutButton");
     	pfeile1.getChildren().addAll(hoch1, runter1);
 //		final TextField fileabfrage = new TextField("300");
@@ -190,9 +192,9 @@ public class GUI03 implements IGameView{
     	//Stepper Field für Zugzeit
     	HBox timeout2 = new HBox(2);
     	VBox pfeile2 = new VBox();
-    	Button hoch2 = new Button("^"); hoch2.setMaxSize(10, 10);
+    	final Button hoch2 = new Button("^"); hoch2.setMaxSize(10, 10);
     	hoch2.getStyleClass().add("timeoutButton");
-    	Button runter2 = new Button("v"); runter2.setMaxSize(10, 10);
+    	final Button runter2 = new Button("v"); runter2.setMaxSize(10, 10);
     	runter2.getStyleClass().add("timeoutButton");
     	pfeile2.getChildren().addAll(hoch2, runter2);
 //    	final TextField zugzeit = new TextField("200");
@@ -222,6 +224,7 @@ public class GUI03 implements IGameView{
     	});
 		
 		final Button spielStarten = new Button("Spiel starten");
+		final Button spielLaden = new Button("Spiel laden"); 
 
 		einstellungen.add(spieleinstellungen, 1, 1);
 		einstellungen.add(new Label("Rolle:"), 1, 2);
@@ -238,6 +241,7 @@ public class GUI03 implements IGameView{
 		einstellungen.add(timeout1, 2,6);
 		einstellungen.add(timeout2, 2, 7);
 		einstellungen.add(spielStarten, 1, 8);
+		einstellungen.add(spielLaden, 1, 10);
 		
 		
 		//Trennung zwischen Einstellungen und Spielfeld	
@@ -455,7 +459,8 @@ public class GUI03 implements IGameView{
 			public void handle(MouseEvent arg0){
 				if (spielStarten.getText()=="Spiel starten"){
 					neuesSpiel.setDisable(true);
-					spielLaden.setDisable(true);
+					laden.setDisable(true);
+					spielBeenden.setDisable(false);
 					rolle.setDisable(true);
 					spielstandSpieler.setDisable(true);
 					spielstandGegner.setDisable(true);
@@ -463,6 +468,10 @@ public class GUI03 implements IGameView{
 					verzeichnispfad.setDisable(true);
 					fileabfrage.setDisable(true);
 					zugzeit.setDisable(true);
+					hoch1.setDisable(true);
+					hoch2.setDisable(true);
+					runter1.setDisable(true);
+					runter2.setDisable(true);
 					spielStarten.setText("Spiel beenden");
 					//gegner.setText(gegnername.getText()+":");
 					gegner.textProperty().bind(gegnername.textProperty());
@@ -477,7 +486,8 @@ public class GUI03 implements IGameView{
 				}
 				else{
 					neuesSpiel.setDisable(false);
-					spielLaden.setDisable(false);
+					laden.setDisable(false);
+					spielBeenden.setDisable(true);
 					rolle.setDisable(false);
 					spielstandSpieler.setDisable(false); spielstandSpieler.setText("0");
 					spielstandGegner.setDisable(false); spielstandGegner.setText("0");
@@ -485,6 +495,10 @@ public class GUI03 implements IGameView{
 					verzeichnispfad.setDisable(false); verzeichnispfad.setText("C:\\...");
 					fileabfrage.setDisable(false);
 					zugzeit.setDisable(false);
+					hoch1.setDisable(true);
+					hoch2.setDisable(true);
+					runter1.setDisable(true);
+					runter2.setDisable(true);
 					spielStarten.setText("Spiel starten");
 					satz.setDisable(true);
 					//satzAbbrechen.setDisable(true);

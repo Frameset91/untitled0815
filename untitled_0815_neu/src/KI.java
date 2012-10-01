@@ -4,6 +4,7 @@
  */
 /*
 public class KI {
+	tada.
 	 final int NONE = 0; 
 	 final int OPP = 1;
 	 final int ME = 2;
