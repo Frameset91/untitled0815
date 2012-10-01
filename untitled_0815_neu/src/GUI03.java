@@ -521,6 +521,8 @@ public class GUI03 implements IGameView{
 	      for (int j = 0; j < Constants.gamefieldrowcount; j++)
 	      {
 	    	  spielfeld[i][j].styleProperty().unbindBidirectional(field.getPropertyField()[i][Constants.gamefieldrowcount -1 -j]);
+	    	  if(spielfeld[i][j].styleProperty().isBound())
+	    		  spielfeld[i][j].styleProperty().unbind();
 	    	  spielfeld[i][j].styleProperty().setValue("");
 	    	  spielfeld[i][j].getStyleClass().add("token");
 	      }
