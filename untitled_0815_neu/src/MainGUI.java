@@ -10,6 +10,7 @@ import java.util.Iterator;
 import javafx.scene.*;				//Scene bildet "Leinwände" in dem Rahmen
 import javafx.stage.*;				//Stage ist der "Rahmen" der Applikation
 import javafx.scene.control.*;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.effect.Lighting;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.*;
@@ -17,13 +18,16 @@ import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 //import javafx.animation.FadeTransition;
 //import javafx.util.Duration;
 
-public class GUI03 implements IGameView{	
+public class MainGUI implements IGameView{	
 	
 	private Circle[][] spielfeld;
 	private ChoiceBox<String> rolle;
@@ -35,6 +39,8 @@ public class GUI03 implements IGameView{
 	private TextField zugzeit;
 	private Circle tokenSpieler;
 	private Circle tokenGegner;
+	private TableView logTable = new TableView();
+	
 	
 	//Eventhandling
 	private ArrayList<IUIEventListener> _listeners = new ArrayList<IUIEventListener>();
@@ -55,13 +61,15 @@ public class GUI03 implements IGameView{
 		
 		//1. Menüpunkt
 		final MenuItem neuesSpiel = new MenuItem("Neues Spiel");
-		final MenuItem spielLaden = new MenuItem("Spiel laden");
+		final MenuItem laden = new MenuItem("Spiel laden");
+		final MenuItem spielBeenden = new MenuItem("Spiel beenden");
+		spielBeenden.setDisable(true);
 		final MenuItem schließen = new MenuItem("Schließen");
-		final Menu datei = MenuBuilder.create().text("Datei").items(neuesSpiel, spielLaden, schließen).build();
+		final Menu datei = MenuBuilder.create().text("Datei").items(neuesSpiel, laden, spielBeenden, schließen).build();
 		
 		//2. Menüpunkt
-		final MenuItem opt = new MenuItem("Hier kommen die möglichen Spielsteuerungen hin");
-		final Menu optionen = MenuBuilder.create().text("Optionen").items(opt).build(); //Spielsteuerung einbinden
+		//final MenuItem opt = new MenuItem("Hier kommen die möglichen Spielsteuerungen hin");
+		//final Menu optionen = MenuBuilder.create().text("Optionen").items(opt).build(); //Spielsteuerung einbinden
 		
 		//3. Menüpunkt
 		final MenuItem anleitung = new MenuItem("Spielanleitung");
@@ -105,7 +113,7 @@ public class GUI03 implements IGameView{
 		});
 		
 		//Menüpunkte zusammenführen
-		menuBar.getMenus().addAll(datei,optionen, hilfe);
+		menuBar.getMenus().addAll(datei, hilfe);
 		
 		borderpane.setTop(menuBar);
 		
@@ -157,9 +165,9 @@ public class GUI03 implements IGameView{
 		//Stepper Field für File-Abfrage
         HBox timeout1 = new HBox(2);
     	VBox pfeile1 = new VBox();
-    	Button hoch1 = new Button("^"); hoch1.setMaxSize(10, 10);
+    	final Button hoch1 = new Button("^"); hoch1.setMaxSize(10, 10);
     	hoch1.getStyleClass().add("timeoutButton");
-    	Button runter1 = new Button("v"); runter1.setMaxSize(10, 10);
+    	final Button runter1 = new Button("v"); runter1.setMaxSize(10, 10);
     	runter1.getStyleClass().add("timeoutButton");
     	pfeile1.getChildren().addAll(hoch1, runter1);
 //		final TextField fileabfrage = new TextField("300");
@@ -190,9 +198,9 @@ public class GUI03 implements IGameView{
     	//Stepper Field für Zugzeit
     	HBox timeout2 = new HBox(2);
     	VBox pfeile2 = new VBox();
-    	Button hoch2 = new Button("^"); hoch2.setMaxSize(10, 10);
+    	final Button hoch2 = new Button("^"); hoch2.setMaxSize(10, 10);
     	hoch2.getStyleClass().add("timeoutButton");
-    	Button runter2 = new Button("v"); runter2.setMaxSize(10, 10);
+    	final Button runter2 = new Button("v"); runter2.setMaxSize(10, 10);
     	runter2.getStyleClass().add("timeoutButton");
     	pfeile2.getChildren().addAll(hoch2, runter2);
 //    	final TextField zugzeit = new TextField("200");
@@ -222,6 +230,7 @@ public class GUI03 implements IGameView{
     	});
 		
 		final Button spielStarten = new Button("Spiel starten");
+		final Button spielLaden = new Button("Spiel laden"); 
 
 		einstellungen.add(spieleinstellungen, 1, 1);
 		einstellungen.add(new Label("Rolle:"), 1, 2);
@@ -238,6 +247,7 @@ public class GUI03 implements IGameView{
 		einstellungen.add(timeout1, 2,6);
 		einstellungen.add(timeout2, 2, 7);
 		einstellungen.add(spielStarten, 1, 8);
+		einstellungen.add(spielLaden, 1, 10);
 		
 		
 		//Trennung zwischen Einstellungen und Spielfeld	
@@ -333,25 +343,7 @@ public class GUI03 implements IGameView{
 	        feld.add(spielfeld[i][j], i, j);
 	      }
 	    }
-	    
-	    //Test, um Spielfeld zu füllen
-//	    Button steinsetzen = new Button("Stein setzen");
-//    	steinsetzen.setOnMouseClicked(new EventHandler<MouseEvent>(){
-//    		public void handle(MouseEvent arg0){
-//    			int spalte=5;
-//    			int zeile;
-//    			for (zeile=5; zeile>=0;){
-//    				String c = String.valueOf(spielfeld[spalte][zeile].getStyleClass());
-//        			if(c!="token"){
-//        				zeile--;
-//        			}
-//        			else{
-//        				spielfeld[spalte][zeile].getStyleClass().add("token-yellow");
-//        			}
-//    			}
-//    		}
-//    	});
-	    
+	    	    
 	    
 		spielanzeige.getChildren().addAll(hSpieler, spielstandAnzeige, feld);
 	    spielflaeche.setLeft(spielanzeige);
@@ -403,21 +395,24 @@ public class GUI03 implements IGameView{
 	    statistik.add(new Label("Zeit"), 0, 1);
 	    statistik.add(new Label("..."), 0, 2);
 	    
+		//Tabelle für die Logs
+		TableColumn spalte1 = new TableColumn("Log-Eintrag");
+		spalte1.setEditable(true);
+		logTable.getColumns().add(spalte1);
+	    
 	    final Button logAnzeigen = new Button("Log anzeigen");
 	    logAnzeigen.setOnMouseClicked(new EventHandler<MouseEvent>(){
 	    	public void handle(MouseEvent arg0){
 	    		//Fenster mit Log öffnen
 				final Stage stageAnleitung = new Stage();
 				Group rootLog = new Group();
-				Scene sceneLog = new Scene(rootLog, 400,400, Color.WHITESMOKE);
+				Scene sceneLog = new Scene(rootLog, 400,500, Color.WHITESMOKE);
 				stageAnleitung.setScene(sceneLog);
 				stageAnleitung.centerOnScreen();
 				stageAnleitung.show();
 				
-				//Inhalt
+			//Inhalt
 				Text ueberschrift = new Text(20, 20,"Log");
-				ueberschrift.setFill(Color.BLACK);
-				ueberschrift.setEffect(new Lighting());
 				Button close = new Button("Schließen");
 				close.setOnAction(new EventHandler<ActionEvent>(){
 					public void handle(ActionEvent close){
@@ -425,8 +420,8 @@ public class GUI03 implements IGameView{
 					}
 				});
 				//Anordnen
-				VBox textUndButton = new VBox(100);
-				textUndButton.getChildren().addAll(ueberschrift, close);
+				VBox textUndButton = new VBox(10);
+				textUndButton.getChildren().addAll(ueberschrift, logTable, close);
 				rootLog.getChildren().add(textUndButton);
 	    	}
 	    });
@@ -455,7 +450,8 @@ public class GUI03 implements IGameView{
 			public void handle(MouseEvent arg0){
 				if (spielStarten.getText()=="Spiel starten"){
 					neuesSpiel.setDisable(true);
-					spielLaden.setDisable(true);
+					laden.setDisable(true);
+					spielBeenden.setDisable(false);
 					rolle.setDisable(true);
 					spielstandSpieler.setDisable(true);
 					spielstandGegner.setDisable(true);
@@ -463,6 +459,10 @@ public class GUI03 implements IGameView{
 					verzeichnispfad.setDisable(true);
 					fileabfrage.setDisable(true);
 					zugzeit.setDisable(true);
+					hoch1.setDisable(true);
+					hoch2.setDisable(true);
+					runter1.setDisable(true);
+					runter2.setDisable(true);
 					spielStarten.setText("Spiel beenden");
 					//gegner.setText(gegnername.getText()+":");
 					gegner.textProperty().bind(gegnername.textProperty());
@@ -477,7 +477,8 @@ public class GUI03 implements IGameView{
 				}
 				else{
 					neuesSpiel.setDisable(false);
-					spielLaden.setDisable(false);
+					laden.setDisable(false);
+					spielBeenden.setDisable(true);
 					rolle.setDisable(false);
 					spielstandSpieler.setDisable(false); spielstandSpieler.setText("0");
 					spielstandGegner.setDisable(false); spielstandGegner.setText("0");
@@ -485,6 +486,10 @@ public class GUI03 implements IGameView{
 					verzeichnispfad.setDisable(false); verzeichnispfad.setText("C:\\...");
 					fileabfrage.setDisable(false);
 					zugzeit.setDisable(false);
+					hoch1.setDisable(true);
+					hoch2.setDisable(true);
+					runter1.setDisable(true);
+					runter2.setDisable(true);
 					spielStarten.setText("Spiel starten");
 					satz.setDisable(true);
 					//satzAbbrechen.setDisable(true);
@@ -501,7 +506,6 @@ public class GUI03 implements IGameView{
 			}
 		});
 	}
-
 
 
 //public void play(){
