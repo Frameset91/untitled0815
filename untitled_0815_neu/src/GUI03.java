@@ -4,6 +4,9 @@
 	 */
 
 //import javafx.application.*;
+import java.util.ArrayList;
+import java.util.Iterator;
+
 import javafx.scene.*;				//Scene bildet "Leinwände" in dem Rahmen
 import javafx.stage.*;				//Stage ist der "Rahmen" der Applikation
 import javafx.scene.control.*;
@@ -32,6 +35,9 @@ public class GUI03 implements IGameView{
 	private TextField zugzeit;
 	private Circle tokenSpieler;
 	private Circle tokenGegner;
+	
+	//Eventhandling
+	private ArrayList<IUIEventListener> _listeners = new ArrayList<IUIEventListener>();
 	
 	public void init(Stage mainstage){
 		Group root = new Group();
@@ -355,9 +361,29 @@ public class GUI03 implements IGameView{
 	    
 	    final Button neuerSatz = new Button("neuen Satz spielen");
 	    neuerSatz.setDisable(true);
+	    //Event 
+	    neuerSatz.setOnMouseClicked(new EventHandler<MouseEvent>() {
+
+			@Override
+			public void handle(MouseEvent arg0) {
+				fireUIEvent(UIEvent.Type.StartSet);
+				
+			}
+	    	
+		});
 	    	    
 		final Button satzAbbrechen = new Button("Satz abbrechen");
 		satzAbbrechen.setDisable(true);
+		//Event
+		satzAbbrechen.setOnMouseClicked(new EventHandler<MouseEvent>() {
+
+			@Override
+			public void handle(MouseEvent arg0) {
+				fireUIEvent(UIEvent.Type.EndSet);
+				
+			}
+	    	
+		});
 		
 	    Label statistikLabel = new Label("Statistik:");
 	    
@@ -433,12 +459,16 @@ public class GUI03 implements IGameView{
 					fileabfrage.setDisable(true);
 					zugzeit.setDisable(true);
 					spielStarten.setText("Spiel beenden");
-					gegner.setText(gegnername.getText()+":");
+					//gegner.setText(gegnername.getText()+":");
+					gegner.textProperty().bind(gegnername.textProperty());
 					punkteSpieler.setText(spielstandSpieler.getText());
 					punkteGegner.setText(spielstandGegner.getText());
 					neuerSatz.setDisable(false);
 					satzAbbrechen.setDisable(false);
 					logAnzeigen.setDisable(false);
+					
+					//Event
+					fireUIEvent(UIEvent.Type.StartGame);
 				}
 				else{
 					rolle.setDisable(false);
@@ -452,9 +482,13 @@ public class GUI03 implements IGameView{
 					neuerSatz.setDisable(true);
 					satzAbbrechen.setDisable(true);
 					logAnzeigen.setDisable(true);
+					gegner.textProperty().unbind();
 					gegner.setText("Gegner:");
 					punkteSpieler.setText("");
 					punkteGegner.setText("");
+					
+					//Event
+					fireUIEvent(UIEvent.Type.EndGame);
 				}
 
 			}
@@ -474,16 +508,31 @@ public class GUI03 implements IGameView{
 	      for (int j = 0; j < Constants.gamefieldrowcount; j++)
 	      {
 	    	  spielfeld[i][j].styleProperty().bind(field.getPropertyField()[i][Constants.gamefieldrowcount -1 -j]);
+	    	  spielfeld[i][j].styleProperty().setValue("");
+	    	  spielfeld[i][j].getStyleClass().add("token");
 	      }
 	    }		
 	}
 	
+	public void unbindField(GameField field){
+		for (int i = 0; i < Constants.gamefieldcolcount; i++)
+	    {
+	      for (int j = 0; j < Constants.gamefieldrowcount; j++)
+	      {
+	    	  spielfeld[i][j].styleProperty().unbindBidirectional(field.getPropertyField()[i][Constants.gamefieldrowcount -1 -j]);
+	      }
+	    }
+	}
+	
+	/* (non-Javadoc)
+	 * @see IGameView#bindGame(Game)
+	 */
 	@Override
-	public void bindGame(Game model) {
+	public void bindGame(Game model){
 		rolle.valueProperty().bindBidirectional(model.getRole());
 		verzeichnispfad.textProperty().bindBidirectional(model.getPath());
 		gegnername.textProperty().bindBidirectional(model.getOppName());
-//		TODO Converter String<->Int
+//		TODO Converter
 //		punkteGegner.textProperty().bindBidirectional(model.getOppPoints(), ((StringConverter)new IntegerStringConverter()));
 //		punkteSpieler.textProperty().bind(model.getOwnPoints());
 //		zugzeit.textProperty()
@@ -491,5 +540,38 @@ public class GUI03 implements IGameView{
 		
 		tokenGegner.styleProperty().bind(model.getOppToken());
 		tokenSpieler.styleProperty().bind(model.getOwnToken());
+		
+	}
+	
+	public void unbindGame(Game model){
+		rolle.valueProperty().unbindBidirectional(model.getRole());
+		verzeichnispfad.textProperty().unbindBidirectional(model.getPath());
+		gegnername.textProperty().unbindBidirectional(model.getOppName());
+//		TODO Converter
+		punkteGegner.textProperty().unbindBidirectional(model.getOppPoints());
+		punkteSpieler.textProperty().unbindBidirectional(model.getOwnPoints());
+		zugzeit.textProperty().unbindBidirectional(model.getTimeoutDraw());
+		fileabfrage.textProperty().unbindBidirectional(model.getTimeoutServer());
+		
+		tokenGegner.styleProperty().unbind();
+		tokenSpieler.styleProperty().unbind();
+	}
+	
+	//Eventhandling
+	public void fireUIEvent(UIEvent.Type type){
+		String[] args = new String[0];
+		UIEvent event = new UIEvent(this,type, args);
+		Iterator<IUIEventListener> i = _listeners.iterator();
+		while (i.hasNext()) {
+			(i.next()).handleEvent(event);
+		}
+	}
+	
+	public synchronized void addEventListener(IUIEventListener listener) {
+		_listeners.add(listener);
+	}
+
+	public synchronized void removeEventListener(IUIEventListener listener) {
+		_listeners.remove(listener);
 	}
 }

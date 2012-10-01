@@ -23,7 +23,8 @@ public class Game {
 	private SimpleIntegerProperty timeoutDraw;
 	private SimpleStringProperty oppToken;
 	private SimpleStringProperty ownToken;
-	//private int numberOfSets;
+	
+	private int ID;
 	
 //	public Game(int cols, int rows, String role, String oppName){
 //		this.cols = cols;
@@ -86,15 +87,16 @@ public class Game {
 	}
 	
 	public void save(){
-		//TODO: In Datenbank speichern (Primarykey = GameID), erzeugte GameID an Sets weitergeben 
+		//TODO: In Datenbank speichern (Primarykey = GameID), erzeugte GameID an Sets weitergeben, ID speichern
 		
 		
 		//alle Moves speichern 
-		ListIterator<Set> iterator = sets.listIterator();
-		while (iterator.hasNext())
-		{
-//		    iterator.next().save(gameID);
-		}
+//		ListIterator<Set> iterator = sets.listIterator();
+//		
+//		while (iterator.hasNext())
+//		{
+////		    iterator.next().save(gameID);
+//		}
 	}
 	//get set
 	
