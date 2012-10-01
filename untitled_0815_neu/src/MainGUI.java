@@ -579,7 +579,7 @@ public class MainGUI implements IGameView{
 			String[] args = new String[0];
 			GameEvent event = new GameEvent(type.toString(),type, args);
 			try {
-				EventDispatcher.getInstance().triggerEvent(type.toString(), true);
+				EventDispatcher.getInstance().triggerEvent(event, true);
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

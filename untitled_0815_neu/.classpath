@@ -9,6 +9,6 @@
 			<accessrule kind="accessible" pattern="*"/>
 		</accessrules>
 	</classpathentry>
-	<classpathentry exported="true" kind="lib" path="src/jfxrt.jar"/>
+	<classpathentry kind="lib" path="src/jfxrt.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

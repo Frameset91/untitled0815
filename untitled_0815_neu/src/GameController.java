@@ -11,7 +11,9 @@ public class GameController implements GameEventListener, IUIEventListener{
 
 	private IGameView view;
 
+	
 	public GameController(IGameView view){
+		
 		//initialisierung des Controllers
 		this.view = view;
 		
@@ -30,7 +32,12 @@ public class GameController implements GameEventListener, IUIEventListener{
 		//Dispatcher
 		EventDispatcher Dispatcher = EventDispatcher.getInstance();
 		try {
-			Dispatcher.addListener("GameEvent", this);
+			Dispatcher.addListener(GameEvent.Type.StartGame.toString(), this);
+			Dispatcher.addListener(GameEvent.Type.EndGame.toString(), this);
+			Dispatcher.addListener(GameEvent.Type.EndSet.toString(), this);
+			Dispatcher.addListener(GameEvent.Type.LoadGame.toString(), this);
+			Dispatcher.addListener(GameEvent.Type.StartSet.toString(), this);
+			
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -83,6 +90,7 @@ public class GameController implements GameEventListener, IUIEventListener{
 			
 			//TEST
 			//Moves ausführen
+			
 			Random r = new Random();
 			
 			for(int i = 0; i < 15; i++){
@@ -90,7 +98,8 @@ public class GameController implements GameEventListener, IUIEventListener{
 					model.addMove(new Move(Constants.oRole, r.nextInt(7)));
 				}else{
 					model.addMove(new Move(Constants.xRole, r.nextInt(7)));
-				}				
+				}
+//				model.save();
 			}
 		    
 			break;
@@ -113,5 +122,9 @@ public class GameController implements GameEventListener, IUIEventListener{
 		// TODO Auto-generated method stub
 		System.out.println("GameEvent erhalten");
 	}
-	
+
+		
+
 }
+
+
