@@ -44,7 +44,7 @@ public class GUI03 implements IGameView{
 		Scene scene = new Scene(root);
 		scene.getStylesheets().add("test.css");
 		mainstage.setScene(scene);
-		//mainstage.setResizable(false);
+		mainstage.setResizable(false);
 		
 		BorderPane borderpane = new BorderPane(); //setzt Layout/ Anordnung fest
 		
