@@ -4,13 +4,13 @@ import javafx.stage.Stage;
 
 public class GameApp extends Application {
 
-	private GUI03 view;
+	private MainGUI view;
 	private GameController controller;
 	
 
 	@Override public void start (Stage mainstage) throws Exception{
 		
-		view = new GUI03();
+		view = new MainGUI();
 		
 		view.init(mainstage);
 		mainstage.setHeight(550);
