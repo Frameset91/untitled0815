@@ -44,7 +44,7 @@ public class MainGUI implements IGameView{
 	
 	
 	//Eventhandling
-	private ArrayList<IUIEventListener> _listeners = new ArrayList<IUIEventListener>();
+//	private ArrayList<IUIEventListener> _listeners = new ArrayList<IUIEventListener>();
 	
 	public void init(Stage mainstage){
 		Group root = new Group();
@@ -499,7 +499,19 @@ public class MainGUI implements IGameView{
 					logAnzeigen.setDisable(false);
 					
 					//Event
-					fireGameEvent(GameEvent.Type.StartGame);
+					//TODO  Event umwandeln
+					
+					Task aufgabe = new Task<Void>() {
+						@Override
+						protected Void call() throws Exception {
+							// TODO Auto-generated method stub
+							fireGameEvent(GameEvent.Type.StartGame);
+							return null;
+						} // ENde call()	
+					};
+					
+					
+				
 				}
 				else{
 					neuesSpiel.setDisable(false);
@@ -526,7 +538,15 @@ public class MainGUI implements IGameView{
 					punkteGegner.setText("");
 					
 					//Event
-					fireGameEvent(GameEvent.Type.EndGame);
+					Task aufgabe = new Task<Void>() {
+						@Override
+						protected Void call() throws Exception {
+							// TODO Auto-generated method stub
+							fireGameEvent(GameEvent.Type.EndGame);
+							return null;
+						} // ENde call()	
+					};
+					
 				}
 
 			}

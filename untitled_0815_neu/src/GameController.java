@@ -100,6 +100,12 @@ public class GameController implements GameEventListener, IUIEventListener{
 					model.addMove(new Move(Constants.xRole, r.nextInt(7)));
 				}
 //				model.save();
+				try {
+					Thread.sleep(100);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			}
 		    
 			break;
