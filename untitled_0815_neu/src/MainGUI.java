@@ -1,6 +1,7 @@
 	/**
+	 * Diese Klasse initialisiert die Benutzeroberfläche
 	 * @author NHerentrey
-	 * @param args
+	 * 
 	 */
 
 //import javafx.application.*;
@@ -10,7 +11,6 @@ import java.util.Iterator;
 import javafx.scene.*;				//Scene bildet "Leinwände" in dem Rahmen
 import javafx.stage.*;				//Stage ist der "Rahmen" der Applikation
 import javafx.scene.control.*;
-import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.effect.Lighting;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.*;
@@ -18,9 +18,6 @@ import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
@@ -39,7 +36,7 @@ public class MainGUI implements IGameView{
 	private TextField zugzeit;
 	private Circle tokenSpieler;
 	private Circle tokenGegner;
-	private TableView logTable = new TableView();
+	private TableView logTabelle = new TableView();
 	
 	
 	//Eventhandling
@@ -154,11 +151,11 @@ public class MainGUI implements IGameView{
 		
 		//Eingabefelder
 //		final TextField gegnername = new TextField("Name...");
-		gegnername = new TextField("Name...");
+		gegnername = new TextField();
 		gegnername.getStyleClass().add("textfeld");
 		gegnername.setMaxWidth(150);
 //		final TextField verzeichnispfad = new TextField("C:\\...");
-		verzeichnispfad = new TextField("C:\\...");
+		verzeichnispfad = new TextField();
 		verzeichnispfad.getStyleClass().add("textfeld");
 		verzeichnispfad.setMaxWidth(150);
 		
@@ -398,7 +395,7 @@ public class MainGUI implements IGameView{
 		//Tabelle für die Logs
 		TableColumn spalte1 = new TableColumn("Log-Eintrag");
 		spalte1.setEditable(true);
-		logTable.getColumns().add(spalte1);
+		logTabelle.getColumns().add(spalte1);
 	    
 	    final Button logAnzeigen = new Button("Log anzeigen");
 	    logAnzeigen.setOnMouseClicked(new EventHandler<MouseEvent>(){
@@ -421,7 +418,7 @@ public class MainGUI implements IGameView{
 				});
 				//Anordnen
 				VBox textUndButton = new VBox(10);
-				textUndButton.getChildren().addAll(ueberschrift, logTable, close);
+				textUndButton.getChildren().addAll(ueberschrift, logTabelle, close);
 				rootLog.getChildren().add(textUndButton);
 	    	}
 	    });
@@ -449,6 +446,9 @@ public class MainGUI implements IGameView{
 		spielStarten.setOnMouseClicked(new EventHandler<MouseEvent>(){
 			public void handle(MouseEvent arg0){
 				if (spielStarten.getText()=="Spiel starten"){
+					/**
+					 * TODO Abfragen, ob alles Felder befüllt wurden
+					 */
 					neuesSpiel.setDisable(true);
 					laden.setDisable(true);
 					spielBeenden.setDisable(false);
@@ -482,8 +482,8 @@ public class MainGUI implements IGameView{
 					rolle.setDisable(false);
 					spielstandSpieler.setDisable(false); spielstandSpieler.setText("0");
 					spielstandGegner.setDisable(false); spielstandGegner.setText("0");
-					gegnername.setDisable(false); gegnername.setText("Name...");
-					verzeichnispfad.setDisable(false); verzeichnispfad.setText("C:\\...");
+					gegnername.setDisable(false);
+					verzeichnispfad.setDisable(false);
 					fileabfrage.setDisable(false);
 					zugzeit.setDisable(false);
 					hoch1.setDisable(true);
