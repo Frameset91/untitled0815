@@ -89,7 +89,7 @@ public class Game {
 	public void save(){
 		//TODO: In Datenbank speichern (Primarykey = GameID), erzeugte GameID an Sets weitergeben, ID speichern
 		
-		
+		this.oppPoints.setValue(1);
 		//alle Moves speichern 
 //		ListIterator<Set> iterator = sets.listIterator();
 //		
