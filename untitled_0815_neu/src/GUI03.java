@@ -164,7 +164,7 @@ public class GUI03 implements IGameView{
     	pfeile1.getChildren().addAll(hoch1, runter1);
 //		final TextField fileabfrage = new TextField("300");
     	fileabfrage = new TextField("300");
-		fileabfrage.setMaxWidth(40);
+		fileabfrage.setMaxWidth(60);
 		fileabfrage.getStyleClass().addAll("textfeld", "timeout");
     	timeout1.getChildren().addAll(fileabfrage, pfeile1, new Label("ms"));
 
@@ -196,8 +196,8 @@ public class GUI03 implements IGameView{
     	runter2.getStyleClass().add("timeoutButton");
     	pfeile2.getChildren().addAll(hoch2, runter2);
 //    	final TextField zugzeit = new TextField("200");
-    	zugzeit = new TextField("200");
-    	zugzeit.setMaxWidth(40);
+    	zugzeit = new TextField("2000");
+    	zugzeit.setMaxWidth(60);
     	zugzeit.getStyleClass().addAll("textfeld", "timeout");
     	timeout2.getChildren().addAll(zugzeit, pfeile2, new Label("ms"));
 
