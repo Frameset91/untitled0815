@@ -21,6 +21,7 @@ import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
+import javafx.util.converter.NumberStringConverter;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -358,6 +359,7 @@ public class MainGUI implements IGameView{
 	    satz.setOnMouseClicked(new EventHandler<MouseEvent>() {
 	   	public void handle(MouseEvent arg0) {
 				if(satz.getText()=="Satz abbrechen"){
+					satz.setText("neuen Satz spielen");
 					Task aufgabe = new Task<Void>() {
 						@Override
 						protected Void call() throws Exception {
@@ -370,6 +372,7 @@ public class MainGUI implements IGameView{
 					new Thread(aufgabe).start();// ENde New task
 				} // Ende if
 				else{
+					satz.setText("Satz abbrechen");
 					Task aufgabe2 = new Task<Void>() {
 
 						@Override
@@ -592,10 +595,10 @@ public class MainGUI implements IGameView{
 		verzeichnispfad.textProperty().bindBidirectional(model.getPath());
 		gegnername.textProperty().bindBidirectional(model.getOppName());
 //		TODO Converter
-//		punkteGegner.textProperty().bindBidirectional(model.getOppPoints(), ((StringConverter)new IntegerStringConverter()));
-//		punkteSpieler.textProperty().bind(model.getOwnPoints());
-//		zugzeit.textProperty()
-//		fileabfrage.textProperty()
+		punkteGegner.textProperty().bindBidirectional(model.getOppPoints(), new NumberStringConverter());
+		punkteSpieler.textProperty().bindBidirectional(model.getOwnPoints(), new NumberStringConverter());
+		zugzeit.textProperty().bindBidirectional(model.getTimeoutDraw(), new NumberStringConverter());
+		fileabfrage.textProperty().bindBidirectional(model.getTimeoutServer(), new NumberStringConverter());
 		
 		tokenGegner.styleProperty().bind(model.getOppToken());
 		tokenSpieler.styleProperty().bind(model.getOwnToken());
@@ -616,7 +619,6 @@ public class MainGUI implements IGameView{
 		tokenSpieler.styleProperty().unbind();
 	}
 	
-	//Eventhandling
 	//Eventhandling
 		public void fireGameEvent(GameEvent.Type type){
 			String[] args = new String[0];
