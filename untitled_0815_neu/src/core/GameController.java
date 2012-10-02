@@ -54,7 +54,7 @@ public class GameController extends Application implements GameEventListener, IU
 			
 			view.bindField(model.newSet().getField());
 			//TODO ComServer starten
-			
+//			comServ.enableReading(model.getTimeoutServer().getValue(), model.getPath().getValue());
 			
 			//TEST
 			//Moves ausführen
@@ -75,7 +75,8 @@ public class GameController extends Application implements GameEventListener, IU
 					e.printStackTrace();
 				}
 			}
-		    
+		    model.getOppPoints().setValue(1);
+			
 			break;
 		case EndSet:
 //			view.unbindField(model.getLatestSet().getField());
