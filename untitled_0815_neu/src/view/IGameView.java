@@ -1,3 +1,6 @@
+package view;
+import model.Game;
+import model.GameField;
 import javafx.stage.Stage;
 
 public interface IGameView {

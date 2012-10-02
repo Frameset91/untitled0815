@@ -1,7 +1,6 @@
+package utilities;
 import java.util.EventObject;
 
-import utilities.GameEvent;
-import utilities.GameEventListener;
 
 /**
  * Diese Methode beschreibt beispielhaft, wie ein die Behandlung von einem Event aussehen kann.

@@ -1,9 +1,14 @@
-import java.util.*;
+package core;
+
+import java.util.Random;
+
+import model.*;
+import utilities.*;
+import view.*;
 
 import javafx.application.Application;
 import javafx.stage.Stage;
 
-import utilities.*;
 
 public class GameController extends Application implements GameEventListener, IUIEventListener{
 

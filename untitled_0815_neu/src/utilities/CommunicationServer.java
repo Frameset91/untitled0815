@@ -1,3 +1,4 @@
+package utilities;
 /**
  * Diese Klasse fungiert zur Kommunikation mit dem Server und der Benachrichtigung der KI.
  * @author Bjoern List

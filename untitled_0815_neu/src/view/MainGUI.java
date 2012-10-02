@@ -1,3 +1,4 @@
+package view;
 	/**
 	 * Diese Klasse initialisiert die Benutzeroberfläche
 	 * @author NHerentrey
@@ -5,11 +6,13 @@
 	 */
 
 //import javafx.application.*;
+
 import java.util.ArrayList;
 import java.util.Iterator;
 
-import utilities.EventDispatcher;
-import utilities.GameEvent;
+import core.*;
+import model.*;
+import utilities.*;
 
 import javafx.scene.*;				//Scene bildet "Leinwände" in dem Rahmen
 import javafx.stage.*;				//Stage ist der "Rahmen" der Applikation
@@ -327,7 +330,7 @@ public class MainGUI implements IGameView{
 	//Spielfeld
 	    GridPane feld = new GridPane();
 		//final Circle spielfeld[][] = new Circle[7][7];
-	    spielfeld = new Circle[7][7];
+	    spielfeld = new Circle[Constants.gamefieldcolcount][Constants.gamefieldrowcount];
 	    
 	    //Abstände zwischen Feldern
 	    feld.setHgap(3);

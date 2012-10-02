@@ -1,3 +1,4 @@
+package model;
 /**
  * kapselt das Spielfeld mit allen Chips/Steinen
  * true = eigene Rolle

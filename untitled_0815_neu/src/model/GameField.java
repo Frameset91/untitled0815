@@ -1,3 +1,5 @@
+package model;
+import core.Constants;
 import javafx.beans.property.SimpleStringProperty;
 
 /**

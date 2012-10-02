@@ -1,3 +1,4 @@
+package utilities;
 /*
  * Diese Klasse beschreibt eine neue Nachricht des Servers an die Agenten
  * 
