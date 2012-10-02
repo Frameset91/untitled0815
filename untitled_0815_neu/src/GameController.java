@@ -1,8 +1,11 @@
 import java.util.*;
 
+import javafx.application.Application;
+import javafx.stage.Stage;
+
 import utilities.*;
 
-public class GameController implements GameEventListener, IUIEventListener{
+public class GameController extends Application implements GameEventListener, IUIEventListener{
 
 	
 	//private GameView gameView;
@@ -10,46 +13,6 @@ public class GameController implements GameEventListener, IUIEventListener{
 	private CommunicationServer comServ;
 
 	private IGameView view;
-
-	
-	public GameController(IGameView view){
-		
-		//initialisierung des Controllers
-		this.view = view;
-		
-		//Game Objekt initialisieren und an das UI binden (zur Eingabe der Spieleinstellungen)
-		newGame(Constants.gamefieldcolcount,Constants.gamefieldrowcount);
-		
-		//Registrierung für Events beim View
-		// TODO		
-//		this.view.addEventListener(this);
-		
-		//Weitere Objekte erzeugen und für Events registrieren
-		
-		//Communication Server
-		comServ = CommunicationServer.getInstance();
-		
-		//Dispatcher
-		EventDispatcher Dispatcher = EventDispatcher.getInstance();
-		try {
-			Dispatcher.addListener(GameEvent.Type.StartGame.toString(), this);
-			Dispatcher.addListener(GameEvent.Type.EndGame.toString(), this);
-			Dispatcher.addListener(GameEvent.Type.EndSet.toString(), this);
-			Dispatcher.addListener(GameEvent.Type.LoadGame.toString(), this);
-			Dispatcher.addListener(GameEvent.Type.StartSet.toString(), this);
-			
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-		
-		
-		//KI 
-		//TODO
-		
-	    
-	}
 	
 	private void newGame(int cols, int rows){		
 		//unbind old model
@@ -129,6 +92,55 @@ public class GameController implements GameEventListener, IUIEventListener{
 		System.out.println("GameEvent erhalten");
 	}
 
+	
+	//App Part
+	@Override 
+	public void start (Stage mainstage) throws Exception{
+		
+		view = new MainGUI();
+		
+		view.init(mainstage);
+		mainstage.setHeight(550);
+		mainstage.setWidth(820);
+		mainstage.setTitle("4 Gewinnt - untitled0815");
+		mainstage.show();
+		
+		//Game Objekt initialisieren und an das UI binden (zur Eingabe der Spieleinstellungen)
+		newGame(Constants.gamefieldcolcount,Constants.gamefieldrowcount);
+		
+	
+		//Communication Server
+		comServ = CommunicationServer.getInstance();
+		
+		//Dispatcher
+		EventDispatcher Dispatcher = EventDispatcher.getInstance();
+		try {
+			Dispatcher.addListener(GameEvent.Type.StartGame.toString(), this);
+			Dispatcher.addListener(GameEvent.Type.EndGame.toString(), this);
+			Dispatcher.addListener(GameEvent.Type.EndSet.toString(), this);
+			Dispatcher.addListener(GameEvent.Type.LoadGame.toString(), this);
+			Dispatcher.addListener(GameEvent.Type.StartSet.toString(), this);
+			
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		
+		
+		//KI 
+		//TODO
+		
+	    
+		
+	}
+
+	/**
+	 * @param args
+	 */
+	public static void main(String[] args) {
+		launch(args);
+	}
 		
 
 }

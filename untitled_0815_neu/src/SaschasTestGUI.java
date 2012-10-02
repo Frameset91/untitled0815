@@ -8,6 +8,9 @@
 import java.util.ArrayList;
 import java.util.Iterator;
 
+import utilities.EventDispatcher;
+import utilities.GameEvent;
+
 import javafx.scene.*;				//Scene bildet "Leinwände" in dem Rahmen
 import javafx.stage.*;				//Stage ist der "Rahmen" der Applikation
 import javafx.scene.control.*;
@@ -19,6 +22,7 @@ import javafx.scene.text.Text;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.util.converter.NumberStringConverter;
+import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
@@ -41,7 +45,7 @@ public class SaschasTestGUI implements IGameView{
 	
 	
 	//Eventhandling
-	private ArrayList<IUIEventListener> _listeners = new ArrayList<IUIEventListener>();
+//	private ArrayList<IUIEventListener> _listeners = new ArrayList<IUIEventListener>();
 	
 	public void init(Stage mainstage){
 		Group root = new Group();
@@ -353,17 +357,41 @@ public class SaschasTestGUI implements IGameView{
 	    satz.setDisable(true);
 	    //Event 
 	    satz.setOnMouseClicked(new EventHandler<MouseEvent>() {
-			public void handle(MouseEvent arg0) {
+	   	public void handle(MouseEvent arg0) {
 				if(satz.getText()=="Satz abbrechen"){
-					fireUIEvent(UIEvent.Type.EndSet);
 					satz.setText("neuen Satz spielen");
-				}
+					Task aufgabe = new Task<Void>() {
+						@Override
+						protected Void call() throws Exception {
+							// TODO Auto-generated method stub
+							fireGameEvent(GameEvent.Type.EndSet);
+							satz.setText("neuen Satz spielen");
+							return null;
+						} // ENde call()	
+					};
+					new Thread(aufgabe).start();// ENde New task
+				} // Ende if
 				else{
-					fireUIEvent(UIEvent.Type.StartSet);
 					satz.setText("Satz abbrechen");
-				}	
-			}
-		});
+					Task aufgabe2 = new Task<Void>() {
+
+						@Override
+						protected Void call() throws Exception {
+							// TODO Auto-generated method stub
+
+					fireGameEvent(GameEvent.Type.StartSet);
+					satz.setText("Satz abbrechen");
+				
+					
+					return null;
+				} // ENde call()
+	    		
+	    	};// ENde new task};
+	    	new Thread(aufgabe2).start();
+				} // Ende else
+	   	} // ende handle
+	    });
+				
 	    	    
 //		final Button satzAbbrechen = new Button("Satz abbrechen");
 //		satzAbbrechen.setDisable(true);
@@ -474,7 +502,19 @@ public class SaschasTestGUI implements IGameView{
 					logAnzeigen.setDisable(false);
 					
 					//Event
-					fireUIEvent(UIEvent.Type.StartGame);
+					//TODO  Event umwandeln
+					
+					Task aufgabe = new Task<Void>() {
+						@Override
+						protected Void call() throws Exception {
+							// TODO Auto-generated method stub
+							fireGameEvent(GameEvent.Type.StartGame);
+							return null;
+						} // ENde call()	
+					};
+					
+					
+				
 				}
 				else{
 					neuesSpiel.setDisable(false);
@@ -501,7 +541,15 @@ public class SaschasTestGUI implements IGameView{
 					punkteGegner.setText("");
 					
 					//Event
-					fireUIEvent(UIEvent.Type.EndGame);
+					Task aufgabe = new Task<Void>() {
+						@Override
+						protected Void call() throws Exception {
+							// TODO Auto-generated method stub
+							fireGameEvent(GameEvent.Type.EndGame);
+							return null;
+						} // ENde call()	
+					};
+					
 				}
 
 			}
@@ -547,11 +595,10 @@ public class SaschasTestGUI implements IGameView{
 		verzeichnispfad.textProperty().bindBidirectional(model.getPath());
 		gegnername.textProperty().bindBidirectional(model.getOppName());
 //		TODO Converter
-		punkteGegner.textProperty().bindBidirectional(model.getOppPoints(),new NumberStringConverter());
-//		punkteGegner.textProperty().bindBidirectional(model.getOppPoints(), ((StringConverter)new IntegerStringConverter()));
-//		punkteSpieler.textProperty().bind(model.getOwnPoints());
-//		zugzeit.textProperty()
-//		fileabfrage.textProperty()
+		punkteGegner.textProperty().bindBidirectional(model.getOppPoints(), new NumberStringConverter());
+		punkteSpieler.textProperty().bindBidirectional(model.getOwnPoints(), new NumberStringConverter());
+		zugzeit.textProperty().bindBidirectional(model.getTimeoutDraw(), new NumberStringConverter());
+		fileabfrage.textProperty().bindBidirectional(model.getTimeoutServer(), new NumberStringConverter());
 		
 		tokenGegner.styleProperty().bind(model.getOppToken());
 		tokenSpieler.styleProperty().bind(model.getOwnToken());
@@ -573,21 +620,21 @@ public class SaschasTestGUI implements IGameView{
 	}
 	
 	//Eventhandling
-	public void fireUIEvent(UIEvent.Type type){
-		String[] args = new String[0];
-		UIEvent event = new UIEvent(this,type, args);
-		Iterator<IUIEventListener> i = _listeners.iterator();
-		while (i.hasNext()) {
-			(i.next()).handleEvent(event);
+		public void fireGameEvent(GameEvent.Type type){
+			String[] args = new String[0];
+			GameEvent event = new GameEvent(type.toString(),type, args);
+			try {
+				EventDispatcher.getInstance().triggerEvent(event, true);
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+//			Iterator<IUIEventListener> i = _listeners.iterator();
+//			while (i.hasNext()) {
+//				(i.next()).handleEvent(event);
+//			}
+			
+			
 		}
-	}
-	
-	public synchronized void addEventListener(IUIEventListener listener) {
-		_listeners.add(listener);
-	}
-
-	public synchronized void removeEventListener(IUIEventListener listener) {
-		_listeners.remove(listener);
-	}
+		
 }
-
