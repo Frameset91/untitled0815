@@ -179,7 +179,7 @@ public class CommunicationServer extends Thread {
 	 * @param spalte
 	 *            Nummer der Spalte, in die der naechste STein gelgt wird
 	 */
-	public void writeMove(byte spalte, String agentFilePath) {
+	public synchronized void writeMove(byte spalte, String agentFilePath) {
 		if (spalte > -1 && spalte < 7) {
 			try {
 				this.agentfilepath = agentFilePath;
