@@ -572,7 +572,8 @@ public class MainGUI implements IGameView{
 	      {
 	    	  spielfeld[i][j].styleProperty().bind(field.getPropertyField()[i][Constants.gamefieldrowcount -1 -j]);
 	      }
-	    }		
+	    }
+	  
 	}
 	
 	public void unbindField(GameField field){

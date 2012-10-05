@@ -2,19 +2,21 @@ package model;
 import java.sql.Timestamp;
 import java.util.*;
 
+import javafx.beans.property.SimpleStringProperty;
+
 
 public class Set{
 	
-	public enum Status{
-		//TODO!
-		a,b,c,d
-	}
-	
+//	public enum Status{
+//		//TODO!
+//		a,b,c,d
+//	}
+//	
 	private ArrayList<Move> moves;
 	private Timestamp startTime;
 	private Timestamp endTime;
 	//private int setID; //Database primary key
-	private Status status;
+	private SimpleStringProperty status;
 	private GameField field; 
 	private String winner;
 	
@@ -48,14 +50,14 @@ public class Set{
 	/**
 	 * @return the status
 	 */
-	public Status getStatus() {
+	public SimpleStringProperty getStatus() {
 		return status;
 	}
 
 	/**
 	 * @param status the status to set
 	 */
-	public void setStatus(Status status) {
+	public void setStatus(SimpleStringProperty status) {
 		this.status = status;
 	}
 
