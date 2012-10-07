@@ -14,6 +14,8 @@ public class Constants {
 	
 	public static final String xRole = "X";
 	public static final String oRole = "O";
+	public static final String defaultRole = xRole;
+	
 	
 	//Styles
 //	static final String xToken = "token-yellow";

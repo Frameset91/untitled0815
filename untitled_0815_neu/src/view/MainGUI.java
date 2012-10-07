@@ -137,7 +137,7 @@ public class MainGUI implements IGameView{
 		//Spielerrolle definieren (X oder O)
 //		final ChoiceBox<String> rolle = new ChoiceBox<String>();
 		rolle = new ChoiceBox<String>();
-		rolle.getItems().addAll("X", "O");
+//		rolle.getItems().addAll("X", "O");
 		rolle.getSelectionModel().selectFirst();
 //		final ToggleButton rolleX = new ToggleButton("X");
 //		final ToggleButton rolleO = new ToggleButton("O");
@@ -677,6 +677,7 @@ public class MainGUI implements IGameView{
 	@Override
 	public void bindGame(Game model){
 		rolle.valueProperty().bindBidirectional(model.getRole());
+		rolle.getItems().addAll(Constants.xRole, Constants.oRole);
 		verzeichnispfad.textProperty().bindBidirectional(model.getPath());
 		gegnername.textProperty().bindBidirectional(model.getOppName());
 //		Converter
