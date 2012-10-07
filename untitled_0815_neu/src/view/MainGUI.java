@@ -370,7 +370,7 @@ public class MainGUI implements IGameView{
 						protected Void call() throws Exception {
 							// TODO Auto-generated method stub
 							fireGameEvent(GameEvent.Type.EndSet);
-							satz.setText("neuen Satz spielen");
+//							satz.setText("neuen Satz spielen");
 							return null;
 						} // ENde call()	
 					};
@@ -384,17 +384,16 @@ public class MainGUI implements IGameView{
 						protected Void call() throws Exception {
 							// TODO Auto-generated method stub
 
-					fireGameEvent(GameEvent.Type.StartSet);
-					satz.setText("Satz abbrechen");
-				
-					
-					return null;
-				} // ENde call()
+							fireGameEvent(GameEvent.Type.StartSet);
+			//					satz.setText("Satz abbrechen");				
+							
+							return null;
+						} // ENde call()
 	    		
-	    	};// ENde new task};
-	    	new Thread(aufgabe2).start();
+			    	};// ENde new task};
+			    	new Thread(aufgabe2).start();
 				} // Ende else
-	   	} // ende handle
+	  		} // ende handle
 	    });
 				
 	    	    
@@ -526,7 +525,7 @@ public class MainGUI implements IGameView{
 						} // ENde call()	
 					};
 					
-					
+					new Thread(aufgabe).start();				
 				
 				}
 				else{
@@ -563,6 +562,7 @@ public class MainGUI implements IGameView{
 						} // ENde call()	
 					};
 					
+					new Thread(aufgabe).start();				
 				}
 
 			}
@@ -645,8 +645,12 @@ public class MainGUI implements IGameView{
 	
 	//Eventhandling
 		public void fireGameEvent(GameEvent.Type type){
-			String[] args = new String[0];
-			GameEvent event = new GameEvent(type.toString(),type, args);
+			fireGameEvent(type, "");						
+		}
+		
+		public void fireGameEvent(GameEvent.Type type, String arg){
+			Log.getInstance().write("GameEvent gefeuert: " + type.toString());
+			GameEvent event = new GameEvent(type.toString(),type, arg);
 			try {
 				EventDispatcher.getInstance().triggerEvent(event, true);
 			} catch (Exception e) {
@@ -657,8 +661,7 @@ public class MainGUI implements IGameView{
 //			while (i.hasNext()) {
 //				(i.next()).handleEvent(event);
 //			}
-			
-			Log.getInstance().write("GameEvent gefeuert");
+						
 		}
 		
 }

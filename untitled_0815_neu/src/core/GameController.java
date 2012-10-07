@@ -41,53 +41,54 @@ public class GameController extends Application implements GameEventListener, IU
 	
 	@Override
 	public void handleEvent(GameEvent event) {
-		System.out.println("Event erhalten");
+		
 		switch (event.getType()) {
-		case StartGame:
-			model.save();			
-			break;
-		case StartSet:
-			if(model.getLatestSet() != null){
-				view.unbindField(model.getLatestSet().getField());
+			case StartGame:
+				Log.getInstance().write("Controller: Event empfangen ( " + event.getType().toString() + " )");
+				model.save();				
+				break;			
+			case StartSet:
+				if(model.getLatestSet() != null){
+					view.unbindField(model.getLatestSet().getField());
+					model.save();
+				}
+				
+				view.bindField(model.newSet().getField());
+				//TODO ComServer starten
+		//			comServ.enableReading(model.getTimeoutServer().getValue(), model.getPath().getValue());
+				
+				//TEST
+				//Moves ausführen
+				
+				Random r = new Random();
+				
+				for(int i = 0; i < 15; i++){
+					if(i%2 == 1){
+						model.addMove(new Move(Constants.oRole, r.nextInt(7)));
+					}else{
+						model.addMove(new Move(Constants.xRole, r.nextInt(7)));
+					}
+		//				model.save();
+					try {
+						Thread.sleep(100);
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+		//		    model.getOppPoints().setValue(1);
+				
+				break;
+			case EndSet:
+		//			view.unbindField(model.getLatestSet().getField());
 				model.save();
+				break;
+			case EndGame:
+				
+				break;
+			default:
+				break;
 			}
-			
-			view.bindField(model.newSet().getField());
-			//TODO ComServer starten
-//			comServ.enableReading(model.getTimeoutServer().getValue(), model.getPath().getValue());
-			
-			//TEST
-			//Moves ausführen
-			
-			Random r = new Random();
-			
-			for(int i = 0; i < 15; i++){
-				if(i%2 == 1){
-					model.addMove(new Move(Constants.oRole, r.nextInt(7)));
-				}else{
-					model.addMove(new Move(Constants.xRole, r.nextInt(7)));
-				}
-//				model.save();
-				try {
-					Thread.sleep(100);
-				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			}
-		    model.getOppPoints().setValue(1);
-			
-			break;
-		case EndSet:
-//			view.unbindField(model.getLatestSet().getField());
-			model.save();
-			break;
-		case EndGame:
-			
-			break;
-		default:
-			break;
-		}
 		}
 		
 	
@@ -95,7 +96,7 @@ public class GameController extends Application implements GameEventListener, IU
 	@Override
 	public void handleEvent(UIEvent e) {
 		// TODO Auto-generated method stub
-		System.out.println("GameEvent erhalten");
+//		System.out.println("GameEvent erhalten");
 	}
 
 	
