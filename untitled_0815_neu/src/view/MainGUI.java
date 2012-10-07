@@ -352,7 +352,7 @@ public class MainGUI implements IGameView{
 	    }
 	    
 	    //-------------- TEST für manuelles Spielen --------------------
-		spielfeld[0][Constants.gamefieldrowcount-1].setOnMouseClicked(new EventHandler<MouseEvent>() {
+		spielfeld[0][01].setOnMouseClicked(new EventHandler<MouseEvent>() {
 			public void handle(MouseEvent arg0) {
 				Task aufgabe = new Task<Void>() {
 					protected Void call() throws Exception {
@@ -361,7 +361,7 @@ public class MainGUI implements IGameView{
 					}};
 		    	new Thread(aufgabe).start();
 		}});
-		spielfeld[1][Constants.gamefieldrowcount-1].setOnMouseClicked(new EventHandler<MouseEvent>() {
+		spielfeld[1][0].setOnMouseClicked(new EventHandler<MouseEvent>() {
 			public void handle(MouseEvent arg0) {
 				Task aufgabe = new Task<Void>() {
 					protected Void call() throws Exception {
@@ -370,7 +370,7 @@ public class MainGUI implements IGameView{
 					}};
 		    	new Thread(aufgabe).start();
 		}});
-		spielfeld[2][Constants.gamefieldrowcount-1].setOnMouseClicked(new EventHandler<MouseEvent>() {
+		spielfeld[2][0].setOnMouseClicked(new EventHandler<MouseEvent>() {
 			public void handle(MouseEvent arg0) {
 				Task aufgabe = new Task<Void>() {
 					protected Void call() throws Exception {
@@ -379,7 +379,7 @@ public class MainGUI implements IGameView{
 					}};
 		    	new Thread(aufgabe).start();
 		}});
-		spielfeld[3][Constants.gamefieldrowcount-1].setOnMouseClicked(new EventHandler<MouseEvent>() {
+		spielfeld[3][0].setOnMouseClicked(new EventHandler<MouseEvent>() {
 			public void handle(MouseEvent arg0) {
 				Task aufgabe = new Task<Void>() {
 					protected Void call() throws Exception {
@@ -388,7 +388,7 @@ public class MainGUI implements IGameView{
 					}};
 		    	new Thread(aufgabe).start();
 		}});
-		spielfeld[4][Constants.gamefieldrowcount-1].setOnMouseClicked(new EventHandler<MouseEvent>() {
+		spielfeld[4][0].setOnMouseClicked(new EventHandler<MouseEvent>() {
 			public void handle(MouseEvent arg0) {
 				Task aufgabe = new Task<Void>() {
 					protected Void call() throws Exception {
@@ -397,7 +397,7 @@ public class MainGUI implements IGameView{
 					}};
 		    	new Thread(aufgabe).start();
 		}});
-		spielfeld[5][Constants.gamefieldrowcount-1].setOnMouseClicked(new EventHandler<MouseEvent>() {
+		spielfeld[5][0].setOnMouseClicked(new EventHandler<MouseEvent>() {
 			public void handle(MouseEvent arg0) {
 				Task aufgabe = new Task<Void>() {
 					protected Void call() throws Exception {
@@ -406,7 +406,7 @@ public class MainGUI implements IGameView{
 					}};
 		    	new Thread(aufgabe).start();
 		}});
-		spielfeld[6][Constants.gamefieldrowcount-1].setOnMouseClicked(new EventHandler<MouseEvent>() {
+		spielfeld[6][0].setOnMouseClicked(new EventHandler<MouseEvent>() {
 			public void handle(MouseEvent arg0) {
 				Task aufgabe = new Task<Void>() {
 					protected Void call() throws Exception {
