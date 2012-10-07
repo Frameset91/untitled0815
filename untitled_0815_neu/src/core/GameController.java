@@ -121,12 +121,13 @@ public class GameController extends Application implements GameEventListener, IU
 		
 		//Dispatcher
 		EventDispatcher Dispatcher = EventDispatcher.getInstance();
-		try {
+		try {			
 			Dispatcher.addListener(GameEvent.Type.StartGame.toString(), this);
 			Dispatcher.addListener(GameEvent.Type.EndGame.toString(), this);
 			Dispatcher.addListener(GameEvent.Type.EndSet.toString(), this);
 			Dispatcher.addListener(GameEvent.Type.LoadGame.toString(), this);
 			Dispatcher.addListener(GameEvent.Type.StartSet.toString(), this);
+			Dispatcher.addListener(GameEvent.Type.OppMove.toString(), this);
 			
 		} catch (Exception e) {
 			// TODO Auto-generated catch block

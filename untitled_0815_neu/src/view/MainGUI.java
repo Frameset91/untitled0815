@@ -350,7 +350,72 @@ public class MainGUI implements IGameView{
 	        feld.add(spielfeld[i][j], i, j);
 	      }
 	    }
-	    	    
+	    
+	    //-------------- TEST für manuelles Spielen --------------------
+		spielfeld[0][Constants.gamefieldrowcount].setOnMouseClicked(new EventHandler<MouseEvent>() {
+			public void handle(MouseEvent arg0) {
+				Task aufgabe = new Task<Void>() {
+					protected Void call() throws Exception {
+						fireGameEvent(GameEvent.Type.StartSet, "0");
+						return null;
+					}};
+		    	new Thread(aufgabe).start();
+		}});
+		spielfeld[1][Constants.gamefieldrowcount].setOnMouseClicked(new EventHandler<MouseEvent>() {
+			public void handle(MouseEvent arg0) {
+				Task aufgabe = new Task<Void>() {
+					protected Void call() throws Exception {
+						fireGameEvent(GameEvent.Type.StartSet, "1");
+						return null;
+					}};
+		    	new Thread(aufgabe).start();
+		}});
+		spielfeld[2][Constants.gamefieldrowcount].setOnMouseClicked(new EventHandler<MouseEvent>() {
+			public void handle(MouseEvent arg0) {
+				Task aufgabe = new Task<Void>() {
+					protected Void call() throws Exception {
+						fireGameEvent(GameEvent.Type.StartSet, "2");
+						return null;
+					}};
+		    	new Thread(aufgabe).start();
+		}});
+		spielfeld[3][Constants.gamefieldrowcount].setOnMouseClicked(new EventHandler<MouseEvent>() {
+			public void handle(MouseEvent arg0) {
+				Task aufgabe = new Task<Void>() {
+					protected Void call() throws Exception {
+						fireGameEvent(GameEvent.Type.StartSet, "3");
+						return null;
+					}};
+		    	new Thread(aufgabe).start();
+		}});
+		spielfeld[4][Constants.gamefieldrowcount].setOnMouseClicked(new EventHandler<MouseEvent>() {
+			public void handle(MouseEvent arg0) {
+				Task aufgabe = new Task<Void>() {
+					protected Void call() throws Exception {
+						fireGameEvent(GameEvent.Type.StartSet, "4");
+						return null;
+					}};
+		    	new Thread(aufgabe).start();
+		}});
+		spielfeld[5][Constants.gamefieldrowcount].setOnMouseClicked(new EventHandler<MouseEvent>() {
+			public void handle(MouseEvent arg0) {
+				Task aufgabe = new Task<Void>() {
+					protected Void call() throws Exception {
+						fireGameEvent(GameEvent.Type.StartSet, "5");
+						return null;
+					}};
+		    	new Thread(aufgabe).start();
+		}});
+		spielfeld[6][Constants.gamefieldrowcount].setOnMouseClicked(new EventHandler<MouseEvent>() {
+			public void handle(MouseEvent arg0) {
+				Task aufgabe = new Task<Void>() {
+					protected Void call() throws Exception {
+						fireGameEvent(GameEvent.Type.StartSet, "6");
+						return null;
+					}};
+		    	new Thread(aufgabe).start();
+		}});
+		 //-------------- ENDE: TEST für manuelles Spielen --------------------
 	    
 		spielanzeige.getChildren().addAll(hSpieler, spielstandAnzeige, feld);
 	    spielflaeche.setLeft(spielanzeige);
@@ -448,7 +513,7 @@ public class MainGUI implements IGameView{
 				stageAnleitung.setScene(sceneLog);
 				stageAnleitung.centerOnScreen();
 				stageAnleitung.show();
-				
+								
 			//Inhalt
 				Text ueberschrift = new Text(20, 20,"Log");
 				Button close = new Button("Schließen");
