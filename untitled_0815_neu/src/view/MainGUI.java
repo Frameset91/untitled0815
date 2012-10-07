@@ -51,6 +51,7 @@ public class MainGUI implements IGameView{
 	//Eventhandling
 //	private ArrayList<IUIEventListener> _listeners = new ArrayList<IUIEventListener>();
 	
+	@SuppressWarnings("unchecked")
 	public void init(Stage mainstage){
 		Group root = new Group();
 		Scene scene = new Scene(root);
