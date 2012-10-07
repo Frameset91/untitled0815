@@ -17,6 +17,7 @@ import utilities.*;
 import javafx.scene.*;				//Scene bildet "Leinwände" in dem Rahmen
 import javafx.stage.*;				//Stage ist der "Rahmen" der Applikation
 import javafx.scene.control.*;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.effect.Lighting;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.*;
@@ -426,8 +427,16 @@ public class MainGUI implements IGameView{
 	    
 		//Tabelle für die Logs
 		TableColumn spalte1 = new TableColumn("Log-Eintrag");
-		spalte1.setEditable(true);
+		spalte1.setEditable(false);
+		logTabelle.getColumns().clear();
 		logTabelle.getColumns().add(spalte1);
+				
+		//Binding
+		spalte1.setCellValueFactory(
+				new PropertyValueFactory<Log.LogEntry, String>("text"));
+		logTabelle.setItems(Log.getInstance().getLogEntries());
+		
+		Log.getInstance().write("Binding fuer Log erstellt");
 	    
 	    final Button logAnzeigen = new Button("Log anzeigen");
 	    logAnzeigen.setOnMouseClicked(new EventHandler<MouseEvent>(){
@@ -573,7 +582,8 @@ public class MainGUI implements IGameView{
 	    	  spielfeld[i][j].styleProperty().bind(field.getPropertyField()[i][Constants.gamefieldrowcount -1 -j]);
 	      }
 	    }
-	  
+	  //Satz Status
+	  //TODO
 	}
 	
 	public void unbindField(GameField field){
@@ -606,7 +616,7 @@ public class MainGUI implements IGameView{
 		
 		tokenGegner.styleProperty().bind(model.getOppToken());
 		tokenSpieler.styleProperty().bind(model.getOwnToken());
-		
+
 	}
 	
 	public void unbindGame(Game model){

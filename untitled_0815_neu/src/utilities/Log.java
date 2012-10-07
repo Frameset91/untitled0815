@@ -2,6 +2,7 @@ package utilities;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
@@ -12,8 +13,32 @@ import javafx.collections.ObservableList;
  */
 
 public class Log {
+	
+	public class LogEntry{
+		private SimpleStringProperty text;
+		
+		public LogEntry(String text){
+			this.text = new SimpleStringProperty(text);
+		}
 
-	private ObservableList<String> logEntries;
+		/**
+		 * @return the text
+		 */
+		public String getText() {
+			return text.get();
+		}
+
+		/**
+		 * @param text the text to set
+		 */
+		public void setText(String text) {
+			this.text.set(text);
+		}
+		
+		
+	}
+
+	private ObservableList<LogEntry> logEntries;
 	
 	private static Log instance = null;
 	
@@ -42,17 +67,17 @@ public class Log {
 		SimpleDateFormat ausgabe = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss:S"); 
         String zeitstempel = ausgabe.format(timestamp);
 		
-		String nachricht = zeitstempel + " - " + text;
+		LogEntry nachricht = new LogEntry(zeitstempel + " - " + text);
 		//System.out.println(nachricht);
 		logEntries.add(nachricht);
 		
 	}
 
-	public ObservableList<String> getLogEntries() {
+	public ObservableList<LogEntry> getLogEntries() {
 		return logEntries;
 	}
 
-	public void setLogEntries(ObservableList<String> logEntries) {
+	public void setLogEntries(ObservableList<LogEntry> logEntries) {
 		this.logEntries = logEntries;
 	}
 	
