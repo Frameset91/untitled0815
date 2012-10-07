@@ -26,24 +26,24 @@ public class GameEvent {
 	 */
 	private static final long serialVersionUID = 1L;
 	private Type type;
-	private String[] args;
+	private String arg;
 
    /**
     * Create a new event
     * 
     * @param name       name of the event
     */
-    public GameEvent(String name,Type t, String[] args) {
+    public GameEvent(String name,Type t, String arg) {
         this.name = name;
         type = t;
-		this.args = args;
+		this.arg = arg;
     }
     public Type getType() {
 		return type;
 	}
 
-	public String[] getArgs() {
-		return args;
+	public String getArg() {
+		return arg;
 	}
 	
 	public GameEvent(String name) {

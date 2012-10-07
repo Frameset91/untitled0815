@@ -352,65 +352,65 @@ public class MainGUI implements IGameView{
 	    }
 	    
 	    //-------------- TEST für manuelles Spielen --------------------
-		spielfeld[0][Constants.gamefieldrowcount].setOnMouseClicked(new EventHandler<MouseEvent>() {
+		spielfeld[0][Constants.gamefieldrowcount-1].setOnMouseClicked(new EventHandler<MouseEvent>() {
 			public void handle(MouseEvent arg0) {
 				Task aufgabe = new Task<Void>() {
 					protected Void call() throws Exception {
-						fireGameEvent(GameEvent.Type.StartSet, "0");
+						fireGameEvent(GameEvent.Type.OppMove, "0");
 						return null;
 					}};
 		    	new Thread(aufgabe).start();
 		}});
-		spielfeld[1][Constants.gamefieldrowcount].setOnMouseClicked(new EventHandler<MouseEvent>() {
+		spielfeld[1][Constants.gamefieldrowcount-1].setOnMouseClicked(new EventHandler<MouseEvent>() {
 			public void handle(MouseEvent arg0) {
 				Task aufgabe = new Task<Void>() {
 					protected Void call() throws Exception {
-						fireGameEvent(GameEvent.Type.StartSet, "1");
+						fireGameEvent(GameEvent.Type.OppMove, "1");
 						return null;
 					}};
 		    	new Thread(aufgabe).start();
 		}});
-		spielfeld[2][Constants.gamefieldrowcount].setOnMouseClicked(new EventHandler<MouseEvent>() {
+		spielfeld[2][Constants.gamefieldrowcount-1].setOnMouseClicked(new EventHandler<MouseEvent>() {
 			public void handle(MouseEvent arg0) {
 				Task aufgabe = new Task<Void>() {
 					protected Void call() throws Exception {
-						fireGameEvent(GameEvent.Type.StartSet, "2");
+						fireGameEvent(GameEvent.Type.OppMove, "2");
 						return null;
 					}};
 		    	new Thread(aufgabe).start();
 		}});
-		spielfeld[3][Constants.gamefieldrowcount].setOnMouseClicked(new EventHandler<MouseEvent>() {
+		spielfeld[3][Constants.gamefieldrowcount-1].setOnMouseClicked(new EventHandler<MouseEvent>() {
 			public void handle(MouseEvent arg0) {
 				Task aufgabe = new Task<Void>() {
 					protected Void call() throws Exception {
-						fireGameEvent(GameEvent.Type.StartSet, "3");
+						fireGameEvent(GameEvent.Type.OppMove, "3");
 						return null;
 					}};
 		    	new Thread(aufgabe).start();
 		}});
-		spielfeld[4][Constants.gamefieldrowcount].setOnMouseClicked(new EventHandler<MouseEvent>() {
+		spielfeld[4][Constants.gamefieldrowcount-1].setOnMouseClicked(new EventHandler<MouseEvent>() {
 			public void handle(MouseEvent arg0) {
 				Task aufgabe = new Task<Void>() {
 					protected Void call() throws Exception {
-						fireGameEvent(GameEvent.Type.StartSet, "4");
+						fireGameEvent(GameEvent.Type.OppMove, "4");
 						return null;
 					}};
 		    	new Thread(aufgabe).start();
 		}});
-		spielfeld[5][Constants.gamefieldrowcount].setOnMouseClicked(new EventHandler<MouseEvent>() {
+		spielfeld[5][Constants.gamefieldrowcount-1].setOnMouseClicked(new EventHandler<MouseEvent>() {
 			public void handle(MouseEvent arg0) {
 				Task aufgabe = new Task<Void>() {
 					protected Void call() throws Exception {
-						fireGameEvent(GameEvent.Type.StartSet, "5");
+						fireGameEvent(GameEvent.Type.OppMove, "5");
 						return null;
 					}};
 		    	new Thread(aufgabe).start();
 		}});
-		spielfeld[6][Constants.gamefieldrowcount].setOnMouseClicked(new EventHandler<MouseEvent>() {
+		spielfeld[6][Constants.gamefieldrowcount-1].setOnMouseClicked(new EventHandler<MouseEvent>() {
 			public void handle(MouseEvent arg0) {
 				Task aufgabe = new Task<Void>() {
 					protected Void call() throws Exception {
-						fireGameEvent(GameEvent.Type.StartSet, "6");
+						fireGameEvent(GameEvent.Type.OppMove, "6");
 						return null;
 					}};
 		    	new Thread(aufgabe).start();

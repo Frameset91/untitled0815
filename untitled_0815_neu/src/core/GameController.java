@@ -1,5 +1,6 @@
 package core;
 
+import java.security.acl.Owner;
 import java.util.Random;
 
 import model.*;
@@ -16,6 +17,7 @@ public class GameController extends Application implements GameEventListener, IU
 	//private GameView gameView;
 	private Game model;
 	private CommunicationServer comServ;
+	private KI ki;
 
 	private IGameView view;
 	
@@ -48,6 +50,7 @@ public class GameController extends Application implements GameEventListener, IU
 				model.save();				
 				break;			
 			case StartSet:
+				Log.getInstance().write("Controller: Event empfangen ( " + event.getType().toString() + " )");
 				if(model.getLatestSet() != null){
 					view.unbindField(model.getLatestSet().getField());
 					model.save();
@@ -60,32 +63,45 @@ public class GameController extends Application implements GameEventListener, IU
 				//TEST
 				//Moves ausführen
 				
-				Random r = new Random();
-				
-				for(int i = 0; i < 15; i++){
-					if(i%2 == 1){
-						model.addMove(new Move(Constants.oRole, r.nextInt(7)));
-					}else{
-						model.addMove(new Move(Constants.xRole, r.nextInt(7)));
-					}
-		//				model.save();
-					try {
-						Thread.sleep(100);
-					} catch (InterruptedException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-				}
+//				Random r = new Random();
+//				
+//				for(int i = 0; i < 15; i++){
+//					if(i%2 == 1){
+//						model.addMove(new Move(Constants.oRole, r.nextInt(7)));
+//					}else{
+//						model.addMove(new Move(Constants.xRole, r.nextInt(7)));
+//					}
+//		//				model.save();
+//					try {
+//						Thread.sleep(100);
+//					} catch (InterruptedException e) {
+//						// TODO Auto-generated catch block
+//						e.printStackTrace();
+//					}
+//				}
 		//		    model.getOppPoints().setValue(1);
 				
 				break;
 			case EndSet:
+				Log.getInstance().write("Controller: Event empfangen ( " + event.getType().toString() + " )");
 		//			view.unbindField(model.getLatestSet().getField());
 				model.save();
 				break;
 			case EndGame:
+				Log.getInstance().write("Controller: Event empfangen ( " + event.getType().toString() + " )");
 				
 				break;
+				
+			case OppMove:
+				Log.getInstance().write("Controller: Event empfangen ( " + event.getType().toString() + " )");
+				Move move;
+				if(model.getRole().get().equals(Constants.xRole))
+					move = new Move(Constants.oRole, Integer.parseInt(event.getArg()));
+				else
+					move = new Move(Constants.xRole, Integer.parseInt(event.getArg()));
+				model.addMove(move);
+				model.addMove(ki.calculateNextMove(move));
+				break;				
 			default:
 				break;
 			}
@@ -119,25 +135,24 @@ public class GameController extends Application implements GameEventListener, IU
 		//Communication Server
 		comServ = CommunicationServer.getInstance();
 		
-		//Dispatcher
-		EventDispatcher Dispatcher = EventDispatcher.getInstance();
-		try {			
-			Dispatcher.addListener(GameEvent.Type.StartGame.toString(), this);
-			Dispatcher.addListener(GameEvent.Type.EndGame.toString(), this);
-			Dispatcher.addListener(GameEvent.Type.EndSet.toString(), this);
-			Dispatcher.addListener(GameEvent.Type.LoadGame.toString(), this);
-			Dispatcher.addListener(GameEvent.Type.StartSet.toString(), this);
-			Dispatcher.addListener(GameEvent.Type.OppMove.toString(), this);
 			
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-		
-		
 		//KI 
-		//TODO
+		ki = new KI(model);		
+		
+		//Dispatcher
+				EventDispatcher Dispatcher = EventDispatcher.getInstance();
+				try {			
+					Dispatcher.addListener(GameEvent.Type.StartGame.toString(), this);
+					Dispatcher.addListener(GameEvent.Type.EndGame.toString(), this);
+					Dispatcher.addListener(GameEvent.Type.EndSet.toString(), this);
+					Dispatcher.addListener(GameEvent.Type.LoadGame.toString(), this);
+					Dispatcher.addListener(GameEvent.Type.StartSet.toString(), this);
+					Dispatcher.addListener(GameEvent.Type.OppMove.toString(), this);
+					
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 		
 	    
 		
