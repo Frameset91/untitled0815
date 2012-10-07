@@ -61,6 +61,8 @@ public class GameController extends Application implements GameEventListener, IU
 		//			comServ.enableReading(model.getTimeoutServer().getValue(), model.getPath().getValue());
 				
 				//TEST
+				
+				
 				//Moves ausführen
 				
 //				Random r = new Random();
@@ -84,7 +86,7 @@ public class GameController extends Application implements GameEventListener, IU
 				break;
 			case EndSet:
 				Log.getInstance().write("Controller: Event empfangen ( " + event.getType().toString() + " )");
-		//			view.unbindField(model.getLatestSet().getField());
+				model.getLatestSet().setWinner(Constants.oRole);
 				model.save();
 				break;
 			case EndGame:

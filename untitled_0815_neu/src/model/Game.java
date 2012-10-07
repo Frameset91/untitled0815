@@ -2,12 +2,17 @@ package model;
 
 import java.util.*;
 
+import utilities.Log;
+
 import core.Constants;
 
+import javafx.application.Platform;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 
 
 public class Game {
@@ -15,7 +20,7 @@ public class Game {
 //		x,o
 //	}
 	
-	private ArrayList<Set> sets;
+	private ObservableList<Set> sets;
 	private int cols;
 	private int rows;
 	private SimpleStringProperty role;
@@ -71,19 +76,59 @@ public class Game {
 		path = new SimpleStringProperty();
 		ownPoints = new SimpleIntegerProperty(0);
 		oppPoints = new SimpleIntegerProperty(0);
-		sets = new ArrayList<Set>();
-		sets.add(new Set(cols,rows));
+		sets = FXCollections.observableArrayList();
+//		sets.add(new Set(cols,rows));
 	}
 	
 
 	public Set newSet(){
 		Set set = new Set(cols, rows); 
+		//ChangeListener um bei Veränderungen von Gewinnern die Punkte neu zu berechnen
+		set.getWinner().addListener(new ChangeListener<String>() {
+
+			@Override
+			public void changed(ObservableValue<? extends String> arg0, String arg1,
+					String arg2) {
+				//Im UI Thread laufen!
+				Platform.runLater(new Runnable() {
+				
+					@Override
+					public void run() {
+				
+						Log.getInstance().write("Game: recalculate Points");
+						int opp = 0;
+						int own = 0;
+						String win;
+						ListIterator<Set> iterator = sets.listIterator();
+						while (iterator.hasNext())
+						{
+							if((win = iterator.next().getWinner().get()).equals(role.get())){
+								//Gewonnen
+								own++;
+							}
+							else if(!(win.equals(role.get())) && (win.equals(Constants.oRole) || win.equals(Constants.xRole))){
+								//Verloren
+								opp++;
+							}else{
+								//Unentschieden
+							}
+						}
+						oppPoints.setValue(opp);
+						ownPoints.setValue(own);
+					}
+				});
+			}
+		});
+		
 		sets.add(set);
 		return set;
 	}
 	
 	public Set getLatestSet(){
-		return sets.get(sets.size()-1);		
+		if(sets.size() > 0)
+			return sets.get(sets.size()-1);		
+		else
+			return null;
 	}
 	
 	public void addMove(Move move){
@@ -94,14 +139,21 @@ public class Game {
 		//TODO: In Datenbank speichern (Primarykey = GameID), erzeugte GameID an Sets weitergeben, ID speichern
 		
 		//alle Moves speichern 
-//		ListIterator<Set> iterator = sets.listIterator();
-//		
+		// ListIterator<Set> iterator = sets.listIterator();
+		//		
 //		while (iterator.hasNext())
 //		{
 ////		    iterator.next().save(gameID);
 //		}
 	}
 	//get set
+	
+	/**
+	 * @return Alle Sätze 
+	 */
+	public ObservableList<Set> getSets() {
+		return sets;
+	}
 	
 	/**
 	 * @return the oppToken

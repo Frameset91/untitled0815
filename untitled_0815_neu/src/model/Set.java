@@ -7,18 +7,13 @@ import javafx.beans.property.SimpleStringProperty;
 
 public class Set{
 	
-//	public enum Status{
-//		//TODO!
-//		a,b,c,d
-//	}
-//	
 	private ArrayList<Move> moves;
 	private Timestamp startTime;
 	private Timestamp endTime;
 	//private int setID; //Database primary key
 	private SimpleStringProperty status;
 	private GameField field; 
-	private String winner;
+	private SimpleStringProperty winner;
 	
 	
 
@@ -26,6 +21,8 @@ public class Set{
 		field = new GameField(cols,rows);
 		startTime = new Timestamp(new Date().getTime());
 		moves = new ArrayList<Move>();
+		winner = new SimpleStringProperty();
+		status = new SimpleStringProperty();
 		
 	}
 	
@@ -57,14 +54,14 @@ public class Set{
 	/**
 	 * @param status the status to set
 	 */
-	public void setStatus(SimpleStringProperty status) {
-		this.status = status;
+	public void setStatus(String status) {
+		this.status.set(status);
 	}
 
 	/**
 	 * @return the winner
 	 */
-	public String getWinner() {
+	public SimpleStringProperty getWinner() {
 		return winner;
 	}
 
@@ -72,7 +69,7 @@ public class Set{
 	 * @param winner the winner to set
 	 */
 	public void setWinner(String winner) {
-		this.winner = winner;
+		this.winner.set(winner);
 	}
 
 	/**
