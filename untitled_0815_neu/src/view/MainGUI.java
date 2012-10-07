@@ -567,6 +567,8 @@ public class MainGUI implements IGameView{
 
 			}
 		});
+		
+		Log.getInstance().write("UI initialisiert");
 	}
 
 	
@@ -585,6 +587,8 @@ public class MainGUI implements IGameView{
 	    }
 	  //Satz Status
 	  //TODO
+	  
+	  Log.getInstance().write("Binding für Field erstellt");
 	}
 	
 	public void unbindField(GameField field){
@@ -599,6 +603,7 @@ public class MainGUI implements IGameView{
 	    	  spielfeld[i][j].getStyleClass().add("token");
 	      }
 	    }
+		Log.getInstance().write("Binding für Field aufgelöst");
 	}
 	
 	/* (non-Javadoc)
@@ -609,7 +614,7 @@ public class MainGUI implements IGameView{
 		rolle.valueProperty().bindBidirectional(model.getRole());
 		verzeichnispfad.textProperty().bindBidirectional(model.getPath());
 		gegnername.textProperty().bindBidirectional(model.getOppName());
-//		TODO Converter
+//		Converter
 		punkteGegner.textProperty().bindBidirectional(model.getOppPoints(), new NumberStringConverter());
 		punkteSpieler.textProperty().bindBidirectional(model.getOwnPoints(), new NumberStringConverter());
 		zugzeit.textProperty().bindBidirectional(model.getTimeoutDraw(), new NumberStringConverter());
@@ -617,6 +622,8 @@ public class MainGUI implements IGameView{
 		
 		tokenGegner.styleProperty().bind(model.getOppToken());
 		tokenSpieler.styleProperty().bind(model.getOwnToken());
+		
+		Log.getInstance().write("Binding für Game erstellt");
 
 	}
 	
@@ -624,7 +631,7 @@ public class MainGUI implements IGameView{
 		rolle.valueProperty().unbindBidirectional(model.getRole());
 		verzeichnispfad.textProperty().unbindBidirectional(model.getPath());
 		gegnername.textProperty().unbindBidirectional(model.getOppName());
-//		TODO Converter
+		
 		punkteGegner.textProperty().unbindBidirectional(model.getOppPoints());
 		punkteSpieler.textProperty().unbindBidirectional(model.getOwnPoints());
 		zugzeit.textProperty().unbindBidirectional(model.getTimeoutDraw());
@@ -632,6 +639,8 @@ public class MainGUI implements IGameView{
 		
 		tokenGegner.styleProperty().unbind();
 		tokenSpieler.styleProperty().unbind();
+		
+		Log.getInstance().write("Binding für Game aufgelöst");
 	}
 	
 	//Eventhandling
@@ -649,7 +658,7 @@ public class MainGUI implements IGameView{
 //				(i.next()).handleEvent(event);
 //			}
 			
-			
+			Log.getInstance().write("GameEvent gefeuert");
 		}
 		
 }
