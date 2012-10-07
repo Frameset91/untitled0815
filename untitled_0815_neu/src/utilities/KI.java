@@ -1,16 +1,23 @@
 package utilities;
+import java.util.Random;
+
+import core.Constants;
+
+import model.*;
+
 /**
  * @author Johannes Riedel
  *
  */
-/*
-public class KI {
-	tada.
-	 final int NONE = 0; 
-	 final int OPP = 1;
-	 final int ME = 2;
-	 private 
-	 
+
+public class KI{
+	
+	private Game gameobject;
+
+	public KI(Game currentgame){
+		gameobject = currentgame;
+	}
+	
 	 private static void Bewertung(byte[][] spielfeld, byte neuerzug){
 		 // ordne Spielfeld + neuem Zug Bewertungszahl zu
 	 }
@@ -22,7 +29,8 @@ public class KI {
 
 
 	private int Max(int tiefe, int alpha, int beta) {
-	    if (tiefe == 0)
+		return beta;
+	    /*if (tiefe == 0)
 	       return Bewerten();
 	    GeneriereMoeglicheZuege();
 	    localAlpha = -unendlich;    
@@ -61,9 +69,18 @@ public class KI {
 	    		   beta = wert;       
 	    	}
 	     }
-	    return localBeta;
+	    return localBeta;*/
 	 }
+
+	
+	public Move calculateNextMove(Move oppMove) {
+		// TODO Auto-generated method stub
+		Random r = new Random();
+		byte spalte = (byte) r.nextInt(Constants.gamefieldcolcount);
+		Move generierterZug = new Move(gameobject.getRole().get(), spalte);
+		
+		return generierterZug;
+	}
 
 
 }
-*/
