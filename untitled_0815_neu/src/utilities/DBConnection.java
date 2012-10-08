@@ -1,4 +1,10 @@
 package utilities;
+
+/**
+ * @author Henny
+ * 
+ */
+
 import java.sql.*;
 
 public class DBConnection {
@@ -10,13 +16,12 @@ public class DBConnection {
 	 */
 	private DBConnection() {
 		connect();
-
 	}
 
 	/**
-	 * Liefert die refernz auf Singleton Instanz zurueck
+	 * Liefert die Refernz auf Singleton Instanz zurueck
 	 * 
-	 * @return Referenz auf die SIngletonInstanz
+	 * @return SingletonInstanz
 	 */
 	public static DBConnection getInstance() {
 		if (singleton == null) {
@@ -26,19 +31,22 @@ public class DBConnection {
 	}
 
 	/**
-	 * Verbindet sich mit Der Datenbank
+	 * Verbindung zur Datenbank herstellen
 	 */
 	private void connect() {
 		try {
+			//Treiber laden
 			Class.forName("org.hsqldb.jdbcDriver");
 			// Aufbauen der Verbindung zu der Datenbank
-			this.con = DriverManager.getConnection(
-					"jdbc:hsqldb:hsql://localhost/", "SA", "");
+			con = DriverManager.getConnection(
+					"jdbc:hsqldb:file:database/dbfiles/DB4gewinnt", "SA", "");
 
-		} catch (Exception e) {
-			e.printStackTrace();
+		}catch ( ClassNotFoundException e ) {
+		      System.err.println( "Treiberklasse nicht gefunden!" );
+	    }catch (SQLException e) {
+	    	System.err.println( "Datenbank nicht gefunden!" );
 		}
-	}
+	}// Ende connect ()
 
 	/**
 	 * Sendet ein SelectStatement an die Datenbank
@@ -49,85 +57,85 @@ public class DBConnection {
 	 *         null
 	 */
 	public ResultSet sendSelectStatement(String sql) {
-		ResultSet result = null;
+		ResultSet rs = null;
 		try {
-			Statement stmnt = this.con.createStatement();
-			result = stmnt.executeQuery(sql);
+			Statement stmnt = con.createStatement();
+			rs = stmnt.executeQuery(sql);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		return result;
+		return rs;
 
 	}
 	
-
-	/**
-	 * Sendet ein anderes Statement, das keine Rueckgabe erzeugt
-	 * 
-	 * @param sql
-	 *            Query als String
-	 */
-
-	public void sendOtherStatement(String sql) {
-		try {
-			Statement stmnt = this.con.createStatement();
-			boolean result = stmnt.execute(sql);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-	
-	
-	
-	
-
-	/**
-	 * Methode, die alle Moves eines Satzes auf der DB persistiert
-	 * 
-	 * Es fehlt eine Beschreibunf für alle Moves --> Ein Array müsste global definiert werden
-	 * @param move
-	 * @return
-	 */
-	public boolean saveAllMove(int gameID, int setID) {
-		boolean result = true;
+///////////////////////////// bis hier gekommen
+//	/**
+//	 * Sendet ein anderes Statement, das keine Rueckgabe erzeugt
+//	 * 
+//	 * @param sql
+//	 *            Query als String
+//	 */
+//
+//	public void sendOtherStatement(String sql) {
 //		try {
 //			Statement stmnt = this.con.createStatement();
-//			result = stmnt
-//					.execute("INSERT INTO move (gameID,setID,role,column,datetime) VALUES ("
-//							+ gameID
-//							+ ","
-//							+ setID
-//							+ ","
-//							+ role
-//							+ ","
-//							+ column
-//							+ "," + datetime + ")");
+//			boolean result = stmnt.execute(sql);
 //		} catch (Exception e) {
-//			result = false;
 //			e.printStackTrace();
 //		}
-		return result;
-	}
-	
-	public void loadAllMoves(int gameID, int setID) {
-		
-	}
-
-	public void saveGame() {
-
-	}
-
-	public void loadGame() {
-
-	}
-	
-	public void saveSet() {
-		
-	}
-	
-	public void loadSet(){
-		
-	}
+//	}
+//	
+//	
+//	
+//	
+//
+//	/**
+//	 * Methode, die alle Moves eines Satzes auf der DB persistiert
+//	 * 
+//	 * Es fehlt eine Beschreibunf für alle Moves --> Ein Array müsste global definiert werden
+//	 * @param move
+//	 * @return
+//	 */
+//	public boolean saveAllMove(int gameID, int setID) {
+//		boolean result = true;
+////		try {
+////			Statement stmnt = this.con.createStatement();
+////			result = stmnt
+////					.execute("INSERT INTO move (gameID,setID,role,column,datetime) VALUES ("
+////							+ gameID
+////							+ ","
+////							+ setID
+////							+ ","
+////							+ role
+////							+ ","
+////							+ column
+////							+ "," + datetime + ")");
+////		} catch (Exception e) {
+////			result = false;
+////			e.printStackTrace();
+////		}
+//		return result;
+//	}
+//	
+//	public void loadAllMoves(int gameID, int setID) {
+//		
+//	}
+//
+//	public void saveGame() {
+//
+//	}
+//
+//	public void loadGame() {
+//
+//	}
+//	
+//	public void saveSet() {
+//		
+//	}
+//	
+//	public void loadSet(){
+//		
+//	}
 
 
 	/**
@@ -137,8 +145,26 @@ public class DBConnection {
 	 */
 
 	public static void main(String[] args) {
-		DBConnection bla = getInstance();
-		bla.sendOtherStatement("CREATE TABLE blubblub (spalte1 INTEGER)");
+		DBConnection test = DBConnection.getInstance();
+		ResultSet rs;
+		String sql = "SELECT * FROM game";
+		rs= test.sendSelectStatement(sql);
+		// Ergebnisse bekommen
+		try{
+			while ( rs.next() )
+		      {
+				String gameID = rs.getString(1);
+		        String role = rs.getString(2);
+		        String oppName = rs.getString(3);
+		        String ownPoints = rs.getString(4);
+		        String oppPoints = rs.getString(5);
+		        String resultset = gameID + ","+ role +  ","+ oppName +  ","+ ownPoints +',' +oppPoints;
+		        System.out.println (resultset);
+		      }
+		}catch (Exception e){
+			e.printStackTrace();
+		}
+		
 	}
 
 }

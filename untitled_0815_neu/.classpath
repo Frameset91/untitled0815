@@ -10,5 +10,6 @@
 		</accessrules>
 	</classpathentry>
 	<classpathentry kind="lib" path="src/jfxrt.jar"/>
+	<classpathentry kind="lib" path="database/hsqldb.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
