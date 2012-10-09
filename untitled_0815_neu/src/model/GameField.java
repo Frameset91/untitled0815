@@ -1,19 +1,27 @@
 package model;
-import core.Constants;
-import javafx.beans.property.SimpleStringProperty;
 
 /**
- * kapselt das Spielfeld mit allen Chips/Steinen
+ * Das Spielfeld als Bestandteil des Satzes. GameField bildet das zweidimensionale Spielfeld in Form eines Arrays ab und platziert neue Züge.
+ * 
  * Als Boolean:
  * true = x
  * false = o
  * null = kein Stein gesetzt
- * @author Sascha
+ * @author Sascha Ulbrich
  *
  */
+
+import core.Constants;
+import javafx.beans.property.SimpleStringProperty;
+
 public class GameField {
 	private SimpleStringProperty[][] field;
 	
+	/**
+	 * Konstruktor von GameField 
+	 *  
+	 * @param Spaltenanzahl, Zeilenanzahl des Spielfelds
+	 */
 	public GameField(int cols, int rows){
 		field = new SimpleStringProperty[cols][rows];
 		for(int i = 0; i < field.length; i++){
@@ -24,6 +32,11 @@ public class GameField {
 		
 	}
 	
+	/**
+	 * Methode zum Hinzufügen eines Zuges  
+	 *  
+	 * @param der neue Zug :Move
+	 */
 	public void addMove(Move move){
 		int col = move.getColumn();
 		for(int i=0; i<field[col].length; i++){
@@ -37,10 +50,16 @@ public class GameField {
 		}		
 	}
 	
+	/**
+ 	 * @return Spielfeld mit Style für jedes Feld/ jeden Stein :StringProperty[][]
+	 */
 	public SimpleStringProperty[][] getPropertyField(){
 		return field;
 	}
 	
+	/**
+	 * @return Spielfeld mit Booleans für jedes Feld :Boolean[][] (true = X; false = O; null wenn leer)
+	 */
 	public Boolean[][] getBoolField(){
 		Boolean[][] array = new Boolean[field.length][field[0].length];
 		for(int i = 0; i < field.length; i++){
