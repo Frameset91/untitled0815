@@ -352,7 +352,7 @@ public class MainGUI implements IGameView{
 	    }
 	    
 	    //-------------- TEST für manuelles Spielen --------------------
-		spielfeld[0][01].setOnMouseClicked(new EventHandler<MouseEvent>() {
+		spielfeld[0][0].setOnMouseClicked(new EventHandler<MouseEvent>() {
 			public void handle(MouseEvent arg0) {
 				Task aufgabe = new Task<Void>() {
 					protected Void call() throws Exception {
