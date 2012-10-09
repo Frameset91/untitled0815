@@ -1,4 +1,9 @@
 package model;
+/**
+ * Das Datenmodell "Game" beinhaltet die Spieleinstellungen und Sätze
+ *  
+ * @author Sascha Ulbrich 
+ */
 
 import java.util.*;
 
@@ -35,15 +40,11 @@ public class Game {
 	
 	private int ID;
 	
-//	public Game(int cols, int rows, String role, String oppName){
-//		this.cols = cols;
-//		this.rows = rows;
-//		this.role.setValue(role);
-//		this.oppName.setValue(oppName);
-//		sets = new ArrayList<Set>();
-//		sets.add(new Set(cols,rows));
-//	}
-	
+	/**
+	 * Konstruktor von Game 
+	 *  
+	 * @param Spaltenanzahl, Zeilenanzahl des Spielfelds
+	 */
 	public Game(int cols, int rows){
 		this.cols = cols;
 		this.rows = rows;
@@ -80,7 +81,11 @@ public class Game {
 //		sets.add(new Set(cols,rows));
 	}
 	
-
+	/**
+	 * Methoden zum Erstellen und Hinzufügen eines weiteren Satzes zum Datenmodell
+	 *  
+	 * @return der neu erstellte Satz :Set
+	 */
 	public Set newSet(){
 		Set set = new Set(cols, rows); 
 		//ChangeListener um bei Veränderungen von Gewinnern die Punkte neu zu berechnen
@@ -89,7 +94,7 @@ public class Game {
 			@Override
 			public void changed(ObservableValue<? extends String> arg0, String arg1,
 					String arg2) {
-				//Im UI Thread laufen!
+				//Im UI Thread starten!
 				Platform.runLater(new Runnable() {
 				
 					@Override
@@ -124,6 +129,11 @@ public class Game {
 		return set;
 	}
 	
+	/**
+	 * Methode zur Abfrage des letzten Satzes
+	 *  
+	 * @return der zuletzt erstellte Satz :Set
+	 */
 	public Set getLatestSet(){
 		if(sets.size() > 0)
 			return sets.get(sets.size()-1);		
@@ -131,10 +141,18 @@ public class Game {
 			return null;
 	}
 	
+	/**
+	 * Methode zum Hinzufügen eines Zuges  
+	 *  
+	 * @param der neue Zug :Move
+	 */
 	public void addMove(Move move){
 		sets.get(sets.size()-1).addMove(move);
 	}
 	
+	/**
+	 * Methode zum Speichern des Datenmodells
+	 */
 	public void save(){
 		//TODO: In Datenbank speichern (Primarykey = GameID), erzeugte GameID an Sets weitergeben, ID speichern
 		
@@ -149,62 +167,74 @@ public class Game {
 	//get set
 	
 	/**
-	 * @return Alle Sätze 
+	 * @return Alle Sätze :ObservableList<Set>
 	 */
 	public ObservableList<Set> getSets() {
 		return sets;
 	}
 	
 	/**
-	 * @return the oppToken
+	 * @return Style für den gegnerischen Stein :StringProperty
 	 */
 	public SimpleStringProperty getOppToken() {
 		return oppToken;
 	}
 
 	/**
-	 * @return the ownToken
+	 * @return Style für den eigenen Stein :StringProperty
 	 */
 	public SimpleStringProperty getOwnToken() {
 		return ownToken;
 	}
 
 	/**
-	 * @return the timeoutServer
+	 * @return Minimales Intervall für die Serverabfrage in ms :IntegerProperty  
 	 */
 	public SimpleIntegerProperty getTimeoutServer() {
 		return timeoutServer;
 	}
 
 	/**
-	 * @return the timeoutDraw
+	 * @return Maximale Zeit zur Berechnung eines Zuges in ms :IntegerProperty
 	 */
 	public SimpleIntegerProperty getTimeoutDraw() {
 		return timeoutDraw;
 	}
 	
+	/**
+	 * @return eigene Rolle :StringProperty
+	 */
 	public SimpleStringProperty getRole() {
 		return role;
 	}
-
+	
+	/**
+	 * @return eigene Punkte :IntegerProperty
+	 */
 	public SimpleIntegerProperty getOwnPoints() {
 		return ownPoints;
 	}
-
+	
+	/**
+	 * @return gegnerische Punkte :IntegerProperty
+	 */
 	public SimpleIntegerProperty getOppPoints() {
 		return oppPoints;
 	}
-
+	
+	/**
+	 * @return Name des Gegner :StringProperty
+	 */
 	public SimpleStringProperty getOppName() {
 		return oppName;
 	}
 
+	/**
+	 * @return Pfad für Serverdateien :StringProperty
+	 */
 	public SimpleStringProperty getPath() {
 		return path;
-	}
-	
-	
-	
+	}	
 
 }
 
