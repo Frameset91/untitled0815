@@ -5,10 +5,7 @@ package core;
  */
 
 public class Constants {
-	public static final Boolean self = true;
-	public static final Boolean opp = false;
-	public static final Boolean empty = null;
-	
+
 	public static final int gamefieldcolcount = 7;
 	public static final int gamefieldrowcount = 6;
 	
