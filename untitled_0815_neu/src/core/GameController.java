@@ -87,6 +87,7 @@ public class GameController extends Application implements GameEventListener, IU
 				break;
 			case EndSet:
 				Log.getInstance().write("Controller: Event empfangen ( " + event.getType().toString() + " )");
+//				comServ.disableReading();
 				model.getLatestSet().setWinner(Constants.oRole);
 				model.save();
 				break;
@@ -97,13 +98,20 @@ public class GameController extends Application implements GameEventListener, IU
 				
 			case OppMove:
 				Log.getInstance().write("Controller: Event empfangen ( " + event.getType().toString() + " )");
-				Move move;
-				if(model.getRole().get().equals(Constants.xRole))
-					move = new Move(Constants.oRole, Integer.parseInt(event.getArg()));
-				else
-					move = new Move(Constants.xRole, Integer.parseInt(event.getArg()));
-				model.addMove(move);
-				Move newMove = ki.calculateNextMove(move);
+//				comServ.disableReading();
+				Move newMove;
+				
+				if (Integer.parseInt(event.getArg()) > -1){
+					Move move;				
+					if(model.getRole().get().equals(Constants.xRole))
+						move = new Move(Constants.oRole, Integer.parseInt(event.getArg()));
+					else
+						move = new Move(Constants.xRole, Integer.parseInt(event.getArg()));
+					model.addMove(move);
+					newMove = ki.calculateNextMove(move);
+				}else{
+					newMove = ki.calculateNextMove();
+				}
 				
 				//Zug auf Server schreiben und Server wieder überwachen
 				comServ.writeMove((byte)newMove.getColumn(), model.getPath().getValue(), model.getRole().get().charAt(0));

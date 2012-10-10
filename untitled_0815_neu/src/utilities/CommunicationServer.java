@@ -9,6 +9,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import javafx.concurrent.Task;
+
 import utilities.*;
 
 public class CommunicationServer extends Thread {
@@ -16,6 +18,7 @@ public class CommunicationServer extends Thread {
 	private static CommunicationServer singleton = null;
 	private String serverfilepath;
 	private String agentfilepath;
+	private long lastchange;
 	private int timeout;
 	private File serverFile;
 	private File agentFile;
@@ -54,13 +57,17 @@ public class CommunicationServer extends Thread {
 //		while (i.hasNext()) {
 //			((GameEventListener_old) i.next()).handleEvent(event);
 //		}
-		EventDispatcher Dispatcher = EventDispatcher.getInstance();
-		try {
-			GameEvent e = (GameEvent)Dispatcher.triggerEvent("GameEvent", true);
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+				
+		Task aufgabe = new Task<Void>() {
+			protected Void call() throws Exception {
+				EventDispatcher Dispatcher = EventDispatcher.getInstance();
+				GameEvent e = (GameEvent)Dispatcher.triggerEvent("GameEvent", true);
+				return null;
+			}};
+    	new Thread(aufgabe).start();	
+		
+		
+		
 	}
 
 	public void fireGameEvent(GameEvent.Type type, String arg){
@@ -108,10 +115,9 @@ public class CommunicationServer extends Thread {
 	public void enableReading(int timeout, String serverFilePath, char role) {
 		this.timeout = timeout;
 
-		this.serverfilepath = serverFilePath;
-
-		this.serverFile = new File("server2spieler" + role + ".xml");
-
+		this.serverfilepath = serverFilePath + "/server2spieler" + role + ".xml";
+		this.serverfilepath = this.serverfilepath.toLowerCase();
+		this.serverFile = new File(serverfilepath);
 		this.bla = new Thread(new ReadServerFileThread());
 		this.bla.start();
 
@@ -122,7 +128,8 @@ public class CommunicationServer extends Thread {
 	 */
 	@SuppressWarnings("deprecation")
 	public void disableReading() {
-		this.bla.stop();
+		this.bla.interrupt();
+//		this.bla.stop();
 	}
 
 	/**
@@ -134,28 +141,39 @@ public class CommunicationServer extends Thread {
 		System.out.println("Ueberwachen startet");
 		// ExampleListener blub = new ExampleListener();
 		// this.addEventListener(blub);
-		while (true) {
-
+		//while (true) {
+			try{
 			ServerMessage msg = this.read();
+			
 			System.out.println(msg.getFreigabe());
 			System.out.println(msg.getSatzstatus());
 
 			// Wenn Freigabe erfolgt ist - Set Objekt benachrichtigen
 			if (msg.getFreigabe().equals("true")) {
 				this.fireGameEvent(GameEvent.Type.OppMove, String.valueOf(msg.getGegnerzug()));
-				break;
+				lastchange = serverFile.lastModified();
+//				this.disableReading();
+//				break;
+				
 			}
 			// Satz ist beendet
 			if (msg.getSatzstatus().equals("beendet")) {
 				this.fireGameEvent(GameEvent.Type.EndSet, String.valueOf(msg.getGegnerzug()));
-				break;
+				lastchange = serverFile.lastModified();
+//				this.disableReading();
+//				break;
 			}
 			// Sieger ist bestimmt
 			if (!msg.getSieger().equals("offen")) {
-//				this.fireGameEvent(GameEvent.Type.OppMove, String.valueOf(msg.getGegnerzug()));
-				break;
+				this.fireGameEvent(GameEvent.Type.OppMove, String.valueOf(msg.getGegnerzug()));
+				lastchange = serverFile.lastModified();
+//				break;
 			}
 
+			} catch (Exception e){
+				System.out.println("Lesefehler.....");
+			}
+			
 			try {
 				// Wartezeit zwischen 2 Zugriffen auf die Datei
 				Thread.sleep(this.timeout);
@@ -164,7 +182,7 @@ public class CommunicationServer extends Thread {
 				e.printStackTrace();
 
 			}
-		}
+		//}
 		System.out.println("Ende While schleife");
 
 	}
@@ -173,12 +191,16 @@ public class CommunicationServer extends Thread {
 	 * Lesen des Serverfiles
 	 */
 
-	public ServerMessage read() {
+	public ServerMessage read() throws Exception{
 		// Serverfile auslesen
 		ServerMessage msg = null;
 		while (msg == null) {
 			msg = XmlParser.readXML(serverFile);
+			if(this.lastchange == serverFile.lastModified()){
+				msg = null;
+			}
 		}
+		
 		return msg;
 	}
 
@@ -191,12 +213,15 @@ public class CommunicationServer extends Thread {
 	public synchronized void writeMove(byte spalte, String agentFilePath, char role) {
 		if (spalte > -1 && spalte < 7) {
 			try {
-				this.agentfilepath = agentFilePath;
-				this.agentFile = new File("spieler" + role + "2server.xml");
+				Log.getInstance().write("Zug schreiben im Pfad " + agentFilePath + "in Spalte " + spalte );
+				this.agentfilepath = agentFilePath + "/spieler" + role + "2server.txt";
+				this. agentfilepath = this.agentfilepath.toLowerCase();
+				this.agentFile = new File(agentfilepath);
 				FileWriter schreiber = new FileWriter(this.agentFile);
 				schreiber.write(Integer.toString(spalte));
 				schreiber.flush();
 				schreiber.close();
+				Log.getInstance().write("Schreiben erfolgreich");
 
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -256,7 +281,10 @@ class ReadServerFileThread extends Thread {
 	@Override
 	public void run() {
 		System.out.println("Thread startet");
+		Log.getInstance().write("Ueberwachung gestartet");
 		CommunicationServer.getInstance().ueberwachen();
+		Log.getInstance().write("Event gefeuert -- While Schleife verlassen");
+		this.interrupt();
 	}
 
 }

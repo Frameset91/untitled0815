@@ -170,22 +170,27 @@ public class KI{
 	     }
 	    return localBeta;*/
 	 }
-
+	
+	public Move calculateNextMove() {
+		return calculateNextMove(new Move("", -1));
+	}
 	
 	public Move calculateNextMove(Move oppMove) {
 
 		self = gameobject.getRole().get().equals(Constants.xRole);
 		opp = !self;
 		Boolean[][] aktspielfeld = gameobject.getLatestSet().getField().getBoolField();
-		Bewertung(aktspielfeld, (byte) oppMove.getColumn());
+		if(oppMove.getColumn() != -1)
+			Bewertung(aktspielfeld, (byte) oppMove.getColumn());
 		
 		Random r = new Random();
-		//byte spalte = (byte) r.nextInt(Constants.gamefieldcolcount);
-		byte spalte = 6;
+		byte spalte = (byte) r.nextInt(Constants.gamefieldcolcount);
+		//byte spalte = 6;
 		Move generierterZug = new Move(gameobject.getRole().get(), spalte);
 		
 		aktspielfeld = setzestein(aktspielfeld, spalte);
-		Log.getInstance().write("KI hat Stein gesetzt!");
+		Log.getInstance().write("KI hat Stein in Spalte " + String.valueOf(spalte)
+				+ " gesetzt!");
 		Bewertung(aktspielfeld, (byte) generierterZug.getColumn());
 
 		/*if(gameobject.getLatestSet().getField().getBoolField()[6][0]==self)
