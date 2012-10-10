@@ -11,7 +11,7 @@ import java.sql.Timestamp;
 
 public class Move {
 	private Timestamp time;
-	private String role;
+	private char role;
 	private int column;
 	private int moveID; //Database primary key
 	
@@ -20,7 +20,7 @@ public class Move {
 	 *  
 	 * @param Rolle die gezogen hat :String, Spalte :Integer, Zugzeitpunkt :Timestamp
 	 */
-	public Move(String role, int column, Timestamp time){
+	public Move(char role, int column, Timestamp time){
 		this.role = role;
 		this.column = column;
 		this.time = time;
@@ -31,7 +31,7 @@ public class Move {
 	 *  
 	 * @param Rolle die gezogen hat :String, Spalte :Integer
 	 */
-	public Move(String role, int column){
+	public Move(char role, int column){
 		this.role = role;
 		this.column = column;
 		
@@ -48,7 +48,7 @@ public class Move {
 	/**
 	 * @return Rolel die gezogen hat :String
 	 */
-	public String getRole() {
+	public char getRole() {
 		return role;
 	}
 	/**

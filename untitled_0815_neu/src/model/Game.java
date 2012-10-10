@@ -20,23 +20,22 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
 
-public class Game {
+public class Game extends Observable implements Observer{
 //	public enum GameRole{
 //		x,o
 //	}
 	
-	private ObservableList<Set> sets;
+	private ArrayList<Set> sets;
 	private int cols;
 	private int rows;
-	private SimpleStringProperty role;
-	private SimpleIntegerProperty ownPoints;
-	private SimpleIntegerProperty oppPoints;
-	private SimpleStringProperty oppName;
-	private SimpleStringProperty path;
-	private SimpleIntegerProperty timeoutServer;
-	private SimpleIntegerProperty timeoutDraw;
-	private SimpleStringProperty oppToken;
-	private SimpleStringProperty ownToken;
+	
+	private char role;
+	private int ownPoints;
+	private int oppPoints;
+	private String oppName;
+	private String path;
+	private int timeoutServer;
+	private int timeoutDraw;
 	
 	private int ID;
 	
@@ -45,39 +44,42 @@ public class Game {
 	 *  
 	 * @param Spaltenanzahl, Zeilenanzahl des Spielfelds
 	 */
-	public Game(int cols, int rows){
+	public Game(int cols, int rows, char role, String oppName, String path, int timeoutServer, int timeoutDraw){
 		this.cols = cols;
 		this.rows = rows;
-		oppName = new SimpleStringProperty();
-		oppToken = new SimpleStringProperty(Constants.oToken);
-		ownToken = new SimpleStringProperty(Constants.xToken);
-		role = new SimpleStringProperty();
-		role.addListener(new ChangeListener<String>() {
-
-			/* (non-Javadoc)
-			 * @see javafx.beans.value.ChangeListener#changed(javafx.beans.value.ObservableValue, java.lang.Object, java.lang.Object)
-			 */
-			@Override
-			public void changed(ObservableValue<? extends String> arg0,
-					String arg1, String arg2) {
-				String newRole = arg0.getValue();
-				if(newRole.equals(Constants.oRole)){
-					ownToken.setValue(Constants.oToken);
-					oppToken.setValue(Constants.xToken);
-				}else{
-					ownToken.setValue(Constants.xToken);
-					oppToken.setValue(Constants.oToken);
-				}
-				
-			}
-			
-		});
-		timeoutDraw = new SimpleIntegerProperty(2000);
-		timeoutServer = new SimpleIntegerProperty(300);
-		path = new SimpleStringProperty();
-		ownPoints = new SimpleIntegerProperty(0);
-		oppPoints = new SimpleIntegerProperty(0);
-		sets = FXCollections.observableArrayList();
+		this.role = role;
+		this.oppName = oppName;
+		this.path = path;
+		this.timeoutServer = timeoutServer;
+		this.timeoutDraw = timeoutDraw;
+//		oppName = new SimpleStringProperty();
+//		role = new SimpleStringProperty();
+//		role.addListener(new ChangeListener<String>() {
+//
+//			/* (non-Javadoc)
+//			 * @see javafx.beans.value.ChangeListener#changed(javafx.beans.value.ObservableValue, java.lang.Object, java.lang.Object)
+//			 */
+//			@Override
+//			public void changed(ObservableValue<? extends String> arg0,
+//					String arg1, String arg2) {
+//				String newRole = arg0.getValue();
+//				if(newRole.equals(Constants.oRole)){
+//					ownToken.setValue(Constants.oToken);
+//					oppToken.setValue(Constants.xToken);
+//				}else{
+//					ownToken.setValue(Constants.xToken);
+//					oppToken.setValue(Constants.oToken);
+//				}
+//				
+//			}
+//			
+//		});
+//		timeoutDraw = new SimpleIntegerProperty(2000);
+//		timeoutServer = new SimpleIntegerProperty(300);
+//		path = new SimpleStringProperty();
+//		ownPoints = new SimpleIntegerProperty(0);
+//		oppPoints = new SimpleIntegerProperty(0);
+		sets = new ArrayList<Set>();
 //		sets.add(new Set(cols,rows));
 	}
 	
@@ -88,45 +90,49 @@ public class Game {
 	 */
 	public Set newSet(){
 		Set set = new Set(cols, rows); 
-		//ChangeListener um bei Veränderungen von Gewinnern die Punkte neu zu berechnen
-		set.getWinner().addListener(new ChangeListener<String>() {
-
-			@Override
-			public void changed(ObservableValue<? extends String> arg0, String arg1,
-					String arg2) {
-				//Im UI Thread starten!
-				Platform.runLater(new Runnable() {
-				
-					@Override
-					public void run() {
-				
-						Log.getInstance().write("Game: recalculate Points");
-						int opp = 0;
-						int own = 0;
-						String win;
-						ListIterator<Set> iterator = sets.listIterator();
-						while (iterator.hasNext())
-						{
-							if((win = iterator.next().getWinner().get()).equals(role.get())){
-								//Gewonnen
-								own++;
-							}
-							else if(!(win.equals(role.get())) && (win.equals(Constants.oRole) || win.equals(Constants.xRole))){
-								//Verloren
-								opp++;
-							}else{
-								//Unentschieden
-							}
-						}
-						oppPoints.setValue(opp);
-						ownPoints.setValue(own);
-					}
-				});
-			}
-		});
-		
+		set.addObserver(this);
 		sets.add(set);
+		notifyObservers("sets");		
 		return set;
+	}
+	
+	//Observer Methode um bei Veränderungen von Gewinnern die Punkte neu zu berechnen
+	/* (non-Javadoc)
+	 * @see java.util.Observer#update(java.util.Observable, java.lang.Object)
+	 */
+	@Override
+	public void update(Observable arg0, Object arg1) {
+		String changed = (String)arg1;
+		
+		switch (changed) {
+		case "winner":
+			Log.getInstance().write("Game: recalculate Points");
+			int opp = 0;
+			int own = 0;
+			char win;
+			ListIterator<Set> iterator = sets.listIterator();
+			while (iterator.hasNext())
+			{
+				if((win = iterator.next().getWinner()) == role){
+					//Gewonnen
+					own++;
+				}
+				else if(win != role && (win == Constants.oRole || win == Constants.xRole)){
+					//Verloren
+					opp++;
+				}else{
+					//Unentschieden
+				}
+			}
+			oppPoints = opp;
+			ownPoints = own;
+//			break;
+			
+		default:
+			//Change Events in jedem Fall weiterreichen
+			notifyObservers(changed);
+			break;
+		}
 	}
 	
 	/**
@@ -169,70 +175,69 @@ public class Game {
 	/**
 	 * @return Alle Sätze :ObservableList<Set>
 	 */
-	public ObservableList<Set> getSets() {
+	public ArrayList<Set> getSets() {
 		return sets;
 	}
-	
-	/**
-	 * @return Style für den gegnerischen Stein :StringProperty
-	 */
-	public SimpleStringProperty getOppToken() {
-		return oppToken;
-	}
-
-	/**
-	 * @return Style für den eigenen Stein :StringProperty
-	 */
-	public SimpleStringProperty getOwnToken() {
-		return ownToken;
-	}
-
+//	
+//	/**
+//	 * @return Style für den gegnerischen Stein :StringProperty
+//	 */
+//	public SimpleStringProperty getOppToken() {
+//		return oppToken;
+//	}
+//
+//	/**
+//	 * @return Style für den eigenen Stein :StringProperty
+//	 */
+//	public SimpleStringProperty getOwnToken() {
+//		return ownToken;
+//	}
 	/**
 	 * @return Minimales Intervall für die Serverabfrage in ms :IntegerProperty  
 	 */
-	public SimpleIntegerProperty getTimeoutServer() {
+	public int getTimeoutServer() {
 		return timeoutServer;
 	}
 
 	/**
 	 * @return Maximale Zeit zur Berechnung eines Zuges in ms :IntegerProperty
 	 */
-	public SimpleIntegerProperty getTimeoutDraw() {
+	public int getTimeoutDraw() {
 		return timeoutDraw;
 	}
 	
 	/**
 	 * @return eigene Rolle :StringProperty
 	 */
-	public SimpleStringProperty getRole() {
+	public char getRole() {
 		return role;
 	}
 	
 	/**
 	 * @return eigene Punkte :IntegerProperty
 	 */
-	public SimpleIntegerProperty getOwnPoints() {
+	public int getOwnPoints() {
 		return ownPoints;
 	}
 	
 	/**
 	 * @return gegnerische Punkte :IntegerProperty
 	 */
-	public SimpleIntegerProperty getOppPoints() {
+	public int getOppPoints() {
 		return oppPoints;
 	}
 	
 	/**
 	 * @return Name des Gegner :StringProperty
 	 */
-	public SimpleStringProperty getOppName() {
+	public String getOppName() {
 		return oppName;
 	}
 
 	/**
 	 * @return Pfad für Serverdateien :StringProperty
 	 */
-	public SimpleStringProperty getPath() {
+	public String getPath() {
 		return path;
 	}	
 
