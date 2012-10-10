@@ -6,7 +6,7 @@ import org.w3c.dom.*;
 
 public class XmlParser {
 
-	public static ServerMessage readXML(File file) {
+	public static ServerMessage readXML(File file) throws Exception {
 		ServerMessage msg = null;
 		try {
 			DocumentBuilderFactory dbfactory = DocumentBuilderFactory
