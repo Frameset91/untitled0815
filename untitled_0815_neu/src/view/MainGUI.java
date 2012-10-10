@@ -495,13 +495,14 @@ public class MainGUI implements IGameView{
 		spalte1.setEditable(false);
 		logTabelle.getColumns().clear();
 		logTabelle.getColumns().add(spalte1);
+		logTabelle.setMinWidth(384);
 				
 		//Binding
 		spalte1.setCellValueFactory(
 				new PropertyValueFactory<Log.LogEntry, String>("text"));
 		logTabelle.setItems(Log.getInstance().getLogEntries());
-		
 		Log.getInstance().write("Binding fuer Log erstellt");
+
 	    
 	    final Button logAnzeigen = new Button("Log anzeigen");
 	    logAnzeigen.setOnMouseClicked(new EventHandler<MouseEvent>(){
@@ -509,7 +510,7 @@ public class MainGUI implements IGameView{
 	    		//Fenster mit Log öffnen
 				final Stage stageAnleitung = new Stage();
 				Group rootLog = new Group();
-				Scene sceneLog = new Scene(rootLog, 400,500, Color.WHITESMOKE);
+				Scene sceneLog = new Scene(rootLog, 484,500, Color.WHITESMOKE);
 				stageAnleitung.setScene(sceneLog);
 				stageAnleitung.centerOnScreen();
 				stageAnleitung.show();
@@ -523,9 +524,10 @@ public class MainGUI implements IGameView{
 					}
 				});
 				//Anordnen
-				VBox textUndButton = new VBox(10);
-				textUndButton.getChildren().addAll(ueberschrift, logTabelle, close);
-				rootLog.getChildren().add(textUndButton);
+				VBox Logs = new VBox(20);
+				Logs.getChildren().addAll(ueberschrift, logTabelle, close);
+				Logs.setLayoutX(50);
+				rootLog.getChildren().add(Logs);
 	    	}
 	    });
 	    logAnzeigen.setDisable(true);
