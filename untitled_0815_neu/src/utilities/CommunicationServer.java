@@ -108,9 +108,10 @@ public class CommunicationServer extends Thread {
 	public void enableReading(int timeout, String serverFilePath, char role) {
 		this.timeout = timeout;
 
-		this.serverfilepath = serverFilePath;
-
-		this.serverFile = new File("server2spieler" + role + ".xml");
+		this.serverfilepath = serverFilePath + "/server2spieler" + role + ".xml";
+		this.serverfilepath = this.serverfilepath.toLowerCase();
+		
+		this.serverFile = new File(serverfilepath);
 
 		this.bla = new Thread(new ReadServerFileThread());
 		this.bla.start();
@@ -135,8 +136,9 @@ public class CommunicationServer extends Thread {
 		// ExampleListener blub = new ExampleListener();
 		// this.addEventListener(blub);
 		while (true) {
-
+			try{
 			ServerMessage msg = this.read();
+			
 			System.out.println(msg.getFreigabe());
 			System.out.println(msg.getSatzstatus());
 
@@ -156,6 +158,10 @@ public class CommunicationServer extends Thread {
 				break;
 			}
 
+			} catch (Exception e){
+				System.out.println("Lesefehler.....");
+			}
+			
 			try {
 				// Wartezeit zwischen 2 Zugriffen auf die Datei
 				Thread.sleep(this.timeout);
@@ -191,8 +197,9 @@ public class CommunicationServer extends Thread {
 	public synchronized void writeMove(byte spalte, String agentFilePath, char role) {
 		if (spalte > -1 && spalte < 7) {
 			try {
-				this.agentfilepath = agentFilePath;
-				this.agentFile = new File("spieler" + role + "2server.xml");
+				this.agentfilepath = agentFilePath + "/spieler" + role + "2server.xml";
+				this. agentfilepath = this.agentfilepath.toLowerCase();
+				this.agentFile = new File(agentfilepath);
 				FileWriter schreiber = new FileWriter(this.agentFile);
 				schreiber.write(Integer.toString(spalte));
 				schreiber.flush();
