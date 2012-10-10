@@ -87,6 +87,7 @@ public class GameController extends Application implements GameEventListener, IU
 				break;
 			case EndSet:
 				Log.getInstance().write("Controller: Event empfangen ( " + event.getType().toString() + " )");
+				comServ.disableReading();
 				model.getLatestSet().setWinner(Constants.oRole);
 				model.save();
 				break;
@@ -97,6 +98,7 @@ public class GameController extends Application implements GameEventListener, IU
 				
 			case OppMove:
 				Log.getInstance().write("Controller: Event empfangen ( " + event.getType().toString() + " )");
+				comServ.disableReading();
 				Move move;
 				if(model.getRole().get().equals(Constants.xRole))
 					move = new Move(Constants.oRole, Integer.parseInt(event.getArg()));
