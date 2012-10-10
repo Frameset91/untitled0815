@@ -179,19 +179,19 @@ public class KI{
 
 		self = (gameobject.getRole() == Constants.xRole);
 		opp = !self;
-//		Boolean[][] aktspielfeld = gameobject.getLatestSet().getField();
-//		if(oppMove.getColumn() != -1)
-//			Bewertung(aktspielfeld, (byte) oppMove.getColumn());
+		Boolean[][] aktspielfeld = gameobject.getLatestSet().getField();
+		if(oppMove.getColumn() != -1)
+			Bewertung(aktspielfeld, (byte) oppMove.getColumn());
 		
 		Random r = new Random();
 		byte spalte = (byte) r.nextInt(Constants.gamefieldcolcount);
 		//byte spalte = 6;
 		Move generierterZug = new Move(gameobject.getRole(), spalte);
-//		
-//		aktspielfeld = setzestein(aktspielfeld, spalte);
-//		Log.getInstance().write("KI hat Stein in Spalte " + String.valueOf(spalte)
-//				+ " gesetzt!");
-//		Bewertung(aktspielfeld, (byte) generierterZug.getColumn());
+		
+		aktspielfeld = setzestein(aktspielfeld, spalte);
+		Log.getInstance().write("KI hat Stein in Spalte " + String.valueOf(spalte)
+				+ " gesetzt!");
+		Bewertung(aktspielfeld, (byte) generierterZug.getColumn());
 
 		/*if(gameobject.getLatestSet().getField().getBoolField()[6][0]==self)
 			Log.getInstance().write("Ich hab in 6-0 gesetzt!");

@@ -172,8 +172,10 @@ public class GameController extends Application implements GameEventListener, Ob
 		String changed = (String)arg;
 		switch (changed) {
 		case "winner":
-			ownPoints.set(model.getOwnPoints());
-			oppPoints.set(model.getOppPoints());
+			
+			ownPoints.setValue(model.getOwnPoints());
+			oppPoints.setValue(model.getOppPoints());
+			Log.getInstance().write("Controller: Winner changed empfangen, Stand: " +ownPoints.get()+":"+oppPoints.get());
 			break;
 		case "status":
 			status.set(model.getLatestSet().getStatus());

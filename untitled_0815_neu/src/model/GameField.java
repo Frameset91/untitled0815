@@ -88,7 +88,13 @@ public class GameField{
 //					break;
 //			}
 //		}
-//		return array;
-		return field;
+//		return 
+		Boolean[][] array = new Boolean[field.length][field[0].length];
+		for(int i = 0; i < field.length; i++){
+			for(int j = 0; j< field[0].length; j++){
+				array[i] = field[i].clone();
+			}				
+		}
+		return array;
 	}
 }
