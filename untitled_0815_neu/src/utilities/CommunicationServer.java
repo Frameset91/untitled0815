@@ -110,9 +110,7 @@ public class CommunicationServer extends Thread {
 
 		this.serverfilepath = serverFilePath + "/server2spieler" + role + ".xml";
 		this.serverfilepath = this.serverfilepath.toLowerCase();
-		
 		this.serverFile = new File(serverfilepath);
-
 		this.bla = new Thread(new ReadServerFileThread());
 		this.bla.start();
 
@@ -123,7 +121,8 @@ public class CommunicationServer extends Thread {
 	 */
 	@SuppressWarnings("deprecation")
 	public void disableReading() {
-		this.bla.stop();
+		this.bla.interrupt();
+//		this.bla.stop();
 	}
 
 	/**
@@ -145,11 +144,14 @@ public class CommunicationServer extends Thread {
 			// Wenn Freigabe erfolgt ist - Set Objekt benachrichtigen
 			if (msg.getFreigabe().equals("true")) {
 				this.fireGameEvent(GameEvent.Type.OppMove, String.valueOf(msg.getGegnerzug()));
+//				this.disableReading();
 				break;
+				
 			}
 			// Satz ist beendet
 			if (msg.getSatzstatus().equals("beendet")) {
 				this.fireGameEvent(GameEvent.Type.EndSet, String.valueOf(msg.getGegnerzug()));
+				this.disableReading();
 				break;
 			}
 			// Sieger ist bestimmt
@@ -179,7 +181,7 @@ public class CommunicationServer extends Thread {
 	 * Lesen des Serverfiles
 	 */
 
-	public ServerMessage read() {
+	public ServerMessage read() throws Exception{
 		// Serverfile auslesen
 		ServerMessage msg = null;
 		while (msg == null) {
@@ -263,7 +265,10 @@ class ReadServerFileThread extends Thread {
 	@Override
 	public void run() {
 		System.out.println("Thread startet");
+		Log.getInstance().write("Ueberwachung gestartet");
 		CommunicationServer.getInstance().ueberwachen();
+		Log.getInstance().write("Event gefeuert -- While Schleife verlassen");
+		this.interrupt();
 	}
 
 }
