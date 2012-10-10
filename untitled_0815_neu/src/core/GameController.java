@@ -59,7 +59,7 @@ public class GameController extends Application implements GameEventListener, IU
 				view.bindField(model.newSet().getField());
 				
 				//TODO ComServer starten
-				comServ.enableReading(model.getTimeoutServer().getValue(), model.getPath().getValue());
+				comServ.enableReading(model.getTimeoutServer().getValue(), model.getPath().getValue(), model.getRole().get().charAt(0));
 				
 				//TEST
 				
@@ -106,8 +106,8 @@ public class GameController extends Application implements GameEventListener, IU
 				Move newMove = ki.calculateNextMove(move);
 				
 				//Zug auf Server schreiben und Server wieder überwachen
-				comServ.writeMove((byte)newMove.getColumn(), model.getPath().getValue());
-				comServ.enableReading(model.getTimeoutServer().getValue(), model.getPath().getValue());
+				comServ.writeMove((byte)newMove.getColumn(), model.getPath().getValue(), model.getRole().get().charAt(0));
+				comServ.enableReading(model.getTimeoutServer().getValue(), model.getPath().getValue(), model.getRole().get().charAt(0));
 				
 				model.addMove(newMove);			
 				
