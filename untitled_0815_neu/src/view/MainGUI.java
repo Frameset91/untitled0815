@@ -56,6 +56,9 @@ public class MainGUI implements IGameView{
 	@SuppressWarnings("unchecked")
 	public void init(Stage mainstage, GameController viewModel){
 		this.viewModel = viewModel;
+		bindGame(null);
+		bindField(null);
+		
 		Group root = new Group();
 		Scene scene = new Scene(root);
 		scene.getStylesheets().add("test.css");
