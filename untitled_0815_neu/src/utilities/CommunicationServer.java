@@ -9,6 +9,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import javafx.concurrent.Task;
+
 import utilities.*;
 
 public class CommunicationServer extends Thread {
@@ -54,13 +56,17 @@ public class CommunicationServer extends Thread {
 //		while (i.hasNext()) {
 //			((GameEventListener_old) i.next()).handleEvent(event);
 //		}
-		EventDispatcher Dispatcher = EventDispatcher.getInstance();
-		try {
-			GameEvent e = (GameEvent)Dispatcher.triggerEvent("GameEvent", true);
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+				
+		Task aufgabe = new Task<Void>() {
+			protected Void call() throws Exception {
+				EventDispatcher Dispatcher = EventDispatcher.getInstance();
+				GameEvent e = (GameEvent)Dispatcher.triggerEvent("GameEvent", true);
+				return null;
+			}};
+    	new Thread(aufgabe).start();	
+		
+		
+		
 	}
 
 	public void fireGameEvent(GameEvent.Type type, String arg){
@@ -199,13 +205,15 @@ public class CommunicationServer extends Thread {
 	public synchronized void writeMove(byte spalte, String agentFilePath, char role) {
 		if (spalte > -1 && spalte < 7) {
 			try {
-				this.agentfilepath = agentFilePath + "/spieler" + role + "2server.xml";
+				Log.getInstance().write("Zug schreiben im Pfad " + agentFilePath + "in Spalte " + spalte );
+				this.agentfilepath = agentFilePath + "/spieler" + role + "2server.txt";
 				this. agentfilepath = this.agentfilepath.toLowerCase();
 				this.agentFile = new File(agentfilepath);
 				FileWriter schreiber = new FileWriter(this.agentFile);
 				schreiber.write(Integer.toString(spalte));
 				schreiber.flush();
 				schreiber.close();
+				Log.getInstance().write("Schreiben erfolgreich");
 
 			} catch (Exception e) {
 				e.printStackTrace();
