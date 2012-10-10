@@ -7,6 +7,8 @@ package utilities;
 
 import java.sql.*;
 
+import model.Game;
+
 public class DBConnection {
 	private static DBConnection singleton = null;
 	private Connection con;
@@ -17,6 +19,25 @@ public class DBConnection {
 	private DBConnection() {
 		connect();
 	}
+	
+	/**
+	 * Verbindung zur Datenbank herstellen, con initialisieren
+	 */
+	private void connect() {
+		try {
+			//Treiber laden
+			Class.forName("org.hsqldb.jdbcDriver");
+			// Aufbauen der Verbindung zu der Datenbank
+			con = DriverManager.getConnection(
+					"jdbc:hsqldb:file:database/dbfiles/DB4gewinnt;shutdown=true", "SA", "");
+
+		}catch ( ClassNotFoundException e ) {
+		      System.err.println( "Treiberklasse nicht gefunden!" );
+	    }catch (SQLException e) {
+	    	System.err.println( "Datenbank nicht gefunden!" );
+		}
+	}// Ende connect ()
+
 
 	/**
 	 * Liefert die Refernz auf Singleton Instanz zurueck
@@ -30,33 +51,15 @@ public class DBConnection {
 		return singleton;
 	}
 
-	/**
-	 * Verbindung zur Datenbank herstellen
-	 */
-	private void connect() {
-		try {
-			//Treiber laden
-			Class.forName("org.hsqldb.jdbcDriver");
-			// Aufbauen der Verbindung zu der Datenbank
-			con = DriverManager.getConnection(
-					"jdbc:hsqldb:file:database/dbfiles/DB4gewinnt", "SA", "");
-
-		}catch ( ClassNotFoundException e ) {
-		      System.err.println( "Treiberklasse nicht gefunden!" );
-	    }catch (SQLException e) {
-	    	System.err.println( "Datenbank nicht gefunden!" );
-		}
-	}// Ende connect ()
-
+	
 	/**
 	 * Sendet ein SelectStatement an die Datenbank
 	 * 
-	 * @param sql
-	 *            Query als String
+	 * @param sql Query als String
 	 * @return ResultSet sendet ein Resultset zurueck - Wenn kein Ergebnis ist
 	 *         null
 	 */
-	public ResultSet sendSelectStatement(String sql) {
+	public synchronized ResultSet sendSelectStatement(String sql) {
 		ResultSet rs = null;
 		try {
 			Statement stmnt = con.createStatement();
@@ -65,6 +68,43 @@ public class DBConnection {
 			e.printStackTrace();
 		}
 		return rs;
+
+	}
+	
+	/**
+	 * 
+	 * @param Spiel des Typs Game
+	 * @return Id (Primärschlüssel) auf der DB, Typ Integer
+	 */
+	public synchronized int saveGame(Game game) {
+	 // über getter parameter holen
+		int id = 0;
+		
+		// Daten zum Speichern von game holen
+/////////////////// hier noch die get-Methoden nutzen!!!!!!!!!!!!!!!!!!!!!!
+		char role = 'x';
+		String oppName = "test";
+		int ownPoints = 1;
+		int oppPoints = 1;
+		
+		// SQL Statement bauen
+		try{
+			DBConnection.main(null);
+			System.out.println ("main ausgeführt");
+			Statement stmt = con.createStatement();
+			String sql = "INSERT INTO game VALUES (DEFAULT, '" + role +"','"+ oppName + "', "+ ownPoints +", " + oppPoints +");";
+			System.out.println ("SQL: "+sql);
+			int i = stmt.executeUpdate(sql); // i ist row count
+			System.out.println("row count:" + i);
+			if (i != 1)
+					System.out.println("Fehler beim Schreiben in DB");
+			//id = Statement.RETURN_GENERATED_KEYS;
+			
+		}catch ( SQLException e ) {
+			System.err.println( "SQL Statement fehlgeschlagen!" );
+	    }
+		
+		return id;
 
 	}
 	
@@ -121,16 +161,16 @@ public class DBConnection {
 //		
 //	}
 //
-//	public void saveGame() {
+
+//	public boolean saveSet() {
+//	
+//}
+// public boolean saveMove() {
 //
 //	}
 //
 //	public void loadGame() {
 //
-//	}
-//	
-//	public void saveSet() {
-//		
 //	}
 //	
 //	public void loadSet(){
