@@ -18,6 +18,7 @@ public class CommunicationServer extends Thread {
 	private static CommunicationServer singleton = null;
 	private String serverfilepath;
 	private String agentfilepath;
+	private long lastchange;
 	private int timeout;
 	private File serverFile;
 	private File agentFile;
@@ -140,7 +141,7 @@ public class CommunicationServer extends Thread {
 		System.out.println("Ueberwachen startet");
 		// ExampleListener blub = new ExampleListener();
 		// this.addEventListener(blub);
-		while (true) {
+		//while (true) {
 			try{
 			ServerMessage msg = this.read();
 			
@@ -150,20 +151,23 @@ public class CommunicationServer extends Thread {
 			// Wenn Freigabe erfolgt ist - Set Objekt benachrichtigen
 			if (msg.getFreigabe().equals("true")) {
 				this.fireGameEvent(GameEvent.Type.OppMove, String.valueOf(msg.getGegnerzug()));
+				lastchange = serverFile.lastModified();
 //				this.disableReading();
-				break;
+//				break;
 				
 			}
 			// Satz ist beendet
 			if (msg.getSatzstatus().equals("beendet")) {
 				this.fireGameEvent(GameEvent.Type.EndSet, String.valueOf(msg.getGegnerzug()));
-				this.disableReading();
-				break;
+				lastchange = serverFile.lastModified();
+//				this.disableReading();
+//				break;
 			}
 			// Sieger ist bestimmt
 			if (!msg.getSieger().equals("offen")) {
-//				this.fireGameEvent(GameEvent.Type.OppMove, String.valueOf(msg.getGegnerzug()));
-				break;
+				this.fireGameEvent(GameEvent.Type.OppMove, String.valueOf(msg.getGegnerzug()));
+				lastchange = serverFile.lastModified();
+//				break;
 			}
 
 			} catch (Exception e){
@@ -178,7 +182,7 @@ public class CommunicationServer extends Thread {
 				e.printStackTrace();
 
 			}
-		}
+		//}
 		System.out.println("Ende While schleife");
 
 	}
@@ -192,7 +196,11 @@ public class CommunicationServer extends Thread {
 		ServerMessage msg = null;
 		while (msg == null) {
 			msg = XmlParser.readXML(serverFile);
+			if(this.lastchange == serverFile.lastModified()){
+				msg = null;
+			}
 		}
+		
 		return msg;
 	}
 
