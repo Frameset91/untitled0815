@@ -92,6 +92,7 @@ public class Game extends Observable implements Observer{
 		Set set = new Set(cols, rows); 
 		set.addObserver(this);
 		sets.add(set);
+		setChanged();
 		notifyObservers("sets");		
 		return set;
 	}
@@ -130,7 +131,8 @@ public class Game extends Observable implements Observer{
 			
 		default:
 			//Change Events in jedem Fall weiterreichen
-			notifyObservers(changed);
+			setChanged();
+			notifyObservers(changed);			
 			break;
 		}
 	}

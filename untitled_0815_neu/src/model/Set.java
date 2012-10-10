@@ -9,6 +9,8 @@ package model;
 import java.sql.Timestamp;
 import java.util.*;
 
+import utilities.Log;
+
 import javafx.beans.property.SimpleStringProperty;
 
 
@@ -44,7 +46,9 @@ public class Set extends Observable{
 	public void addMove(Move move){
 		moves.add(move);
 		field.addMove(move);
-		notifyObservers("moves");
+		setChanged();
+		Log.getInstance().write("Einen Move hinzugefügt");
+		notifyObservers("field");
 	}
 	
 	/**
@@ -77,6 +81,7 @@ public class Set extends Observable{
 	 */
 	public void setStatus(String status) {
 		this.status = status;
+		setChanged();
 		notifyObservers("status");
 	}
 
@@ -92,6 +97,7 @@ public class Set extends Observable{
 	 */
 	public void setWinner(char winner) {
 		this.winner = winner;
+		setChanged();
 		notifyObservers("winner");
 	}
 
@@ -108,5 +114,6 @@ public class Set extends Observable{
 	public Boolean[][] getField() {
 		return field.getField();
 	}
+
 
 }

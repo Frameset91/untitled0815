@@ -56,8 +56,7 @@ public class MainGUI implements IGameView{
 	@SuppressWarnings("unchecked")
 	public void init(Stage mainstage, GameController viewModel){
 		this.viewModel = viewModel;
-		bindGame(null);
-		bindField(null);
+		
 		
 		Group root = new Group();
 		Scene scene = new Scene(root);
@@ -640,7 +639,8 @@ public class MainGUI implements IGameView{
 
 			}
 		});
-		
+		bindGame(null);
+		bindField(null);
 		Log.getInstance().write("UI initialisiert");
 	}
 

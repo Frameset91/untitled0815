@@ -47,11 +47,6 @@ public class GameController extends Application implements GameEventListener, Ob
 	private SimpleStringProperty[][] styleField;
 	
 	
-	private GameController(){
-		
-	}
-	
-	
 	private void newGame(int cols, int rows){		
 		//unbind old model
 		if(model != null){			
@@ -61,6 +56,14 @@ public class GameController extends Application implements GameEventListener, Ob
 		//create new model		
 		model = new Game(cols, rows, role.get().charAt(0), oppName.get(), path.get(), timeoutServer.get(), timeoutDraw.get());
 		model.addObserver(this);
+		
+		if(role.get().charAt(0) == Constants.oRole){
+			ownToken.setValue(Constants.oToken);
+			oppToken.setValue(Constants.xToken);
+		}else{
+			ownToken.setValue(Constants.xToken);
+			oppToken.setValue(Constants.oToken);
+		}
 		
 		for(int i = 0; i < cols; i++){
 			for(int j = 0; j< rows; j++){
@@ -175,7 +178,16 @@ public class GameController extends Application implements GameEventListener, Ob
 		case "status":
 			status.set(model.getLatestSet().getStatus());
 			break;
-		case "sets":				
+		case "sets":	
+			for(int i = 0; i < Constants.gamefieldcolcount; i++){
+				for(int j = 0; j< Constants.gamefieldrowcount; j++){
+					if(styleField[i][j].get() != Constants.emptyToken)
+						styleField[i][j].set(Constants.emptyToken); 
+				}
+			}
+			break;
+		case "field":
+			Log.getInstance().write("Controller: Field changed empfangen");
 			Boolean[][] boolField = model.getLatestSet().getField();
 			for(int i = 0; i < Constants.gamefieldcolcount; i++){
 				for(int j = 0; j< Constants.gamefieldrowcount; j++){
@@ -207,7 +219,7 @@ public class GameController extends Application implements GameEventListener, Ob
 		styleField = new SimpleStringProperty[Constants.gamefieldcolcount][Constants.gamefieldrowcount];
 		for(int i = 0; i < Constants.gamefieldcolcount; i++){
 			for(int j = 0; j< Constants.gamefieldrowcount; j++){
-				styleField[i][j].set(Constants.emptyToken);
+				styleField[i][j] = new SimpleStringProperty(Constants.emptyToken); 
 			}
 		}
 		

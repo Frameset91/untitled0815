@@ -11,10 +11,12 @@ package model;
  *
  */
 
+import java.util.Observable;
+
 import core.Constants;
 import javafx.beans.property.SimpleStringProperty;
 
-public class GameField {
+public class GameField{
 //	private SimpleStringProperty[][] field;
 	private Boolean[][] field;
 	
