@@ -63,7 +63,16 @@ public class CommunicationServer extends Thread {
 		}
 	}
 
-	
+	public void fireGameEvent(GameEvent.Type type, String arg){
+		Log.getInstance().write("GameEvent gefeuert: " + type.toString());
+		GameEvent event = new GameEvent(type.toString(),type, arg);
+		try {
+			EventDispatcher.getInstance().triggerEvent(event, true);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
 
 	/**
 	 * Methode - getInstance liefert die Referenz auf den Singleton zurück
@@ -96,12 +105,13 @@ public class CommunicationServer extends Thread {
 	/**
 	 * Startet die Abfrage der Serverdatei in einem neuen Thread
 	 */
-	public void enableReading(int timeout, String serverFilePath) {
+	public void enableReading(int timeout, String serverFilePath, char role) {
 		this.timeout = timeout;
 
-		this.serverfilepath = serverFilePath;
-
-		this.serverFile = new File(this.serverfilepath);
+		this.serverfilepath = serverFilePath + "/server2spieler" + role + ".xml";
+		this.serverfilepath = this.serverfilepath.toLowerCase();
+		
+		this.serverFile = new File(serverfilepath);
 
 		this.bla = new Thread(new ReadServerFileThread());
 		this.bla.start();
@@ -126,27 +136,32 @@ public class CommunicationServer extends Thread {
 		// ExampleListener blub = new ExampleListener();
 		// this.addEventListener(blub);
 		while (true) {
-
+			try{
 			ServerMessage msg = this.read();
+			
 			System.out.println(msg.getFreigabe());
 			System.out.println(msg.getSatzstatus());
 
 			// Wenn Freigabe erfolgt ist - Set Objekt benachrichtigen
 			if (msg.getFreigabe().equals("true")) {
-				this.fireEvent((byte) 0);
+				this.fireGameEvent(GameEvent.Type.OppMove, String.valueOf(msg.getGegnerzug()));
 				break;
 			}
 			// Satz ist beendet
 			if (msg.getSatzstatus().equals("beendet")) {
-				this.fireEvent((byte) 1);
+				this.fireGameEvent(GameEvent.Type.EndSet, String.valueOf(msg.getGegnerzug()));
 				break;
 			}
 			// Sieger ist bestimmt
 			if (!msg.getSieger().equals("offen")) {
-				this.fireEvent((byte) 2);
+//				this.fireGameEvent(GameEvent.Type.OppMove, String.valueOf(msg.getGegnerzug()));
 				break;
 			}
 
+			} catch (Exception e){
+				System.out.println("Lesefehler.....");
+			}
+			
 			try {
 				// Wartezeit zwischen 2 Zugriffen auf die Datei
 				Thread.sleep(this.timeout);
@@ -179,11 +194,12 @@ public class CommunicationServer extends Thread {
 	 * @param spalte
 	 *            Nummer der Spalte, in die der naechste STein gelgt wird
 	 */
-	public synchronized void writeMove(byte spalte, String agentFilePath) {
+	public synchronized void writeMove(byte spalte, String agentFilePath, char role) {
 		if (spalte > -1 && spalte < 7) {
 			try {
-				this.agentfilepath = agentFilePath;
-				this.agentFile = new File(this.agentfilepath);
+				this.agentfilepath = agentFilePath + "/spieler" + role + "2server.xml";
+				this. agentfilepath = this.agentfilepath.toLowerCase();
+				this.agentFile = new File(agentfilepath);
 				FileWriter schreiber = new FileWriter(this.agentFile);
 				schreiber.write(Integer.toString(spalte));
 				schreiber.flush();
@@ -211,22 +227,21 @@ public class CommunicationServer extends Thread {
 	 * @param args
 	 */
 	
-	public static void main(String[] args) {
-		//
-		CommunicationServer.getInstance().enableReading(300, "server.xml");
-		try {
-			Thread.sleep(500);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
-		System.out
-				.println("----------------THREAD schließen!-------------------");
-		CommunicationServer.getInstance().writeMove((byte) 2, "spieler.txt");
-		// CommunicationServer.getInstance().disable();
-	
+//	public static void main(String[] args) {
+//		//
+//		CommunicationServer.getInstance().enableReading(300, "server.xml");
+//		try {
+//			Thread.sleep(500);
+//		} catch (InterruptedException e) {
+//			e.printStackTrace();
+//		}
+//		System.out
+//				.println("----------------THREAD schließen!-------------------");
+//		CommunicationServer.getInstance().writeMove((byte) 2, "spieler.txt");
+//		// CommunicationServer.getInstance().disable();
+//	
 	}
 
-}
 
 // ###########################################################################################
 // ###########################################################################################
