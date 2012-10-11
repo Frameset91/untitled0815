@@ -66,15 +66,24 @@ public class CommunicationServer extends Thread {
 		
 	}
 
-	public void fireGameEvent(GameEvent.Type type, String arg){
+	public void fireGameEvent(final GameEvent.Type type, final String arg){
 		Log.getInstance().write("GameEvent gefeuert: " + type.toString());
-		GameEvent event = new GameEvent(type.toString(),type, arg);
-		try {
-			EventDispatcher.getInstance().triggerEvent(event, true);
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+//		GameEvent event = new GameEvent(type.toString(),type, arg);
+//		try {
+//			EventDispatcher.getInstance().triggerEvent(event, true);
+//		} catch (Exception e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+		Task aufgabe = new Task<Void>() {
+			protected Void call() throws Exception {
+				GameEvent event = new GameEvent(type.toString(),type, arg);
+				GameEvent Dispatcher = EventDispatcher.getInstance().triggerEvent(event, true);				
+				return null;
+			}};
+    	new Thread(aufgabe).start();	
+		
+		
 	}
 
 	/**
