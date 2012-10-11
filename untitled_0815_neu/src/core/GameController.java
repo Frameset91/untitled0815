@@ -29,19 +29,37 @@ public class GameController extends Application implements GameEventListener, Ob
 	
 	
 	//Properties für DataBinding
-	private SimpleStringProperty role;
-	private SimpleStringProperty ownPoints;
-	private SimpleStringProperty oppPoints;
-	private SimpleStringProperty oppName;
-	private SimpleStringProperty path;
-	private SimpleIntegerProperty timeoutServer;
-	private SimpleIntegerProperty timeoutDraw;
-	private SimpleStringProperty oppToken;
-	private SimpleStringProperty ownToken;
 	
-	private SimpleStringProperty status;
-	private SimpleStringProperty winner;
+	public final int ROLE_PROPERTY = 0;
+	public final int OWNPOINTS_PROPERTY = 1;
+	public final int OPPPOINTS_PROPERTY = 2;
+	public final int OPPNAME_PROPERTY = 3;
+	public final int PATH_PROPERTY = 4;
+	public final int TIMEOUTSERVER_PROPERTY = 5;
+	public final int TIMEOUTDRAW_PROPERTY = 6;
+	public final int OPPTOKEN_PROPERTY = 7;
+	public final int OWNTOKEN_PROPERTY = 8;	
+	public final int STATUS_PROPERTY = 9;
+	public final int WINNER_PROPERTY = 10;
 	
+	
+	
+	
+//	private SimpleStringProperty role;
+//	private SimpleStringProperty ownPoints;
+//	private SimpleStringProperty oppPoints;
+//	private SimpleStringProperty oppName;
+//	private SimpleStringProperty path;
+//	private SimpleStringProperty timeoutServer;
+//	private SimpleStringProperty timeoutDraw;
+//	private SimpleStringProperty oppToken;
+//	private SimpleStringProperty ownToken;
+//	
+//	private SimpleStringProperty status;
+//	private SimpleStringProperty winner;
+	
+	
+	private SimpleStringProperty[] properties;
 	private SimpleStringProperty[][] styleField;
 	
 	
@@ -52,15 +70,19 @@ public class GameController extends Application implements GameEventListener, Ob
 		}
 		
 		//create new model		
-		model = new Game(cols, rows, role.get().charAt(0), oppName.get(), path.get(), timeoutServer.get(), timeoutDraw.get());
+		model = new Game(cols, rows, properties[ROLE_PROPERTY].get().charAt(0), 
+				properties[OPPNAME_PROPERTY].get(), 
+				properties[PATH_PROPERTY].get(), 
+				Integer.parseInt(properties[TIMEOUTSERVER_PROPERTY].get()), 
+				Integer.parseInt(properties[TIMEOUTDRAW_PROPERTY].get()));
 		model.addObserver(this);
 		
-		if(role.get().charAt(0) == Constants.oRole){
-			ownToken.setValue(Constants.oToken);
-			oppToken.setValue(Constants.xToken);
+		if(model.getRole() == Constants.oRole){
+			properties[OWNTOKEN_PROPERTY].setValue(Constants.oToken);
+			properties[OPPTOKEN_PROPERTY].setValue(Constants.xToken);
 		}else{
-			ownToken.setValue(Constants.xToken);
-			oppToken.setValue(Constants.oToken);
+			properties[OWNTOKEN_PROPERTY].setValue(Constants.xToken);
+			properties[OPPTOKEN_PROPERTY].setValue(Constants.oToken);
 		}
 		
 		for(int i = 0; i < cols; i++){
@@ -176,14 +198,14 @@ public class GameController extends Application implements GameEventListener, Ob
 			Platform.runLater(new Runnable() {					
 				@Override
 				public void run() {
-					ownPoints.setValue(String.valueOf(model.getOwnPoints()));
-					oppPoints.setValue(String.valueOf(model.getOppPoints()));						
+					properties[OWNPOINTS_PROPERTY].setValue(String.valueOf(model.getOwnPoints()));
+					properties[OPPPOINTS_PROPERTY].setValue(String.valueOf(model.getOppPoints()));						
 				}
 			});				
 			break;
 		case "status":
 			Log.getInstance().write("Controller: Status changed empfangen, FxThread:" + Platform.isFxApplicationThread());
-			status.set(model.getLatestSet().getStatus());
+			properties[STATUS_PROPERTY].set(model.getLatestSet().getStatus());
 			break;
 		case "sets":	
 			for(int i = 0; i < Constants.gamefieldcolcount; i++){
@@ -230,17 +252,19 @@ public class GameController extends Application implements GameEventListener, Ob
 			}
 		}
 		
-		role = new SimpleStringProperty();
-		ownPoints = new SimpleStringProperty("0");
-		oppPoints = new SimpleStringProperty("0");
-		oppName = new SimpleStringProperty();
-		path = new SimpleStringProperty();
-		timeoutServer = new SimpleIntegerProperty(Constants.defaultTimeoutServer);
-		timeoutDraw = new SimpleIntegerProperty(Constants.defaultTimeoutDraw);
-		oppToken = new SimpleStringProperty(Constants.oToken);
-		ownToken = new SimpleStringProperty(Constants.xToken);		
-		status = new SimpleStringProperty();
-		winner = new SimpleStringProperty();
+		//Property initialisierung
+		properties = new SimpleStringProperty[11];
+		properties[ROLE_PROPERTY] = new SimpleStringProperty();
+		properties[OWNPOINTS_PROPERTY] = new SimpleStringProperty("0");
+		properties[OPPPOINTS_PROPERTY] = new SimpleStringProperty("0");
+		properties[OPPNAME_PROPERTY] = new SimpleStringProperty();
+		properties[PATH_PROPERTY] = new SimpleStringProperty();
+		properties[TIMEOUTSERVER_PROPERTY] = new SimpleStringProperty(String.valueOf(Constants.defaultTimeoutServer));
+		properties[TIMEOUTDRAW_PROPERTY] = new SimpleStringProperty(String.valueOf(Constants.defaultTimeoutDraw));
+		properties[OPPTOKEN_PROPERTY] = new SimpleStringProperty(Constants.oToken);
+		properties[OWNTOKEN_PROPERTY] = new SimpleStringProperty(Constants.xToken);		
+		properties[STATUS_PROPERTY] = new SimpleStringProperty();
+		properties[WINNER_PROPERTY] = new SimpleStringProperty();
 			
 		//Communication Server
 		comServ = CommunicationServer.getInstance();
@@ -284,81 +308,89 @@ public class GameController extends Application implements GameEventListener, Ob
 	 */
 	
 	//----- Getter für Properties
+	
 	/**
 	 * @return Style für den gegnerischen Stein :StringProperty
 	 */
-	public SimpleStringProperty getOppToken() {
-		return oppToken;
-	}
-
-	/**
-	 * @return Style für den eigenen Stein :StringProperty
-	 */
-	public SimpleStringProperty getOwnToken() {
-		return ownToken;
-	}
-	/**
-	 * @return Minimales Intervall für die Serverabfrage in ms :IntegerProperty  
-	 */
-	public SimpleIntegerProperty getTimeoutServer() {
-		return timeoutServer;
-	}
-
-	/**
-	 * @return Maximale Zeit zur Berechnung eines Zuges in ms :IntegerProperty
-	 */
-	public SimpleIntegerProperty getTimeoutDraw() {
-		return timeoutDraw;
+	public SimpleStringProperty[] properties() {
+		return properties;
 	}
 	
-	/**
-	 * @return eigene Rolle :StringProperty
-	 */
-	public SimpleStringProperty getRole() {
-		return role;
-	}
-	
-	/**
-	 * @return eigene Punkte :IntegerProperty
-	 */
-	public SimpleStringProperty getOwnPoints() {
-		return ownPoints;
-	}
-	
-	/**
-	 * @return gegnerische Punkte :IntegerProperty
-	 */
-	public SimpleStringProperty getOppPoints() {
-		return oppPoints;
-	}
-	
-	/**
-	 * @return Name des Gegner :StringProperty
-	 */
-	public SimpleStringProperty getOppName() {
-		return oppName;
-	}
-
-	/**
-	 * @return Pfad für Serverdateien :StringProperty
-	 */
-	public SimpleStringProperty getPath() {
-		return path;
-	}	
-	
-	/**
-	 * @return Status des Satzes :StringProperty
-	 */
-	public SimpleStringProperty getStatus() {
-		return status;
-	}
-
-	/**
-	 * @return Gewinner :String
-	 */
-	public SimpleStringProperty getWinner() {
-		return winner;
-	}
+//	/**
+//	 * @return Style für den gegnerischen Stein :StringProperty
+//	 */
+//	public SimpleStringProperty getOppToken() {
+//		return oppToken;
+//	}
+//
+//	/**
+//	 * @return Style für den eigenen Stein :StringProperty
+//	 */
+//	public SimpleStringProperty getOwnToken() {
+//		return ownToken;
+//	}
+//	/**
+//	 * @return Minimales Intervall für die Serverabfrage in ms :IntegerProperty  
+//	 */
+//	public SimpleStringProperty getTimeoutServer() {
+//		return timeoutServer;
+//	}
+//
+//	/**
+//	 * @return Maximale Zeit zur Berechnung eines Zuges in ms :IntegerProperty
+//	 */
+//	public SimpleStringProperty getTimeoutDraw() {
+//		return timeoutDraw;
+//	}
+//	
+//	/**
+//	 * @return eigene Rolle :StringProperty
+//	 */
+//	public SimpleStringProperty getRole() {
+//		return role;
+//	}
+//	
+//	/**
+//	 * @return eigene Punkte :IntegerProperty
+//	 */
+//	public SimpleStringProperty getOwnPoints() {
+//		return ownPoints;
+//	}
+//	
+//	/**
+//	 * @return gegnerische Punkte :IntegerProperty
+//	 */
+//	public SimpleStringProperty getOppPoints() {
+//		return oppPoints;
+//	}
+//	
+//	/**
+//	 * @return Name des Gegner :StringProperty
+//	 */
+//	public SimpleStringProperty getOppName() {
+//		return oppName;
+//	}
+//
+//	/**
+//	 * @return Pfad für Serverdateien :StringProperty
+//	 */
+//	public SimpleStringProperty getPath() {
+//		return path;
+//	}	
+//	
+//	/**
+//	 * @return Status des Satzes :StringProperty
+//	 */
+//	public SimpleStringProperty getStatus() {
+//		return status;
+//	}
+//
+//	/**
+//	 * @return Gewinner :String
+//	 */
+//	public SimpleStringProperty getWinner() {
+//		return winner;
+//	}
 
 	/**
 	 * @return Spielfeld :GameField

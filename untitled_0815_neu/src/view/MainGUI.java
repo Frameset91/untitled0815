@@ -684,38 +684,38 @@ public class MainGUI implements IGameView{
 	 */
 	@Override
 	public void bindGame(Game model){
-		rolle.valueProperty().bindBidirectional(viewModel.getRole());
+		rolle.valueProperty().bindBidirectional(viewModel.properties()[viewModel.ROLE_PROPERTY]);
 		rolle.getItems().addAll(String.valueOf(Constants.xRole), String.valueOf(Constants.oRole));
-		verzeichnispfad.textProperty().bindBidirectional(viewModel.getPath());
-		gegnername.textProperty().bindBidirectional(viewModel.getOppName());
+		verzeichnispfad.textProperty().bindBidirectional(viewModel.properties()[viewModel.PATH_PROPERTY]);
+		gegnername.textProperty().bindBidirectional(viewModel.properties()[viewModel.OPPNAME_PROPERTY]);
 //		Converter
-		punkteGegner.textProperty().bindBidirectional(viewModel.getOppPoints());
-		punkteSpieler.textProperty().bindBidirectional(viewModel.getOwnPoints());
-		zugzeit.textProperty().bindBidirectional(viewModel.getTimeoutDraw(), new NumberStringConverter());
-		fileabfrage.textProperty().bindBidirectional(viewModel.getTimeoutServer(), new NumberStringConverter());
+		punkteGegner.textProperty().bindBidirectional(viewModel.properties()[viewModel.OPPPOINTS_PROPERTY]);
+		punkteSpieler.textProperty().bindBidirectional(viewModel.properties()[viewModel.OWNPOINTS_PROPERTY]);
+		zugzeit.textProperty().bindBidirectional(viewModel.properties()[viewModel.TIMEOUTDRAW_PROPERTY]);
+		fileabfrage.textProperty().bindBidirectional(viewModel.properties()[viewModel.TIMEOUTSERVER_PROPERTY]);
 		
-		tokenGegner.styleProperty().bind(viewModel.getOppToken());
-		tokenSpieler.styleProperty().bind(viewModel.getOwnToken());
+		tokenGegner.styleProperty().bind(viewModel.properties()[viewModel.OPPTOKEN_PROPERTY]);
+		tokenSpieler.styleProperty().bind(viewModel.properties()[viewModel.OWNTOKEN_PROPERTY]);
 		
 		Log.getInstance().write("Binding für Game erstellt");
 
 	}
 	
-	public void unbindGame(Game model){
-		rolle.valueProperty().unbindBidirectional(viewModel.getRole());
-		verzeichnispfad.textProperty().unbindBidirectional(viewModel.getPath());
-		gegnername.textProperty().unbindBidirectional(viewModel.getOppName());
-		
-		punkteGegner.textProperty().unbindBidirectional(viewModel.getOppPoints());
-		punkteSpieler.textProperty().unbindBidirectional(viewModel.getOwnPoints());
-		zugzeit.textProperty().unbindBidirectional(viewModel.getTimeoutDraw());
-		fileabfrage.textProperty().unbindBidirectional(viewModel.getTimeoutServer());
-		
-		tokenGegner.styleProperty().unbind();
-		tokenSpieler.styleProperty().unbind();
-		
-		Log.getInstance().write("Binding für Game aufgelöst");
-	}
+//	public void unbindGame(Game model){
+//		rolle.valueProperty().unbindBidirectional(viewModel.getRole());
+//		verzeichnispfad.textProperty().unbindBidirectional(viewModel.getPath());
+//		gegnername.textProperty().unbindBidirectional(viewModel.getOppName());
+//		
+//		punkteGegner.textProperty().unbindBidirectional(viewModel.getOppPoints());
+//		punkteSpieler.textProperty().unbindBidirectional(viewModel.getOwnPoints());
+//		zugzeit.textProperty().unbindBidirectional(viewModel.getTimeoutDraw());
+//		fileabfrage.textProperty().unbindBidirectional(viewModel.getTimeoutServer());
+//		
+//		tokenGegner.styleProperty().unbind();
+//		tokenSpieler.styleProperty().unbind();
+//		
+//		Log.getInstance().write("Binding für Game aufgelöst");
+//	}
 	
 	//Eventhandling
 		public void fireGameEvent(GameEvent.Type type){
