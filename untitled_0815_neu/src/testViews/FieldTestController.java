@@ -42,7 +42,8 @@ public class FieldTestController extends Application implements Initializable {
 	@Override
 	public void start(Stage stage) throws Exception {
         stage.setTitle("Test für Spielfeld mit FXML"); 
-        Parent root = FXMLLoader.load(getClass().getResource("FieldTest.fxml")); 
+        //Parent root = FXMLLoader.load(getClass().getResource("FieldTest.fxml")); 
+        Parent root = FXMLLoader.load(getClass().getResource("fxmlTest.xml"));
         stage.setScene(new Scene(root)); 
         stage.show();
 	}
