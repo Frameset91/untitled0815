@@ -9,9 +9,12 @@ public class Constants {
 	public static final int gamefieldcolcount = 7;
 	public static final int gamefieldrowcount = 6;
 	
-	public static final String xRole = "X";
-	public static final String oRole = "O";
-	public static final String defaultRole = xRole;
+	public static final char xRole = 'X';
+	public static final char oRole = 'O';
+	public static final char defaultRole = xRole;
+	
+	public static final int defaultTimeoutServer = 300;
+	public static final int defaultTimeoutDraw = 2000;
 	
 	
 	//Styles

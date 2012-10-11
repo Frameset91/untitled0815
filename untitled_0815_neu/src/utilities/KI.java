@@ -172,21 +172,21 @@ public class KI{
 	 }
 	
 	public Move calculateNextMove() {
-		return calculateNextMove(new Move("", -1));
+		return calculateNextMove(new Move(gameobject.getRole(), 3));
 	}
 	
 	public Move calculateNextMove(Move oppMove) {
 
-		self = gameobject.getRole().get().equals(Constants.xRole);
+		self = (gameobject.getRole() == Constants.xRole);
 		opp = !self;
-		Boolean[][] aktspielfeld = gameobject.getLatestSet().getField().getBoolField();
+		Boolean[][] aktspielfeld = gameobject.getLatestSet().getField();
 		if(oppMove.getColumn() != -1)
 			Bewertung(aktspielfeld, (byte) oppMove.getColumn());
 		
 		Random r = new Random();
 		byte spalte = (byte) r.nextInt(Constants.gamefieldcolcount);
 		//byte spalte = 6;
-		Move generierterZug = new Move(gameobject.getRole().get(), spalte);
+		Move generierterZug = new Move(gameobject.getRole(), spalte);
 		
 		aktspielfeld = setzestein(aktspielfeld, spalte);
 		Log.getInstance().write("KI hat Stein in Spalte " + String.valueOf(spalte)
