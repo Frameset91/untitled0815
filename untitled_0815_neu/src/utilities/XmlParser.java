@@ -40,7 +40,7 @@ public class XmlParser {
 			}
 
 		} catch (Exception e) {
-			e.printStackTrace();
+			System.out.println("Keine Datei vorhanden");
 		}
 
 		return msg;
