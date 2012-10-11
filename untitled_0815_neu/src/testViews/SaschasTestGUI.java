@@ -1,3 +1,4 @@
+package testViews;
 //package view;
 //	/**
 //	 * Diese Klasse initialisiert die Benutzeroberfläche

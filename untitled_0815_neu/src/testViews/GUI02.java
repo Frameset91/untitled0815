@@ -1,4 +1,4 @@
-package view;
+package testViews;
 	/**
 	 * @author NHerentrey
 	 * @param args
