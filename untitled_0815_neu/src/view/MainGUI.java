@@ -689,8 +689,8 @@ public class MainGUI implements IGameView{
 		verzeichnispfad.textProperty().bindBidirectional(viewModel.getPath());
 		gegnername.textProperty().bindBidirectional(viewModel.getOppName());
 //		Converter
-		punkteGegner.textProperty().bindBidirectional(viewModel.getOppPoints(), new NumberStringConverter());
-		punkteSpieler.textProperty().bindBidirectional(viewModel.getOwnPoints(), new NumberStringConverter());
+		punkteGegner.textProperty().bindBidirectional(viewModel.getOppPoints());
+		punkteSpieler.textProperty().bindBidirectional(viewModel.getOwnPoints());
 		zugzeit.textProperty().bindBidirectional(viewModel.getTimeoutDraw(), new NumberStringConverter());
 		fileabfrage.textProperty().bindBidirectional(viewModel.getTimeoutServer(), new NumberStringConverter());
 		

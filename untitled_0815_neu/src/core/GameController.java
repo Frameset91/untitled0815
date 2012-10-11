@@ -1,11 +1,8 @@
 package core;
 
 import java.net.URL;
-import java.security.acl.Owner;
-import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
-import java.util.Random;
 import java.util.ResourceBundle;
 
 import model.*;
@@ -13,6 +10,7 @@ import utilities.*;
 import view.*;
 
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.fxml.Initializable;
@@ -32,8 +30,8 @@ public class GameController extends Application implements GameEventListener, Ob
 	
 	//Properties für DataBinding
 	private SimpleStringProperty role;
-	private SimpleIntegerProperty ownPoints;
-	private SimpleIntegerProperty oppPoints;
+	private SimpleStringProperty ownPoints;
+	private SimpleStringProperty oppPoints;
 	private SimpleStringProperty oppName;
 	private SimpleStringProperty path;
 	private SimpleIntegerProperty timeoutServer;
@@ -84,11 +82,11 @@ public class GameController extends Application implements GameEventListener, Ob
 		
 		switch (event.getType()) {
 			case StartGame:
-				Log.getInstance().write("Controller: Event empfangen ( " + event.getType().toString() + " )");
+				Log.getInstance().write("Controller: Event empfangen ( " + event.getType().toString() + " ) FxThread:" + Platform.isFxApplicationThread());
 				newGame(Constants.gamefieldcolcount, Constants.gamefieldrowcount);							
 				break;			
 			case StartSet:
-				Log.getInstance().write("Controller: Event empfangen ( " + event.getType().toString() + " )");
+				Log.getInstance().write("Controller: Event empfangen ( " + event.getType().toString() + " ) FxThread:" + Platform.isFxApplicationThread());
 				if(model.getLatestSet() != null){
 					model.save();
 				}
@@ -121,24 +119,24 @@ public class GameController extends Application implements GameEventListener, Ob
 		//		    model.getOppPoints().setValue(1);
 				
 				break;
-			case EndSet:				
+			case EndSet:	
+				Log.getInstance().write("Controller: Event empfangen ( " + event.getType().toString() + " ) FxThread:" + Platform.isFxApplicationThread());
 				comServ.disableReading();
 				
 				//zu Testzwecken
 				char arg = Constants.oRole;
 				if(event.getArg() != "") arg = event.getArg().charAt(0); 	
 				
-				Log.getInstance().write("Controller: Event empfangen ( " + event.getType().toString() + " )");
 				model.getLatestSet().setWinner(arg);
 				model.save();
 				break;
 			case EndGame:
-				Log.getInstance().write("Controller: Event empfangen ( " + event.getType().toString() + " )");
+				Log.getInstance().write("Controller: Event empfangen ( " + event.getType().toString() + " ) FxThread:" + Platform.isFxApplicationThread());
 				
 				break;
 				
 			case OppMove:
-				Log.getInstance().write("Controller: Event empfangen ( " + event.getType().toString() + " )");
+				Log.getInstance().write("Controller: Event empfangen ( " + event.getType().toString() + " ) FxThread:" + Platform.isFxApplicationThread());
 //				comServ.disableReading();
 				Move newMove;
 				
@@ -172,12 +170,19 @@ public class GameController extends Application implements GameEventListener, Ob
 		String changed = (String)arg;
 		switch (changed) {
 		case "winner":
+			Log.getInstance().write("Controller: Winner changed empfangen, Stand: " +model.getOwnPoints()+":"+model.getOppPoints() + "; FxThread:" + Platform.isFxApplicationThread());
 			
-			ownPoints.setValue(model.getOwnPoints());
-			oppPoints.setValue(model.getOppPoints());
-			Log.getInstance().write("Controller: Winner changed empfangen, Stand: " +ownPoints.get()+":"+oppPoints.get());
+			//Sicherstellen, dass updates von TextProperties im UI Thread stattfinden
+			Platform.runLater(new Runnable() {					
+				@Override
+				public void run() {
+					ownPoints.setValue(String.valueOf(model.getOwnPoints()));
+					oppPoints.setValue(String.valueOf(model.getOppPoints()));						
+				}
+			});				
 			break;
 		case "status":
+			Log.getInstance().write("Controller: Status changed empfangen, FxThread:" + Platform.isFxApplicationThread());
 			status.set(model.getLatestSet().getStatus());
 			break;
 		case "sets":	
@@ -189,7 +194,7 @@ public class GameController extends Application implements GameEventListener, Ob
 			}
 			break;
 		case "field":
-			Log.getInstance().write("Controller: Field changed empfangen");
+			Log.getInstance().write("Controller: Field changed empfangen; FxThread:" + Platform.isFxApplicationThread());
 			Boolean[][] boolField = model.getLatestSet().getField();
 			for(int i = 0; i < Constants.gamefieldcolcount; i++){
 				for(int j = 0; j< Constants.gamefieldrowcount; j++){
@@ -226,8 +231,8 @@ public class GameController extends Application implements GameEventListener, Ob
 		}
 		
 		role = new SimpleStringProperty();
-		ownPoints = new SimpleIntegerProperty(0);
-		oppPoints = new SimpleIntegerProperty(0);
+		ownPoints = new SimpleStringProperty("0");
+		oppPoints = new SimpleStringProperty("0");
 		oppName = new SimpleStringProperty();
 		path = new SimpleStringProperty();
 		timeoutServer = new SimpleIntegerProperty(Constants.defaultTimeoutServer);
@@ -316,14 +321,14 @@ public class GameController extends Application implements GameEventListener, Ob
 	/**
 	 * @return eigene Punkte :IntegerProperty
 	 */
-	public SimpleIntegerProperty getOwnPoints() {
+	public SimpleStringProperty getOwnPoints() {
 		return ownPoints;
 	}
 	
 	/**
 	 * @return gegnerische Punkte :IntegerProperty
 	 */
-	public SimpleIntegerProperty getOppPoints() {
+	public SimpleStringProperty getOppPoints() {
 		return oppPoints;
 	}
 	
