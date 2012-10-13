@@ -6,24 +6,10 @@ package model;
  */
 
 import java.util.*;
-
 import utilities.Log;
-
 import core.Constants;
 
-import javafx.application.Platform;
-import javafx.beans.property.SimpleIntegerProperty;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
-
-
 public class Game extends Observable implements Observer{
-//	public enum GameRole{
-//		x,o
-//	}
 	
 	private ArrayList<Set> sets;
 	private int cols;
@@ -37,7 +23,7 @@ public class Game extends Observable implements Observer{
 	private int timeoutServer;
 	private int timeoutDraw;
 	
-	private int ID;
+	private String ID;
 	
 	/**
 	 * Konstruktor von Game 
@@ -52,35 +38,7 @@ public class Game extends Observable implements Observer{
 		this.path = path;
 		this.timeoutServer = timeoutServer;
 		this.timeoutDraw = timeoutDraw;
-//		oppName = new SimpleStringProperty();
-//		role = new SimpleStringProperty();
-//		role.addListener(new ChangeListener<String>() {
-//
-//			/* (non-Javadoc)
-//			 * @see javafx.beans.value.ChangeListener#changed(javafx.beans.value.ObservableValue, java.lang.Object, java.lang.Object)
-//			 */
-//			@Override
-//			public void changed(ObservableValue<? extends String> arg0,
-//					String arg1, String arg2) {
-//				String newRole = arg0.getValue();
-//				if(newRole.equals(Constants.oRole)){
-//					ownToken.setValue(Constants.oToken);
-//					oppToken.setValue(Constants.xToken);
-//				}else{
-//					ownToken.setValue(Constants.xToken);
-//					oppToken.setValue(Constants.oToken);
-//				}
-//				
-//			}
-//			
-//		});
-//		timeoutDraw = new SimpleIntegerProperty(2000);
-//		timeoutServer = new SimpleIntegerProperty(300);
-//		path = new SimpleStringProperty();
-//		ownPoints = new SimpleIntegerProperty(0);
-//		oppPoints = new SimpleIntegerProperty(0);
 		sets = new ArrayList<Set>();
-//		sets.add(new Set(cols,rows));
 	}
 	
 	/**
@@ -89,7 +47,7 @@ public class Game extends Observable implements Observer{
 	 * @return der neu erstellte Satz :Set
 	 */
 	public Set newSet(){
-		Set set = new Set(cols, rows); 
+		Set set = new Set(cols, rows, String.valueOf(sets.size()+1)); 
 		set.addObserver(this);
 		sets.add(set);
 		setChanged();
@@ -172,76 +130,70 @@ public class Game extends Observable implements Observer{
 ////		    iterator.next().save(gameID);
 //		}
 	}
-	//get set
 	
+	//-------------------get set	
 	/**
-	 * @return Alle Sätze :ObservableList<Set>
+	 * @return Alle Sätze :ArrayList<Set>
 	 */
 	public ArrayList<Set> getSets() {
 		return sets;
 	}
-//	
-//	/**
-//	 * @return Style für den gegnerischen Stein :StringProperty
-//	 */
-//	public SimpleStringProperty getOppToken() {
-//		return oppToken;
-//	}
-//
-//	/**
-//	 * @return Style für den eigenen Stein :StringProperty
-//	 */
-//	public SimpleStringProperty getOwnToken() {
-//		return ownToken;
-//	}
+
 	/**
-	 * @return Minimales Intervall für die Serverabfrage in ms :IntegerProperty  
+	 * @return Minimales Intervall für die Serverabfrage in ms :Integer  
 	 */
 	public int getTimeoutServer() {
 		return timeoutServer;
 	}
 
 	/**
-	 * @return Maximale Zeit zur Berechnung eines Zuges in ms :IntegerProperty
+	 * @return Maximale Zeit zur Berechnung eines Zuges in ms :Integer
 	 */
 	public int getTimeoutDraw() {
 		return timeoutDraw;
 	}
 	
 	/**
-	 * @return eigene Rolle :StringProperty
+	 * @return eigene Rolle :String
 	 */
 	public char getRole() {
 		return role;
 	}
 	
 	/**
-	 * @return eigene Punkte :IntegerProperty
+	 * @return eigene Punkte :Integer
 	 */
 	public int getOwnPoints() {
 		return ownPoints;
 	}
 	
 	/**
-	 * @return gegnerische Punkte :IntegerProperty
+	 * @return gegnerische Punkte :Integer
 	 */
 	public int getOppPoints() {
 		return oppPoints;
 	}
 	
 	/**
-	 * @return Name des Gegner :StringProperty
+	 * @return Name des Gegner :String
 	 */
 	public String getOppName() {
 		return oppName;
 	}
 
 	/**
-	 * @return Pfad für Serverdateien :StringProperty
+	 * @return Pfad für Serverdateien :String
 	 */
 	public String getPath() {
 		return path;
 	}	
+	
+	/**
+	 * @return ID/PrimaryKey :String
+	 */
+	public String getID() {
+		return ID;
+	}
 
 }
 

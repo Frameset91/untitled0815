@@ -13,7 +13,6 @@ public class Move {
 	private Timestamp time;
 	private char role;
 	private int column;
-	private int moveID; //Database primary key
 	
 	/**
 	 * Konstruktor von Move 
@@ -33,9 +32,7 @@ public class Move {
 	 */
 	public Move(char role, int column){
 		this.role = role;
-		this.column = column;
-		
-		//java.util.Date date= new java.util.Date();
+		this.column = column;		
 		this.time = new Timestamp(new java.util.Date().getTime());
 	}
 	

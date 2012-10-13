@@ -40,6 +40,7 @@ public class GameController extends Application implements GameEventListener, Ob
 	private SimpleStringProperty[] properties;
 	private SimpleStringProperty[][] styleField;
 	private ObservableList<Log.LogEntry> logItems;
+	private ObservableList<SetProperty> sets;
 	
 	//---------------------Verarbeitung von Events-----------------------------------------
 	/* (non-Javadoc)
@@ -53,23 +54,23 @@ public class GameController extends Application implements GameEventListener, Ob
 	public void handleEvent(GameEvent event) {
 		
 		switch (event.getType()) {
-			case StartGame:
+			case StartGame:  //--------- Spiel starten gedrückt
 				Log.getInstance().write("Controller: Event empfangen ( " + event.getType().toString() + " ) FxThread:" + Platform.isFxApplicationThread());
 				newGame(Constants.gamefieldcolcount, Constants.gamefieldrowcount);							
 				break;			
-			case StartSet:
+			case StartSet: 	//--------- Satz starten gedrückt
 				Log.getInstance().write("Controller: Event empfangen ( " + event.getType().toString() + " ) FxThread:" + Platform.isFxApplicationThread());
 				if(model.getLatestSet() != null){
 					model.save();
 				}
 				
-				model.newSet();
+				sets.add(new SetProperty(model.newSet().getID(), "?"));
 				
 				//ComServer starten
 				comServ.enableReading(model.getTimeoutServer(), model.getPath(), model.getRole());
 		
 				break;
-			case EndSet:	
+			case EndSet:	//--------- Satz abbrechen gedrückt oder Server hat den Satz beendet
 				Log.getInstance().write("Controller: Event empfangen ( " + event.getType().toString() + " ) FxThread:" + Platform.isFxApplicationThread());
 				comServ.disableReading();
 				
@@ -80,12 +81,12 @@ public class GameController extends Application implements GameEventListener, Ob
 				model.getLatestSet().setWinner(arg);
 				model.save();
 				break;
-			case EndGame:
+			case EndGame:	//--------- Spiel beenden gedrückt
 				Log.getInstance().write("Controller: Event empfangen ( " + event.getType().toString() + " ) FxThread:" + Platform.isFxApplicationThread());
 				
 				break;
 				
-			case OppMove:
+			case OppMove:	//--------- ein gegnerischer Zug wurde vom Server mitgeteilt 
 				Log.getInstance().write("Controller: Event empfangen ( " + event.getType().toString() + " ) FxThread:" + Platform.isFxApplicationThread());
 //				comServ.disableReading();
 				Move newMove;
@@ -106,8 +107,7 @@ public class GameController extends Application implements GameEventListener, Ob
 				comServ.writeMove((byte)newMove.getColumn(), model.getPath(), model.getRole());
 				comServ.enableReading(model.getTimeoutServer(), model.getPath(), model.getRole());
 				
-				model.addMove(newMove);			
-				
+				model.addMove(newMove);							
 				break;				
 			default:
 				break;
@@ -121,7 +121,6 @@ public class GameController extends Application implements GameEventListener, Ob
 	 * @param Spaltenanzahl :Integer, Zeilenanzahl :Integer
 	 */	
 	private void newGame(int cols, int rows){		
-		//unbind old model
 		if(model != null){			
 			model.save();
 		}
@@ -170,12 +169,14 @@ public class GameController extends Application implements GameEventListener, Ob
 					"Controller: Winner changed empfangen, Stand: " +model.getOwnPoints()+":"+model.getOppPoints() 
 					+ "; FxThread:" + Platform.isFxApplicationThread());
 			
+			
+			sets.get(Integer.parseInt(model.getLatestSet().getID())-1).setWinner(String.valueOf(model.getLatestSet().getWinner()));
 			//Sicherstellen, dass updates von TextProperties im UI Thread stattfinden
 			Platform.runLater(new Runnable() {					
 				@Override
 				public void run() {
 					properties[OWNPOINTS_PROPERTY].setValue(String.valueOf(model.getOwnPoints()));
-					properties[OPPPOINTS_PROPERTY].setValue(String.valueOf(model.getOppPoints()));						
+					properties[OPPPOINTS_PROPERTY].setValue(String.valueOf(model.getOppPoints()));					
 				}
 			});				
 			break;
@@ -235,6 +236,13 @@ public class GameController extends Application implements GameEventListener, Ob
 	 */
 	public ObservableList<Log.LogEntry> logItems() {
 		return logItems;
+	}
+	
+	/**
+	 * @return Logeinträge :ObservableList<Log.LogEntry>
+	 */
+	public ObservableList<SetProperty> sets() {
+		return sets;
 	}
 
 	//---------------- Methoden zum starten und initialisieren des Programms -------------------
