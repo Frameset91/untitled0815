@@ -16,6 +16,8 @@ public class Constants {
 	public static final int defaultTimeoutServer = 300;
 	public static final int defaultTimeoutDraw = 2000;
 	
+	public static final String statusSetEnd = "Satz beendet";
+	
 	
 	//Styles
 //	static final String xToken = "token-yellow";

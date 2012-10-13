@@ -7,10 +7,10 @@ package model;
  *
  */
 
-//import java.sql.Timestamp;
+import java.sql.Timestamp;
 
 public class Move {
-//	private Timestamp time;
+	private Timestamp time;
 	private char role;
 	private int column;
 	private int ID;
@@ -24,6 +24,7 @@ public class Move {
 		this.role = role;
 		this.column = column;
 		this.ID = id;
+		this.time = new Timestamp(new java.util.Date().getTime());
 	}
 	
 	/**
@@ -42,6 +43,13 @@ public class Move {
 	 */
 	public int getID() {
 		return ID;
+	}
+	
+	/**
+	 * @return Zugnummer :Integer
+	 */
+	public Timestamp getTime() {
+		return time;
 	}
 	/**
 	 * @return Rolel die gezogen hat :String

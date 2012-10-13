@@ -9,6 +9,8 @@ package model;
 import java.sql.Timestamp;
 import java.util.*;
 
+import core.Constants;
+
 import utilities.Log;
 
 public class Set extends Observable{
@@ -52,7 +54,6 @@ public class Set extends Observable{
 	 * @param ID des Games :Integer
 	 */
 	public void save(int gameID){
-		endTime = new Timestamp(new Date().getTime());
 		//TODO: In Datenbank speichern (Primarykey = GameID + SetID), erzeugte setID an Moves weitergeben 
 		
 		
@@ -69,8 +70,11 @@ public class Set extends Observable{
 	 */
 	public void setStatus(String status) {
 		this.status = status;
+		if(status == Constants.statusSetEnd){
+			endTime = new Timestamp(new Date().getTime());
+		}
 		setChanged();
-		notifyObservers("status");
+		notifyObservers("status");		
 	}
 	
 	/**
