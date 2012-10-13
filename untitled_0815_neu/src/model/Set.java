@@ -11,15 +11,12 @@ import java.util.*;
 
 import utilities.Log;
 
-import javafx.beans.property.SimpleStringProperty;
-
-
 public class Set extends Observable{
 	
 	private ArrayList<Move> moves;
 	private Timestamp startTime;
 	private Timestamp endTime;
-	private int setID; //Database primary key
+	private String ID; //Database primary key
 	private String status;
 	private GameField field; 
 	private char winner;
@@ -27,20 +24,17 @@ public class Set extends Observable{
 	
 	/**
 	 * Konstruktor von Set
-	 *  
-	 * @param Spaltenanzahl, Zeilenanzahl des Spielfelds
+	 * @param Spaltenanzahl, Zeilenanzahl des Spielfelds, Satznummer :Integer
 	 */
-	public Set(int cols, int rows){
+	public Set(int cols, int rows, String id){
+		this.ID = id;
 		field = new GameField(cols,rows);
 		startTime = new Timestamp(new Date().getTime());
 		moves = new ArrayList<Move>();
-//		winner = new SimpleStringProperty();
-//		status = new SimpleStringProperty();		
 	}
 	
 	/**
 	 * Methode zum Hinzufügen eines Zuges  
-	 *  
 	 * @param der neue Zug :Move
 	 */
 	public void addMove(Move move){
@@ -69,6 +63,12 @@ public class Set extends Observable{
 		}
 	}
 	
+	/**
+	 * @return Satznummer :String
+	 */
+	public String getID() {
+		return ID;
+	}	
 	/**
 	 * @return Status des Satzes :String
 	 */
@@ -113,6 +113,20 @@ public class Set extends Observable{
 	 */
 	public Boolean[][] getField() {
 		return field.getField();
+	}
+	
+	/**
+	 * @return Startzeit :java.sql.Timestamp
+	 */
+	public Timestamp getStarttime() {
+		return startTime;
+	}
+	
+	/**
+	 * @return Endzeit :java.sql.Timestamp
+	 */
+	public Timestamp getEndtime() {
+		return endTime;
 	}
 
 
