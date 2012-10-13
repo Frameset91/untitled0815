@@ -6,17 +6,14 @@ package utilities;
  */
 
 import java.sql.*;
-
-import java.util.Date;
-
 import model.Game;
 import model.Move;
 import model.Set;
 
 /**
  * TO DO: 
- * getter-Methoden für's Speichern: saveGame, saveSet, saveMove
- * Main.Methode entfernen
+ * getter-Methoden für's Speichern: saveMove
+ * alle load-Methoden
  *
  */
 
@@ -113,11 +110,10 @@ public class DBConnection {
 		int id = 0; // id ist die erzeugte PrimaryKey-ID
 		
 		// Daten zum Speichern von game holen
-/////////////////// hier noch die get-Methoden nutzen!!!!!!!!!!!!!!!!!!!!!!
-		char role = 'x';
-		String oppName = "test";
-		int ownPoints = 1;
-		int oppPoints = 1;
+		char role = game.getRole();
+		String oppName = game.getOppName();
+		int ownPoints = game.getOwnPoints();
+		int oppPoints = game.getOppPoints();
 		
 		
 		try{
@@ -162,17 +158,15 @@ public class DBConnection {
 	 * @param Set, Satz der gespeichert werden soll
 	 * @return boolean true, wenn erfolgreich gespeichert, false bei Fehler
 	 */
-	public synchronized boolean saveSet(Set set) {
+	public synchronized boolean saveSet(Set set, int gameID) {
 	
 		boolean success = false;
 		
 		// Daten zum Speichern von game holen
-/////////////////// hier noch die get-Methoden nutzen!!!!!!!!!!!!!!!!!!!!!!
-		int gameID = 1000;
-		int setID = 2;
-		char winner = 'x';
-		Timestamp starttime = new Timestamp(new Date().getTime());
-		Timestamp endtime = starttime;
+		String setID = set.getID();
+		char winner = set.getWinner();
+		Timestamp starttime = set.getStarttime();
+		Timestamp endtime = set.getEndtime(); 
 		
 		try {
 			//SQL Statement bauen
@@ -197,17 +191,15 @@ public class DBConnection {
 	 * @param move, ein Zug der gespeichert werden soll
 	 * @return true bei erfolgreichem Speichern, false bei Fehler
 	 */
-	public synchronized boolean saveMove(Move move) {
+	public synchronized boolean saveMove(Move move, int gameID, int setID) {
 		boolean success = false;
 		
 		// Daten zum Speichern von game holen
 /////////////////// hier noch die get-Methoden nutzen!!!!!!!!!!!!!!!!!!!!!!
-		int gameID = 1000;
-		int setID = 1;
 		int moveID = 2;
-		char role = 'x';
-		int column = 3;
-		Timestamp time = new Timestamp(new Date().getTime());
+		char role = move.getRole();
+		int column = move.getColumn();
+		Timestamp time = move.getTime();
 			
 		try {
 			//SQL Statement bauen
@@ -271,34 +263,5 @@ public class DBConnection {
 //		
 //	}
 
-
-	/**
-	 * nur zu Testzwecken
-	 * 
-	 * @param args
-	 */
-
-	public static void main(String[] args) {
-		DBConnection test = DBConnection.getInstance();
-		ResultSet rs;
-		String sql = "SELECT * FROM game";
-		rs= test.sendSelectStatement(sql);
-		// Ergebnisse bekommen
-		try{
-			while ( rs.next() )
-		      {
-				String gameID = rs.getString(1);
-		        String role = rs.getString(2);
-		        String oppName = rs.getString(3);
-		        String ownPoints = rs.getString(4);
-		        String oppPoints = rs.getString(5);
-		        String resultset = gameID + ","+ role +  ","+ oppName +  ","+ ownPoints +',' +oppPoints;
-		        System.out.println (resultset);
-		      }
-		}catch (Exception e){
-			e.printStackTrace();
-		}
-		
-	}
 
 }

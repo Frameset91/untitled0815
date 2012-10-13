@@ -18,7 +18,7 @@ public class test_DBConnector {
 	public static void testMove(){
 		Move myMove = new Move ('x', 3, new Timestamp(new Date().getTime()));
 		
-		boolean moveIns = con.saveMove(myMove);
+		boolean moveIns = con.saveMove(myMove, 1000, 1);
 		System.out.println ("erfolg: " + moveIns);
 		ResultSet rs;
 		String sql = "SELECT * FROM move";
@@ -42,9 +42,9 @@ public class test_DBConnector {
 	}// ende testMove
 	
 	public static void testSet() {
-		Set mySet = new Set (7,6);
+		Set mySet = new Set (7,6, "bla");
 		
-		boolean setIns = con.saveSet(mySet);
+		boolean setIns = con.saveSet(mySet, 1000);
 		System.out.println ("erfolg: " + setIns);
 		ResultSet rs;
 		String sql = "SELECT * FROM gameSet";
@@ -72,8 +72,24 @@ public class test_DBConnector {
 		int i = con.saveGame(game);
 		System.out.println("id:" + i);
 		
-		DBConnection.main(null);
-		System.out.println ("main ausgeführt");
+		ResultSet rs;
+		String sql = "SELECT * FROM game";
+		rs= con.sendSelectStatement(sql);
+		// Ergebnisse bekommen
+		try{
+			while ( rs.next() )
+		      {
+				String gameID = rs.getString(1);
+		        String role = rs.getString(2);
+		        String oppName = rs.getString(3);
+		        String ownPoints = rs.getString(4);
+		        String oppPoints = rs.getString(5);
+		        String resultset = gameID + ","+ role +  ","+ oppName +  ","+ ownPoints +',' +oppPoints;
+		        System.out.println (resultset);
+		      }
+		}catch (Exception e){
+			e.printStackTrace();
+		}
 		
 	}
 	
