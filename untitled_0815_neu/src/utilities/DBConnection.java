@@ -37,8 +37,8 @@ public class DBConnection {
 	    	System.err.println( "Datenbank nicht gefunden!" );
 		}
 	}// Ende connect ()
-
-
+	
+	
 	/**
 	 * Liefert die Refernz auf Singleton Instanz zurueck
 	 * 
@@ -77,8 +77,8 @@ public class DBConnection {
 	 * @return Id (Primärschlüssel) auf der DB, Typ Integer
 	 */
 	public synchronized int saveGame(Game game) {
-	 // über getter parameter holen
-		int id = 0;
+		
+		int id = 0; // id ist die erzeugte PrimaryKey-ID
 		
 		// Daten zum Speichern von game holen
 /////////////////// hier noch die get-Methoden nutzen!!!!!!!!!!!!!!!!!!!!!!
@@ -87,25 +87,57 @@ public class DBConnection {
 		int ownPoints = 1;
 		int oppPoints = 1;
 		
-		// SQL Statement bauen
+		
 		try{
-			DBConnection.main(null);
-			System.out.println ("main ausgeführt");
-			Statement stmt = con.createStatement();
+			
+			// SQL Statement bauen
 			String sql = "INSERT INTO game VALUES (DEFAULT, '" + role +"','"+ oppName + "', "+ ownPoints +", " + oppPoints +");";
 			System.out.println ("SQL: "+sql);
-			int i = stmt.executeUpdate(sql); // i ist row count
+			PreparedStatement stmt = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+			
+			// absenden zur DB
+			stmt.execute(); 
+			
+			// erzeugten PrimaryKey auslesen
+			ResultSet rs = stmt.getGeneratedKeys();
+			try{
+				while ( rs.next() )
+			      {
+					int gameID = rs.getInt(1);
+					id = gameID;
+			        
+			      }
+			}catch (Exception e){
+				e.printStackTrace();
+			}
+			//Anzahl geänderter Zeilen lesen
+			int i = stmt.getUpdateCount();
 			System.out.println("row count:" + i);
+			
 			if (i != 1)
 					System.out.println("Fehler beim Schreiben in DB");
-			//id = Statement.RETURN_GENERATED_KEYS;
+			
 			
 		}catch ( SQLException e ) {
 			System.err.println( "SQL Statement fehlgeschlagen!" );
+			e.printStackTrace();
 	    }
 		
 		return id;
-
+	} // ende saveGame (Game game)
+	
+	
+	/**
+	 * 
+	 * @param Set, Satz der gespeichert werden soll
+	 * @return boolean true, wenn erfolgreich gespeichert, false bei Fehler
+	 */
+	public synchronized boolean saveSet() {
+	
+		boolean success = false;
+		
+		
+		return success;
 	}
 	
 ///////////////////////////// bis hier gekommen
@@ -161,10 +193,6 @@ public class DBConnection {
 //		
 //	}
 //
-
-//	public boolean saveSet() {
-//	
-//}
 // public boolean saveMove() {
 //
 //	}
