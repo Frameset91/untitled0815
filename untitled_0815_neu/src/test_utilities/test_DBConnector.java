@@ -11,7 +11,7 @@ public class test_DBConnector {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		Game game = new Game(7, 6);
+		Game game = new Game(7, 6, 'x', "abc", "", 1,1);
 		
 		DBConnection con = DBConnection.getInstance();
 		int i = con.saveGame(game);
