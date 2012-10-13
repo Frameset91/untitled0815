@@ -1,6 +1,7 @@
 package core;
 
 import java.net.URL;
+import java.util.Iterator;
 import java.util.Observable;
 import java.util.Observer;
 import java.util.ResourceBundle;
@@ -64,7 +65,7 @@ public class GameController extends Application implements GameEventListener, Ob
 					model.save();
 				}
 				
-				sets.add(new SetProperty(String.valueOf(model.newSet().getID()), "?"));
+//				sets.add(new SetProperty(String.valueOf(model.newSet().getID()), "?"));
 				
 				//ComServer starten
 				comServ.enableReading(model.getTimeoutServer(), model.getPath(), model.getRole());
@@ -165,7 +166,8 @@ public class GameController extends Application implements GameEventListener, Ob
 					+ "; FxThread:" + Platform.isFxApplicationThread());
 			
 			
-			sets.get(model.getLatestSet().getID()-1).setWinner(String.valueOf(model.getLatestSet().getWinner()));
+//			sets.get(model.getLatestSet().getID()-1).setWinner(String.valueOf(model.getLatestSet().getWinner()));
+			updateSets();
 			//Sicherstellen, dass updates von TextProperties im UI Thread stattfinden
 			Platform.runLater(new Runnable() {					
 				@Override
@@ -179,35 +181,49 @@ public class GameController extends Application implements GameEventListener, Ob
 			Log.getInstance().write("Controller: Status changed empfangen, FxThread:" + Platform.isFxApplicationThread());
 			properties[STATUS_PROPERTY].set(model.getLatestSet().getStatus());
 			break;
-		case "sets":	
-			for(int i = 0; i < Constants.gamefieldcolcount; i++){
-				for(int j = 0; j< Constants.gamefieldrowcount; j++){
-					if(styleField[i][j].get() != Constants.emptyToken)
-						styleField[i][j].set(Constants.emptyToken); 
-				}
-			}
+		case "sets":
+			Log.getInstance().write("Controller: Set changed empfangen; FxThread:" + Platform.isFxApplicationThread());
+			updateField();
+			updateSets();
 			break;
 		case "field":
 			Log.getInstance().write("Controller: Field changed empfangen; FxThread:" + Platform.isFxApplicationThread());
-			Boolean[][] boolField = model.getLatestSet().getField();
-			for(int i = 0; i < Constants.gamefieldcolcount; i++){
-				for(int j = 0; j< Constants.gamefieldrowcount; j++){
-					String newStyle;
-					if(boolField[i][j] == null)
-						newStyle  = Constants.emptyToken;
-					else if(boolField[i][j])
-						newStyle = Constants.xToken;
-					else
-						newStyle = Constants.oToken;
-					
-					if(styleField[i][j].getValue() != newStyle) styleField[i][j].set(newStyle);
-				}
-			}
+			updateField();
 			break;
 		default:
 			break;
 		}
 		
+	}
+	
+
+
+	//Hilfsmethoden
+	
+	private void updateField(){
+		Boolean[][] boolField = model.getLatestSet().getField();
+		for(int i = 0; i < Constants.gamefieldcolcount; i++){
+			for(int j = 0; j< Constants.gamefieldrowcount; j++){
+				String newStyle;
+				if(boolField[i][j] == null)
+					newStyle  = Constants.emptyToken;
+				else if(boolField[i][j])
+					newStyle = Constants.xToken;
+				else
+					newStyle = Constants.oToken;
+				
+				if(styleField[i][j].getValue() != newStyle) styleField[i][j].set(newStyle);
+			}
+		}
+	}
+	
+	private void updateSets() {
+		sets.clear();
+		Iterator<Set> it = model.getSets().listIterator();
+		while(it.hasNext()){
+			Set set = it.next();
+			sets.add(new SetProperty(String.valueOf(set.getID()), String.valueOf(set.getWinner())));
+		}
 	}
 	
 	//------------------- Getter für Properties -----------------------------------------------

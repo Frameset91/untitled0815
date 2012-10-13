@@ -33,6 +33,7 @@ public class Set extends Observable{
 		field = new GameField(cols,rows);
 		startTime = new Timestamp(new Date().getTime());
 		moves = new ArrayList<Move>();
+		winner = '/';
 	}
 	
 	/**
