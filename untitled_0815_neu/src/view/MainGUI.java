@@ -505,7 +505,7 @@ public class MainGUI implements IGameView{
 		//Binding
 		spalte1.setCellValueFactory(
 				new PropertyValueFactory<Log.LogEntry, String>("text"));
-		logTabelle.setItems(Log.getInstance().getLogEntries());
+		logTabelle.setItems(viewModel.logItems());
 		Log.getInstance().write("Binding fuer Log erstellt");
 
 	    
@@ -655,7 +655,7 @@ public class MainGUI implements IGameView{
 	    {
 	      for (int j = 0; j < Constants.gamefieldrowcount; j++)
 	      {
-	    	  spielfeld[i][j].styleProperty().bind(viewModel.getStyleField()[i][Constants.gamefieldrowcount -1 -j]);
+	    	  spielfeld[i][j].styleProperty().bind(viewModel.styleField()[i][Constants.gamefieldrowcount -1 -j]);
 	      }
 	    }
 	  //Satz Status
@@ -669,7 +669,7 @@ public class MainGUI implements IGameView{
 	    {
 	      for (int j = 0; j < Constants.gamefieldrowcount; j++)
 	      {
-	    	  spielfeld[i][j].styleProperty().unbindBidirectional(viewModel.getStyleField()[i][Constants.gamefieldrowcount -1 -j]);
+	    	  spielfeld[i][j].styleProperty().unbindBidirectional(viewModel.styleField()[i][Constants.gamefieldrowcount -1 -j]);
 	    	  if(spielfeld[i][j].styleProperty().isBound())
 	    		  spielfeld[i][j].styleProperty().unbind();
 	    	  spielfeld[i][j].styleProperty().setValue("");

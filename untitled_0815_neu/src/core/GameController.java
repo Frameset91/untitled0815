@@ -11,25 +11,19 @@ import view.*;
 
 import javafx.application.Application;
 import javafx.application.Platform;
-import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
+import javafx.collections.ObservableList;
 import javafx.fxml.Initializable;
 import javafx.stage.Stage;
 
 
 public class GameController extends Application implements GameEventListener, Observer, Initializable{
 
-	
-	//private GameView gameView;
 	private Game model;
 	private CommunicationServer comServ;
 	private KI ki;
 
-	private IGameView view;
-	
-	
-	//Properties für DataBinding
-	
+	//Konstanten für Zugriff auf Property Array
 	public final int ROLE_PROPERTY = 0;
 	public final int OWNPOINTS_PROPERTY = 1;
 	public final int OPPPOINTS_PROPERTY = 2;
@@ -42,63 +36,19 @@ public class GameController extends Application implements GameEventListener, Ob
 	public final int STATUS_PROPERTY = 9;
 	public final int WINNER_PROPERTY = 10;
 	
-	
-	
-	
-//	private SimpleStringProperty role;
-//	private SimpleStringProperty ownPoints;
-//	private SimpleStringProperty oppPoints;
-//	private SimpleStringProperty oppName;
-//	private SimpleStringProperty path;
-//	private SimpleStringProperty timeoutServer;
-//	private SimpleStringProperty timeoutDraw;
-//	private SimpleStringProperty oppToken;
-//	private SimpleStringProperty ownToken;
-//	
-//	private SimpleStringProperty status;
-//	private SimpleStringProperty winner;
-	
-	
+	//Properties für DataBinding	
 	private SimpleStringProperty[] properties;
 	private SimpleStringProperty[][] styleField;
+	private ObservableList<Log.LogEntry> logItems;
 	
-	
-	private void newGame(int cols, int rows){		
-		//unbind old model
-		if(model != null){			
-			model.save();
-		}
-		
-		//create new model		
-		model = new Game(cols, rows, properties[ROLE_PROPERTY].get().charAt(0), 
-				properties[OPPNAME_PROPERTY].get(), 
-				properties[PATH_PROPERTY].get(), 
-				Integer.parseInt(properties[TIMEOUTSERVER_PROPERTY].get()), 
-				Integer.parseInt(properties[TIMEOUTDRAW_PROPERTY].get()));
-		model.addObserver(this);
-		
-		if(model.getRole() == Constants.oRole){
-			properties[OWNTOKEN_PROPERTY].setValue(Constants.oToken);
-			properties[OPPTOKEN_PROPERTY].setValue(Constants.xToken);
-		}else{
-			properties[OWNTOKEN_PROPERTY].setValue(Constants.xToken);
-			properties[OPPTOKEN_PROPERTY].setValue(Constants.oToken);
-		}
-		
-		for(int i = 0; i < cols; i++){
-			for(int j = 0; j< rows; j++){
-				styleField[i][j].set(Constants.emptyToken);
-			}
-		}		
-		ki = new KI(model);	
-		model.save();			
-	}
-	
+	//---------------------Verarbeitung von Events-----------------------------------------
 	/* (non-Javadoc)
 	 * @see GameEventListener#handleEvent(GameEvent)
-	 */
-	
-	
+	 */	
+	/**
+	 * Methode um auf GameEvents zu reagieren
+	 * @param das geworfene Event :GameEvent
+	 */	
 	@Override
 	public void handleEvent(GameEvent event) {
 		
@@ -117,29 +67,7 @@ public class GameController extends Application implements GameEventListener, Ob
 				
 				//ComServer starten
 				comServ.enableReading(model.getTimeoutServer(), model.getPath(), model.getRole());
-				
-				//TEST
-				
-				
-				//Moves ausführen
-				
-//				Random r = new Random();
-//				
-//				for(int i = 0; i < 15; i++){
-//					if(i%2 == 1){
-//						model.addMove(new Move(Constants.oRole, r.nextInt(7)));
-//					}else{
-//						model.addMove(new Move(Constants.xRole, r.nextInt(7)));
-//					}
-//		//				model.save();
-//					try {
-//						Thread.sleep(100);
-//					} catch (InterruptedException e) {
-//						e.printStackTrace();
-//					}
-//				}
-		//		    model.getOppPoints().setValue(1);
-				
+		
 				break;
 			case EndSet:	
 				Log.getInstance().write("Controller: Event empfangen ( " + event.getType().toString() + " ) FxThread:" + Platform.isFxApplicationThread());
@@ -185,14 +113,62 @@ public class GameController extends Application implements GameEventListener, Ob
 				break;
 			}
 		}
+	
+	//Hilfsmethoden 
+	
+	/**
+	 * Methode um ein neues Spiel zu starten
+	 * @param Spaltenanzahl :Integer, Zeilenanzahl :Integer
+	 */	
+	private void newGame(int cols, int rows){		
+		//unbind old model
+		if(model != null){			
+			model.save();
+		}
 		
-	//Verarbeitung von Veränderungen im Model
+		//create new model		
+		model = new Game(cols, rows, properties[ROLE_PROPERTY].get().charAt(0), 
+				properties[OPPNAME_PROPERTY].get(), 
+				properties[PATH_PROPERTY].get(), 
+				Integer.parseInt(properties[TIMEOUTSERVER_PROPERTY].get()), 
+				Integer.parseInt(properties[TIMEOUTDRAW_PROPERTY].get()));
+		model.addObserver(this);
+		
+		if(model.getRole() == Constants.oRole){
+			properties[OWNTOKEN_PROPERTY].setValue(Constants.oToken);
+			properties[OPPTOKEN_PROPERTY].setValue(Constants.xToken);
+		}else{
+			properties[OWNTOKEN_PROPERTY].setValue(Constants.xToken);
+			properties[OPPTOKEN_PROPERTY].setValue(Constants.oToken);
+		}
+		
+		for(int i = 0; i < cols; i++){
+			for(int j = 0; j< rows; j++){
+				styleField[i][j].set(Constants.emptyToken);
+			}
+		}		
+		ki = new KI(model);	
+		model.save();			
+	}
+		
+	//---------------------Verarbeitung von Veränderungen im Model---------------------------------------------
+	/* (non-Javadoc)
+	 * @see java.util.Observer#update(java.util.Observable, java.lang.Object)
+	 */
+	/**
+	 * Methode um auf Veränderungen im Datenmodell zu reagieren
+	 * Als Argument wird der Name der Variable übergeben, die sich geändert hat
+	 * 
+	 * @param das Objekt das sich veränder hat :Observable, Argumente die mit übergeben werden :Object
+	 */	
 	@Override
 	public void update(Observable o, Object arg) {
 		String changed = (String)arg;
 		switch (changed) {
 		case "winner":
-			Log.getInstance().write("Controller: Winner changed empfangen, Stand: " +model.getOwnPoints()+":"+model.getOppPoints() + "; FxThread:" + Platform.isFxApplicationThread());
+			Log.getInstance().write(
+					"Controller: Winner changed empfangen, Stand: " +model.getOwnPoints()+":"+model.getOppPoints() 
+					+ "; FxThread:" + Platform.isFxApplicationThread());
 			
 			//Sicherstellen, dass updates von TextProperties im UI Thread stattfinden
 			Platform.runLater(new Runnable() {					
@@ -237,14 +213,65 @@ public class GameController extends Application implements GameEventListener, Ob
 		}
 		
 	}
+	
+	//------------------- Getter für Properties -----------------------------------------------
+	
+	/**
+	 * @return Properties für DataBinding mit UI:StringProperty
+	 */
+	public SimpleStringProperty[] properties() {
+		return properties;
+	}
+	
+	/**
+	 * @return Spielfeld :GameField
+	 */
+	public SimpleStringProperty[][] styleField() {
+		return styleField;
+	}	
+	
+	/**
+	 * @return Logeinträge :ObservableList<Log.LogEntry>
+	 */
+	public ObservableList<Log.LogEntry> logItems() {
+		return logItems;
+	}
 
-	//App Part
+	//---------------- Methoden zum starten und initialisieren des Programms -------------------
+	
+	/**
+	 * 1. Main Methode zum Starten des Programms  
+	 * @param Argumente :String[]
+	 */	
+	public static void main(String[] args) {
+		launch(args);
+	}
+	
+	/**
+	 * 2. start Method von Application, wird aufgerufen, nach dem durch launch ein JavaFX Programm aufgebaut wurde  
+	 * @param Stage von JavaFX :Stage
+	 */
+	@Override 
+	public void start (Stage mainstage) throws Exception{
+		
+		IGameView view = new MainGUI();
+		initialize(null, null);
+		view.init(mainstage, this);
+		mainstage.setHeight(550);
+		mainstage.setWidth(820);
+		mainstage.setTitle("4 Gewinnt - untitled0815");
+		mainstage.show();
+		
+		
+	}	
+	
+	/**
+	 * 3. Initialisierungs Methode die durch das laden der FXML in der Startmethode ausgelöst wird, nach dem das UI Konstrukt erstellt wurde
+	 * @param TODO
+	 */
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
-		//Game Objekt initialisieren und an das UI binden (zur Eingabe der Spieleinstellungen)
-//		newGame(Constants.gamefieldcolcount,Constants.gamefieldrowcount);
-		
-		//Variable Initialisierung
+		//Property Initialisierung
 		styleField = new SimpleStringProperty[Constants.gamefieldcolcount][Constants.gamefieldrowcount];
 		for(int i = 0; i < Constants.gamefieldcolcount; i++){
 			for(int j = 0; j< Constants.gamefieldrowcount; j++){
@@ -252,7 +279,6 @@ public class GameController extends Application implements GameEventListener, Ob
 			}
 		}
 		
-		//Property initialisierung
 		properties = new SimpleStringProperty[11];
 		properties[ROLE_PROPERTY] = new SimpleStringProperty();
 		properties[OWNPOINTS_PROPERTY] = new SimpleStringProperty("0");
@@ -265,13 +291,12 @@ public class GameController extends Application implements GameEventListener, Ob
 		properties[OWNTOKEN_PROPERTY] = new SimpleStringProperty(Constants.xToken);		
 		properties[STATUS_PROPERTY] = new SimpleStringProperty();
 		properties[WINNER_PROPERTY] = new SimpleStringProperty();
+		
+		logItems = Log.getInstance().getLogEntries();
 			
 		//Communication Server
 		comServ = CommunicationServer.getInstance();
 				
-		//KI 
-//		ki = new KI(model);		
-		
 		//Dispatcher
 		EventDispatcher Dispatcher = EventDispatcher.getInstance();
 		try {			
@@ -284,128 +309,7 @@ public class GameController extends Application implements GameEventListener, Ob
 			
 		} catch (Exception e) {
 			e.printStackTrace();
-		}	
-		
-	}
-	
-	
-	@Override 
-	public void start (Stage mainstage) throws Exception{
-		
-		view = new MainGUI();
-		initialize(null, null);
-		view.init(mainstage, this);
-		mainstage.setHeight(550);
-		mainstage.setWidth(820);
-		mainstage.setTitle("4 Gewinnt - untitled0815");
-		mainstage.show();
-		
-		
-	}
-	
-	/* (non-Javadoc)
-	 * @see java.util.Observer#update(java.util.Observable, java.lang.Object)
-	 */
-	
-	//----- Getter für Properties
-	
-	/**
-	 * @return Style für den gegnerischen Stein :StringProperty
-	 */
-	public SimpleStringProperty[] properties() {
-		return properties;
-	}
-	
-//	/**
-//	 * @return Style für den gegnerischen Stein :StringProperty
-//	 */
-//	public SimpleStringProperty getOppToken() {
-//		return oppToken;
-//	}
-//
-//	/**
-//	 * @return Style für den eigenen Stein :StringProperty
-//	 */
-//	public SimpleStringProperty getOwnToken() {
-//		return ownToken;
-//	}
-//	/**
-//	 * @return Minimales Intervall für die Serverabfrage in ms :IntegerProperty  
-//	 */
-//	public SimpleStringProperty getTimeoutServer() {
-//		return timeoutServer;
-//	}
-//
-//	/**
-//	 * @return Maximale Zeit zur Berechnung eines Zuges in ms :IntegerProperty
-//	 */
-//	public SimpleStringProperty getTimeoutDraw() {
-//		return timeoutDraw;
-//	}
-//	
-//	/**
-//	 * @return eigene Rolle :StringProperty
-//	 */
-//	public SimpleStringProperty getRole() {
-//		return role;
-//	}
-//	
-//	/**
-//	 * @return eigene Punkte :IntegerProperty
-//	 */
-//	public SimpleStringProperty getOwnPoints() {
-//		return ownPoints;
-//	}
-//	
-//	/**
-//	 * @return gegnerische Punkte :IntegerProperty
-//	 */
-//	public SimpleStringProperty getOppPoints() {
-//		return oppPoints;
-//	}
-//	
-//	/**
-//	 * @return Name des Gegner :StringProperty
-//	 */
-//	public SimpleStringProperty getOppName() {
-//		return oppName;
-//	}
-//
-//	/**
-//	 * @return Pfad für Serverdateien :StringProperty
-//	 */
-//	public SimpleStringProperty getPath() {
-//		return path;
-//	}	
-//	
-//	/**
-//	 * @return Status des Satzes :StringProperty
-//	 */
-//	public SimpleStringProperty getStatus() {
-//		return status;
-//	}
-//
-//	/**
-//	 * @return Gewinner :String
-//	 */
-//	public SimpleStringProperty getWinner() {
-//		return winner;
-//	}
-
-	/**
-	 * @return Spielfeld :GameField
-	 */
-	public SimpleStringProperty[][] getStyleField() {
-		return styleField;
-	}
-	
-
-	//Main Method zum starten des Programms 
-	/**
-	 * @param args
-	 */
-	public static void main(String[] args) {
-		launch(args);
+		}			
 	}
 
 	
