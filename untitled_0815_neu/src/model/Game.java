@@ -112,8 +112,8 @@ public class Game extends Observable implements Observer{
 	 *  
 	 * @param der neue Zug :Move
 	 */
-	public void addMove(Move move){
-		sets.get(sets.size()-1).addMove(move);
+	public void addMove(char role, byte col){
+		sets.get(sets.size()-1).addMove(role, col);
 	}
 	
 	/**

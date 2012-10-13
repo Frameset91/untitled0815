@@ -7,22 +7,23 @@ package model;
  *
  */
 
-import java.sql.Timestamp;
+//import java.sql.Timestamp;
 
 public class Move {
-	private Timestamp time;
+//	private Timestamp time;
 	private char role;
 	private int column;
+	private int ID;
 	
 	/**
 	 * Konstruktor von Move 
 	 *  
 	 * @param Rolle die gezogen hat :String, Spalte :Integer, Zugzeitpunkt :Timestamp
 	 */
-	public Move(char role, int column, Timestamp time){
+	public Move(char role, int column, int id){
 		this.role = role;
 		this.column = column;
-		this.time = time;
+		this.ID = id;
 	}
 	
 	/**
@@ -33,14 +34,14 @@ public class Move {
 	public Move(char role, int column){
 		this.role = role;
 		this.column = column;		
-		this.time = new Timestamp(new java.util.Date().getTime());
+//		this.time = new Timestamp(new java.util.Date().getTime());
 	}
 	
 	/**
-	 * @return Zugzeitpunkt :Timestamp
+	 * @return Zugnummer :Integer
 	 */
-	public Timestamp getTime() {
-		return time;
+	public int getID() {
+		return ID;
 	}
 	/**
 	 * @return Rolel die gezogen hat :String

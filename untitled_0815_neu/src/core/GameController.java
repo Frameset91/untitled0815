@@ -89,25 +89,20 @@ public class GameController extends Application implements GameEventListener, Ob
 			case OppMove:	//--------- ein gegnerischer Zug wurde vom Server mitgeteilt 
 				Log.getInstance().write("Controller: Event empfangen ( " + event.getType().toString() + " ) FxThread:" + Platform.isFxApplicationThread());
 //				comServ.disableReading();
-				Move newMove;
 				
 				if (Integer.parseInt(event.getArg()) > -1){
-					Move move;				
+		
 					if(model.getRole() == Constants.xRole)
-						move = new Move(Constants.oRole, Integer.parseInt(event.getArg()));
+						model.addMove(Constants.oRole, (byte) Integer.parseInt(event.getArg()));
 					else
-						move = new Move(Constants.xRole, Integer.parseInt(event.getArg()));
-					model.addMove(move);
-					newMove = ki.calculateNextMove(move);
-				}else{
-					newMove = ki.calculateNextMove();
+						model.addMove(Constants.xRole, (byte) Integer.parseInt(event.getArg()));
 				}
-				
+				byte col = ki.calculateNextMove((byte) Integer.parseInt(event.getArg()));			
 				//Zug auf Server schreiben und Server wieder überwachen
-				comServ.writeMove((byte)newMove.getColumn(), model.getPath(), model.getRole());
+				comServ.writeMove(col, model.getPath(), model.getRole());
 				comServ.enableReading(model.getTimeoutServer(), model.getPath(), model.getRole());
 				
-				model.addMove(newMove);							
+				model.addMove(model.getRole(), col);							
 				break;				
 			default:
 				break;

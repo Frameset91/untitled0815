@@ -171,34 +171,34 @@ public class KI{
 	    return localBeta;*/
 	 }
 	
-	public Move calculateNextMove() {
-		return calculateNextMove(new Move(gameobject.getRole(), 3));
+	public byte calculateNextMove() {
+		return calculateNextMove((byte)-1);
 	}
 	
-	public Move calculateNextMove(Move oppMove) {
+	public byte calculateNextMove(byte oppMove) {
 
 		self = (gameobject.getRole() == Constants.xRole);
 		opp = !self;
 		Boolean[][] aktspielfeld = gameobject.getLatestSet().getField();
-		if(oppMove.getColumn() != -1)
-			Bewertung(aktspielfeld, (byte) oppMove.getColumn());
+		if(oppMove != -1)
+			Bewertung(aktspielfeld, (byte) oppMove);
 		
 		Random r = new Random();
 		byte spalte = (byte) r.nextInt(Constants.gamefieldcolcount);
 		//byte spalte = 6;
-		Move generierterZug = new Move(gameobject.getRole(), spalte);
+		//Move generierterZug = new Move(gameobject.getRole(), spalte);
 		
 		aktspielfeld = setzestein(aktspielfeld, spalte);
 		Log.getInstance().write("KI hat Stein in Spalte " + String.valueOf(spalte)
 				+ " gesetzt!");
-		Bewertung(aktspielfeld, (byte) generierterZug.getColumn());
+		Bewertung(aktspielfeld, (byte) spalte);
 
 		/*if(gameobject.getLatestSet().getField().getBoolField()[6][0]==self)
 			Log.getInstance().write("Ich hab in 6-0 gesetzt!");
 		if([6][0]==opp)
 			Log.getInstance().write("Der andere hat in 6-0 gesetzt!");*/
 		
-		return generierterZug;
+		return spalte;
 	}
 
 	private Boolean[][] setzestein(Boolean[][] gamefield, byte col) {

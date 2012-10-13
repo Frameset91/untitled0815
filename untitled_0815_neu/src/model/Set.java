@@ -37,7 +37,8 @@ public class Set extends Observable{
 	 * Methode zum Hinzufügen eines Zuges  
 	 * @param der neue Zug :Move
 	 */
-	public void addMove(Move move){
+	public synchronized void addMove(char role, byte col){
+		Move move = new Move(role, col, moves.size()+1);
 		moves.add(move);
 		field.addMove(move);
 		setChanged();
@@ -64,6 +65,24 @@ public class Set extends Observable{
 	}
 	
 	/**
+	 * @param der neue Status :String
+	 */
+	public void setStatus(String status) {
+		this.status = status;
+		setChanged();
+		notifyObservers("status");
+	}
+	
+	/**
+	 * @param Gewinner :String
+	 */
+	public void setWinner(char winner) {
+		this.winner = winner;
+		setChanged();
+		notifyObservers("winner");
+	}
+	
+	/**
 	 * @return Satznummer :String
 	 */
 	public String getID() {
@@ -76,15 +95,7 @@ public class Set extends Observable{
 		return status;
 	}
 
-	/**
-	 * @param der neue Status :String
-	 */
-	public void setStatus(String status) {
-		this.status = status;
-		setChanged();
-		notifyObservers("status");
-	}
-
+	
 	/**
 	 * @return Gewinner :String
 	 */
@@ -92,15 +103,7 @@ public class Set extends Observable{
 		return winner;
 	}
 
-	/**
-	 * @param Gewinner :String
-	 */
-	public void setWinner(char winner) {
-		this.winner = winner;
-		setChanged();
-		notifyObservers("winner");
-	}
-
+	
 	/**
 	 * @return alle Züge des Satzes :List<Move>
 	 */
