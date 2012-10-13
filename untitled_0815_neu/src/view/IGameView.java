@@ -1,11 +1,12 @@
 package view;
+import core.GameController;
 import model.Game;
 import model.GameField;
 import javafx.stage.Stage;
 
 public interface IGameView {
 
-	public abstract void init(Stage mainstage);
+	public abstract void init(Stage mainstage, GameController viewModel);
 
 	public abstract void bindField(GameField field);
 	
@@ -13,7 +14,7 @@ public interface IGameView {
 
 	public abstract void bindGame(Game model);
 	
-	public abstract void unbindGame(Game model);
+//	public abstract void unbindGame(Game model);
 	
 	
 

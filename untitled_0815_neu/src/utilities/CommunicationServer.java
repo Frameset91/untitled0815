@@ -5,10 +5,6 @@ package utilities;
  *
  */
 import java.io.*;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-
 import javafx.concurrent.Task;
 
 import utilities.*;
@@ -70,15 +66,24 @@ public class CommunicationServer extends Thread {
 		
 	}
 
-	public void fireGameEvent(GameEvent.Type type, String arg){
+	public void fireGameEvent(final GameEvent.Type type, final String arg){
 		Log.getInstance().write("GameEvent gefeuert: " + type.toString());
-		GameEvent event = new GameEvent(type.toString(),type, arg);
-		try {
-			EventDispatcher.getInstance().triggerEvent(event, true);
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+//		GameEvent event = new GameEvent(type.toString(),type, arg);
+//		try {
+//			EventDispatcher.getInstance().triggerEvent(event, true);
+//		} catch (Exception e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+		Task aufgabe = new Task<Void>() {
+			protected Void call() throws Exception {
+				GameEvent event = new GameEvent(type.toString(),type, arg);
+				GameEvent Dispatcher = EventDispatcher.getInstance().triggerEvent(event, true);				
+				return null;
+			}};
+    	new Thread(aufgabe).start();	
+		
+		
 	}
 
 	/**
@@ -122,11 +127,14 @@ public class CommunicationServer extends Thread {
 		this.bla.start();
 
 	}
+	
+	public void resetLastChange() {
+		this.lastchange = (Long) null;
+	}
 
 	/**
 	 * Beendet die Abfrage der Serverdatei
 	 */
-	@SuppressWarnings("deprecation")
 	public void disableReading() {
 		this.bla.interrupt();
 //		this.bla.stop();
@@ -151,7 +159,7 @@ public class CommunicationServer extends Thread {
 			// Wenn Freigabe erfolgt ist - Set Objekt benachrichtigen
 			if (msg.getFreigabe().equals("true")) {
 				this.fireGameEvent(GameEvent.Type.OppMove, String.valueOf(msg.getGegnerzug()));
-				lastchange = serverFile.lastModified();
+				
 //				this.disableReading();
 //				break;
 				
@@ -159,30 +167,25 @@ public class CommunicationServer extends Thread {
 			// Satz ist beendet
 			if (msg.getSatzstatus().equals("beendet")) {
 				this.fireGameEvent(GameEvent.Type.EndSet, String.valueOf(msg.getGegnerzug()));
-				lastchange = serverFile.lastModified();
+				
 //				this.disableReading();
 //				break;
 			}
 			// Sieger ist bestimmt
 			if (!msg.getSieger().equals("offen")) {
 				this.fireGameEvent(GameEvent.Type.OppMove, String.valueOf(msg.getGegnerzug()));
-				lastchange = serverFile.lastModified();
+				
 //				break;
 			}
+			lastchange = serverFile.lastModified();
 
 			} catch (Exception e){
 				System.out.println("Lesefehler.....");
 			}
 			
-			try {
-				// Wartezeit zwischen 2 Zugriffen auf die Datei
-				Thread.sleep(this.timeout);
-			} catch (InterruptedException e) {
-
-				e.printStackTrace();
-
-			}
-		//}
+			
+			
+					//}
 		System.out.println("Ende While schleife");
 
 	}
@@ -198,6 +201,9 @@ public class CommunicationServer extends Thread {
 			msg = XmlParser.readXML(serverFile);
 			if(this.lastchange == serverFile.lastModified()){
 				msg = null;
+			}
+			if (msg == null){
+			Thread.sleep(this.timeout);
 			}
 		}
 		

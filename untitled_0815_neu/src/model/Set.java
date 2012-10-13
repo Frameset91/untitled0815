@@ -9,18 +9,20 @@ package model;
 import java.sql.Timestamp;
 import java.util.*;
 
+import utilities.Log;
+
 import javafx.beans.property.SimpleStringProperty;
 
 
-public class Set{
+public class Set extends Observable{
 	
 	private ArrayList<Move> moves;
 	private Timestamp startTime;
 	private Timestamp endTime;
 	private int setID; //Database primary key
-	private SimpleStringProperty status;
+	private String status;
 	private GameField field; 
-	private SimpleStringProperty winner;
+	private char winner;
 	
 	
 	/**
@@ -32,9 +34,8 @@ public class Set{
 		field = new GameField(cols,rows);
 		startTime = new Timestamp(new Date().getTime());
 		moves = new ArrayList<Move>();
-		winner = new SimpleStringProperty();
-		status = new SimpleStringProperty();
-		
+//		winner = new SimpleStringProperty();
+//		status = new SimpleStringProperty();		
 	}
 	
 	/**
@@ -45,6 +46,9 @@ public class Set{
 	public void addMove(Move move){
 		moves.add(move);
 		field.addMove(move);
+		setChanged();
+		Log.getInstance().write("Einen Move hinzugefügt");
+		notifyObservers("field");
 	}
 	
 	/**
@@ -66,9 +70,9 @@ public class Set{
 	}
 	
 	/**
-	 * @return Status des Satzes :StringProperty
+	 * @return Status des Satzes :String
 	 */
-	public SimpleStringProperty getStatus() {
+	public String getStatus() {
 		return status;
 	}
 
@@ -76,21 +80,25 @@ public class Set{
 	 * @param der neue Status :String
 	 */
 	public void setStatus(String status) {
-		this.status.set(status);
+		this.status = status;
+		setChanged();
+		notifyObservers("status");
 	}
 
 	/**
 	 * @return Gewinner :String
 	 */
-	public SimpleStringProperty getWinner() {
+	public char getWinner() {
 		return winner;
 	}
 
 	/**
 	 * @param Gewinner :String
 	 */
-	public void setWinner(String winner) {
-		this.winner.set(winner);
+	public void setWinner(char winner) {
+		this.winner = winner;
+		setChanged();
+		notifyObservers("winner");
 	}
 
 	/**
@@ -101,10 +109,11 @@ public class Set{
 	}
 
 	/**
-	 * @return Spielfeld :GameField
+	 * @return Spielfeld :Boolean[][]
 	 */
-	public GameField getField() {
-		return field;
+	public Boolean[][] getField() {
+		return field.getField();
 	}
+
 
 }
