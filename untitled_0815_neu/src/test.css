@@ -29,9 +29,21 @@
 .textfeld{
 	-fx-font-size: 14;
 }
-.timeout{
-	-fx-alignment: center;
-}
+
 .timeoutButton{
 	-fx-font-size: 8;
+}
+
+.spieleranzeige{
+	-fx-padding: 20;
+}
+
+.spieler{
+	-fx-font-size: 16;
+	-fx-font-weight: bold
+}
+
+.labelSpieleinstellungen{
+	-fx-font-size: 15;
+	-fx-font-weight: bold
 }

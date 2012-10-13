@@ -27,12 +27,12 @@
     	</MenuBar>
     </top>
     
-    <left><!-- Linker Bereich: Einstellungen, Trennlinie (VBox) -->
-        <HBox>
+    <left><!-- Linker Bereich: Einstellungen, Trennlinie -->
+        <HBox spacing="5">
         	<!-- Tabelle zum Anordnen der Einstellungen -->
-        	<GridPane>
+        	<GridPane hgap="5" vgap="10">
         	<!-- Linke Spalte -->
-        		<Label text="Spieleinstellungen" GridPane.columnIndex="0" GridPane.rowIndex="0"></Label>   
+        		<Label text="Spieleinstellungen" GridPane.columnIndex="0" GridPane.rowIndex="0" styleClass="labelSpieleinstellungen"></Label>   
      		   	<Label text="Rolle:" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
         		<Label text="Spielstand:" GridPane.columnIndex="0" GridPane.rowIndex="2"/>
         		<Label text="Gegner:" GridPane.columnIndex="0" GridPane.rowIndex="3"/>
@@ -45,28 +45,28 @@
          		<!-- Rolle definieren -->
         		<ChoiceBox GridPane.columnIndex="1" GridPane.rowIndex="1"/>
         		<!-- Spielstand einstellen -->
-        		<HBox GridPane.columnIndex="1" GridPane.rowIndex="2">
+        		<HBox GridPane.columnIndex="1" GridPane.rowIndex="2" styleClass="textfeld">
         			<TextField fx:id="spielstandSpieler" text="0" maxWidth="30"/>
         			<TextField fx:id="spielstandGegner" text="0" maxWidth="30"/>
         		</HBox>
         		<!-- Eingabefelder für Gegner und Verzeichnis -->
-        		<TextField fx:id="gegnername" maxWidth="150" GridPane.columnIndex="1" GridPane.rowIndex="3"/>
-        		<TextField fx:id="verzeichnispfad" maxWidth="150" GridPane.columnIndex="1" GridPane.rowIndex="4"></TextField>
+        		<TextField fx:id="gegnername" maxWidth="150" GridPane.columnIndex="1" GridPane.rowIndex="3" styleClass="textfeld"/>
+        		<TextField fx:id="verzeichnispfad" maxWidth="150" GridPane.columnIndex="1" GridPane.rowIndex="4" styleClass="textfeld"></TextField>
         		<!-- Timeout File-Abfrage -->
         		<HBox GridPane.columnIndex="1" GridPane.rowIndex="5">
-        			<TextField fx:id="timeoutAbfrage" maxWidth="60" text="300"/>
+        			<TextField fx:id="timeoutAbfrage" maxWidth="60" text="300" styleClass="textfeld"/>
         			<VBox>
-        				<Button minHeight="10" maxHeight="10"/>
-        				<Button minHeight="10" maxHeight="10"/>
+        				<Button minHeight="10" maxHeight="10" styleClass="timeoutButton"/>
+        				<Button minHeight="10" maxHeight="10" styleClass="timeoutButton"/>
         			</VBox>
         			<Label text="ms"/>
         		</HBox>
         		<!-- Timeout Zugzeit -->
         		<HBox GridPane.columnIndex="1" GridPane.rowIndex="6">
-        			<TextField fx:id="timeoutZugzeit" maxWidth="60" text="2000" />
+        			<TextField fx:id="timeoutZugzeit" maxWidth="60" text="2000" styleClass="textfeld"/>
         			<VBox> <!-- Hoch/Runter -->
-        				<Button minHeight="10" maxHeight="10"/>
-        				<Button minHeight="10" maxHeight="10"/>
+        				<Button minHeight="10" maxHeight="10" styleClass="timeoutButton"/>
+        				<Button minHeight="10" maxHeight="10" styleClass="timeoutButton"/>
         			</VBox>
         			<Label text="ms"/>
         		</HBox>
@@ -79,18 +79,18 @@
         <!-- Spielfläche (neue BorderPane) -->
         <BorderPane>
         <left>
-        	<VBox>
-        		<HBox fx:id="spielerAnzeige">
+        	<VBox styleClass="spieleranzeige">
+        		<HBox fx:id="spielerAnzeige" spacing="20" styleClass="spieler">
         			<Label text="untitled0815:"/>
-        			<!-- token Spieler -->
+        			<Circle fx:id="tokenSpieler" radius="15.0f" styleClass="token-red"/>
         			<Label text="Gegner:"/>
-        			<!-- token Gegner -->
+        			<Circle fx:id="tokenGegner" radius="15.0f" styleClass="token-yellow"/>
         		</HBox>
         		<HBox fx:id="spielstandAnzeige">
-        			<Label text="Spielstand"/>
-        			<Label fx:id="punkteSpieler" text="0"/>
-        			<Label text=":"/>
-        			<Label fx:id="punkteGegner" text="0"/>
+        			<Label text="Spielstand" styleClass="punkte"/>
+        			<Label fx:id="punkteSpieler" text="0" styleClass="punkte"/>
+        			<Label text=":" styleClass="punkte"/>
+        			<Label fx:id="punkteGegner" text="0" styleClass="punkte"/>
         		</HBox>
         		<GridPane fx:id="feld" hgap="3" vgap="3" maxHeight="200" maxWidth="250" styleClass="field">
         		</GridPane>

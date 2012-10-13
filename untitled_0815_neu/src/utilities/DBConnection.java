@@ -6,8 +6,16 @@ package utilities;
  */
 
 import java.sql.*;
-
 import model.Game;
+import model.Move;
+import model.Set;
+
+/**
+ * TO DO: 
+ * getter-Methoden für's Speichern: saveMove
+ * alle load-Methoden
+ *
+ */
 
 public class DBConnection {
 	private static DBConnection singleton = null;
@@ -68,7 +76,28 @@ public class DBConnection {
 			e.printStackTrace();
 		}
 		return rs;
-
+	}
+	
+	/**
+	 * 
+	 * @param sql, ein SQL Insert-Statement als String
+	 * @return true bei erfolgreiche Einfügen, false bei Fehler
+	 */
+	public synchronized boolean sendInsertStatement(String sql) {
+		boolean success = false;
+		
+		try{
+			Statement stmt = con.createStatement();
+			// Insert an DB schicken
+			int i = stmt.executeUpdate(sql); //i ist row count
+			if (i == 1)
+				success = true;
+	
+		}catch (SQLException e){
+			e.printStackTrace();
+			System.out.println ("SQL Insert Set fehlgeschlagen");
+		}
+		return success;
 	}
 	
 	/**
@@ -81,18 +110,16 @@ public class DBConnection {
 		int id = 0; // id ist die erzeugte PrimaryKey-ID
 		
 		// Daten zum Speichern von game holen
-/////////////////// hier noch die get-Methoden nutzen!!!!!!!!!!!!!!!!!!!!!!
-		char role = 'x';
-		String oppName = "test";
-		int ownPoints = 1;
-		int oppPoints = 1;
+		char role = game.getRole();
+		String oppName = game.getOppName();
+		int ownPoints = game.getOwnPoints();
+		int oppPoints = game.getOppPoints();
 		
 		
 		try{
 			
 			// SQL Statement bauen
 			String sql = "INSERT INTO game VALUES (DEFAULT, '" + role +"','"+ oppName + "', "+ ownPoints +", " + oppPoints +");";
-			System.out.println ("SQL: "+sql);
 			PreparedStatement stmt = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
 			
 			// absenden zur DB
@@ -112,7 +139,6 @@ public class DBConnection {
 			}
 			//Anzahl geänderter Zeilen lesen
 			int i = stmt.getUpdateCount();
-			System.out.println("row count:" + i);
 			
 			if (i != 1)
 					System.out.println("Fehler beim Schreiben in DB");
@@ -132,35 +158,70 @@ public class DBConnection {
 	 * @param Set, Satz der gespeichert werden soll
 	 * @return boolean true, wenn erfolgreich gespeichert, false bei Fehler
 	 */
-	public synchronized boolean saveSet() {
+	public synchronized boolean saveSet(Set set, int gameID) {
 	
 		boolean success = false;
 		
+		// Daten zum Speichern von game holen
+		String setID = set.getID();
+		char winner = set.getWinner();
+		Timestamp starttime = set.getStarttime();
+		Timestamp endtime = set.getEndtime(); 
+		
+		try {
+			//SQL Statement bauen
+			String sql = "INSERT INTO gameSet VALUES ("+ gameID + ", " + setID +",'"+ winner + "', '"+ starttime +"', '" + endtime +"');";
+			System.out.println ("SQL: "+sql);
+			Statement stmt = con.createStatement();
+			// Insert an DB schicken
+			int i = stmt.executeUpdate(sql); //i ist row count
+			if (i == 1)
+				success = true;
+			
+		}catch (SQLException e){
+			e.printStackTrace();
+			System.out.println ("SQL Insert Set fehlgeschlagen");
+		}
 		
 		return success;
 	}
 	
+	/**
+	 * 
+	 * @param move, ein Zug der gespeichert werden soll
+	 * @return true bei erfolgreichem Speichern, false bei Fehler
+	 */
+	public synchronized boolean saveMove(Move move, int gameID, int setID) {
+		boolean success = false;
+		
+		// Daten zum Speichern von game holen
+/////////////////// hier noch die get-Methoden nutzen!!!!!!!!!!!!!!!!!!!!!!
+		int moveID = 2;
+		char role = move.getRole();
+		int column = move.getColumn();
+		Timestamp time = move.getTime();
+			
+		try {
+			//SQL Statement bauen
+			String sql = "INSERT INTO move VALUES ("+ gameID + ", " + setID +","+ moveID + ", '"+ role +"', " + column + ", '" + time +"');";
+			System.out.println ("SQL: "+sql);
+			Statement stmt = con.createStatement();
+			// Insert an DB schicken
+			int i = stmt.executeUpdate(sql); //i ist row count
+			if (i == 1)
+				success = true;
+	
+		}catch (SQLException e){
+			e.printStackTrace();
+			System.out.println ("SQL Insert Set fehlgeschlagen");
+		}
+		
+		return success;
+	}
+	
+	
+	
 ///////////////////////////// bis hier gekommen
-//	/**
-//	 * Sendet ein anderes Statement, das keine Rueckgabe erzeugt
-//	 * 
-//	 * @param sql
-//	 *            Query als String
-//	 */
-//
-//	public void sendOtherStatement(String sql) {
-//		try {
-//			Statement stmnt = this.con.createStatement();
-//			boolean result = stmnt.execute(sql);
-//		} catch (Exception e) {
-//			e.printStackTrace();
-//		}
-//	}
-//	
-//	
-//	
-//	
-//
 //	/**
 //	 * Methode, die alle Moves eines Satzes auf der DB persistiert
 //	 * 
@@ -193,9 +254,6 @@ public class DBConnection {
 //		
 //	}
 //
-// public boolean saveMove() {
-//
-//	}
 //
 //	public void loadGame() {
 //
@@ -205,34 +263,5 @@ public class DBConnection {
 //		
 //	}
 
-
-	/**
-	 * nur zu Testzwecken
-	 * 
-	 * @param args
-	 */
-
-	public static void main(String[] args) {
-		DBConnection test = DBConnection.getInstance();
-		ResultSet rs;
-		String sql = "SELECT * FROM game";
-		rs= test.sendSelectStatement(sql);
-		// Ergebnisse bekommen
-		try{
-			while ( rs.next() )
-		      {
-				String gameID = rs.getString(1);
-		        String role = rs.getString(2);
-		        String oppName = rs.getString(3);
-		        String ownPoints = rs.getString(4);
-		        String oppPoints = rs.getString(5);
-		        String resultset = gameID + ","+ role +  ","+ oppName +  ","+ ownPoints +',' +oppPoints;
-		        System.out.println (resultset);
-		      }
-		}catch (Exception e){
-			e.printStackTrace();
-		}
-		
-	}
 
 }
