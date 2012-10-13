@@ -18,7 +18,7 @@ public class Set extends Observable{
 	private ArrayList<Move> moves;
 	private Timestamp startTime;
 	private Timestamp endTime;
-	private String ID; //Database primary key
+	private int ID; //Database primary key
 	private String status;
 	private GameField field; 
 	private char winner;
@@ -28,7 +28,7 @@ public class Set extends Observable{
 	 * Konstruktor von Set
 	 * @param Spaltenanzahl, Zeilenanzahl des Spielfelds, Satznummer :Integer
 	 */
-	public Set(int cols, int rows, String id){
+	public Set(int cols, int rows, int id){
 		this.ID = id;
 		field = new GameField(cols,rows);
 		startTime = new Timestamp(new Date().getTime());
@@ -89,7 +89,7 @@ public class Set extends Observable{
 	/**
 	 * @return Satznummer :String
 	 */
-	public String getID() {
+	public int getID() {
 		return ID;
 	}	
 	/**

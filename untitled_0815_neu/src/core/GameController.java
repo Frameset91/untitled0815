@@ -64,7 +64,7 @@ public class GameController extends Application implements GameEventListener, Ob
 					model.save();
 				}
 				
-				sets.add(new SetProperty(model.newSet().getID(), "?"));
+				sets.add(new SetProperty(String.valueOf(model.newSet().getID()), "?"));
 				
 				//ComServer starten
 				comServ.enableReading(model.getTimeoutServer(), model.getPath(), model.getRole());
@@ -165,7 +165,7 @@ public class GameController extends Application implements GameEventListener, Ob
 					+ "; FxThread:" + Platform.isFxApplicationThread());
 			
 			
-			sets.get(Integer.parseInt(model.getLatestSet().getID())-1).setWinner(String.valueOf(model.getLatestSet().getWinner()));
+			sets.get(model.getLatestSet().getID()-1).setWinner(String.valueOf(model.getLatestSet().getWinner()));
 			//Sicherstellen, dass updates von TextProperties im UI Thread stattfinden
 			Platform.runLater(new Runnable() {					
 				@Override

@@ -23,7 +23,7 @@ public class Game extends Observable implements Observer{
 	private int timeoutServer;
 	private int timeoutDraw;
 	
-	private String ID;
+	private int ID;
 	
 	/**
 	 * Konstruktor von Game 
@@ -47,7 +47,7 @@ public class Game extends Observable implements Observer{
 	 * @return der neu erstellte Satz :Set
 	 */
 	public Set newSet(){
-		Set set = new Set(cols, rows, String.valueOf(sets.size()+1)); 
+		Set set = new Set(cols, rows, sets.size()+1); 
 		set.addObserver(this);
 		sets.add(set);
 		setChanged();
@@ -191,7 +191,7 @@ public class Game extends Observable implements Observer{
 	/**
 	 * @return ID/PrimaryKey :String
 	 */
-	public String getID() {
+	public int getID() {
 		return ID;
 	}
 
