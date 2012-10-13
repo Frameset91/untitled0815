@@ -7,7 +7,18 @@ package utilities;
 
 import java.sql.*;
 
+import java.util.Date;
+
 import model.Game;
+import model.Move;
+import model.Set;
+
+/**
+ * TO DO: 
+ * getter-Methoden für's Speichern: saveGame, saveSet, saveMove
+ * Main.Methode entfernen
+ *
+ */
 
 public class DBConnection {
 	private static DBConnection singleton = null;
@@ -68,7 +79,28 @@ public class DBConnection {
 			e.printStackTrace();
 		}
 		return rs;
-
+	}
+	
+	/**
+	 * 
+	 * @param sql, ein SQL Insert-Statement als String
+	 * @return true bei erfolgreiche Einfügen, false bei Fehler
+	 */
+	public synchronized boolean sendInsertStatement(String sql) {
+		boolean success = false;
+		
+		try{
+			Statement stmt = con.createStatement();
+			// Insert an DB schicken
+			int i = stmt.executeUpdate(sql); //i ist row count
+			if (i == 1)
+				success = true;
+	
+		}catch (SQLException e){
+			e.printStackTrace();
+			System.out.println ("SQL Insert Set fehlgeschlagen");
+		}
+		return success;
 	}
 	
 	/**
@@ -92,7 +124,6 @@ public class DBConnection {
 			
 			// SQL Statement bauen
 			String sql = "INSERT INTO game VALUES (DEFAULT, '" + role +"','"+ oppName + "', "+ ownPoints +", " + oppPoints +");";
-			System.out.println ("SQL: "+sql);
 			PreparedStatement stmt = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
 			
 			// absenden zur DB
@@ -112,7 +143,6 @@ public class DBConnection {
 			}
 			//Anzahl geänderter Zeilen lesen
 			int i = stmt.getUpdateCount();
-			System.out.println("row count:" + i);
 			
 			if (i != 1)
 					System.out.println("Fehler beim Schreiben in DB");
@@ -132,35 +162,74 @@ public class DBConnection {
 	 * @param Set, Satz der gespeichert werden soll
 	 * @return boolean true, wenn erfolgreich gespeichert, false bei Fehler
 	 */
-	public synchronized boolean saveSet() {
+	public synchronized boolean saveSet(Set set) {
 	
 		boolean success = false;
 		
+		// Daten zum Speichern von game holen
+/////////////////// hier noch die get-Methoden nutzen!!!!!!!!!!!!!!!!!!!!!!
+		int gameID = 1000;
+		int setID = 2;
+		char winner = 'x';
+		Timestamp starttime = new Timestamp(new Date().getTime());
+		Timestamp endtime = starttime;
+		
+		try {
+			//SQL Statement bauen
+			String sql = "INSERT INTO gameSet VALUES ("+ gameID + ", " + setID +",'"+ winner + "', '"+ starttime +"', '" + endtime +"');";
+			System.out.println ("SQL: "+sql);
+			Statement stmt = con.createStatement();
+			// Insert an DB schicken
+			int i = stmt.executeUpdate(sql); //i ist row count
+			if (i == 1)
+				success = true;
+			
+		}catch (SQLException e){
+			e.printStackTrace();
+			System.out.println ("SQL Insert Set fehlgeschlagen");
+		}
 		
 		return success;
 	}
 	
+	/**
+	 * 
+	 * @param move, ein Zug der gespeichert werden soll
+	 * @return true bei erfolgreichem Speichern, false bei Fehler
+	 */
+	public synchronized boolean saveMove(Move move) {
+		boolean success = false;
+		
+		// Daten zum Speichern von game holen
+/////////////////// hier noch die get-Methoden nutzen!!!!!!!!!!!!!!!!!!!!!!
+		int gameID = 1000;
+		int setID = 1;
+		int moveID = 2;
+		char role = 'x';
+		int column = 3;
+		Timestamp time = new Timestamp(new Date().getTime());
+			
+		try {
+			//SQL Statement bauen
+			String sql = "INSERT INTO move VALUES ("+ gameID + ", " + setID +","+ moveID + ", '"+ role +"', " + column + ", '" + time +"');";
+			System.out.println ("SQL: "+sql);
+			Statement stmt = con.createStatement();
+			// Insert an DB schicken
+			int i = stmt.executeUpdate(sql); //i ist row count
+			if (i == 1)
+				success = true;
+	
+		}catch (SQLException e){
+			e.printStackTrace();
+			System.out.println ("SQL Insert Set fehlgeschlagen");
+		}
+		
+		return success;
+	}
+	
+	
+	
 ///////////////////////////// bis hier gekommen
-//	/**
-//	 * Sendet ein anderes Statement, das keine Rueckgabe erzeugt
-//	 * 
-//	 * @param sql
-//	 *            Query als String
-//	 */
-//
-//	public void sendOtherStatement(String sql) {
-//		try {
-//			Statement stmnt = this.con.createStatement();
-//			boolean result = stmnt.execute(sql);
-//		} catch (Exception e) {
-//			e.printStackTrace();
-//		}
-//	}
-//	
-//	
-//	
-//	
-//
 //	/**
 //	 * Methode, die alle Moves eines Satzes auf der DB persistiert
 //	 * 
@@ -193,9 +262,6 @@ public class DBConnection {
 //		
 //	}
 //
-// public boolean saveMove() {
-//
-//	}
 //
 //	public void loadGame() {
 //
