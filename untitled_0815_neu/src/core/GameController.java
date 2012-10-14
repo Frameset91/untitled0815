@@ -13,6 +13,7 @@ import view.*;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.Initializable;
 import javafx.stage.Stage;
@@ -66,7 +67,7 @@ public class GameController extends Application implements GameEventListener, Ob
 					model.save();
 				}
 				
-//				sets.add(new SetProperty(String.valueOf(model.newSet().getID()), "?"));
+				model.newSet();
 				
 				//ComServer starten
 				comServ.enableReading(model.getTimeoutServer(), model.getPath(), model.getRole());
@@ -354,6 +355,9 @@ public class GameController extends Application implements GameEventListener, Ob
 		properties[OWNTOKEN_PROPERTY] = new SimpleStringProperty(Constants.xToken);		
 		properties[STATUS_PROPERTY] = new SimpleStringProperty();
 		properties[WINNER_PROPERTY] = new SimpleStringProperty();
+		
+		sets = FXCollections.observableArrayList();		
+		savedGames = FXCollections.observableArrayList();	
 		
 		logItems = Log.getInstance().getLogEntries();
 			
