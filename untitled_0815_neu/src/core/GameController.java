@@ -42,6 +42,7 @@ public class GameController extends Application implements GameEventListener, Ob
 	private SimpleStringProperty[][] styleField;
 	private ObservableList<Log.LogEntry> logItems;
 	private ObservableList<SetProperty> sets;
+	private ObservableList<GameProperty> savedGames;
 	
 	//---------------------Verarbeitung von Events-----------------------------------------
 	/* (non-Javadoc)
@@ -104,13 +105,45 @@ public class GameController extends Application implements GameEventListener, Ob
 				comServ.enableReading(model.getTimeoutServer(), model.getPath(), model.getRole());
 				
 				model.addMove(model.getRole(), col);							
-				break;				
+				break;		
+			case LoadGame:
+				Log.getInstance().write("Controller: Event empfangen ( " + event.getType().toString() + " ) FxThread:" + Platform.isFxApplicationThread());
+				loadGame(Integer.parseInt(event.getArg()));
+				break;
 			default:
 				break;
 			}
 		}
 	
 	//Hilfsmethoden 
+	
+	/**
+	 * Methode um ein Spiel zu laden
+	 * @param ID von Game 
+	 */		
+	private void loadGame(int gameID){
+//		this.model = loadGame(Integer.parseInt(event.getArg()));
+		
+		Platform.runLater(new Runnable() {
+			
+			@Override
+			public void run() {
+				updateField();
+				updateSets();
+				properties[ROLE_PROPERTY].set(String.valueOf(model.getRole()));
+				properties[OWNPOINTS_PROPERTY].set(String.valueOf(model.getOwnPoints()));
+				properties[OPPPOINTS_PROPERTY].set(String.valueOf(model.getOppPoints()));
+				properties[OPPNAME_PROPERTY].set(model.getOppName());
+				properties[PATH_PROPERTY].set(model.getPath());
+				properties[TIMEOUTSERVER_PROPERTY].set(String.valueOf(model.getTimeoutServer()));
+				properties[TIMEOUTDRAW_PROPERTY].set(String.valueOf(model.getTimeoutDraw()));
+				properties[STATUS_PROPERTY].set(String.valueOf(model.getLatestSet().getStatus()));
+				properties[WINNER_PROPERTY].set(String.valueOf(model.getLatestSet().getWinner()));
+				setTokens();		
+//				TODO: getSavedGames
+			}
+		});	
+	}
 	
 	/**
 	 * Methode um ein neues Spiel zu starten
@@ -128,14 +161,8 @@ public class GameController extends Application implements GameEventListener, Ob
 				Integer.parseInt(properties[TIMEOUTSERVER_PROPERTY].get()), 
 				Integer.parseInt(properties[TIMEOUTDRAW_PROPERTY].get()));
 		model.addObserver(this);
-		
-		if(model.getRole() == Constants.oRole){
-			properties[OWNTOKEN_PROPERTY].setValue(Constants.oToken);
-			properties[OPPTOKEN_PROPERTY].setValue(Constants.xToken);
-		}else{
-			properties[OWNTOKEN_PROPERTY].setValue(Constants.xToken);
-			properties[OPPTOKEN_PROPERTY].setValue(Constants.oToken);
-		}
+				
+		setTokens();		
 		
 		for(int i = 0; i < cols; i++){
 			for(int j = 0; j< rows; j++){
@@ -145,7 +172,17 @@ public class GameController extends Application implements GameEventListener, Ob
 		ki = new KI(model);	
 		model.save();			
 	}
-		
+	
+	private void setTokens(){
+		if(model.getRole() == Constants.oRole){
+			properties[OWNTOKEN_PROPERTY].setValue(Constants.oToken);
+			properties[OPPTOKEN_PROPERTY].setValue(Constants.xToken);
+		}else{
+			properties[OWNTOKEN_PROPERTY].setValue(Constants.xToken);
+			properties[OPPTOKEN_PROPERTY].setValue(Constants.oToken);
+		}
+	}
+	
 	//---------------------Verarbeitung von Veränderungen im Model---------------------------------------------
 	/* (non-Javadoc)
 	 * @see java.util.Observer#update(java.util.Observable, java.lang.Object)
@@ -254,6 +291,13 @@ public class GameController extends Application implements GameEventListener, Ob
 	 */
 	public ObservableList<SetProperty> sets() {
 		return sets;
+	}
+	
+	/**
+	 * @return Liste der gespeicherten Spiele :ObservableList<GameProperty>
+	 */
+	public ObservableList<GameProperty> savedGames() {
+		return savedGames;
 	}
 
 	//---------------- Methoden zum starten und initialisieren des Programms -------------------

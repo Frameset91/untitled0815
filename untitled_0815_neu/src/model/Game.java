@@ -28,7 +28,7 @@ public class Game extends Observable implements Observer{
 	/**
 	 * Konstruktor von Game 
 	 *  
-	 * @param Spaltenanzahl, Zeilenanzahl des Spielfelds
+	 * @param Spaltenanzahl, Zeilenanzahl des Spielfelds, Rolle, Gegnername, Serverpfad, Min INtervall zur Serverabfrage, Zeit für einen Zug
 	 */
 	public Game(int cols, int rows, char role, String oppName, String path, int timeoutServer, int timeoutDraw){
 		this.cols = cols;
@@ -39,6 +39,24 @@ public class Game extends Observable implements Observer{
 		this.timeoutServer = timeoutServer;
 		this.timeoutDraw = timeoutDraw;
 		sets = new ArrayList<Set>();
+		ID = -1;
+	}
+	
+	/**
+	 * Konstruktor von Game (nur für die Verwendung beim Laden)
+	 *  
+	 * @param Spaltenanzahl, Zeilenanzahl des Spielfelds, Rolle, Gegnername, Serverpfad, Min INtervall zur Serverabfrage, Zeit für einen Zug, PrimaryKey aus DB
+	 */
+	public Game(int cols, int rows, char role, String oppName, String path, int timeoutServer, int timeoutDraw, int ID){
+		this.cols = cols;
+		this.rows = rows;
+		this.role = role;
+		this.oppName = oppName;
+		this.path = path;
+		this.timeoutServer = timeoutServer;
+		this.timeoutDraw = timeoutDraw;
+		sets = new ArrayList<Set>();
+		this.ID = ID;
 	}
 	
 	/**
@@ -53,6 +71,17 @@ public class Game extends Observable implements Observer{
 		setChanged();
 		notifyObservers("sets");		
 		return set;
+	}
+	
+	/**
+	 * Methoden zum Hinzufügen eines weiteren Satzes zum Datenmodell (nur für Ladevorgang)
+	 *  
+	 * @param der geladene Satz :Set
+	 */
+	public void addSet(Set set){
+		set.addObserver(this);
+		sets.add(set);		
+		update(set, "winner");
 	}
 	
 	//Observer Methode um bei Veränderungen von Gewinnern die Punkte neu zu berechnen
@@ -121,14 +150,19 @@ public class Game extends Observable implements Observer{
 	 */
 	public void save(){
 		//TODO: In Datenbank speichern (Primarykey = GameID), erzeugte GameID an Sets weitergeben, ID speichern
+		if(ID == -1){
+//			ID = save(this);
+		}
 		
 		//alle Moves speichern 
-		// ListIterator<Set> iterator = sets.listIterator();
-		//		
-//		while (iterator.hasNext())
-//		{
-////		    iterator.next().save(gameID);
-//		}
+		ListIterator<Set> iterator = sets.listIterator();
+				
+		while (iterator.hasNext())
+		{	
+			Set set = iterator.next();
+			if(set.getStatus() == Constants.statusSetEnd && !set.isSaved())
+				set.save(ID);
+		}
 	}
 	
 	//-------------------get set	
