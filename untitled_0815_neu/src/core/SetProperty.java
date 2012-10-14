@@ -24,19 +24,4 @@ public class SetProperty {
 	public String getWinner() {
 		return winner.get();
 	}
-
-	/**
-	 * @param die Satznummer :String
-	 */
-	public void setSetNr(String setNr) {
-		this.setNr.set(setNr);
-	}
-	
-	/**
-	 * @param Gewinner :String
-	 */
-	public void setWinner(String winner) {
-		this.winner.set(winner);
-	}
-
 }

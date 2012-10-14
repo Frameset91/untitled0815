@@ -14,6 +14,7 @@ public class Move {
 	private char role;
 	private int column;
 	private int ID;
+	private boolean isSaved;
 	
 	/**
 	 * Konstruktor von Move 
@@ -25,17 +26,41 @@ public class Move {
 		this.column = column;
 		this.ID = id;
 		this.time = new Timestamp(new java.util.Date().getTime());
+		isSaved = false;
 	}
 	
 	/**
 	 * Konstruktor von Move 
 	 *  
-	 * @param Rolle die gezogen hat :String, Spalte :Integer
+	 * @param Rolle die gezogen hat :String, Spalte :Integer, Zugzeitpunkt :Timestamp
 	 */
-	public Move(char role, int column){
+	public Move(char role, int column, int id, Timestamp time){
 		this.role = role;
-		this.column = column;		
-//		this.time = new Timestamp(new java.util.Date().getTime());
+		this.column = column;
+		this.ID = id;
+		this.time = time;
+		isSaved = true;
+	}
+//	
+//	/**
+//	 * Konstruktor von Move 
+//	 *  
+//	 * @param Rolle die gezogen hat :String, Spalte :Integer
+//	 */
+//	public Move(char role, int column){
+//		this.role = role;
+//		this.column = column;		
+////		this.time = new Timestamp(new java.util.Date().getTime());
+//	}
+	
+	/**
+	 * Methode zum Speichern eines Zuges
+	 *  
+	 * @param ID des Games :Integer, ID des Satzes :Integer
+	 */
+	public void save(int gameID, int setID){
+		//TODO: In Datenbank speichern (Primarykey = GameID + SetID + ID von Move)
+		isSaved = true;
 	}
 	
 	/**
@@ -43,6 +68,13 @@ public class Move {
 	 */
 	public int getID() {
 		return ID;
+	}
+	
+	/**
+	 * @return Gespeichert :Boolean
+	 */
+	public Boolean isSaved() {
+		return isSaved;
 	}
 	
 	/**
@@ -64,13 +96,6 @@ public class Move {
 		return column;
 	}
 	
-	/**
-	 * Methode zum Speichern eines Zuges
-	 *  
-	 * @param ID des Games :Integer, ID des Satzes :Integer
-	 */
-	public void save(int gameID, int setID){
-		//TODO: In Datenbank speichern (Primarykey = GameID + SetID + Timestamp von Move)
-	}
+	
 	
 }

@@ -22,7 +22,7 @@ public class Set extends Observable{
 	private String status;
 	private GameField field; 
 	private char winner;
-	
+	private boolean isSaved;
 	
 	/**
 	 * Konstruktor von Set
@@ -34,20 +34,47 @@ public class Set extends Observable{
 		startTime = new Timestamp(new Date().getTime());
 		moves = new ArrayList<Move>();
 		winner = '/';
+		isSaved = false;
+	}
+	
+	/**
+	 * Konstruktor von Set (nur für Ladevorgang)
+	 * @param Spaltenanzahl, Zeilenanzahl des Spielfelds, Satznummer, Startzeit, Endzeit, Satzstatus, Gewinner
+	 */
+	public Set(int cols, int rows, int id, Timestamp startTime, Timestamp endTime, String status, char winner){
+		this.ID = id;
+		this.endTime = endTime;
+		this.startTime = startTime;
+		this.status = status;
+		this.winner = winner;
+		field = new GameField(cols,rows);
+		moves = new ArrayList<Move>();
+		isSaved = true;
 	}
 	
 	/**
 	 * Methode zum Hinzufügen eines Zuges  
-	 * @param der neue Zug :Move
+	 * @param Rolle die gesetzt hat, gesetzte Spalte
 	 */
 	public synchronized void addMove(char role, byte col){
 		Move move = new Move(role, col, moves.size()+1);
 		moves.add(move);
 		field.addMove(move);
 		setChanged();
+		isSaved = false;
 		Log.getInstance().write("Einen Move hinzugefügt");
 		notifyObservers("field");
 	}
+	
+	/**
+	 * Methode zum Hinzufügen eines Zuges (nur für Ladevorgang)
+	 * @param der neue Zug :Move
+	 */
+	public void addMove(Move move){
+		moves.add(move);
+		field.addMove(move);		
+	}
+	
 	
 	/**
 	 * Methode zum Speichern eines Satzes
@@ -56,14 +83,20 @@ public class Set extends Observable{
 	 */
 	public void save(int gameID){
 		//TODO: In Datenbank speichern (Primarykey = GameID + SetID), erzeugte setID an Moves weitergeben 
-		
+		if(!isSaved){
+//			save(this, gameID, ID);
+		}
 		
 		//alle Moves speichern 
 		ListIterator<Move> iterator = moves.listIterator();
 		while (iterator.hasNext())
 		{
-//		    iterator.next().save(gameID, setID);
+		    Move move = iterator.next();
+		    if(!move.isSaved()){
+		    	move.save(gameID, ID);
+		    }
 		}
+		isSaved = true;
 	}
 	
 	/**
@@ -75,6 +108,7 @@ public class Set extends Observable{
 			endTime = new Timestamp(new Date().getTime());
 		}
 		setChanged();
+		isSaved = false;
 		notifyObservers("status");		
 	}
 	
@@ -84,6 +118,7 @@ public class Set extends Observable{
 	public void setWinner(char winner) {
 		this.winner = winner;
 		setChanged();
+		isSaved = false;
 		notifyObservers("winner");
 	}
 	
@@ -137,5 +172,10 @@ public class Set extends Observable{
 		return endTime;
 	}
 
-
+	/**
+	 * @return Endzeit :java.sql.Timestamp
+	 */
+	public Boolean isSaved() {
+		return isSaved;
+	}
 }
