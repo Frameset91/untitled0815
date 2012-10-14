@@ -47,3 +47,9 @@
 	-fx-font-size: 15;
 	-fx-font-weight: bold
 }
+
+.statusanzeige{
+	-fx-padding: 20;
+	-fx-font-size: 15;
+	-fx-font-weight: bold
+}

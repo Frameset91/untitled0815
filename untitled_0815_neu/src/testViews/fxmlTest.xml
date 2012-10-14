@@ -7,7 +7,7 @@
 <?import javafx.scene.text.*?>
 <?import javafx.scene.textfield.*?>
 <?import javafx.scene.shape.*?>
-
+<?import javafx.geometry.Insets?>
 
 
  
@@ -30,7 +30,9 @@
     <left><!-- Linker Bereich: Einstellungen, Trennlinie -->
         <HBox spacing="5">
         	<!-- Tabelle zum Anordnen der Einstellungen -->
-        	<GridPane hgap="5" vgap="10">
+        	<GridPane hgap="5" vgap="15">
+        	<padding><Insets top="10" right="10" bottom="10" left="10"/></padding>
+        	<!--  <GridPane >-->
         	<!-- Linke Spalte -->
         		<Label text="Spieleinstellungen" GridPane.columnIndex="0" GridPane.rowIndex="0" styleClass="labelSpieleinstellungen"></Label>   
      		   	<Label text="Rolle:" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
@@ -96,13 +98,26 @@
         		</GridPane>
         	</VBox>
         </left>
-       <!-- <center>boxrechts</center>
-        <bottom>Status</bottom> --> 
+       <center>
+       		<VBox spacing="10" alignment="CENTER_LEFT">
+       			<Button fx:id="satz" text="neuen Satz spielen" disable="true"/>
+       			<Label text="Statistik"/>
+       			<GridPane gridLinesVisible="true" alignment="center">
+       				<Label text="Satznr." GridPane.columnIndex="0" GridPane.rowIndex="0"/>
+       				<Label text="Zeit" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
+       				<Label text="..." GridPane.columnIndex="0" GridPane.rowIndex="2"/>
+       				<Label text="Hallo" GridPane.columnIndex="1" GridPane.rowIndex="0"/>
+       				<Label text=" " GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+       				<Label text=" " GridPane.columnIndex="1" GridPane.rowIndex="2"/>
+       			</GridPane>
+       			<Button fx:id="logAnzeigen" text="Log anzeigen" disable="true"/>
+       		</VBox>
+       		<!-- Table Column für die Logs -->	
+       </center>
+        <bottom>
+        	<Label text="Satzstatus: Satz spielen" styleClass="statusanzeige" alignment="TOP_LEFT"/>
+        </bottom>
         </BorderPane>
     </center>
-   
-    <bottom><!-- Satzstatus -->
-        <Label fx:id="status" text="Satz spielen"/>
-    </bottom>
  
 </BorderPane>
