@@ -1,8 +1,6 @@
 package test_utilities;
 
 import java.sql.ResultSet;
-import java.sql.Timestamp;
-import java.util.Date;
 
 import utilities.DBConnection;
 import model.Game;
@@ -16,7 +14,7 @@ public class test_DBConnector {
 	public static DBConnection con;
 
 	public static void testMove(){
-		Move myMove = new Move ('x', 3, new Timestamp(new Date().getTime()));
+		Move myMove = new Move ('x', 3, 3); // letztes ist ID, immer ändern
 		
 		boolean moveIns = con.saveMove(myMove, 1000, 1);
 		System.out.println ("erfolg: " + moveIns);
@@ -42,7 +40,7 @@ public class test_DBConnector {
 	}// ende testMove
 	
 	public static void testSet() {
-		Set mySet = new Set (7,6, "bla");
+		Set mySet = new Set (7,6,3); // letztes ist ID, immer ändern
 		
 		boolean setIns = con.saveSet(mySet, 1000);
 		System.out.println ("erfolg: " + setIns);
@@ -102,12 +100,10 @@ public class test_DBConnector {
 		con = DBConnection.getInstance();
 		
 		// testen:
-		switch (args[0]){
-				case "move": testMove();
-				case "set": testSet();
-				case "game": testGame();
-		}
-		
+		testMove();
+		//testSet();
+		//testGame();
+				
 	}
 
 }

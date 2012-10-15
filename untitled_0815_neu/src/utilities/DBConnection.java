@@ -12,7 +12,7 @@ import model.Set;
 
 /**
  * TO DO: 
- * getter-Methoden für's Speichern: saveMove
+ * bei save set: testaufruf für endtime enthalten
  * alle load-Methoden
  *
  */
@@ -163,10 +163,13 @@ public class DBConnection {
 		boolean success = false;
 		
 		// Daten zum Speichern von game holen
-		String setID = set.getID();
+		int setID = set.getID();
 		char winner = set.getWinner();
 		Timestamp starttime = set.getStarttime();
 		Timestamp endtime = set.getEndtime(); 
+		//zum testen:
+		if (endtime == null)
+			endtime = starttime;
 		
 		try {
 			//SQL Statement bauen
@@ -196,7 +199,7 @@ public class DBConnection {
 		
 		// Daten zum Speichern von game holen
 /////////////////// hier noch die get-Methoden nutzen!!!!!!!!!!!!!!!!!!!!!!
-		int moveID = 2;
+		int moveID = move.getID();
 		char role = move.getRole();
 		int column = move.getColumn();
 		Timestamp time = move.getTime();
@@ -222,32 +225,9 @@ public class DBConnection {
 	
 	
 ///////////////////////////// bis hier gekommen
-//	/**
-//	 * Methode, die alle Moves eines Satzes auf der DB persistiert
-//	 * 
-//	 * Es fehlt eine Beschreibunf für alle Moves --> Ein Array müsste global definiert werden
-//	 * @param move
-//	 * @return
-//	 */
+//	
 //	public boolean saveAllMove(int gameID, int setID) {
-//		boolean result = true;
-////		try {
-////			Statement stmnt = this.con.createStatement();
-////			result = stmnt
-////					.execute("INSERT INTO move (gameID,setID,role,column,datetime) VALUES ("
-////							+ gameID
-////							+ ","
-////							+ setID
-////							+ ","
-////							+ role
-////							+ ","
-////							+ column
-////							+ "," + datetime + ")");
-////		} catch (Exception e) {
-////			result = false;
-////			e.printStackTrace();
-////		}
-//		return result;
+//	
 //	}
 //	
 //	public void loadAllMoves(int gameID, int setID) {
