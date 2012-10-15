@@ -82,7 +82,6 @@ public class GameController extends Application implements GameEventListener, Ob
 				if(event.getArg() != "") arg = event.getArg().charAt(0); 	
 				
 				model.getLatestSet().setWinner(arg);
-				model.save();
 				break;
 			case EndGame:	//--------- Spiel beenden gedrückt
 				Log.getInstance().write("Controller: Event empfangen ( " + event.getType().toString() + " ) FxThread:" + Platform.isFxApplicationThread());
@@ -213,7 +212,8 @@ public class GameController extends Application implements GameEventListener, Ob
 					properties[OWNPOINTS_PROPERTY].setValue(String.valueOf(model.getOwnPoints()));
 					properties[OPPPOINTS_PROPERTY].setValue(String.valueOf(model.getOppPoints()));					
 				}
-			});				
+			});		
+			model.save();
 			break;
 		case "status":
 			Log.getInstance().write("Controller: Status changed empfangen, FxThread:" + Platform.isFxApplicationThread());

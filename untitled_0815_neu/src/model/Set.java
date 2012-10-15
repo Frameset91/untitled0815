@@ -11,6 +11,7 @@ import java.util.*;
 
 import core.Constants;
 
+import utilities.DBConnection;
 import utilities.Log;
 
 public class Set extends Observable{
@@ -82,9 +83,9 @@ public class Set extends Observable{
 	 * @param ID des Games :Integer
 	 */
 	public void save(int gameID){
-		//TODO: In Datenbank speichern (Primarykey = GameID + SetID), erzeugte setID an Moves weitergeben 
+		//In Datenbank speichern (Primarykey = GameID + SetID), erzeugte setID an Moves weitergeben 
 		if(!isSaved){
-//			save(this, gameID, ID);
+			DBConnection.getInstance().saveSet(this,gameID);
 		}
 		
 		//alle Moves speichern 
