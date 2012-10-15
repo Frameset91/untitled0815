@@ -6,10 +6,13 @@ import java.util.ResourceBundle;
 import core.Constants;
 
 import javafx.application.Application;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.*;
+import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 import javafx.scene.shape.Circle;
 import javafx.stage.Stage;
@@ -20,8 +23,9 @@ public class FieldTestController extends Application implements Initializable {
 	
 	@FXML
 	private GridPane feld;
+	public MenuItem menuSchließen; //bei private wird gemeckert
 
-	//Methode die für "Controller" vorgeschrieben ist und nach dem Aufbau des UI Kosntrukts aufgerufen wird
+	//Methode die für "Controller" vorgeschrieben ist und nach dem Aufbau des UI Kontrukts aufgerufen wird
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
 		//GridPane mit Circles füllen
@@ -47,6 +51,10 @@ public class FieldTestController extends Application implements Initializable {
         stage.setScene(new Scene(root)); 
         stage.show();
 	}
+	
+    
+    // Schließen des Programms über das Menü
+	public void handle(ActionEvent close){System.exit(0);}
 	
 	public static void main(String[] args) {
 		launch(args);
