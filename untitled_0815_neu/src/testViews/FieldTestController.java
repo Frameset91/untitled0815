@@ -3,6 +3,9 @@ package testViews;
 import java.net.URL;
 import java.util.ResourceBundle;
 
+import utilities.Log;
+import utilities.Log.LogEntry;
+
 import core.Constants;
 
 import javafx.application.Application;
@@ -13,6 +16,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.*;
 import javafx.scene.control.*;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.effect.Lighting;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
@@ -29,14 +33,24 @@ public class FieldTestController extends Application implements Initializable {
 	
 	@FXML
 	private GridPane feld;
-	public MenuItem menuSchließen; //bei private wird gemeckert
-	public MenuItem menuAnleitung;
-	public Button timeoutHochAbfrage;
-	public Button timeoutRunterAbfrage;
-	public TextField timeoutAbfrage;
-	public Button timeoutHochZugzeit;
-	public Button timeoutRunterZugzeit;
-	public TextField timeoutZugzeit;
+//	@FXML
+//	private MenuItem menuSchließen; //bei private wird gemeckert
+//	@FXML
+//	private MenuItem menuAnleitung;
+//	@FXML
+//	private Button timeoutHochAbfrage;
+//	@FXML
+//	private Button timeoutRunterAbfrage;
+	@FXML
+	private TextField timeoutAbfrage;
+//	@FXML
+//	private Button timeoutHochZugzeit;
+//	@FXML
+//	private Button timeoutRunterZugzeit;
+	@FXML
+	private TextField timeoutZugzeit;
+	@FXML
+	private TableView<LogEntry> logTabelle; 
 	
 
 	//Methode die für "Controller" vorgeschrieben ist und nach dem Aufbau des UI Kontrukts aufgerufen wird
@@ -53,8 +67,21 @@ public class FieldTestController extends Application implements Initializable {
 	        feld.add(spielfeld[i][j], i, j);
 	      }
 	    }
+//		
+//		//Tabelle für die Logs
+//				TableColumn spalte1 = new TableColumn("Log-Eintrag");
+//				spalte1.setEditable(false);
+//				logTabelle.getColumns().clear();
+//				logTabelle.getColumns().add(spalte1);
+//				logTabelle.setMinWidth(384);
+//						
+//				//Binding
+//				spalte1.setCellValueFactory(
+//						new PropertyValueFactory<Log.LogEntry, String>("text"));
+//				logTabelle.setItems(viewModel.logItems());
+//				Log.getInstance().write("Binding fuer Log erstellt");
 	 }
-	
+//	
 	//Methoden um das Prog zu starten
 
 	@Override

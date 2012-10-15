@@ -80,7 +80,7 @@
    
     <center><!-- Mittlerer Bereich -->
         <!-- Spielfläche (neue BorderPane) -->
-        <BorderPane>
+      <BorderPane>
         <left>
         	<VBox styleClass="spieleranzeige">
         		<HBox fx:id="spielerAnzeige" spacing="20" styleClass="spieler">
@@ -99,7 +99,7 @@
         		</GridPane>
         	</VBox>
         </left>
-       <center>
+       	<center>
        		<VBox spacing="10" alignment="CENTER_LEFT">
        			<Button fx:id="satz" text="neuen Satz spielen" disable="true"/>
        			<Label text="Statistik"/>
@@ -111,16 +111,18 @@
        				<Label text=" " GridPane.columnIndex="1" GridPane.rowIndex="1"/>
        				<Label text=" " GridPane.columnIndex="1" GridPane.rowIndex="2"/>
        			</GridPane>
-       			<Button fx:id="logAnzeigen" text="Log anzeigen" disable="true" onMouseClicked="#handleLogAnzeigen"/>
+       			<Button fx:id="logAnzeigen" text="Log anzeigen" disable="false" onMouseClicked="#handleLogAnzeigen"/>
        		</VBox>
        		<!-- Table Column für die Logs -->	
+       		<TableView fx:id="logTabelle" visible="false">
+       		</TableView>
        </center>
-        <bottom>
+       <bottom>
         	<HBox alignment="TOP_LEFT">
         		<Label text="Satzstatus:" styleClass="statusanzeige" />
         		<Label fx:id="satzstatus" text="Satz spielen" styleClass="statusanzeige"/>
        		</HBox>
-        </bottom>
-        </BorderPane>
+       </bottom>
+     </BorderPane>
     </center>
 </BorderPane>

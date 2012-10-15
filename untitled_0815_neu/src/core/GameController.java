@@ -34,9 +34,10 @@ public class GameController extends Application implements GameEventListener, Ob
 	public final int TIMEOUTSERVER_PROPERTY = 5;
 	public final int TIMEOUTDRAW_PROPERTY = 6;
 	public final int OPPTOKEN_PROPERTY = 7;
-	public final int OWNTOKEN_PROPERTY = 8;	
-	public final int STATUS_PROPERTY = 9;
-	public final int WINNER_PROPERTY = 10;
+	public final int OWNTOKEN_PROPERTY = 8;
+	public final int STATE_PROPERTY = 9;
+	public final int STATUS_PROPERTY = 10;
+	public final int WINNER_PROPERTY = 11;
 	
 	//Properties für DataBinding	
 	private SimpleStringProperty[] properties;
@@ -44,6 +45,11 @@ public class GameController extends Application implements GameEventListener, Ob
 	private ObservableList<Log.LogEntry> logItems;
 	private ObservableList<SetProperty> sets;
 	private ObservableList<GameProperty> savedGames;
+	
+	
+	public enum AppState{
+		AppRunning, GameRunning, SetRunning, SetEnded
+	}
 	
 	//---------------------Verarbeitung von Events-----------------------------------------
 	/* (non-Javadoc)
@@ -343,7 +349,7 @@ public class GameController extends Application implements GameEventListener, Ob
 			}
 		}
 		
-		properties = new SimpleStringProperty[11];
+		properties = new SimpleStringProperty[12];
 		properties[ROLE_PROPERTY] = new SimpleStringProperty();
 		properties[OWNPOINTS_PROPERTY] = new SimpleStringProperty("0");
 		properties[OPPPOINTS_PROPERTY] = new SimpleStringProperty("0");
@@ -355,6 +361,7 @@ public class GameController extends Application implements GameEventListener, Ob
 		properties[OWNTOKEN_PROPERTY] = new SimpleStringProperty(Constants.xToken);		
 		properties[STATUS_PROPERTY] = new SimpleStringProperty();
 		properties[WINNER_PROPERTY] = new SimpleStringProperty();
+		properties[STATE_PROPERTY] = new SimpleStringProperty(AppState.AppRunning.toString());
 		
 		sets = FXCollections.observableArrayList();		
 		savedGames = FXCollections.observableArrayList();	
