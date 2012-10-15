@@ -18,10 +18,10 @@
     			<MenuItem fx:id="menuNeuesSpiel" text="Neues Spiel"/>
     			<MenuItem fx:id="menuSpielLaden" text="Spiel laden"/>
     			<MenuItem fx:id="menuSpielBeenden" text="Spiel beenden" disable="true"/>
-    			<MenuItem fx:id="menuSchließen" text="Schließen" onAction="#handle"/>
+    			<MenuItem fx:id="menuSchließen" text="Schließen" onAction="#handleSchließen"/>
     		</Menu>
     		<Menu text="Hilfe">
-    			<MenuItem text="Spielanleitung"/>
+    			<MenuItem fx:id="menuAnleitung" text="Spielanleitung" onAction="#handleAnleitung"/>
     			<MenuItem text="Spielsteuerung"/>
     		</Menu>
     	</MenuBar>
@@ -59,8 +59,8 @@
         		<HBox GridPane.columnIndex="1" GridPane.rowIndex="5">
         			<TextField fx:id="timeoutAbfrage" maxWidth="60" text="300" styleClass="textfeld"/>
         			<VBox>
-        				<Button minHeight="10" maxHeight="10" styleClass="timeoutButton"/>
-        				<Button minHeight="10" maxHeight="10" styleClass="timeoutButton"/>
+        				<Button fx:id="timeoutHochAbfrage" minHeight="10" maxHeight="10" styleClass="timeoutButton" onMouseClicked="#handleHoch1"/>
+        				<Button fx:id="timeoutRunterAbfrage" minHeight="10" maxHeight="10" styleClass="timeoutButton" onMouseClicked="#handleRunter1"/>
         			</VBox>
         			<Label text="ms"/>
         		</HBox>
@@ -68,8 +68,8 @@
         		<HBox GridPane.columnIndex="1" GridPane.rowIndex="6">
         			<TextField fx:id="timeoutZugzeit" maxWidth="60" text="2000" styleClass="textfeld"/>
         			<VBox> <!-- Hoch/Runter -->
-        				<Button minHeight="10" maxHeight="10" styleClass="timeoutButton"/>
-        				<Button minHeight="10" maxHeight="10" styleClass="timeoutButton"/>
+        				<Button fx:id="timeoutHochZugzeit" minHeight="10" maxHeight="10" styleClass="timeoutButton" onMouseClicked="#handleHoch2"/>
+        				<Button fx:id="timeoutRunterZugzeit" minHeight="10" maxHeight="10" styleClass="timeoutButton" onMouseClicked="#handleRunter2"/>
         			</VBox>
         			<Label text="ms"/>
         		</HBox>
@@ -111,14 +111,16 @@
        				<Label text=" " GridPane.columnIndex="1" GridPane.rowIndex="1"/>
        				<Label text=" " GridPane.columnIndex="1" GridPane.rowIndex="2"/>
        			</GridPane>
-       			<Button fx:id="logAnzeigen" text="Log anzeigen" disable="true"/>
+       			<Button fx:id="logAnzeigen" text="Log anzeigen" disable="true" onMouseClicked="#handleLogAnzeigen"/>
        		</VBox>
        		<!-- Table Column für die Logs -->	
        </center>
         <bottom>
-        	<Label text="Satzstatus: Satz spielen" styleClass="statusanzeige" alignment="TOP_LEFT"/>
+        	<HBox alignment="TOP_LEFT">
+        		<Label text="Satzstatus:" styleClass="statusanzeige" />
+        		<Label fx:id="satzstatus" text="Satz spielen" styleClass="statusanzeige"/>
+       		</HBox>
         </bottom>
         </BorderPane>
     </center>
- 
 </BorderPane>
