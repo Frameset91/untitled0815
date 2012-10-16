@@ -46,7 +46,7 @@ public class CommunicationServer extends Thread {
 	 * @param type Typ des Events
 	 */
 	
-	@SuppressWarnings("rawtypes")
+	
 	private synchronized void fireEvent(byte type) {
 //		GameEvent event = new GameEvent(this, type);
 //		Iterator i = _listeners.iterator();
