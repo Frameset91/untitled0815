@@ -8,7 +8,6 @@ import java.util.ResourceBundle;
 
 import model.*;
 import utilities.*;
-import utilities.Log.LogEntry;
 import view.*;
 
 import javafx.application.Application;
@@ -16,13 +15,8 @@ import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
-import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
-
 
 public class GameController extends Application implements GameEventListener, Observer, Initializable{
 
@@ -50,117 +44,63 @@ public class GameController extends Application implements GameEventListener, Ob
 	private ObservableList<SetProperty> sets;
 	private ObservableList<GameProperty> savedGames;
 	
-	//FXML Elemente
-	@FXML
-	private GridPane feld;
-	@FXML
-	private TextField timeoutAbfrage;
-	@FXML
-	private TextField timeoutZugzeit;
-	@FXML
-	private TableView<LogEntry> logTabelle; 
-	
-	//---------------------Verarbeitung von Events-----------------------------------------
-	/* (non-Javadoc)
-	 * @see GameEventListener#handleEvent(GameEvent)
-	 */	
+	//--------------------- API Methoden für UI-Controller -----------------------------------------	
 	/**
-	 * Methode um auf GameEvents zu reagieren
-	 * @param das geworfene Event :GameEvent
-	 */	
-	@Override
-	public void handleEvent(GameEvent event) {
-		
-		switch (event.getType()) {
-			case StartGame:  //--------- Spiel starten gedrückt
-				Log.getInstance().write("Controller: Event empfangen ( " + event.getType().toString() + " ) FxThread:" + Platform.isFxApplicationThread());
-				newGame(Constants.gamefieldcolcount, Constants.gamefieldrowcount);		
-				properties[STATE_PROPERTY].set(Constants.STATE_GAME_RUNNING);
-				break;			
-			case StartSet: 	//--------- Satz starten gedrückt
-				Log.getInstance().write("Controller: Event empfangen ( " + event.getType().toString() + " ) FxThread:" + Platform.isFxApplicationThread());
-				if(model.getLatestSet() != null){
-					model.save();
-				}
-				ki = new KI(model);
-				
-				model.newSet();
-				
-				//ComServer starten
-				comServ.enableReading(model.getTimeoutServer(), model.getPath(), model.getRole());
-				properties[STATE_PROPERTY].set(Constants.STATE_SET_RUNNING);
-		
-				break;
-			case EndSet:	//--------- Satz abbrechen gedrückt oder Server hat den Satz beendet
-				Log.getInstance().write("Controller: Event empfangen ( " + event.getType().toString() + " ) FxThread:" + Platform.isFxApplicationThread());
-				comServ.disableReading();
-				if (Integer.parseInt(event.getArg()) > -1){
-					addOppMove(event.getArg());					
-				}
-				properties[STATE_PROPERTY].set(Constants.STATE_SET_ENDED);
-				model.getLatestSet().setStatus(Constants.STATE_SET_ENDED);
-				//zu Testzwecken
-				char arg = Constants.oRole;
-//				if(event.getArg() != "") arg = event.getArg().charAt(0); 	
-				
-				model.getLatestSet().setWinner(arg);
-				break;
-			case EndGame:	//--------- Spiel beenden gedrückt
-				Log.getInstance().write("Controller: Event empfangen ( " + event.getType().toString() + " ) FxThread:" + Platform.isFxApplicationThread());
-				properties[STATE_PROPERTY].set(Constants.STATE_APP_RUNNING);
-				model.save();
-				break;
-				
-			case OppMove:	//--------- ein gegnerischer Zug wurde vom Server mitgeteilt 
-				Log.getInstance().write("Controller: Event empfangen ( " + event.getType().toString() + " ) FxThread:" + Platform.isFxApplicationThread());
-//				comServ.disableReading();
-				
-				
-				if (Integer.parseInt(event.getArg()) > -1){
-					addOppMove(event.getArg());					
-				}
-				byte col = ki.calculateNextMove((byte) Integer.parseInt(event.getArg()));			
-				//Zug auf Server schreiben und Server wieder überwachen
-				comServ.writeMove(col, model.getPath(), model.getRole());
-				comServ.enableReading(model.getTimeoutServer(), model.getPath(), model.getRole());
-				
-				model.addMove(model.getRole(), col);							
-				break;		
-			case LoadGame:
-				Log.getInstance().write("Controller: Event empfangen ( " + event.getType().toString() + " ) FxThread:" + Platform.isFxApplicationThread());
-				loadGame(Integer.parseInt(event.getArg()));
-				properties[STATE_PROPERTY].set(Constants.STATE_GAME_RUNNING);
-				break;
-			case WinnerSet:
-				if(((String)event.getArg()).charAt(0) == Constants.xRole || ((String)event.getArg()).charAt(0) == Constants.oRole){
-					model.getLatestSet().setWinner(((String)event.getArg()).charAt(0));
-				}
-				model.save();
-				properties[STATE_PROPERTY].set(Constants.STATE_GAME_RUNNING);
-				break;
-			default:
-				break;
-			}
+	 * Methode um ein Spiel zu starten	  
+	 */
+	public void startGame(){
+		Log.getInstance().write("Controller: starte Spiel, FxThread:" + Platform.isFxApplicationThread());
+		newGame(Constants.gamefieldcolcount, Constants.gamefieldrowcount);		
+		properties[STATE_PROPERTY].set(Constants.STATE_GAME_RUNNING);
+	}
+	
+	/**
+	 * Methode um einen neuen Satz zu starten	  
+	 */
+	public void startSet(){
+		Log.getInstance().write("Controller: starte Satz, FxThread:" + Platform.isFxApplicationThread());
+		if(model.getLatestSet() != null){
+			model.save();
 		}
+		ki = new KI(model);
+		
+		model.newSet();
+		
+		//ComServer starten
+		comServ.enableReading(model.getTimeoutServer(), model.getPath(), model.getRole());
+		properties[STATE_PROPERTY].set(Constants.STATE_SET_RUNNING);
+	}
 	
+	/**
+	 * Methode um ein Satz zu beenden, falls es keinen letzten Zug gibt: oppMove = -1
+	 * @param der letzte Zug des Gegners :byte  
+	 */	
+	public void endSet(byte oppMove){
+		Log.getInstance().write("Controller: beende Satz, FxThread:" + Platform.isFxApplicationThread());
+		comServ.disableReading();
+		if (oppMove > -1){
+			addOppMove(oppMove);					
+		}
+		properties[STATE_PROPERTY].set(Constants.STATE_SET_ENDED);
+		model.getLatestSet().setStatus(Constants.STATE_SET_ENDED);
+	}
 	
-
-	//Hilfsmethoden 
-	
-	private void addOppMove(String arg) {
-		if(model.getRole() == Constants.xRole)
-			model.addMove(Constants.oRole, (byte) Integer.parseInt(arg));
-		else
-			model.addMove(Constants.xRole, (byte) Integer.parseInt(arg));		
+	/**
+	 * Methode um das aktuelle Spiel zu beenden	  
+	 */	
+	public void endGame(){
+		Log.getInstance().write("Controller: beende Spiel, FxThread:" + Platform.isFxApplicationThread());
+		properties[STATE_PROPERTY].set(Constants.STATE_APP_RUNNING);
+		model.save();
 	}
 	
 	/**
 	 * Methode um ein Spiel zu laden
 	 * @param ID von Game 
-	 */		
-	private void loadGame(int gameID){
-//		this.model = loadGame(Integer.parseInt(event.getArg()));
-		
+	 */	
+	public void loadGame(int gameID){
+		Log.getInstance().write("Controller: Spiel wird geladen, FxThread:" + Platform.isFxApplicationThread());
+//		TODO: DBConnection.getInstance().loadGame(gameID);
 		Platform.runLater(new Runnable() {
 			
 			@Override
@@ -175,10 +115,124 @@ public class GameController extends Application implements GameEventListener, Ob
 				properties[TIMEOUTSERVER_PROPERTY].set(String.valueOf(model.getTimeoutServer()));
 				properties[TIMEOUTDRAW_PROPERTY].set(String.valueOf(model.getTimeoutDraw()));
 				properties[WINNER_PROPERTY].set(String.valueOf(model.getLatestSet().getWinner()));
-				setTokens();		
-//				TODO: getSavedGames
+				setTokens();				
 			}
 		});	
+		properties[STATE_PROPERTY].set(Constants.STATE_GAME_RUNNING);
+	}
+	
+	/**
+	 * Methode um vom UI aus den Gewinner zu bestätigen und somit den Satz abzuschließen
+	 */	
+	public void confirmSetWinner(){
+		
+	}
+	
+	// Getter für Properties 	
+	/**
+	 * @return Properties für DataBinding mit UI:StringProperty
+	 */
+	public SimpleStringProperty[] properties() {
+		return properties;
+	}
+	
+	/**
+	 * @return Spielfeld :GameField
+	 */
+	public SimpleStringProperty[][] styleField() {
+		return styleField;
+	}	
+	
+	/**
+	 * @return Logeinträge :ObservableList<Log.LogEntry>
+	 */
+	public ObservableList<Log.LogEntry> logItems() {
+		return logItems;
+	}
+	
+	/**
+	 * @return Logeinträge :ObservableList<Log.LogEntry>
+	 */
+	public ObservableList<SetProperty> sets() {
+		return sets;
+	}
+	
+	/**
+	 * @return Liste der gespeicherten Spiele :ObservableList<GameProperty>
+	 */
+	public ObservableList<GameProperty> savedGames() {
+		//TODO: Liste der gespeicherten Spiel
+		return savedGames;
+	}
+	
+	// ------------------------------------- Behandlung von GameEvents (vom ComServer) --------------------------------
+	/* (non-Javadoc)
+	 * @see GameEventListener#handleEvent(GameEvent)
+	 */	
+	/**
+	 * Methode um auf GameEvents zu reagieren
+	 * @param das geworfene Event :GameEvent
+	 */	
+	@Override
+	public void handleEvent(GameEvent event) {
+		
+		switch (event.getType()) {
+			case StartGame:  //--------- Spiel starten gedrückt
+				startGame();
+				break;			
+			case StartSet: 	//--------- Satz starten gedrückt 
+				startSet();		
+				break;
+			case EndSet:	//--------- Satz abbrechen gedrückt oder Server hat den Satz beendet
+				endSet((byte)Integer.parseInt(event.getArg()));
+				break;
+			case EndGame:	//--------- Spiel beenden gedrückt
+				endGame();
+				break;				
+			case OppMove:	//--------- ein gegnerischer Zug wurde vom Server mitgeteilt 
+				Log.getInstance().write("Controller: Event empfangen ( " + event.getType().toString() + " ) FxThread:" + Platform.isFxApplicationThread());
+//				comServ.disableReading();
+				
+				
+				if (Integer.parseInt(event.getArg()) > -1){
+					addOppMove((byte)Integer.parseInt(event.getArg()));					
+				}
+				byte col = ki.calculateNextMove((byte) Integer.parseInt(event.getArg()));			
+				//Zug auf Server schreiben und Server wieder überwachen
+				comServ.writeMove(col, model.getPath(), model.getRole());
+				comServ.enableReading(model.getTimeoutServer(), model.getPath(), model.getRole());
+				
+				model.addMove(model.getRole(), col);							
+				break;		
+			case LoadGame: //Ein Spiel soll geladen werden
+				loadGame(Integer.parseInt(event.getArg()));				
+				break;
+			case WinnerSet: //Der Server hat einen Gewinner gesetzt
+				if(((String)event.getArg()).charAt(0) == Constants.xRole || ((String)event.getArg()).charAt(0) == Constants.oRole){
+					model.getLatestSet().setWinner(((String)event.getArg()).charAt(0));
+				}
+				//TODO: nach Verknüpfung mit FXML: in die confirmSetWinner verschieben
+				model.save();
+				properties[STATE_PROPERTY].set(Constants.STATE_GAME_RUNNING);
+				break;
+			default:
+				break;
+			}
+		}
+	
+	
+
+	//Hilfsmethoden 
+	
+	/**
+	 * einen Gegnerischen Zug in das Datenmodell einfügen
+	 * @param Spalte :byte
+	 */	
+	private void addOppMove(byte col) {
+		if(model.getRole() == Constants.xRole)
+			model.addMove(Constants.oRole, col);
+		else
+			model.addMove(Constants.xRole, col);		
 	}
 	
 	/**
@@ -208,6 +262,10 @@ public class GameController extends Application implements GameEventListener, Ob
 		model.save();			
 	}
 	
+	/**
+	 * Methode um anhand der eigenen Rolle die Styles der Token bestimmen
+	 * TODO: in UI Controller auslagern
+	 */	
 	private void setTokens(){
 		if(model.getRole() == Constants.oRole){
 			properties[OWNTOKEN_PROPERTY].setValue(Constants.oToken);
@@ -218,7 +276,7 @@ public class GameController extends Application implements GameEventListener, Ob
 		}
 	}
 	
-	//---------------------Verarbeitung von Veränderungen im Model---------------------------------------------
+	//---------------------Verarbeitung von Veränderungen im Datenmodell---------------------------------------------
 	/* (non-Javadoc)
 	 * @see java.util.Observer#update(java.util.Observable, java.lang.Object)
 	 */
@@ -269,10 +327,12 @@ public class GameController extends Application implements GameEventListener, Ob
 		
 	}
 	
-
-
 	//Hilfsmethoden
 	
+	/**
+	 * Field Property aktualisieren
+	 * TODO: Converter im UI Controller? Um unabhängig von UI Styles zu sein
+	 */	
 	private void updateField(){
 		Boolean[][] boolField = model.getLatestSet().getField();
 		for(int i = 0; i < Constants.gamefieldcolcount; i++){
@@ -290,6 +350,9 @@ public class GameController extends Application implements GameEventListener, Ob
 		}
 	}
 	
+	/**
+	 * Tabelle der Sets neu erstellen
+	 */
 	private void updateSets() {
 		sets.clear();
 		Iterator<Set> it = model.getSets().listIterator();
@@ -299,44 +362,6 @@ public class GameController extends Application implements GameEventListener, Ob
 		}
 	}
 	
-	//------------------- Getter für Properties -----------------------------------------------
-	
-	/**
-	 * @return Properties für DataBinding mit UI:StringProperty
-	 */
-	public SimpleStringProperty[] properties() {
-		return properties;
-	}
-	
-	/**
-	 * @return Spielfeld :GameField
-	 */
-	public SimpleStringProperty[][] styleField() {
-		return styleField;
-	}	
-	
-	/**
-	 * @return Logeinträge :ObservableList<Log.LogEntry>
-	 */
-	public ObservableList<Log.LogEntry> logItems() {
-		return logItems;
-	}
-	
-	/**
-	 * @return Logeinträge :ObservableList<Log.LogEntry>
-	 */
-	public ObservableList<SetProperty> sets() {
-		return sets;
-	}
-	
-	/**
-	 * @return Liste der gespeicherten Spiele :ObservableList<GameProperty>
-	 */
-	public ObservableList<GameProperty> savedGames() {
-		return savedGames;
-	}
-	
-
 	//---------------- Methoden zum starten und initialisieren des Programms -------------------
 	
 	/**
