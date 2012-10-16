@@ -243,7 +243,7 @@ public class MainGUI implements IGameView{
 		
 		final Button spielStarten = new Button("Spiel starten");
 		final Button spielLaden = new Button("Spiel laden");
-		Button testEinstellungen = new Button ("Test Einstellungen");
+	//	Button testEinstellungen = new Button ("Test Einstellungen");
 		
 //		testEinstellungen.setOnMouseClicked(new EventHandler<MouseEvent>(){
 //			public void handle(MouseEvent arg0){
@@ -278,7 +278,7 @@ public class MainGUI implements IGameView{
 		einstellungen.add(timeout2, 2, 7);
 		einstellungen.add(spielStarten, 1, 8);
 		einstellungen.add(spielLaden, 1, 10);
-		einstellungen.add(testEinstellungen,1,11);
+//		einstellungen.add(testEinstellungen,1,11);
 		
 		
 		//Trennung zwischen Einstellungen und Spielfeld	
