@@ -101,7 +101,7 @@
         </left>
        	<center>
        		<VBox spacing="10" alignment="CENTER_LEFT" fx:id="rightBox">
-       			<Button fx:id="satz" text="neuen Satz spielen" disable="true"/>
+       			<Button fx:id="satz" text="neuen Satz spielen" disable="false"/>
        			<Label text="Statistik"/>
        			<GridPane gridLinesVisible="true" alignment="center">
        				<Label text="Satznr." GridPane.columnIndex="0" GridPane.rowIndex="0"/>
@@ -113,9 +113,7 @@
        			</GridPane>
        			<Button fx:id="logAnzeigen" text="Log anzeigen" disable="false" onMouseClicked="#handleLogAnzeigen"/>
        		</VBox>
-       		<!-- Table Column für die Logs -->	
-       		<TableView fx:id="logTabelle" visible="false">
-       		</TableView>
+       		
        </center>
        <bottom>
         	<HBox alignment="TOP_LEFT">

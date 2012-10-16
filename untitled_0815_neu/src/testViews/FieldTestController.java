@@ -64,7 +64,7 @@ public class FieldTestController extends Application implements Initializable {
 //	private Button timeoutRunterZugzeit;
 	@FXML
 	private TextField timeoutZugzeit;
-	@FXML
+
 	private TableView<LogEntry> logTabelle; 
 	
 
@@ -73,6 +73,8 @@ public class FieldTestController extends Application implements Initializable {
 	public void initialize(URL arg0, ResourceBundle arg1) {
 		viewModel = new GameController();
 		viewModel.initialize(null, null);
+		
+		logTabelle = new TableView<LogEntry>();
 		
 		
 		//GridPane mit Circles füllen
@@ -233,6 +235,7 @@ public class FieldTestController extends Application implements Initializable {
 		final Stage stageAnleitung = new Stage();
 		Group rootLog = new Group();
 		Scene sceneLog = new Scene(rootLog, 484,500, Color.WHITESMOKE);
+		rootLog.getChildren().add(logTabelle);
 		stageAnleitung.setScene(sceneLog);
 		stageAnleitung.centerOnScreen();
 		stageAnleitung.show();
