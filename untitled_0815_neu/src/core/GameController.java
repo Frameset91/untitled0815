@@ -94,11 +94,15 @@ public class GameController extends Application implements GameEventListener, Ob
 			case EndSet:	//--------- Satz abbrechen gedrückt oder Server hat den Satz beendet
 				Log.getInstance().write("Controller: Event empfangen ( " + event.getType().toString() + " ) FxThread:" + Platform.isFxApplicationThread());
 				comServ.disableReading();
+				if (Integer.parseInt(event.getArg()) > -1){
+					addOppMove(event.getArg());					
+				}
 				properties[STATE_PROPERTY].set(Constants.STATE_SET_ENDED);
+				model.getLatestSet().setStatus(Constants.STATE_SET_ENDED);
 				//zu Testzwecken
 				char arg = Constants.oRole;
-				if(event.getArg() != "") arg = event.getArg().charAt(0); 	
-				model.getLatestSet().setStatus(Constants.STATE_SET_ENDED);
+//				if(event.getArg() != "") arg = event.getArg().charAt(0); 	
+				
 				model.getLatestSet().setWinner(arg);
 				break;
 			case EndGame:	//--------- Spiel beenden gedrückt
@@ -111,12 +115,9 @@ public class GameController extends Application implements GameEventListener, Ob
 				Log.getInstance().write("Controller: Event empfangen ( " + event.getType().toString() + " ) FxThread:" + Platform.isFxApplicationThread());
 //				comServ.disableReading();
 				
+				
 				if (Integer.parseInt(event.getArg()) > -1){
-		
-					if(model.getRole() == Constants.xRole)
-						model.addMove(Constants.oRole, (byte) Integer.parseInt(event.getArg()));
-					else
-						model.addMove(Constants.xRole, (byte) Integer.parseInt(event.getArg()));
+					addOppMove(event.getArg());					
 				}
 				byte col = ki.calculateNextMove((byte) Integer.parseInt(event.getArg()));			
 				//Zug auf Server schreiben und Server wieder überwachen
@@ -130,12 +131,28 @@ public class GameController extends Application implements GameEventListener, Ob
 				loadGame(Integer.parseInt(event.getArg()));
 				properties[STATE_PROPERTY].set(Constants.STATE_GAME_RUNNING);
 				break;
+			case WinnerSet:
+				if(((String)event.getArg()).charAt(0) == Constants.xRole || ((String)event.getArg()).charAt(0) == Constants.oRole){
+					model.getLatestSet().setWinner(((String)event.getArg()).charAt(0));
+				}
+				model.save();
+				properties[STATE_PROPERTY].set(Constants.STATE_GAME_RUNNING);
+				break;
 			default:
 				break;
 			}
 		}
 	
+	
+
 	//Hilfsmethoden 
+	
+	private void addOppMove(String arg) {
+		if(model.getRole() == Constants.xRole)
+			model.addMove(Constants.oRole, (byte) Integer.parseInt(arg));
+		else
+			model.addMove(Constants.xRole, (byte) Integer.parseInt(arg));		
+	}
 	
 	/**
 	 * Methode um ein Spiel zu laden

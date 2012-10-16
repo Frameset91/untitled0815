@@ -18,7 +18,7 @@ public class GameEvent {
     private Object userInfo   = null;
     public enum Type{
 		//Was kann durch das Event übermittlet werden?
-		StartGame, LoadGame, EndGame, StartSet, EndSet, OppMove
+		StartGame, LoadGame, EndGame, StartSet, EndSet, OppMove, WinnerSet
 	}
 	
 	/**
