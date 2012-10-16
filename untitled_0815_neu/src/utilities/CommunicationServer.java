@@ -123,6 +123,10 @@ public class CommunicationServer extends Thread {
 		this.serverfilepath = serverFilePath + "/server2spieler" + role + ".xml";
 		this.serverfilepath = this.serverfilepath.toLowerCase();
 		this.serverFile = new File(serverfilepath);
+		if(this.bla != null){
+			this.bla.interrupt();
+			this.bla = null;
+		}
 		this.bla = new Thread(new ReadServerFileThread());
 		this.bla.start();
 
