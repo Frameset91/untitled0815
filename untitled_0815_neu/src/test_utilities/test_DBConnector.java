@@ -99,10 +99,10 @@ public class test_DBConnector {
 		
 		con = DBConnection.getInstance();
 		
-		// testen:
-		testMove();
+		// zum testen jeweils auskommentieren (und bei Move und Set je in den Methoden eins hoch zählen):
+		//testMove();
 		//testSet();
-		//testGame();
+		testGame();
 				
 	}
 
