@@ -16,23 +16,11 @@ import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.Group;
-import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
-import javafx.scene.effect.Lighting;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.VBox;
-import javafx.scene.paint.Color;
-import javafx.scene.text.Font;
-import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 
@@ -329,95 +317,6 @@ public class GameController extends Application implements GameEventListener, Ob
 	public ObservableList<GameProperty> savedGames() {
 		return savedGames;
 	}
-	
-	//Methoden zur Visualisierung (sollten ausgelagert werden)
-    // Menü: Schließen des Programms
-	public void handleSchließen(ActionEvent close){System.exit(0);}
-	
-	// Menü: Spielanleitung aufrufen
-	public void handleAnleitung(ActionEvent anleitung){
-		//Fenster mit Anleitung öffnen
-		final Stage stageAnleitung = new Stage();
-		Group rootAnleitung = new Group();
-		Scene sceneAnleitung = new Scene(rootAnleitung, 400,400, Color.WHITESMOKE);
-		stageAnleitung.setScene(sceneAnleitung);
-		stageAnleitung.centerOnScreen();
-		stageAnleitung.show();
-		//Inhalt
-		Text ueberschrift = new Text(20, 20,"\"4 Gewinnt\"");
-		ueberschrift.setFill(Color.BLACK);
-		ueberschrift.setEffect(new Lighting());
-		ueberschrift.setFont(Font.font(Font.getDefault().getFamily(), 20));
-		Label text = new Label("Ententententententententententententente");
-		Button close = new Button("Schließen");
-		close.setOnAction(new EventHandler<ActionEvent>(){
-			public void handle(ActionEvent close){
-				stageAnleitung.close();
-			}});
-		VBox textUndButton = new VBox(100);
-		textUndButton.getChildren().addAll(ueberschrift,text, close);
-		rootAnleitung.getChildren().add(textUndButton);
-	}
-	
-	// Einstellungen: Timeouts hoch/ runter setzen
-	public void handleHoch1(MouseEvent arg0){
-		int timeoutFileabfruf;
-		timeoutFileabfruf = Integer.parseInt(timeoutAbfrage.getText());
-		timeoutFileabfruf = timeoutFileabfruf + 25;
-		String zeitz = String.valueOf(timeoutFileabfruf);
-		timeoutAbfrage.setText(zeitz);
-	}
-	
-	public void handleRunter1(MouseEvent arg0){
-		int timeoutFileabruf;
-		timeoutFileabruf = Integer.parseInt(timeoutAbfrage.getText());
-		timeoutFileabruf = timeoutFileabruf - 25;
-		String zeitz = String.valueOf(timeoutFileabruf);
-		timeoutAbfrage.setText(zeitz);
-	}
-	
-	public void handleHoch2(MouseEvent arg0){
-		int timeoutFileabfruf;
-		timeoutFileabfruf = Integer.parseInt(timeoutZugzeit.getText());
-		timeoutFileabfruf = timeoutFileabfruf + 100;
-		String zeitz = String.valueOf(timeoutFileabfruf);
-		timeoutZugzeit.setText(zeitz);
-	}
-	
-	public void handleRunter2(MouseEvent arg0){
-		int timeoutFileabruf;
-		timeoutFileabruf = Integer.parseInt(timeoutZugzeit.getText());
-		timeoutFileabruf = timeoutFileabruf - 100;
-		String zeitz = String.valueOf(timeoutFileabruf);
-		timeoutZugzeit.setText(zeitz);
-	}
-
-	// Log anzeigen
-	public void handleLogAnzeigen(MouseEvent arg0){
-		//Fenster mit Log öffnen
-		final Stage stageAnleitung = new Stage();
-		Group rootLog = new Group();
-		Scene sceneLog = new Scene(rootLog, 484,500, Color.WHITESMOKE);
-		stageAnleitung.setScene(sceneLog);
-		stageAnleitung.centerOnScreen();
-		stageAnleitung.show();
-						
-	//Inhalt
-		Text ueberschrift = new Text(20, 20,"Log");
-		Button close = new Button("Schließen");
-		close.setOnAction(new EventHandler<ActionEvent>(){
-			public void handle(ActionEvent close){
-				stageAnleitung.close();
-			}
-		});
-		//Anordnen
-		VBox Logs = new VBox(20);
-		Logs.getChildren().addAll(ueberschrift, logTabelle, close);
-		Logs.setLayoutX(50);
-		rootLog.getChildren().add(Logs);
-	}
-	
-	
 	
 
 	//---------------- Methoden zum starten und initialisieren des Programms -------------------
