@@ -605,6 +605,20 @@ public class MainGUI implements IGameView{
 						satz.setDisable(false);
 						//satzAbbrechen.setDisable(false);
 						logAnzeigen.setDisable(false);
+						
+						//Event
+						//TODO  Event umwandeln
+						
+						Task aufgabe = new Task<Void>() {
+							@Override
+							protected Void call() throws Exception {
+								// TODO Auto-generated method stub
+								fireGameEvent(GameEvent.Type.StartGame);
+								return null;
+							} // ENde call()	
+						};
+						
+						new Thread(aufgabe).start();	
 					}			
 					else{
 						final Stage stage = new Stage();
@@ -617,19 +631,7 @@ public class MainGUI implements IGameView{
 						stage.show();
 					}
 					
-					//Event
-					//TODO  Event umwandeln
-					
-					Task aufgabe = new Task<Void>() {
-						@Override
-						protected Void call() throws Exception {
-							// TODO Auto-generated method stub
-							fireGameEvent(GameEvent.Type.StartGame);
-							return null;
-						} // ENde call()	
-					};
-					
-					new Thread(aufgabe).start();				
+								
 				
 				}
 				else{
