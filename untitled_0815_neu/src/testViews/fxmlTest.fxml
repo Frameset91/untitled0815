@@ -117,8 +117,8 @@
        </center>
        <bottom>
         	<HBox alignment="TOP_LEFT">
-        		<Label text="Satzstatus:" styleClass="statusanzeige" />
-        		<Label fx:id="satzstatus" text="${properties[9]}" styleClass="statusanzeige"/>
+        		<Label text="Status:" styleClass="statusanzeige" />
+        		<Label fx:id="satzstatus" text="Status" styleClass="statusanzeige"/>
        		</HBox>
        </bottom>
      </BorderPane>

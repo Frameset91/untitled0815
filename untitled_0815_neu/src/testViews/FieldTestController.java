@@ -9,13 +9,11 @@ import utilities.Log.LogEntry;
 import core.Constants;
 import core.GameController;
 
-import javafx.application.Application;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.*;
 import javafx.scene.control.*;
@@ -31,13 +29,12 @@ import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
-public class FieldTestController extends Application implements Initializable {
+public class FieldTestController implements Initializable {
 	
 	private GameController viewModel; 
 	
-	//Attribut das in der FXML definiert ist	
-	@FXML
-	private GridPane feld;
+	//Elemente die in der FXML definiert sind	
+	//Bereiche
 	@FXML
 	private HBox leftBox;
 	@FXML
@@ -45,30 +42,41 @@ public class FieldTestController extends Application implements Initializable {
 	@FXML
 	private VBox rightBox;
 	
-	@FXML
-	private ChoiceBox<String> rolle;
-	
+	//Menü
 	@FXML
 	private MenuItem menuSchließen; 
 	@FXML
 	private MenuItem menuAnleitung;
-//	@FXML
-//	private Button timeoutHochAbfrage;
-//	@FXML
-//	private Button timeoutRunterAbfrage;
+	
+	//Für Binding relevant
+	@FXML
+	private GridPane feld;
+	@FXML
+	private ChoiceBox<String> rolle;	
 	@FXML
 	private TextField timeoutAbfrage;
-//	@FXML
-//	private Button timeoutHochZugzeit;
-//	@FXML
-//	private Button timeoutRunterZugzeit;
 	@FXML
 	private TextField timeoutZugzeit;
+	@FXML
+	private TextField gegnername;
+	@FXML
+	private TextField verzeichnispfad;
+	@FXML
+	private Label satzstatus;
+	@FXML
+	private Label punkteGegner;
+	@FXML
+	private Label punkteSpieler;	
+	@FXML
+	private Circle tokenGegner;
+	@FXML
+	private Circle tokenSpieler;
 
+	//Elemente die nicht im FXML definiert sind
 	private TableView<LogEntry> logTabelle; 
 	
 
-	//Methode die für "Controller" vorgeschrieben ist und nach dem Aufbau des UI Kontrukts aufgerufen wird
+	//Methode die für "Controller" vorgeschrieben ist und nach dem Aufbau des UI Konstrukts aufgerufen wird
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
 		viewModel = new GameController();
@@ -84,35 +92,44 @@ public class FieldTestController extends Application implements Initializable {
 	      for (int j = 0; j < Constants.gamefieldrowcount; j++)
 	      {
 	        spielfeld[i][j] = new Circle(20.0f);
-//	        spielfeld[i][j].getStyleClass().add("token");
 	        spielfeld[i][j].styleProperty().bind(viewModel.styleField()[i][Constants.gamefieldrowcount -1 -j]);
 	        feld.add(spielfeld[i][j], i, j);
 	      }
 	    }
-//		
-		//Tabelle für die Logs
-		TableColumn spalte1 = new TableColumn("Log-Eintrag");
-		spalte1.setEditable(false);
-		logTabelle.getColumns().clear();
-		logTabelle.getColumns().add(spalte1);
-		logTabelle.setMinWidth(384);
-				
-		//Binding
-		spalte1.setCellValueFactory(
-				new PropertyValueFactory<Log.LogEntry, String>("text"));
-		logTabelle.setItems(viewModel.logItems());
-		Log.getInstance().write("Binding fuer Log erstellt");
-		
+	
+		//-------------------------------------- weiteres Binding------------------------------
+			
 		//Binding für Zustand
 		viewModel.properties()[viewModel.STATE_PROPERTY].addListener(new ChangeListener<String>() {
 			@Override
 			public void changed(ObservableValue<? extends String> arg0,
 					String arg1, String arg2) {	updateState(); }});
 		
+		//Rollen Auswahl
 		rolle.valueProperty().bindBidirectional(viewModel.properties()[viewModel.ROLE_PROPERTY]);
 		rolle.getItems().addAll(String.valueOf(Constants.xRole), String.valueOf(Constants.oRole));
 		
-			
+		//Properties
+		timeoutAbfrage.textProperty().bindBidirectional(viewModel.properties()[viewModel.TIMEOUTSERVER_PROPERTY]);
+		timeoutZugzeit.textProperty().bindBidirectional(viewModel.properties()[viewModel.TIMEOUTDRAW_PROPERTY]);
+		gegnername.textProperty().bindBidirectional(viewModel.properties()[viewModel.OPPNAME_PROPERTY]);
+		verzeichnispfad.textProperty().bindBidirectional(viewModel.properties()[viewModel.PATH_PROPERTY]);
+		punkteGegner.textProperty().bindBidirectional(viewModel.properties()[viewModel.OPPPOINTS_PROPERTY]);
+		punkteSpieler.textProperty().bindBidirectional(viewModel.properties()[viewModel.OWNPOINTS_PROPERTY]);
+		tokenGegner.styleProperty().bindBidirectional(viewModel.properties()[viewModel.OPPTOKEN_PROPERTY]);
+		tokenSpieler.styleProperty().bindBidirectional(viewModel.properties()[viewModel.OWNTOKEN_PROPERTY]);		
+		satzstatus.textProperty().bind(viewModel.properties()[viewModel.STATE_PROPERTY]);
+		
+		//Tabelle für die Logs
+		TableColumn<Log.LogEntry, String> spalte1 = new TableColumn<Log.LogEntry, String>("Log-Eintrag");
+		spalte1.setEditable(false);
+		logTabelle.getColumns().clear();
+		logTabelle.getColumns().add(spalte1);
+		logTabelle.setMinWidth(384);
+		spalte1.setCellValueFactory(
+				new PropertyValueFactory<Log.LogEntry, String>("text"));
+		logTabelle.setItems(viewModel.logItems());
+		Log.getInstance().write("Binding fuer Log erstellt");
 	 }
 	
 	private void updateState(){
@@ -155,22 +172,12 @@ public class FieldTestController extends Application implements Initializable {
 			break;
 		}	
 	}	
-
-	//Methoden um das Prog zu starten
-
-	@Override
-	public void start(Stage stage) throws Exception {
-        stage.setTitle("Test für Spielfeld mit FXML"); 
-        //Parent root = FXMLLoader.load(getClass().getResource("FieldTest.fxml")); 
-        Parent root = FXMLLoader.load(getClass().getResource("fxmlTest.xml"));
-        stage.setScene(new Scene(root)); 
-        stage.show();
-	}
 	
-    
+	//----------------------- Methoden zum handeln von UI Input ----------------------------
+	@FXML
     // Menü: Schließen des Programms
 	public void handleSchließen(ActionEvent close){System.exit(0);}
-	
+	@FXML
 	// Menü: Spielanleitung aufrufen
 	public void handleAnleitung(ActionEvent anleitung){
 		//Fenster mit Anleitung öffnen
@@ -195,7 +202,7 @@ public class FieldTestController extends Application implements Initializable {
 		textUndButton.getChildren().addAll(ueberschrift,text, close);
 		rootAnleitung.getChildren().add(textUndButton);
 	}
-	
+	@FXML
 	// Einstellungen: Timeouts hoch/ runter setzen
 	public void handleHoch1(MouseEvent arg0){
 		int timeoutFileabfruf;
@@ -204,7 +211,7 @@ public class FieldTestController extends Application implements Initializable {
 		String zeitz = String.valueOf(timeoutFileabfruf);
 		timeoutAbfrage.setText(zeitz);
 	}
-	
+	@FXML
 	public void handleRunter1(MouseEvent arg0){
 		int timeoutFileabruf;
 		timeoutFileabruf = Integer.parseInt(timeoutAbfrage.getText());
@@ -212,7 +219,7 @@ public class FieldTestController extends Application implements Initializable {
 		String zeitz = String.valueOf(timeoutFileabruf);
 		timeoutAbfrage.setText(zeitz);
 	}
-	
+	@FXML
 	public void handleHoch2(MouseEvent arg0){
 		int timeoutFileabfruf;
 		timeoutFileabfruf = Integer.parseInt(timeoutZugzeit.getText());
@@ -220,7 +227,7 @@ public class FieldTestController extends Application implements Initializable {
 		String zeitz = String.valueOf(timeoutFileabfruf);
 		timeoutZugzeit.setText(zeitz);
 	}
-	
+	@FXML
 	public void handleRunter2(MouseEvent arg0){
 		int timeoutFileabruf;
 		timeoutFileabruf = Integer.parseInt(timeoutZugzeit.getText());
@@ -228,8 +235,8 @@ public class FieldTestController extends Application implements Initializable {
 		String zeitz = String.valueOf(timeoutFileabruf);
 		timeoutZugzeit.setText(zeitz);
 	}
-
 	// Log anzeigen
+	@FXML
 	public void handleLogAnzeigen(MouseEvent arg0){
 		//Fenster mit Log öffnen
 		final Stage stageAnleitung = new Stage();
@@ -253,9 +260,5 @@ public class FieldTestController extends Application implements Initializable {
 		Logs.getChildren().addAll(ueberschrift, logTabelle, close);
 		Logs.setLayoutX(50);
 		rootLog.getChildren().add(Logs);
-	}
-	
-	public static void main(String[] args) {
-		launch(args);
 	}
 }
