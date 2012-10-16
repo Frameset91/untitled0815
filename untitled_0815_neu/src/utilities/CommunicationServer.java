@@ -18,7 +18,7 @@ public class CommunicationServer extends Thread {
 	private int timeout;
 	private File serverFile;
 	private File agentFile;
-	private Thread bla;
+	private Thread leserthread;
 //	private List<GameEventListener_old> _listeners = new ArrayList<GameEventListener_old>();
 //
 //	
@@ -123,12 +123,12 @@ public class CommunicationServer extends Thread {
 		this.serverfilepath = serverFilePath + "/server2spieler" + role + ".xml";
 		this.serverfilepath = this.serverfilepath.toLowerCase();
 		this.serverFile = new File(serverfilepath);
-		if(this.bla != null){
-			this.bla.interrupt();
-			this.bla = null;
+		if(this.leserthread != null){
+			this.leserthread.interrupt();
+			this.leserthread = null;
 		}
-		this.bla = new Thread(new ReadServerFileThread());
-		this.bla.start();
+		this.leserthread = new Thread(new ReadServerFileThread());
+		this.leserthread.start();
 
 	}
 	
@@ -140,7 +140,7 @@ public class CommunicationServer extends Thread {
 	 * Beendet die Abfrage der Serverdatei
 	 */
 	public void disableReading() {
-		this.bla.interrupt();
+		this.leserthread.interrupt();
 //		this.bla.stop();
 	}
 
