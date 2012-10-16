@@ -1,21 +1,21 @@
 package utilities.ki;
 /**
  * @author Johannes
- * speichert eine Möglichkeit, zu gewinnen
+ * speichert eine mögliche 4er-Kette, zu gewinnen
  */
 
 import java.util.ArrayList;
 
-public class Falle {
+public class Trap {
 	private byte groesse;
 	private ArrayList<Position> freiechips;
 	
-	public Falle(byte groesse) {
+	public Trap(byte groesse) {
 		this.groesse = groesse;
 		freiechips = new ArrayList<Position>();
 	}
 	
-	public Falle(byte groesse, ArrayList<Position> freiechips) {
+	public Trap(byte groesse, ArrayList<Position> freiechips) {
 		// TODO Auto-generated constructor stub
 		this.groesse = groesse;
 		this.freiechips= new ArrayList<Position>(freiechips.size());
