@@ -245,20 +245,20 @@ public class MainGUI implements IGameView{
 		final Button spielLaden = new Button("Spiel laden");
 		Button testEinstellungen = new Button ("Test Einstellungen");
 		
-		testEinstellungen.setOnMouseClicked(new EventHandler<MouseEvent>(){
-			public void handle(MouseEvent arg0){
-					/**
-					 * TODO Abfragen, ob alles Felder befüllt wurden
-					 */
-						final Stage stage = new Stage();
-						Group rootEinstellungen = new Group();
-						Scene scene = new Scene(rootEinstellungen, 250, 80, Color.WHITESMOKE);
-						stage.setScene(scene);
-						stage.centerOnScreen();
-						Text text = new Text(20,40, "Bitte alle Spieleinstellungen definieren!");
-						rootEinstellungen.getChildren().add(text);
-						stage.show();
-					}});
+//		testEinstellungen.setOnMouseClicked(new EventHandler<MouseEvent>(){
+//			public void handle(MouseEvent arg0){
+//					/**
+//					 * TODO Abfragen, ob alles Felder befüllt wurden
+//					 */
+//						final Stage stage = new Stage();
+//						Group rootEinstellungen = new Group();
+//						Scene scene = new Scene(rootEinstellungen, 250, 80, Color.WHITESMOKE);
+//						stage.setScene(scene);
+//						stage.centerOnScreen();
+//						Text text = new Text(20,40, "Bitte alle Spieleinstellungen definieren!");
+//						rootEinstellungen.getChildren().add(text);
+//						stage.show();
+//					}});
 		
 		
 
@@ -582,7 +582,7 @@ public class MainGUI implements IGameView{
 					 * TODO Abfragen, ob alles Felder befüllt wurden
 					 * funktioniert noch nicht!
 					 */
-					if (gegnername != null || verzeichnispfad != null){
+					if (rolle.getValue() != null && gegnername.getText() != null && verzeichnispfad.getText() != null){
 						neuesSpiel.setDisable(true);
 						laden.setDisable(true);
 						spielBeenden.setDisable(false);
@@ -609,10 +609,10 @@ public class MainGUI implements IGameView{
 					else{
 						final Stage stage = new Stage();
 						Group rootEinstellungen = new Group();
-						Scene scene = new Scene(rootEinstellungen, 200, 200, Color.WHITESMOKE);
+						Scene scene = new Scene(rootEinstellungen, 250, 80, Color.WHITESMOKE);
 						stage.setScene(scene);
 						stage.centerOnScreen();
-						Text text = new Text(20,40, "Bitte alle Spieleinstellungen definieren");
+						Text text = new Text(20,40, "Bitte alle Spieleinstellungen definieren!");
 						rootEinstellungen.getChildren().add(text);
 						stage.show();
 					}
