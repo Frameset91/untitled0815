@@ -32,7 +32,11 @@ public class KI{
 			moeglichezuege.add(i);
 			}
 	}
-	
+	/**
+	 * 
+	 * @return Bewertungszahl des aktuellen Feldes: Je höher, umso besser ist die 
+	 * Situation für uns
+	 */
 	 private static int Bewertung(/*byte neuerzug*/){
 		 // Tabelle, gibt an, ob für bestimmtes Feld schon Falle existiert und
 		 // wie groß die Falle ist, die durch dieses Feld ermöglicht wird
@@ -63,10 +67,10 @@ public class KI{
 			//Boolean fuerwen = null; // für wen wird gerade mögliche Falle gezählt
 			// leere Position, an der man setzen könnte
 			ArrayList<Position> freiesteine= new ArrayList<Position>(); 
-			ArrayList<Falle> bisherbesteFalleSelf = new ArrayList<Falle>(0);
-			bisherbesteFalleSelf.add(new Falle((byte) 0));
-			ArrayList<Falle> bisherbesteFalleOpp = new ArrayList<Falle>(0);
-			bisherbesteFalleOpp.add(new Falle((byte) 0));
+			ArrayList<Trap> bisherbesteFalleSelf = new ArrayList<Trap>(0);
+			bisherbesteFalleSelf.add(new Trap((byte) 0));
+			ArrayList<Trap> bisherbesteFalleOpp = new ArrayList<Trap>(0);
+			bisherbesteFalleOpp.add(new Trap((byte) 0));
 			byte anzself=0;
 			byte anzopp=0;
 			// ersten drei Steine befüllen
@@ -118,7 +122,7 @@ public class KI{
 							{
 							// dann (kleinere) löschen und neue speichern
 							bisherbesteFalleSelf.clear();
-							bisherbesteFalleSelf.add(new Falle(anzself,freiesteine));
+							bisherbesteFalleSelf.add(new Trap(anzself,freiesteine));
 							
 							// vermerken, dass bestimmte freie Steine jetzt
 							// für Falle der Größe X gebraucht werden
@@ -137,7 +141,7 @@ public class KI{
 									anzself,noetigfuerfalleself);
 							if(besseralsanderefallen)
 								{
-								bisherbesteFalleSelf.add(new Falle(anzself,freiesteine));
+								bisherbesteFalleSelf.add(new Trap(anzself,freiesteine));
 								}
 							}
 					}
@@ -148,18 +152,18 @@ public class KI{
 					{
 					// dann (kleinere) löschen und neue speichern
 					bisherbesteFalleOpp.clear();
-					bisherbesteFalleOpp.add(new Falle(anzopp,freiesteine));
+					bisherbesteFalleOpp.add(new Trap(anzopp,freiesteine));
 					}
 				else
 					// falls neue Falle genauso groß wie bisher bekannte trotzdem speichern
 					if(anzopp==bisherbesteFalleOpp.get(0).getGroesse())
-						bisherbesteFalleOpp.add(new Falle(anzopp,freiesteine));
+						bisherbesteFalleOpp.add(new Trap(anzopp,freiesteine));
 				}
 				j++;
 			 	} // Ende jede-Position-durchgehen-do
 			while(j<Constants.gamefieldcolcount);
 			// beste gefundene(n) Falle(n) ausgeben
-			for (Falle einefalle : bisherbesteFalleSelf)
+			for (Trap einefalle : bisherbesteFalleSelf)
 				if(einefalle.getGroesse()>0)
 					{
 					Log.getInstance().write("KI: Reihen-Falle für KI." + einefalle);
@@ -168,7 +172,7 @@ public class KI{
 					else
 						bewertung += einefalle.getGroesse()*einefalle.getGroesse();
 					}
-			for (Falle einefalle : bisherbesteFalleOpp)
+			for (Trap einefalle : bisherbesteFalleOpp)
 				if(einefalle.getGroesse()>0)
 					{
 					Log.getInstance().write("KI: Reihen-Falle für Gegner." + einefalle);
@@ -194,7 +198,13 @@ public class KI{
 	return result;
 	}	 
 
-
+	/**
+	 * 
+	 * @param tiefe Wie tief soll gesucht werden?
+	 * @param alpha Aktueller alpha-Wert
+	 * @param beta Aktueller Beta-Wert
+	 * @return Bewertungszahl des besten Spielzuges
+	 */
 	private int Max(int tiefe, int alpha, int beta) {
 	/*return beta;*/
 	   if (tiefe == 0)
@@ -238,7 +248,13 @@ public class KI{
 	    	return besterspielzug;
 	    return localAlpha;
 	 }
-
+	/**
+	 * 
+	 * @param tiefe Wie tief soll gesucht werden?
+	 * @param alpha Aktueller alpha-Wert
+	 * @param beta Aktueller Beta-Wert
+	 * @return Bewertungszahl des schlechtesten Spielzuges
+	 */
 	int Min(int tiefe, int alpha, int beta) {
 		if (tiefe == 0)
 			return Bewertung();
@@ -270,7 +286,11 @@ public class KI{
 			}
 		return localBeta;
 	 }
-	
+	/**
+	 * ermittelt nächstes Spielzug
+	 * @param oppMove Spalte in die der Gegner gesetzt hat
+	 * @return Spalte in die die KI setzt
+	 */
 	public byte calculateNextMove(byte oppMove) {
 
 		self = (gameobject.getRole()==(Constants.xRole));
