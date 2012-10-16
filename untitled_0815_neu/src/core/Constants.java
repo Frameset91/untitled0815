@@ -29,6 +29,6 @@ public class Constants {
 	public static final String oToken = "-fx-fill: red; -fx-effect: innershadow(two-pass-box, grey, 10, 0.5, 0, 0);";
 	public static final String emptyToken = "-fx-fill: white; -fx-effect: innershadow(two-pass-box, grey, 10, 0.5, 0, 0);";
 	
-	
+	public static final int KImaxbewertung = 100000;
 
 }
