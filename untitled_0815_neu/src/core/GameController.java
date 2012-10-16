@@ -82,6 +82,7 @@ public class GameController extends Application implements GameEventListener, Ob
 				if(model.getLatestSet() != null){
 					model.save();
 				}
+				ki = new KI(model);
 				
 				model.newSet();
 				
@@ -97,12 +98,13 @@ public class GameController extends Application implements GameEventListener, Ob
 				//zu Testzwecken
 				char arg = Constants.oRole;
 				if(event.getArg() != "") arg = event.getArg().charAt(0); 	
-				
+				model.getLatestSet().setStatus(Constants.STATE_SET_ENDED);
 				model.getLatestSet().setWinner(arg);
 				break;
 			case EndGame:	//--------- Spiel beenden gedrückt
 				Log.getInstance().write("Controller: Event empfangen ( " + event.getType().toString() + " ) FxThread:" + Platform.isFxApplicationThread());
 				properties[STATE_PROPERTY].set(Constants.STATE_APP_RUNNING);
+				model.save();
 				break;
 				
 			case OppMove:	//--------- ein gegnerischer Zug wurde vom Server mitgeteilt 
@@ -186,7 +188,6 @@ public class GameController extends Application implements GameEventListener, Ob
 				styleField[i][j].set(Constants.emptyToken);
 			}
 		}		
-		ki = new KI(model);	
 		model.save();			
 	}
 	
