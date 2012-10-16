@@ -1,5 +1,7 @@
 package utilities;
 import java.util.ArrayList;
+import java.util.Random;
+
 import utilities.ki.*;
 
 import core.Constants;
@@ -8,17 +10,17 @@ import model.*;
 
 /**
  * @author Johannes Riedel
- *
+ * Klasse enthält alle Methoden für die KI des Spiels
  */
 
 public class KI{
-	private static Boolean self;
-	private static Boolean opp;
-	private static final Boolean empty = null;
-	private static final byte suchtiefe = 6;
+	private Boolean self;
+	private Boolean opp;
+	private final Boolean empty = null;
+	private final byte suchtiefe = 6;
 
 	private Game gameobject;
-	private static Boolean[][] spielfeld;
+	private Boolean[][] spielfeld;
 	private Byte[] watermark = new Byte[Constants.gamefieldcolcount];
 	private ArrayList<Byte> moeglichezuege;
 	
@@ -37,7 +39,7 @@ public class KI{
 	 * @return Bewertungszahl des aktuellen Feldes: Je höher, umso besser ist die 
 	 * Situation für uns
 	 */
-	 private static int Bewertung(/*byte neuerzug*/){
+	 private int Bewertung(/*byte neuerzug*/){
 		 // Tabelle, gibt an, ob für bestimmtes Feld schon Falle existiert und
 		 // wie groß die Falle ist, die durch dieses Feld ermöglicht wird
 		 long startzeit = System.nanoTime();
@@ -48,19 +50,20 @@ public class KI{
 				noetigfuerfalleself[i][j]=0;
 			}
 		}
-		 /* todo
+		 
 		 int[][] noetigfuerfalleopp = new int[Constants.gamefieldcolcount]
 				 [Constants.gamefieldrowcount];
 		 for (int i = 0; i < noetigfuerfalleopp.length; i++) {
 			for (int j = 0; j < noetigfuerfalleopp[0].length; j++) {
 				noetigfuerfalleopp[i][j]=0;
 			}
-		}*/
+		}
 		 
 		 // ordne Spielfeld + neuem Zug Bewertungszahl zu
 		int bewertung = 0;
-		 
-		 // zähle offene Fallen horizontal:
+		// #####################################
+		// zähle offene Fallen horizontal:
+		// 	#####################################
 		 for (byte i = 0; i < Constants.gamefieldrowcount; i++) 
 		 //for (byte i = 0; i <=0; i++) // nur untere Reihe prüfen
 		 	{
@@ -112,7 +115,7 @@ public class KI{
 				if(anzopp==0 && anzself>0)
 					{
 					// größere Falle als bisher in dieser Reihe gefunden?
-					if(anzself>bisherbesteFalleSelf.get(0).getGroesse())
+					if(anzself>bisherbesteFalleSelf.get(0).getSize())
 						{
 						// prüfen, ob neue Falle besser ist als die an den freien
 						// Chips schon bekannten
@@ -134,60 +137,225 @@ public class KI{
 							}
 						}
 					else
-						// falls neue Falle genauso groß wie bisher bekannte trotzdem speichern
-						if(anzself==bisherbesteFalleSelf.get(0).getGroesse())
+						// falls neue Falle genauso groß wie bisher bekannte trotzdem speichern ...
+						if(anzself==bisherbesteFalleSelf.get(0).getSize())
 							{
 							boolean besseralsanderefallen=besseralsanderefallen(freiesteine,
 									anzself,noetigfuerfalleself);
+							// ... aber nur, falls die Steine auf neue freie Steine fußt
 							if(besseralsanderefallen)
 								{
 								bisherbesteFalleSelf.add(new Trap(anzself,freiesteine));
 								}
 							}
 					}
+				// mögliche Gegner-Falle gefunden
 				if(anzself==0 && anzopp>0)
-				{
-				// größere Falle als bisher gefunden?
-				if(anzopp>bisherbesteFalleOpp.get(0).getGroesse())
 					{
-					// dann (kleinere) löschen und neue speichern
-					bisherbesteFalleOpp.clear();
-					bisherbesteFalleOpp.add(new Trap(anzopp,freiesteine));
+					// größere Falle als bisher gefunden?
+					if(anzopp>bisherbesteFalleOpp.get(0).getSize())
+						{
+						// prüfen, ob neue Falle besser ist als die an den freien
+						// Chips schon bekannten
+						boolean besseralsanderefallen=besseralsanderefallen(freiesteine,
+								anzopp,noetigfuerfalleopp);
+						if(besseralsanderefallen)
+							{
+							// dann (kleinere) löschen und neue speichern
+							bisherbesteFalleOpp.clear();
+							bisherbesteFalleOpp.add(new Trap(anzopp,freiesteine));
+							
+							// vermerken, dass bestimmte freie Steine jetzt
+							// für Falle der Größe X gebraucht werden
+							for (Position einfreierstein : freiesteine) 
+								{
+								noetigfuerfalleopp[einfreierstein.getX()]
+										[einfreierstein.getY()]=anzopp;
+								}
+							}
+						}
+					else
+						// falls neue Falle genauso groß wie bisher bekannte trotzdem speichern
+						if(anzopp==bisherbesteFalleOpp.get(0).getSize())
+							{
+							boolean besseralsanderefallen=besseralsanderefallen(freiesteine,
+									anzopp,noetigfuerfalleopp);
+							// ... aber nur, falls die Steine auf neue freie Steine fußt
+							if(besseralsanderefallen)
+								{
+								bisherbesteFalleOpp.add(new Trap(anzopp,freiesteine));
+								}
+							}
 					}
-				else
-					// falls neue Falle genauso groß wie bisher bekannte trotzdem speichern
-					if(anzopp==bisherbesteFalleOpp.get(0).getGroesse())
-						bisherbesteFalleOpp.add(new Trap(anzopp,freiesteine));
-				}
 				j++;
 			 	} // Ende jede-Position-durchgehen-do
 			while(j<Constants.gamefieldcolcount);
 			// beste gefundene(n) Falle(n) ausgeben
 			for (Trap einefalle : bisherbesteFalleSelf)
-				if(einefalle.getGroesse()>0)
+				if(einefalle.getSize()>0)
 					{
 					Log.getInstance().write("KI: Reihen-Falle für KI." + einefalle);
-					if(einefalle.getGroesse()==4)
+					if(einefalle.getSize()==4)
 						bewertung += Constants.KImaxbewertung;
 					else
-						bewertung += einefalle.getGroesse()*einefalle.getGroesse();
+						bewertung += einefalle.getSize()*einefalle.getSize();
 					}
 			for (Trap einefalle : bisherbesteFalleOpp)
-				if(einefalle.getGroesse()>0)
+				if(einefalle.getSize()>0)
 					{
 					Log.getInstance().write("KI: Reihen-Falle für Gegner." + einefalle);
-					if(einefalle.getGroesse()==4)
+					if(einefalle.getSize()==4)
 						bewertung -= Constants.KImaxbewertung;
 					else
-						bewertung -= einefalle.getGroesse()*einefalle.getGroesse();
+						bewertung -= einefalle.getSize()*einefalle.getSize();
 					}
 		 	}
-		 Log.getInstance().write("Bewertung des Feldes: " + String.valueOf(bewertung) + 
-				 " Ausführungszeit: " + String.valueOf((System.nanoTime() - startzeit)/1000000));
-		 return bewertung;
+		// #####################################
+		// zähle offene Fallen vertikal:
+		// #####################################
+		// jede Spalte durchgehen
+		for (byte i = 0; i < Constants.gamefieldcolcount; i++) 
+			{
+			// Spalte überhaupt belegt?
+			if(watermark[i] != -1)
+				{
+				// von oben nach unten gleiche Steine zählen
+				byte anzsteine = 1; // wie viele gleiche sind übereinander gestapelt
+				byte j = watermark[i];
+				while (j>=1 && anzsteine<4 && spielfeld[i][j-1]==spielfeld[i][j]) 
+					{
+					anzsteine++;
+					j--;
+					}
+				// ist in dieser Reihe noch eine 4er-Kette möglich?
+				if(watermark[i]+(4-anzsteine)<=Constants.gamefieldrowcount - 1)
+					{
+					// TODO: wirklich neue Falle?
+					// für wen ist die Falle?
+					//Log.getInstance().write("KI: Spalten-Falle in " + i + " für jemanden. Größe: " + anzsteine
+					//		+ " für mich? " + (spielfeld[i][j]==self));
+					if(spielfeld[i][watermark[i]]==self)
+						if(anzsteine==4)
+							bewertung += Constants.KImaxbewertung;
+						else
+							bewertung += anzsteine * anzsteine;
+					else
+						if(anzsteine==4)
+							bewertung -= 5*Constants.KImaxbewertung;
+						else
+							bewertung -= anzsteine * anzsteine;
+					}
+				}
+			} 
+		
+		// #####################################
+		// zähle diagonale Fallen Richtung nach rechts oben:
+		// #####################################
+		bewertung = ueberpruefediagonale(bewertung,(byte)1,(byte)1,(byte) 0,(byte) (Constants.gamefieldrowcount-4));
+		bewertung = ueberpruefediagonale(bewertung,(byte)-1,(byte)1,
+				(byte)(Constants.gamefieldcolcount-1),(byte) (Constants.gamefieldrowcount-4));
+		 
+		Log.getInstance().write("Bewertung des Feldes: " + String.valueOf(bewertung) + 
+			 " Ausführungszeit: " + String.valueOf((System.nanoTime() - startzeit)/1000000));
+		return bewertung;
 	 }
 	 
-	private static boolean besseralsanderefallen(
+	private int ueberpruefediagonale(int bewertung, byte deltax, byte deltay,byte _startx, byte _starty) {
+		// TODO Auto-generated method stub
+		byte startx = _startx;
+		byte starty = _starty;
+		byte i;
+		byte j;
+		do{
+			i = startx;
+			j = starty;
+			Boolean fuerwen = null; 
+			byte anzsteine = 0;
+			ArrayList<Position> freiesteine= new ArrayList<Position>();
+			byte anzself=0;
+			byte anzopp=0;
+			// ersten drei Steine befüllen
+			for (byte k = 0; k <= 2; k++) 
+			 	{
+				if(spielfeld[i+k*deltax][j+k*deltay]==null)
+					freiesteine.add(new Position((byte) (i+k*deltax), (byte) (j+k*deltay)));
+				else
+					if(spielfeld[i+k*deltax][j+k*deltay]==opp)
+						anzopp++;
+					else
+						anzself++;
+			 	}
+			i = (byte) (startx+3*deltax);
+			j = (byte) (starty+3*deltay);
+			do
+		 	{ 
+			// alte Position löschen
+			if(i!=startx+3*deltax && j!=starty+3*deltay)
+				if(spielfeld[i-4*deltax][j-4*deltay]==null)
+					freiesteine.remove(0);
+				else
+					if(spielfeld[i-4*deltax][j-4*deltay]==opp)
+						anzopp--;
+					else
+						anzself--;
+			
+			// neue Position hinzuzählen
+			if(spielfeld[i][j]==null)
+				freiesteine.add(new Position(i,j));
+			else
+				if(spielfeld[i][j]==opp)
+					anzopp++;
+				else
+					anzself++;
+			
+			// mögliche Falle gefunden
+			if(anzopp==0 && anzself>0)
+				{
+				String message = "KI: KI-Diagonale der Größe " + anzself + " gefunden. Noch benötigt: ";
+				
+				for (Position einfreierstein : freiesteine) 
+					message += "(" + einfreierstein.getX() + "," + einfreierstein.getY() + "), "; 
+				Log.getInstance().write(message);
+				if(anzself==4)
+					bewertung += Constants.KImaxbewertung;
+				else
+					bewertung += anzself*anzself;
+				}
+				
+						
+			// mögliche Gegner-Falle gefunden
+			if(anzself==0 && anzopp>0)
+				{
+				String message = "KI: Gegner-Diagonale der Größe " + anzopp + " gefunden. Noch benötigt: ";
+				
+				for (Position einfreierstein : freiesteine) 
+					message += "(" + einfreierstein.getX() + "," + einfreierstein.getY() + "), "; 
+				Log.getInstance().write(message);	
+				if(anzopp==4)
+					bewertung -= Constants.KImaxbewertung;
+				else
+					bewertung -= anzopp*anzopp;
+				}
+			
+				
+			i += deltax;
+			j += deltay;
+			}
+			while (i>=0 && i <= Constants.gamefieldcolcount-1 && j <= Constants.gamefieldrowcount-1);
+			
+			if(starty!=0)
+				starty--;
+			else
+				if(deltax>0)
+					startx++;
+				else
+					startx--;
+		}
+		while((startx<=3 && deltax>0) || (startx>=3 && deltax<0));
+		return bewertung;
+		
+	}
+	private boolean besseralsanderefallen(
 			ArrayList<Position> freiesteine, byte anzself, int[][] noetigfuerfalleself) {
 	boolean result=true;
 	for (Position einfreierstein : freiesteine)
@@ -206,6 +374,7 @@ public class KI{
 	 * @return Bewertungszahl des besten Spielzuges
 	 */
 	private int Max(int tiefe, int alpha, int beta) {
+	Log.getInstance().write("KI: Max " + tiefe);
 	/*return beta;*/
 	   if (tiefe == 0)
 	       return Bewertung();
@@ -227,7 +396,9 @@ public class KI{
 		    setzestein(self,aktzuginspalte);
 		    // Der Gegner ist dran und wird sich für den Zug entscheiden, bei dem er am besten ist
 		    // (== Bewertungsfunktion minimal)
-		    wert = Min(tiefe-1, alpha, beta);       
+		    wert = Bewertung();
+		    if(wert<= Constants.KImaxbewertung - 200)
+		    	wert = Min(tiefe-1, alpha, beta);       
 		    //MacheZugRueckgaengig();
 		    loeschestein(aktzuginspalte);
 			if (wert > localAlpha)       
@@ -256,6 +427,7 @@ public class KI{
 	 * @return Bewertungszahl des schlechtesten Spielzuges
 	 */
 	int Min(int tiefe, int alpha, int beta) {
+		Log.getInstance().write("KI: Min " + tiefe);
 		if (tiefe == 0)
 			return Bewertung();
 		// GeneriereMoeglicheZuege();
@@ -271,7 +443,10 @@ public class KI{
 			//FuehreNaechstenZugAus();
 			aktzuginspalte = moeglichezuegelokal.get(i);
 			setzestein(opp,aktzuginspalte);
-			wert = Max(tiefe-1,alpha, beta);       
+		    wert = Bewertung();
+		    if(wert<= -Constants.KImaxbewertung + 200)
+		    	wert = Max(tiefe-1, alpha, beta);       
+			//wert = Max(tiefe-1,alpha, beta);       
 			//MacheZugRueckgaengig();
 		    loeschestein(aktzuginspalte);
 			if (wert < localBeta)       
@@ -302,21 +477,21 @@ public class KI{
 			watermark[oppMove]++;
 			if(watermark[oppMove]+1 >= Constants.gamefieldrowcount)
 				moeglichezuege.remove(moeglichezuege.indexOf(oppMove));
-			//Bewertung(/*(byte) oppMove.getColumn()*/);
+			Bewertung(/*(byte) oppMove.getColumn()*/);
 			}
 		
-		/*Random r = new Random();
-		byte spalte;
-		spalte = moeglichezuege.get(r.nextInt(moeglichezuege.size()));*/
-		/*}
-		//byte spalte = 6;*/
+		Random r = new Random();
+		
+		//byte spalte = 6;
+		//byte spalte = (byte) (5 + r.nextInt(2));
+		//byte spalte = (byte) (r.nextInt(7));
 		byte spalte = (byte) Max(suchtiefe, -10*Constants.KImaxbewertung, 10*Constants.KImaxbewertung);
-		//sMove generierterZug = new Move(gameobject.getRole().get(), spalte);
+		
 		
 		setzestein(self, spalte);
 		Log.getInstance().write("KI hat Stein in Spalte " + String.valueOf(spalte)
 				+ " gesetzt!");
-		//Bewertung(/*aktspielfeld, (byte) generierterZug.getColumn()*/);
+		Bewertung(/*aktspielfeld, (byte) generierterZug.getColumn()*/);
 
 		
 		return spalte;
