@@ -7,8 +7,11 @@ import utilities.Log;
 import utilities.Log.LogEntry;
 
 import core.Constants;
+import core.GameController;
 
 import javafx.application.Application;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -20,6 +23,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.effect.Lighting;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
@@ -29,14 +33,25 @@ import javafx.stage.Stage;
 
 public class FieldTestController extends Application implements Initializable {
 	
-	//Attribut das in der FXML definiert ist
+	private GameController viewModel; 
 	
+	//Attribut das in der FXML definiert ist	
 	@FXML
 	private GridPane feld;
-//	@FXML
-//	private MenuItem menuSchließen; //bei private wird gemeckert
-//	@FXML
-//	private MenuItem menuAnleitung;
+	@FXML
+	private HBox leftBox;
+	@FXML
+	private VBox centerBox;
+	@FXML
+	private VBox rightBox;
+	
+	@FXML
+	private ChoiceBox<String> rolle;
+	
+	@FXML
+	private MenuItem menuSchließen; 
+	@FXML
+	private MenuItem menuAnleitung;
 //	@FXML
 //	private Button timeoutHochAbfrage;
 //	@FXML
@@ -56,6 +71,10 @@ public class FieldTestController extends Application implements Initializable {
 	//Methode die für "Controller" vorgeschrieben ist und nach dem Aufbau des UI Kontrukts aufgerufen wird
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
+		viewModel = new GameController();
+		viewModel.initialize(null, null);
+		
+		
 		//GridPane mit Circles füllen
 		Circle[][] spielfeld = new Circle[Constants.gamefieldcolcount][Constants.gamefieldrowcount];
 		for (int i = 0; i < Constants.gamefieldcolcount; i++)
@@ -63,25 +82,78 @@ public class FieldTestController extends Application implements Initializable {
 	      for (int j = 0; j < Constants.gamefieldrowcount; j++)
 	      {
 	        spielfeld[i][j] = new Circle(20.0f);
-	        spielfeld[i][j].getStyleClass().add("token");
+//	        spielfeld[i][j].getStyleClass().add("token");
+	        spielfeld[i][j].styleProperty().bind(viewModel.styleField()[i][Constants.gamefieldrowcount -1 -j]);
 	        feld.add(spielfeld[i][j], i, j);
 	      }
 	    }
 //		
-//		//Tabelle für die Logs
-//				TableColumn spalte1 = new TableColumn("Log-Eintrag");
-//				spalte1.setEditable(false);
-//				logTabelle.getColumns().clear();
-//				logTabelle.getColumns().add(spalte1);
-//				logTabelle.setMinWidth(384);
-//						
-//				//Binding
-//				spalte1.setCellValueFactory(
-//						new PropertyValueFactory<Log.LogEntry, String>("text"));
-//				logTabelle.setItems(viewModel.logItems());
-//				Log.getInstance().write("Binding fuer Log erstellt");
+		//Tabelle für die Logs
+		TableColumn spalte1 = new TableColumn("Log-Eintrag");
+		spalte1.setEditable(false);
+		logTabelle.getColumns().clear();
+		logTabelle.getColumns().add(spalte1);
+		logTabelle.setMinWidth(384);
+				
+		//Binding
+		spalte1.setCellValueFactory(
+				new PropertyValueFactory<Log.LogEntry, String>("text"));
+		logTabelle.setItems(viewModel.logItems());
+		Log.getInstance().write("Binding fuer Log erstellt");
+		
+		//Binding für Zustand
+		viewModel.properties()[viewModel.STATE_PROPERTY].addListener(new ChangeListener<String>() {
+			@Override
+			public void changed(ObservableValue<? extends String> arg0,
+					String arg1, String arg2) {	updateState(); }});
+		
+		rolle.valueProperty().bindBidirectional(viewModel.properties()[viewModel.ROLE_PROPERTY]);
+		rolle.getItems().addAll(String.valueOf(Constants.xRole), String.valueOf(Constants.oRole));
+		
+			
 	 }
-//	
+	
+	private void updateState(){
+		//UI bei Zustandsänderungen anpassen
+		switch (viewModel.properties()[viewModel.STATE_PROPERTY].getValue()) {
+		case Constants.STATE_APP_RUNNING:
+			leftBox.disableProperty().set(false);
+			centerBox.disableProperty().set(true);
+			rightBox.disableProperty().set(true);
+	//					array[DISABLE_SET_ABORT] = true;
+	//					array[DISABLE_GAME_ABORT] = true;
+	//					array[SHOW_SETEND_POPUP] = false;
+			break;
+		case Constants.STATE_GAME_RUNNING:
+			leftBox.disableProperty().set(true);
+			centerBox.disableProperty().set(true);
+			rightBox.disableProperty().set(false);
+	//					array[DISABLE_SET_ABORT] = true;
+	//					array[DISABLE_GAME_ABORT] = false;
+	//					array[SHOW_SETEND_POPUP] = false;
+			break;
+		case Constants.STATE_SET_RUNNING:
+			leftBox.disableProperty().set(true);
+			centerBox.disableProperty().set(false);
+			rightBox.disableProperty().set(true);	
+	//					array[DISABLE_SET_ABORT] = false;
+	//					array[DISABLE_GAME_ABORT] = true;
+	//					array[SHOW_SETEND_POPUP] = false;
+			break;
+		case Constants.STATE_SET_ENDED:	
+			leftBox.disableProperty().set(true);
+			centerBox.disableProperty().set(false);
+			rightBox.disableProperty().set(true);
+	//					array[DISABLE_SET_ABORT] = true;
+	//					array[DISABLE_GAME_ABORT] = true;
+	//					array[SHOW_SETEND_POPUP] = true;
+			break;
+		default:
+			
+			break;
+		}	
+	}	
+
 	//Methoden um das Prog zu starten
 
 	@Override

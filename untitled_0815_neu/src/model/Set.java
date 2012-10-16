@@ -105,7 +105,7 @@ public class Set extends Observable{
 	 */
 	public void setStatus(String status) {
 		this.status = status;
-		if(status == Constants.statusSetEnd){
+		if(status == Constants.STATE_SET_ENDED){
 			endTime = new Timestamp(new Date().getTime());
 		}
 		setChanged();

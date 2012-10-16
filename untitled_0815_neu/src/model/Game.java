@@ -162,7 +162,7 @@ public class Game extends Observable implements Observer{
 		while (iterator.hasNext())
 		{	
 			Set set = iterator.next();
-			if(set.getStatus() == Constants.statusSetEnd && !set.isSaved())
+			if(set.getStatus() == Constants.STATE_SET_ENDED && !set.isSaved())
 				set.save(ID);
 		}
 	}

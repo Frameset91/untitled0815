@@ -8,6 +8,7 @@ import java.util.ResourceBundle;
 
 import model.*;
 import utilities.*;
+import utilities.Log.LogEntry;
 import view.*;
 
 import javafx.application.Application;
@@ -15,7 +16,23 @@ import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
+import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.Group;
+import javafx.scene.Scene;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.TableView;
+import javafx.scene.control.TextField;
+import javafx.scene.effect.Lighting;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 
@@ -36,8 +53,7 @@ public class GameController extends Application implements GameEventListener, Ob
 	public final int OPPTOKEN_PROPERTY = 7;
 	public final int OWNTOKEN_PROPERTY = 8;
 	public final int STATE_PROPERTY = 9;
-	public final int STATUS_PROPERTY = 10;
-	public final int WINNER_PROPERTY = 11;
+	public final int WINNER_PROPERTY = 10;
 	
 	//Properties für DataBinding	
 	private SimpleStringProperty[] properties;
@@ -46,10 +62,15 @@ public class GameController extends Application implements GameEventListener, Ob
 	private ObservableList<SetProperty> sets;
 	private ObservableList<GameProperty> savedGames;
 	
-	
-	public enum AppState{
-		AppRunning, GameRunning, SetRunning, SetEnded
-	}
+	//FXML Elemente
+	@FXML
+	private GridPane feld;
+	@FXML
+	private TextField timeoutAbfrage;
+	@FXML
+	private TextField timeoutZugzeit;
+	@FXML
+	private TableView<LogEntry> logTabelle; 
 	
 	//---------------------Verarbeitung von Events-----------------------------------------
 	/* (non-Javadoc)
@@ -65,7 +86,8 @@ public class GameController extends Application implements GameEventListener, Ob
 		switch (event.getType()) {
 			case StartGame:  //--------- Spiel starten gedrückt
 				Log.getInstance().write("Controller: Event empfangen ( " + event.getType().toString() + " ) FxThread:" + Platform.isFxApplicationThread());
-				newGame(Constants.gamefieldcolcount, Constants.gamefieldrowcount);							
+				newGame(Constants.gamefieldcolcount, Constants.gamefieldrowcount);		
+				properties[STATE_PROPERTY].set(Constants.STATE_GAME_RUNNING);
 				break;			
 			case StartSet: 	//--------- Satz starten gedrückt
 				Log.getInstance().write("Controller: Event empfangen ( " + event.getType().toString() + " ) FxThread:" + Platform.isFxApplicationThread());
@@ -77,12 +99,13 @@ public class GameController extends Application implements GameEventListener, Ob
 				
 				//ComServer starten
 				comServ.enableReading(model.getTimeoutServer(), model.getPath(), model.getRole());
+				properties[STATE_PROPERTY].set(Constants.STATE_SET_RUNNING);
 		
 				break;
 			case EndSet:	//--------- Satz abbrechen gedrückt oder Server hat den Satz beendet
 				Log.getInstance().write("Controller: Event empfangen ( " + event.getType().toString() + " ) FxThread:" + Platform.isFxApplicationThread());
 				comServ.disableReading();
-				
+				properties[STATE_PROPERTY].set(Constants.STATE_SET_ENDED);
 				//zu Testzwecken
 				char arg = Constants.oRole;
 				if(event.getArg() != "") arg = event.getArg().charAt(0); 	
@@ -91,7 +114,7 @@ public class GameController extends Application implements GameEventListener, Ob
 				break;
 			case EndGame:	//--------- Spiel beenden gedrückt
 				Log.getInstance().write("Controller: Event empfangen ( " + event.getType().toString() + " ) FxThread:" + Platform.isFxApplicationThread());
-				
+				properties[STATE_PROPERTY].set(Constants.STATE_APP_RUNNING);
 				break;
 				
 			case OppMove:	//--------- ein gegnerischer Zug wurde vom Server mitgeteilt 
@@ -115,6 +138,7 @@ public class GameController extends Application implements GameEventListener, Ob
 			case LoadGame:
 				Log.getInstance().write("Controller: Event empfangen ( " + event.getType().toString() + " ) FxThread:" + Platform.isFxApplicationThread());
 				loadGame(Integer.parseInt(event.getArg()));
+				properties[STATE_PROPERTY].set(Constants.STATE_GAME_RUNNING);
 				break;
 			default:
 				break;
@@ -143,7 +167,6 @@ public class GameController extends Application implements GameEventListener, Ob
 				properties[PATH_PROPERTY].set(model.getPath());
 				properties[TIMEOUTSERVER_PROPERTY].set(String.valueOf(model.getTimeoutServer()));
 				properties[TIMEOUTDRAW_PROPERTY].set(String.valueOf(model.getTimeoutDraw()));
-				properties[STATUS_PROPERTY].set(String.valueOf(model.getLatestSet().getStatus()));
 				properties[WINNER_PROPERTY].set(String.valueOf(model.getLatestSet().getWinner()));
 				setTokens();		
 //				TODO: getSavedGames
@@ -223,7 +246,7 @@ public class GameController extends Application implements GameEventListener, Ob
 			break;
 		case "status":
 			Log.getInstance().write("Controller: Status changed empfangen, FxThread:" + Platform.isFxApplicationThread());
-			properties[STATUS_PROPERTY].set(model.getLatestSet().getStatus());
+//			properties[STATUS_PROPERTY].set(model.getLatestSet().getStatus());
 			break;
 		case "sets":
 			Log.getInstance().write("Controller: Set changed empfangen; FxThread:" + Platform.isFxApplicationThread());
@@ -306,6 +329,96 @@ public class GameController extends Application implements GameEventListener, Ob
 	public ObservableList<GameProperty> savedGames() {
 		return savedGames;
 	}
+	
+	//Methoden zur Visualisierung (sollten ausgelagert werden)
+    // Menü: Schließen des Programms
+	public void handleSchließen(ActionEvent close){System.exit(0);}
+	
+	// Menü: Spielanleitung aufrufen
+	public void handleAnleitung(ActionEvent anleitung){
+		//Fenster mit Anleitung öffnen
+		final Stage stageAnleitung = new Stage();
+		Group rootAnleitung = new Group();
+		Scene sceneAnleitung = new Scene(rootAnleitung, 400,400, Color.WHITESMOKE);
+		stageAnleitung.setScene(sceneAnleitung);
+		stageAnleitung.centerOnScreen();
+		stageAnleitung.show();
+		//Inhalt
+		Text ueberschrift = new Text(20, 20,"\"4 Gewinnt\"");
+		ueberschrift.setFill(Color.BLACK);
+		ueberschrift.setEffect(new Lighting());
+		ueberschrift.setFont(Font.font(Font.getDefault().getFamily(), 20));
+		Label text = new Label("Ententententententententententententente");
+		Button close = new Button("Schließen");
+		close.setOnAction(new EventHandler<ActionEvent>(){
+			public void handle(ActionEvent close){
+				stageAnleitung.close();
+			}});
+		VBox textUndButton = new VBox(100);
+		textUndButton.getChildren().addAll(ueberschrift,text, close);
+		rootAnleitung.getChildren().add(textUndButton);
+	}
+	
+	// Einstellungen: Timeouts hoch/ runter setzen
+	public void handleHoch1(MouseEvent arg0){
+		int timeoutFileabfruf;
+		timeoutFileabfruf = Integer.parseInt(timeoutAbfrage.getText());
+		timeoutFileabfruf = timeoutFileabfruf + 25;
+		String zeitz = String.valueOf(timeoutFileabfruf);
+		timeoutAbfrage.setText(zeitz);
+	}
+	
+	public void handleRunter1(MouseEvent arg0){
+		int timeoutFileabruf;
+		timeoutFileabruf = Integer.parseInt(timeoutAbfrage.getText());
+		timeoutFileabruf = timeoutFileabruf - 25;
+		String zeitz = String.valueOf(timeoutFileabruf);
+		timeoutAbfrage.setText(zeitz);
+	}
+	
+	public void handleHoch2(MouseEvent arg0){
+		int timeoutFileabfruf;
+		timeoutFileabfruf = Integer.parseInt(timeoutZugzeit.getText());
+		timeoutFileabfruf = timeoutFileabfruf + 100;
+		String zeitz = String.valueOf(timeoutFileabfruf);
+		timeoutZugzeit.setText(zeitz);
+	}
+	
+	public void handleRunter2(MouseEvent arg0){
+		int timeoutFileabruf;
+		timeoutFileabruf = Integer.parseInt(timeoutZugzeit.getText());
+		timeoutFileabruf = timeoutFileabruf - 100;
+		String zeitz = String.valueOf(timeoutFileabruf);
+		timeoutZugzeit.setText(zeitz);
+	}
+
+	// Log anzeigen
+	public void handleLogAnzeigen(MouseEvent arg0){
+		//Fenster mit Log öffnen
+		final Stage stageAnleitung = new Stage();
+		Group rootLog = new Group();
+		Scene sceneLog = new Scene(rootLog, 484,500, Color.WHITESMOKE);
+		stageAnleitung.setScene(sceneLog);
+		stageAnleitung.centerOnScreen();
+		stageAnleitung.show();
+						
+	//Inhalt
+		Text ueberschrift = new Text(20, 20,"Log");
+		Button close = new Button("Schließen");
+		close.setOnAction(new EventHandler<ActionEvent>(){
+			public void handle(ActionEvent close){
+				stageAnleitung.close();
+			}
+		});
+		//Anordnen
+		VBox Logs = new VBox(20);
+		Logs.getChildren().addAll(ueberschrift, logTabelle, close);
+		Logs.setLayoutX(50);
+		rootLog.getChildren().add(Logs);
+	}
+	
+	
+	
 
 	//---------------- Methoden zum starten und initialisieren des Programms -------------------
 	
@@ -359,10 +472,9 @@ public class GameController extends Application implements GameEventListener, Ob
 		properties[TIMEOUTDRAW_PROPERTY] = new SimpleStringProperty(String.valueOf(Constants.defaultTimeoutDraw));
 		properties[OPPTOKEN_PROPERTY] = new SimpleStringProperty(Constants.oToken);
 		properties[OWNTOKEN_PROPERTY] = new SimpleStringProperty(Constants.xToken);		
-		properties[STATUS_PROPERTY] = new SimpleStringProperty();
 		properties[WINNER_PROPERTY] = new SimpleStringProperty();
-		properties[STATE_PROPERTY] = new SimpleStringProperty(AppState.AppRunning.toString());
-		
+		properties[STATE_PROPERTY] = new SimpleStringProperty(Constants.STATE_APP_RUNNING);
+			
 		sets = FXCollections.observableArrayList();		
 		savedGames = FXCollections.observableArrayList();	
 		
@@ -383,7 +495,7 @@ public class GameController extends Application implements GameEventListener, Ob
 			
 		} catch (Exception e) {
 			e.printStackTrace();
-		}			
+		}		
 	}
 
 	

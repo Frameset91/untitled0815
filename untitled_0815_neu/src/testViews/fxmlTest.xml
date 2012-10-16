@@ -28,9 +28,9 @@
     </top>
     
     <left><!-- Linker Bereich: Einstellungen, Trennlinie -->
-        <HBox spacing="5">
+        <HBox spacing="5" fx:id="leftBox">
         	<!-- Tabelle zum Anordnen der Einstellungen -->
-        	<GridPane hgap="5" vgap="15">
+        	<GridPane hgap="5" vgap="15" disable="false">
         	<padding><Insets top="10" right="10" bottom="10" left="10"/></padding>
         	<!--  <GridPane >-->
         	<!-- Linke Spalte -->
@@ -82,7 +82,7 @@
         <!-- Spielfläche (neue BorderPane) -->
       <BorderPane>
         <left>
-        	<VBox styleClass="spieleranzeige">
+        	<VBox styleClass="spieleranzeige" fx:id="centerBox">
         		<HBox fx:id="spielerAnzeige" spacing="20" styleClass="spieler">
         			<Label text="untitled0815:"/>
         			<Circle fx:id="tokenSpieler" radius="15.0f" styleClass="token-red"/>
@@ -100,7 +100,7 @@
         	</VBox>
         </left>
        	<center>
-       		<VBox spacing="10" alignment="CENTER_LEFT">
+       		<VBox spacing="10" alignment="CENTER_LEFT" fx:id="rightBox">
        			<Button fx:id="satz" text="neuen Satz spielen" disable="true"/>
        			<Label text="Statistik"/>
        			<GridPane gridLinesVisible="true" alignment="center">
@@ -120,7 +120,7 @@
        <bottom>
         	<HBox alignment="TOP_LEFT">
         		<Label text="Satzstatus:" styleClass="statusanzeige" />
-        		<Label fx:id="satzstatus" text="Satz spielen" styleClass="statusanzeige"/>
+        		<Label fx:id="satzstatus" text="${properties[9]}" styleClass="statusanzeige"/>
        		</HBox>
        </bottom>
      </BorderPane>
