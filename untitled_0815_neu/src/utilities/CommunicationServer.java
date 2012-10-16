@@ -217,7 +217,7 @@ public class CommunicationServer extends Thread {
 	 *            Nummer der Spalte, in die der naechste STein gelgt wird
 	 */
 	public synchronized void writeMove(byte spalte, String agentFilePath, char role) {
-		if (spalte > -1 && spalte < 7) {
+		if ((spalte > -1 && spalte < 7) && (!agentFilePath.isEmpty())) {
 			try {
 				Log.getInstance().write("Zug schreiben im Pfad " + agentFilePath + "in Spalte " + spalte );
 				this.agentfilepath = agentFilePath + "/spieler" + role + "2server.txt";
@@ -233,7 +233,7 @@ public class CommunicationServer extends Thread {
 				e.printStackTrace();
 			}
 		} else {
-			System.out.println("Fehler - falsche Spalte ausgewaehlt");
+			System.out.println("Fehler - falsche Spalte ausgewaehlt oder Pfad nicht gesetzt");
 		}
 
 	}
