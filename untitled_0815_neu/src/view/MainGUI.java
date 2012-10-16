@@ -242,7 +242,25 @@ public class MainGUI implements IGameView{
     	});
 		
 		final Button spielStarten = new Button("Spiel starten");
-		final Button spielLaden = new Button("Spiel laden"); 
+		final Button spielLaden = new Button("Spiel laden");
+		Button testEinstellungen = new Button ("Test Einstellungen");
+		
+		testEinstellungen.setOnMouseClicked(new EventHandler<MouseEvent>(){
+			public void handle(MouseEvent arg0){
+					/**
+					 * TODO Abfragen, ob alles Felder befüllt wurden
+					 */
+						final Stage stage = new Stage();
+						Group rootEinstellungen = new Group();
+						Scene scene = new Scene(rootEinstellungen, 250, 80, Color.WHITESMOKE);
+						stage.setScene(scene);
+						stage.centerOnScreen();
+						Text text = new Text(20,40, "Bitte alle Spieleinstellungen definieren!");
+						rootEinstellungen.getChildren().add(text);
+						stage.show();
+					}});
+		
+		
 
 		einstellungen.add(spieleinstellungen, 1, 1);
 		einstellungen.add(new Label("Rolle:"), 1, 2);
@@ -260,6 +278,7 @@ public class MainGUI implements IGameView{
 		einstellungen.add(timeout2, 2, 7);
 		einstellungen.add(spielStarten, 1, 8);
 		einstellungen.add(spielLaden, 1, 10);
+		einstellungen.add(testEinstellungen,1,11);
 		
 		
 		//Trennung zwischen Einstellungen und Spielfeld	
@@ -561,29 +580,42 @@ public class MainGUI implements IGameView{
 				if (spielStarten.getText()=="Spiel starten"){
 					/**
 					 * TODO Abfragen, ob alles Felder befüllt wurden
+					 * funktioniert noch nicht!
 					 */
-					neuesSpiel.setDisable(true);
-					laden.setDisable(true);
-					spielBeenden.setDisable(false);
-					rolle.setDisable(true);
-					spielstandSpieler.setDisable(true);
-					spielstandGegner.setDisable(true);
-					gegnername.setDisable(true);
-					verzeichnispfad.setDisable(true);
-					fileabfrage.setDisable(true);
-					zugzeit.setDisable(true);
-					hoch1.setDisable(true);
-					hoch2.setDisable(true);
-					runter1.setDisable(true);
-					runter2.setDisable(true);
-					spielStarten.setText("Spiel beenden");
-					//gegner.setText(gegnername.getText()+":");
-					gegner.textProperty().bind(gegnername.textProperty());
-					punkteSpieler.setText(spielstandSpieler.getText());
-					punkteGegner.setText(spielstandGegner.getText());
-					satz.setDisable(false);
-					//satzAbbrechen.setDisable(false);
-					logAnzeigen.setDisable(false);
+					if (gegnername != null || verzeichnispfad != null){
+						neuesSpiel.setDisable(true);
+						laden.setDisable(true);
+						spielBeenden.setDisable(false);
+						rolle.setDisable(true);
+						spielstandSpieler.setDisable(true);
+						spielstandGegner.setDisable(true);
+						gegnername.setDisable(true);
+						verzeichnispfad.setDisable(true);
+						fileabfrage.setDisable(true);
+						zugzeit.setDisable(true);
+						hoch1.setDisable(true);
+						hoch2.setDisable(true);
+						runter1.setDisable(true);
+						runter2.setDisable(true);
+						spielStarten.setText("Spiel beenden");
+						//gegner.setText(gegnername.getText()+":");
+						gegner.textProperty().bind(gegnername.textProperty());
+						punkteSpieler.setText(spielstandSpieler.getText());
+						punkteGegner.setText(spielstandGegner.getText());
+						satz.setDisable(false);
+						//satzAbbrechen.setDisable(false);
+						logAnzeigen.setDisable(false);
+					}			
+					else{
+						final Stage stage = new Stage();
+						Group rootEinstellungen = new Group();
+						Scene scene = new Scene(rootEinstellungen, 200, 200, Color.WHITESMOKE);
+						stage.setScene(scene);
+						stage.centerOnScreen();
+						Text text = new Text(20,40, "Bitte alle Spieleinstellungen definieren");
+						rootEinstellungen.getChildren().add(text);
+						stage.show();
+					}
 					
 					//Event
 					//TODO  Event umwandeln

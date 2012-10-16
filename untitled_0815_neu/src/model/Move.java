@@ -9,6 +9,8 @@ package model;
 
 import java.sql.Timestamp;
 
+import utilities.DBConnection;
+
 public class Move {
 	private Timestamp time;
 	private char role;
@@ -59,7 +61,8 @@ public class Move {
 	 * @param ID des Games :Integer, ID des Satzes :Integer
 	 */
 	public void save(int gameID, int setID){
-		//TODO: In Datenbank speichern (Primarykey = GameID + SetID + ID von Move)
+		//In Datenbank speichern (Primarykey = GameID + SetID + ID von Move)
+		DBConnection.getInstance().saveMove(this, gameID, setID);
 		isSaved = true;
 	}
 	

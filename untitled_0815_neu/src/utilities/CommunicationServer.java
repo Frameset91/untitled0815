@@ -46,7 +46,7 @@ public class CommunicationServer extends Thread {
 	 * @param type Typ des Events
 	 */
 	
-	@SuppressWarnings("rawtypes")
+	
 	private synchronized void fireEvent(byte type) {
 //		GameEvent event = new GameEvent(this, type);
 //		Iterator i = _listeners.iterator();
@@ -123,6 +123,10 @@ public class CommunicationServer extends Thread {
 		this.serverfilepath = serverFilePath + "/server2spieler" + role + ".xml";
 		this.serverfilepath = this.serverfilepath.toLowerCase();
 		this.serverFile = new File(serverfilepath);
+		if(this.bla != null){
+			this.bla.interrupt();
+			this.bla = null;
+		}
 		this.bla = new Thread(new ReadServerFileThread());
 		this.bla.start();
 
@@ -217,7 +221,7 @@ public class CommunicationServer extends Thread {
 	 *            Nummer der Spalte, in die der naechste STein gelgt wird
 	 */
 	public synchronized void writeMove(byte spalte, String agentFilePath, char role) {
-		if (spalte > -1 && spalte < 7) {
+		if ((spalte > -1 && spalte < 7) && (agentFilePath != null)) {
 			try {
 				Log.getInstance().write("Zug schreiben im Pfad " + agentFilePath + "in Spalte " + spalte );
 				this.agentfilepath = agentFilePath + "/spieler" + role + "2server.txt";
@@ -230,10 +234,11 @@ public class CommunicationServer extends Thread {
 				Log.getInstance().write("Schreiben erfolgreich");
 
 			} catch (Exception e) {
-				e.printStackTrace();
+				//e.printStackTrace();
+				System.out.println("Fehler - Move konnte nicht geschrieben werden!");
 			}
 		} else {
-			System.out.println("Fehler - falsche Spalte ausgewaehlt");
+			System.out.println("Fehler - falsche Spalte ausgewaehlt oder Pfad nicht gesetzt");
 		}
 
 	}

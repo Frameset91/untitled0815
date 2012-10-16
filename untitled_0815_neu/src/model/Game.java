@@ -6,6 +6,8 @@ package model;
  */
 
 import java.util.*;
+
+import utilities.DBConnection;
 import utilities.Log;
 import core.Constants;
 
@@ -149,9 +151,9 @@ public class Game extends Observable implements Observer{
 	 * Methode zum Speichern des Datenmodells
 	 */
 	public void save(){
-		//TODO: In Datenbank speichern (Primarykey = GameID), erzeugte GameID an Sets weitergeben, ID speichern
+		//In Datenbank speichern (Primarykey = GameID), erzeugte GameID an Sets weitergeben, ID speichern
 		if(ID == -1){
-//			ID = save(this);
+			ID = DBConnection.getInstance().saveGame(this);
 		}
 		
 		//alle Moves speichern 
@@ -160,7 +162,7 @@ public class Game extends Observable implements Observer{
 		while (iterator.hasNext())
 		{	
 			Set set = iterator.next();
-			if(set.getStatus() == Constants.statusSetEnd && !set.isSaved())
+			if(set.getStatus() == Constants.STATE_SET_ENDED && !set.isSaved())
 				set.save(ID);
 		}
 	}

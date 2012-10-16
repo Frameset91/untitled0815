@@ -8,6 +8,7 @@ import java.util.ResourceBundle;
 
 import model.*;
 import utilities.*;
+import utilities.Log.LogEntry;
 import view.*;
 
 import javafx.application.Application;
@@ -15,7 +16,11 @@ import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.TableView;
+import javafx.scene.control.TextField;
+import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 
 
@@ -34,8 +39,8 @@ public class GameController extends Application implements GameEventListener, Ob
 	public final int TIMEOUTSERVER_PROPERTY = 5;
 	public final int TIMEOUTDRAW_PROPERTY = 6;
 	public final int OPPTOKEN_PROPERTY = 7;
-	public final int OWNTOKEN_PROPERTY = 8;	
-	public final int STATUS_PROPERTY = 9;
+	public final int OWNTOKEN_PROPERTY = 8;
+	public final int STATE_PROPERTY = 9;
 	public final int WINNER_PROPERTY = 10;
 	
 	//Properties für DataBinding	
@@ -44,6 +49,16 @@ public class GameController extends Application implements GameEventListener, Ob
 	private ObservableList<Log.LogEntry> logItems;
 	private ObservableList<SetProperty> sets;
 	private ObservableList<GameProperty> savedGames;
+	
+	//FXML Elemente
+	@FXML
+	private GridPane feld;
+	@FXML
+	private TextField timeoutAbfrage;
+	@FXML
+	private TextField timeoutZugzeit;
+	@FXML
+	private TableView<LogEntry> logTabelle; 
 	
 	//---------------------Verarbeitung von Events-----------------------------------------
 	/* (non-Javadoc)
@@ -59,7 +74,8 @@ public class GameController extends Application implements GameEventListener, Ob
 		switch (event.getType()) {
 			case StartGame:  //--------- Spiel starten gedrückt
 				Log.getInstance().write("Controller: Event empfangen ( " + event.getType().toString() + " ) FxThread:" + Platform.isFxApplicationThread());
-				newGame(Constants.gamefieldcolcount, Constants.gamefieldrowcount);							
+				newGame(Constants.gamefieldcolcount, Constants.gamefieldrowcount);		
+				properties[STATE_PROPERTY].set(Constants.STATE_GAME_RUNNING);
 				break;			
 			case StartSet: 	//--------- Satz starten gedrückt
 				Log.getInstance().write("Controller: Event empfangen ( " + event.getType().toString() + " ) FxThread:" + Platform.isFxApplicationThread());
@@ -71,22 +87,22 @@ public class GameController extends Application implements GameEventListener, Ob
 				
 				//ComServer starten
 				comServ.enableReading(model.getTimeoutServer(), model.getPath(), model.getRole());
+				properties[STATE_PROPERTY].set(Constants.STATE_SET_RUNNING);
 		
 				break;
 			case EndSet:	//--------- Satz abbrechen gedrückt oder Server hat den Satz beendet
 				Log.getInstance().write("Controller: Event empfangen ( " + event.getType().toString() + " ) FxThread:" + Platform.isFxApplicationThread());
 				comServ.disableReading();
-				
+				properties[STATE_PROPERTY].set(Constants.STATE_SET_ENDED);
 				//zu Testzwecken
 				char arg = Constants.oRole;
 				if(event.getArg() != "") arg = event.getArg().charAt(0); 	
 				
 				model.getLatestSet().setWinner(arg);
-				model.save();
 				break;
 			case EndGame:	//--------- Spiel beenden gedrückt
 				Log.getInstance().write("Controller: Event empfangen ( " + event.getType().toString() + " ) FxThread:" + Platform.isFxApplicationThread());
-				
+				properties[STATE_PROPERTY].set(Constants.STATE_APP_RUNNING);
 				break;
 				
 			case OppMove:	//--------- ein gegnerischer Zug wurde vom Server mitgeteilt 
@@ -110,6 +126,7 @@ public class GameController extends Application implements GameEventListener, Ob
 			case LoadGame:
 				Log.getInstance().write("Controller: Event empfangen ( " + event.getType().toString() + " ) FxThread:" + Platform.isFxApplicationThread());
 				loadGame(Integer.parseInt(event.getArg()));
+				properties[STATE_PROPERTY].set(Constants.STATE_GAME_RUNNING);
 				break;
 			default:
 				break;
@@ -138,7 +155,6 @@ public class GameController extends Application implements GameEventListener, Ob
 				properties[PATH_PROPERTY].set(model.getPath());
 				properties[TIMEOUTSERVER_PROPERTY].set(String.valueOf(model.getTimeoutServer()));
 				properties[TIMEOUTDRAW_PROPERTY].set(String.valueOf(model.getTimeoutDraw()));
-				properties[STATUS_PROPERTY].set(String.valueOf(model.getLatestSet().getStatus()));
 				properties[WINNER_PROPERTY].set(String.valueOf(model.getLatestSet().getWinner()));
 				setTokens();		
 //				TODO: getSavedGames
@@ -213,11 +229,12 @@ public class GameController extends Application implements GameEventListener, Ob
 					properties[OWNPOINTS_PROPERTY].setValue(String.valueOf(model.getOwnPoints()));
 					properties[OPPPOINTS_PROPERTY].setValue(String.valueOf(model.getOppPoints()));					
 				}
-			});				
+			});		
+			model.save();
 			break;
 		case "status":
 			Log.getInstance().write("Controller: Status changed empfangen, FxThread:" + Platform.isFxApplicationThread());
-			properties[STATUS_PROPERTY].set(model.getLatestSet().getStatus());
+//			properties[STATUS_PROPERTY].set(model.getLatestSet().getStatus());
 			break;
 		case "sets":
 			Log.getInstance().write("Controller: Set changed empfangen; FxThread:" + Platform.isFxApplicationThread());
@@ -300,6 +317,7 @@ public class GameController extends Application implements GameEventListener, Ob
 	public ObservableList<GameProperty> savedGames() {
 		return savedGames;
 	}
+	
 
 	//---------------- Methoden zum starten und initialisieren des Programms -------------------
 	
@@ -343,7 +361,7 @@ public class GameController extends Application implements GameEventListener, Ob
 			}
 		}
 		
-		properties = new SimpleStringProperty[11];
+		properties = new SimpleStringProperty[12];
 		properties[ROLE_PROPERTY] = new SimpleStringProperty();
 		properties[OWNPOINTS_PROPERTY] = new SimpleStringProperty("0");
 		properties[OPPPOINTS_PROPERTY] = new SimpleStringProperty("0");
@@ -353,9 +371,9 @@ public class GameController extends Application implements GameEventListener, Ob
 		properties[TIMEOUTDRAW_PROPERTY] = new SimpleStringProperty(String.valueOf(Constants.defaultTimeoutDraw));
 		properties[OPPTOKEN_PROPERTY] = new SimpleStringProperty(Constants.oToken);
 		properties[OWNTOKEN_PROPERTY] = new SimpleStringProperty(Constants.xToken);		
-		properties[STATUS_PROPERTY] = new SimpleStringProperty();
 		properties[WINNER_PROPERTY] = new SimpleStringProperty();
-		
+		properties[STATE_PROPERTY] = new SimpleStringProperty(Constants.STATE_APP_RUNNING);
+			
 		sets = FXCollections.observableArrayList();		
 		savedGames = FXCollections.observableArrayList();	
 		
@@ -376,7 +394,7 @@ public class GameController extends Application implements GameEventListener, Ob
 			
 		} catch (Exception e) {
 			e.printStackTrace();
-		}			
+		}		
 	}
 
 	
