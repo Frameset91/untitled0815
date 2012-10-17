@@ -147,6 +147,17 @@ public class Game extends Observable implements Observer{
 	}
 	
 	/**
+	 * Methode zum Verwerfen des letzten Satzes
+	 */
+	public void discardLatestSet(){
+		if(sets.size() > 0){
+			sets.remove(sets.size()-1);	
+			setChanged();
+			notifyObservers("sets");	
+		}
+	}
+	
+	/**
 	 * Methode zum Hinzufügen eines Zuges  
 	 *  
 	 * @param Rolle :Char, Spalte :Byte

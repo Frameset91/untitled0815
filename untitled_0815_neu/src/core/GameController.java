@@ -87,9 +87,9 @@ public class GameController extends Application implements GameEventListener, Ob
 	 */
 	public void startSet(){
 		Log.getInstance().write("Controller: starte Satz, FxThread:" + Platform.isFxApplicationThread());
-		if(model.getLatestSet() != null){
-			model.save();
-		}
+//		if(model.getLatestSet() != null){
+//			model.save();
+//		}
 		ki = new KI(model);
 		
 		model.newSet().setStatus(Constants.STATE_SET_RUNNING);
@@ -119,7 +119,7 @@ public class GameController extends Application implements GameEventListener, Ob
 	 */	
 	public void endGame(){
 		Log.getInstance().write("Controller: beende Spiel, FxThread:" + Platform.isFxApplicationThread());
-		//TODO: STATE_PROPERTY auf ended setzen, nachdem MainGUI abgeschafft wurde
+		//TODO: STATE_PROPERTY auf ended setzen, nachdem MainGUI abgeschafft wurde, model.save entfernen
 		properties[STATE_PROPERTY].set(Constants.STATE_APP_RUNNING);
 		model.save();
 	}
@@ -179,11 +179,20 @@ public class GameController extends Application implements GameEventListener, Ob
 	}
 	
 	/**
-	 * Methode um vom UI aus den Gewinner zu bestätigen und somit den Satz abzuschließen
+	 * Methode um vom UI aus den Gewinner zu bestätigen und somit den Satz abzuschließen und zu speichern
 	 */	
 	public void confirmSetWinner(){
 		Log.getInstance().write("Controller: Gewinner bestätigt, FxThread:" + Platform.isFxApplicationThread());
 		model.save();
+		properties[STATE_PROPERTY].set(Constants.STATE_GAME_RUNNING);
+	}
+	
+	/**
+	 * Methode um vom UI aus den aktuellen Satz zu verwerfen
+	 */	
+	public void discardSet(){
+		Log.getInstance().write("Controller: Satz verworfen, FxThread:" + Platform.isFxApplicationThread());
+		model.discardLatestSet();
 		properties[STATE_PROPERTY].set(Constants.STATE_GAME_RUNNING);
 	}
 	
@@ -262,7 +271,8 @@ public class GameController extends Application implements GameEventListener, Ob
 				if(((String)event.getArg()).charAt(0) == Constants.xRole || ((String)event.getArg()).charAt(0) == Constants.oRole){
 					model.getLatestSet().setWinner(((String)event.getArg()).charAt(0));
 				}
-				//TODO: nach Verknüpfung mit FXML: in die confirmSetWinner verschieben
+				//TODO: nach Verknüpfung mit FXML: entfernen! 
+//				confirmSetWinner();
 				model.save();
 				properties[STATE_PROPERTY].set(Constants.STATE_GAME_RUNNING);
 				break;
@@ -291,9 +301,9 @@ public class GameController extends Application implements GameEventListener, Ob
 	 * @param Spaltenanzahl :Integer, Zeilenanzahl :Integer
 	 */	
 	private void newGame(int cols, int rows){		
-		if(model != null){			
-			model.save();
-		}
+//		if(model != null){			
+//			model.save();
+//		}
 		
 		//create new model		
 		model = new Game(cols, rows, properties[ROLE_PROPERTY].get().charAt(0), 
@@ -350,15 +360,15 @@ public class GameController extends Application implements GameEventListener, Ob
 //			sets.get(model.getLatestSet().getID()-1).setWinner(String.valueOf(model.getLatestSet().getWinner()));
 			updateSets();
 			//Sicherstellen, dass updates von TextProperties im UI Thread stattfinden
-			Platform.runLater(new Runnable() {					
-				@Override
-				public void run() {
+//			Platform.runLater(new Runnable() {					
+//				@Override
+//				public void run() {
 					properties[WINNER_PROPERTY].setValue(String.valueOf(model.getLatestSet().getWinner()));
 					properties[OWNPOINTS_PROPERTY].setValue(String.valueOf(model.getOwnPoints()));
 					properties[OPPPOINTS_PROPERTY].setValue(String.valueOf(model.getOppPoints()));					
-				}
-			});		
-			model.save();
+//				}
+//			});		
+//			model.save();
 			break;
 		case "status":
 			Log.getInstance().write("Controller: Status changed empfangen, FxThread:" + Platform.isFxApplicationThread());
@@ -368,6 +378,7 @@ public class GameController extends Application implements GameEventListener, Ob
 			Log.getInstance().write("Controller: Set changed empfangen; FxThread:" + Platform.isFxApplicationThread());
 			updateField();
 			updateSets();
+			properties[WINNER_PROPERTY].setValue(String.valueOf(model.getLatestSet().getWinner()));
 			break;
 		case "field":
 			Log.getInstance().write("Controller: Field changed empfangen; FxThread:" + Platform.isFxApplicationThread());

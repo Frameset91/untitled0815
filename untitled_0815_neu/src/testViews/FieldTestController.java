@@ -227,23 +227,30 @@ public class FieldTestController implements Initializable {
 	private void showConfirmWinner() {
 		final Stage stageConfirmWinner = new Stage();
 		Group rootLog = new Group();
-		Scene sceneLog = new Scene(rootLog, 400,120, Color.WHITESMOKE);
+		Scene sceneLog = new Scene(rootLog, 500,180, Color.WHITESMOKE);
 		stageConfirmWinner.setScene(sceneLog);
 		stageConfirmWinner.centerOnScreen();
 		stageConfirmWinner.show();
 						
 	//Inhalt
-		Text ueberschrift = new Text(20, 20,"Der Satz wurde beendet, bitte den Gewinner bestätigen:");
-		Button close = new Button("Bestätigen");
-		close.setOnMouseClicked(new EventHandler<MouseEvent>(){
+		Text ueberschrift = new Text(20, 20,"Der Satz wurde beendet, bitte den Gewinner bestätigen oder den Satz verwerfen:");
+		Button confirm = new Button("Bestätigen");		
+		confirm.setOnMouseClicked(new EventHandler<MouseEvent>(){
 			public void handle(MouseEvent close){
 				stageConfirmWinner.close();
 				viewModel.confirmSetWinner();
 			}
 		});
+		Button discard = new Button("Verwerfen");
+		discard.setOnMouseClicked(new EventHandler<MouseEvent>(){
+			public void handle(MouseEvent close){
+				stageConfirmWinner.close();
+				viewModel.discardSet();
+			}
+		});
 		//Anordnen
 		VBox Logs = new VBox(20);
-		Logs.getChildren().addAll(ueberschrift, winner, close);
+		Logs.getChildren().addAll(ueberschrift, winner, confirm, discard);
 		Logs.setLayoutX(50);
 		rootLog.getChildren().add(Logs);
 		
