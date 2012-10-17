@@ -42,8 +42,8 @@
         			<Label text="Verzeichnispfad:" GridPane.columnIndex="0" GridPane.rowIndex="4"/>
         			<Label text="Timeout File-Abfrage" GridPane.columnIndex="0" GridPane.rowIndex="5"></Label>
         			<Label text="Timeout Zugzeit:" GridPane.columnIndex="0" GridPane.rowIndex="6"/>
-        			<Button fx:id="spielStarten" text="Spiel starten" GridPane.columnIndex="0" GridPane.rowIndex="7"/>
-         			<Button fx:id="spielLaden" text="Spiel laden" GridPane.columnIndex="0" GridPane.rowIndex="8"/>
+        			<Button fx:id="spielStarten" text="Spiel starten" onMouseClicked="#handleStartGame" GridPane.columnIndex="0" GridPane.rowIndex="7"/>
+         			<Button fx:id="spielLaden" text="Spiel laden" onMouseClicked="#handleLoadGame" GridPane.columnIndex="0" GridPane.rowIndex="8"/>
          		<!-- Rechte Spalte -->	
          			<!-- Rolle definieren -->
         			<ChoiceBox fx:id="rolle" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
@@ -74,7 +74,7 @@
         				<Label text="ms"/>
         			</HBox>
         		</GridPane>
-        		<Button text="Spiel abbrechen" fx:id="btnEndGame"/>
+        		<Button text="Spiel abbrechen" fx:id="btnEndGame" onMouseClicked="#handleEndGame"/>
         	</VBox>
         	<Line startX="110" startY="0" endX="110" endY="500"/> 
         </HBox>
@@ -104,10 +104,10 @@
        	<center>
        		<VBox spacing="10" alignment="CENTER_LEFT">
        			<VBox spacing="10" fx:id="setSettings">
-       				<Button fx:id="satz" text="neuen Satz spielen" disable="false"/>
+       				<Button fx:id="satz" text="neuen Satz spielen" disable="false" onMouseClicked="#handleStartSet"/>
        				<Button text="Satz manuell einfuegen"/>
        			</VBox>
-       			<Button fx:id="btnEndSet" text="Satz abbrechen"/>
+       			<Button fx:id="btnEndSet" text="Satz abbrechen" onMouseClicked="#handleEndSet"/>
        			<Label text="Statistik"/>
        			<GridPane gridLinesVisible="true">
        				<Label text="Satznr." GridPane.columnIndex="0" GridPane.rowIndex="0"/>
