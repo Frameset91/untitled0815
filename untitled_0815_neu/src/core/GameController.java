@@ -208,7 +208,10 @@ public class GameController extends Application implements GameEventListener, Ob
 				startSet();		
 				break;
 			case EndSet:	//--------- Satz abbrechen gedrückt oder Server hat den Satz beendet
-				endSet((byte)Integer.parseInt(event.getArg()));
+				if(event.getArg() == "")
+					endSet((byte)-1);
+				else
+					endSet((byte)Integer.parseInt(event.getArg()));
 				break;
 			case EndGame:	//--------- Spiel beenden gedrückt
 				endGame();
