@@ -18,7 +18,7 @@
     			<MenuItem fx:id="menuNeuesSpiel" text="Neues Spiel"/>
     			<MenuItem fx:id="menuSpielLaden" text="Spiel laden"/>
     			<MenuItem fx:id="menuSpielBeenden" text="Spiel beenden" disable="true"/>
-    			<MenuItem fx:id="menuSchließen" text="Schließen" onAction="#handleSchließen"/>
+    			<MenuItem fx:id="menuSchliessen" text="Schließen" onAction="#handleSchliessen"/>
     		</Menu>
     		<Menu text="Hilfe">
     			<MenuItem fx:id="menuAnleitung" text="Spielanleitung" onAction="#handleAnleitung"/>
