@@ -80,7 +80,7 @@ public class FieldTestController implements Initializable {
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
 		viewModel = new GameController();
-		viewModel.initialize(null, null);
+//		viewModel.initialize(null, null);
 		
 		logTabelle = new TableView<LogEntry>();
 		
@@ -130,6 +130,8 @@ public class FieldTestController implements Initializable {
 				new PropertyValueFactory<Log.LogEntry, String>("text"));
 		logTabelle.setItems(viewModel.logItems());
 		Log.getInstance().write("Binding fuer Log erstellt");
+		
+		viewModel.initialize(null, null);
 	 }
 	
 	private void updateState(){
@@ -166,6 +168,7 @@ public class FieldTestController implements Initializable {
 	//					array[DISABLE_SET_ABORT] = true;
 	//					array[DISABLE_GAME_ABORT] = true;
 	//					array[SHOW_SETEND_POPUP] = true;
+			//TODO: Popup zum festlegen des Gewinners
 			break;
 		default:
 			
@@ -174,6 +177,27 @@ public class FieldTestController implements Initializable {
 	}	
 	
 	//----------------------- Methoden zum handeln von UI Input ----------------------------
+	//Spiel starten gedrückt
+	@FXML
+	public void handleStartGame(ActionEvent e){
+		viewModel.startGame();
+	}
+	//Spiel beenden gedrückt
+	@FXML
+	public void handleEndGame(ActionEvent e){
+		viewModel.endGame();
+	}
+	//Satz starten gedrückt
+	@FXML
+	public void handleStartSet(ActionEvent e){
+		viewModel.startSet();
+	}
+	//Satz beenden gedrückt
+	@FXML
+	public void handleEndSet(ActionEvent e){
+		viewModel.endSet((byte) -1);		
+	}
+	
 	@FXML
     // Menü: Schließen des Programms
 	public void handleSchließen(ActionEvent close){System.exit(0);}

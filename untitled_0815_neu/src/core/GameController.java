@@ -50,6 +50,24 @@ public class GameController extends Application implements GameEventListener, Ob
 	private ObservableList<SetProperty> sets;
 	private ObservableList<GameProperty> savedGames;
 	
+	public GameController(){
+		styleField = new SimpleStringProperty[Constants.gamefieldcolcount][Constants.gamefieldrowcount];
+		for(int i = 0; i < Constants.gamefieldcolcount; i++){
+			for(int j = 0; j< Constants.gamefieldrowcount; j++){
+				styleField[i][j] = new SimpleStringProperty(); 
+			}
+		}
+		
+		properties = new SimpleStringProperty[11];
+		for(int i = 0; i < properties.length; i++){
+			properties[i] = new SimpleStringProperty();
+		}
+		
+		sets = FXCollections.observableArrayList();		
+		savedGames = FXCollections.observableArrayList();
+		logItems = FXCollections.observableArrayList();
+	}
+	
 	//--------------------- API Methoden für UI-Controller -----------------------------------------	
 	/**
 	 * Methode um ein Spiel zu starten	  
@@ -418,28 +436,38 @@ public class GameController extends Application implements GameEventListener, Ob
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
 		//Property Initialisierung
-		styleField = new SimpleStringProperty[Constants.gamefieldcolcount][Constants.gamefieldrowcount];
+//		styleField = new SimpleStringProperty[Constants.gamefieldcolcount][Constants.gamefieldrowcount];
 		for(int i = 0; i < Constants.gamefieldcolcount; i++){
 			for(int j = 0; j< Constants.gamefieldrowcount; j++){
-				styleField[i][j] = new SimpleStringProperty(Constants.emptyToken); 
+//				styleField[i][j] = new SimpleStringProperty(Constants.emptyToken);
+				styleField[i][j].set(Constants.emptyToken); 
 			}
 		}
+//		
+//		properties = new SimpleStringProperty[12];
+//		properties[ROLE_PROPERTY] = new SimpleStringProperty();
+//		properties[OWNPOINTS_PROPERTY] = new SimpleStringProperty("0");
+//		properties[OPPPOINTS_PROPERTY] = new SimpleStringProperty("0");
+//		properties[OPPNAME_PROPERTY] = new SimpleStringProperty();
+//		properties[PATH_PROPERTY] = new SimpleStringProperty();
+//		properties[TIMEOUTSERVER_PROPERTY] = new SimpleStringProperty(String.valueOf(Constants.defaultTimeoutServer));
+//		properties[TIMEOUTDRAW_PROPERTY] = new SimpleStringProperty(String.valueOf(Constants.defaultTimeoutDraw));
+//		properties[OPPTOKEN_PROPERTY] = new SimpleStringProperty(Constants.oToken);
+//		properties[OWNTOKEN_PROPERTY] = new SimpleStringProperty(Constants.xToken);		
+//		properties[WINNER_PROPERTY] = new SimpleStringProperty();
+//		properties[STATE_PROPERTY] = new SimpleStringProperty(Constants.STATE_APP_RUNNING);
+//			
+//		sets = FXCollections.observableArrayList();		
+//		savedGames = FXCollections.observableArrayList();	
 		
-		properties = new SimpleStringProperty[12];
-		properties[ROLE_PROPERTY] = new SimpleStringProperty();
-		properties[OWNPOINTS_PROPERTY] = new SimpleStringProperty("0");
-		properties[OPPPOINTS_PROPERTY] = new SimpleStringProperty("0");
-		properties[OPPNAME_PROPERTY] = new SimpleStringProperty();
-		properties[PATH_PROPERTY] = new SimpleStringProperty();
-		properties[TIMEOUTSERVER_PROPERTY] = new SimpleStringProperty(String.valueOf(Constants.defaultTimeoutServer));
-		properties[TIMEOUTDRAW_PROPERTY] = new SimpleStringProperty(String.valueOf(Constants.defaultTimeoutDraw));
-		properties[OPPTOKEN_PROPERTY] = new SimpleStringProperty(Constants.oToken);
-		properties[OWNTOKEN_PROPERTY] = new SimpleStringProperty(Constants.xToken);		
-		properties[WINNER_PROPERTY] = new SimpleStringProperty();
-		properties[STATE_PROPERTY] = new SimpleStringProperty(Constants.STATE_APP_RUNNING);
-			
-		sets = FXCollections.observableArrayList();		
-		savedGames = FXCollections.observableArrayList();	
+		properties[OWNPOINTS_PROPERTY].set("0");
+		properties[OPPPOINTS_PROPERTY].set("0");
+		properties[TIMEOUTSERVER_PROPERTY].set(String.valueOf(Constants.defaultTimeoutServer));
+		properties[TIMEOUTDRAW_PROPERTY].set(String.valueOf(Constants.defaultTimeoutDraw));
+		properties[OPPTOKEN_PROPERTY].set(Constants.oToken);
+		properties[OWNTOKEN_PROPERTY].set(Constants.xToken);		
+		properties[STATE_PROPERTY].set(Constants.STATE_APP_RUNNING);
+		
 		
 		logItems = Log.getInstance().getLogEntries();
 			
