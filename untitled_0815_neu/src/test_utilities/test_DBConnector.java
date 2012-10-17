@@ -14,7 +14,7 @@ public class test_DBConnector {
 	public static DBConnection con;
 
 	public static void testMove(){
-		Move myMove = new Move ('x', 3, 3); // letztes ist ID, immer ändern
+		Move myMove = new Move ('0', 3, 3); // letztes ist ID, immer ändern
 		
 		boolean moveIns = con.saveMove(myMove, 1000, 1);
 		System.out.println ("erfolg: " + moveIns);
@@ -82,7 +82,11 @@ public class test_DBConnector {
 		        String oppName = rs.getString(3);
 		        String ownPoints = rs.getString(4);
 		        String oppPoints = rs.getString(5);
-		        String resultset = gameID + ","+ role +  ","+ oppName +  ","+ ownPoints +',' +oppPoints;
+		        String path = rs.getString(6);
+		        String timeServer = rs.getString(7);
+		        String timeDraw = rs.getString(8);
+		        String resultset = gameID + ","+ role +  ","+ oppName +  ","+ ownPoints +',' +oppPoints +  ","
+		        		+ path +  ","+ timeServer + ", " + timeDraw;
 		        System.out.println (resultset);
 		      }
 		}catch (Exception e){

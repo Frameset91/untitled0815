@@ -6,6 +6,8 @@ package utilities;
  */
 
 import java.sql.*;
+
+import core.Constants;
 import model.Game;
 import model.Move;
 import model.Set;
@@ -65,15 +67,13 @@ public class DBConnection {
 		return singleton;
 	}
 
-	
 	/**
-	 * Sendet ein SelectStatement an die Datenbank
 	 * 
-	 * @param sql Query als String
-	 * @return ResultSet sendet ein Resultset zurueck - Wenn kein Ergebnis ist
-	 *         null
+	 * Sendet Select an die DB, nicht synchronized
+	 * @param sql: SQL-Select-Statement
+	 * @return Resultset: alle ergebnisse von der DB
 	 */
-	public synchronized ResultSet sendSelectStatement(String sql) {
+	private ResultSet sendSelectStatementInternal(String sql){
 		ResultSet rs = null;
 		if (!offlineMode){
 			try {
@@ -87,7 +87,21 @@ public class DBConnection {
 	}
 	
 	/**
+	 * Sendet ein SelectStatement an die Datenbank
 	 * 
+	 * @param sql Query als String
+	 * @return ResultSet: sendet ein Resultset zurueck - Wenn kein Ergebnis ist
+	 *         null
+	 */
+	public synchronized ResultSet sendSelectStatement(String sql) {
+		ResultSet rs = null;
+		rs = sendSelectStatementInternal(sql);
+		return rs;
+	}
+	
+	/**
+	 * 
+	 * übergibt ein INsert-Statement an die Datenbank
 	 * @param sql, ein SQL Insert-Statement als String
 	 * @return true bei erfolgreiche Einfügen, false bei Fehler
 	 */
@@ -111,65 +125,80 @@ public class DBConnection {
 	
 	/**
 	 * 
+	 * speichert ein Spiel in der Datenbank
 	 * @param Spiel des Typs Game
 	 * @return Id (Primärschlüssel) auf der DB, Typ Integer
 	 */
 	public synchronized int saveGame(Game game) {
 		
-		int id = -1; // id ist die erzeugte PrimaryKey-ID
+		int id = -1; // id ist die erzeugte PrimaryKey-ID, -1 Standard für offlineMode
+		String sql;
+		int i; // Anzahl geänderter Zeilen
 		
 		if (!offlineMode){
+			
 			// Daten zum Speichern von game holen
+			int gameID = game.getID(); // falls vorhanden: Wert, falls nicht: -1
 			char role = game.getRole();
 			String oppName = game.getOppName();
 			int ownPoints = game.getOwnPoints();
 			int oppPoints = game.getOppPoints();
-				
+			String path = game.getPath();
+			int timeServer = game.getTimeoutServer();
+			int timeDraw = game.getTimeoutDraw();
+			
 			try{
-				// SQL Statement bauen
-				String sql = "INSERT INTO game VALUES (DEFAULT, '" + role +"','"+ oppName + "', "+ ownPoints +", " + oppPoints +");";
-				PreparedStatement stmt = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
-				
-				// absenden zur DB
-				stmt.execute(); 
-				
-				// erzeugten PrimaryKey auslesen
-				ResultSet rs = stmt.getGeneratedKeys();
-				try{
+				// überprüfen ob es sich um ein update oder insert handeln muss
+				if (gameID == -1){ 
+					//neu in die DB schreiben
+					sql = "INSERT INTO game VALUES (DEFAULT, '" + role +"','"+ oppName + "', "
+							+ ownPoints +", " + oppPoints + ", '" + path + "', " + timeServer + ", "
+							+ timeDraw +");";
+					PreparedStatement pstmt = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+					// absenden zur DB
+					pstmt.execute(); 
+					// erzeugten PrimaryKey auslesen
+					ResultSet rs = pstmt.getGeneratedKeys();
 					while ( rs.next() )
 				      {
-						int gameID = rs.getInt(1);
-						id = gameID;
-				        
+						id = rs.getInt(1);
 				      }
-				}catch (Exception e){
-					e.printStackTrace();
-				}
-				//Anzahl geänderter Zeilen lesen
-				int i = stmt.getUpdateCount();
-				if (i != 1)
-						System.out.println("Fehler beim Schreiben in DB");
+					//Anzahl geänderter Zeilen lesen
+					i = pstmt.getUpdateCount();
+				}else {
+					// falls update
+					sql = "UPDATE game SET (role, oppname, ownPoints, oppPoints) = ('" + role + "', '" + oppName + "', '" 
+							+ ownPoints + "', '"+ oppPoints + "') WHERE gameID = " + gameID + ";"; 
+					System.out.println (sql);
+					Statement stmt = con.createStatement();
+					// update an DB schicken
+					i = stmt.executeUpdate(sql); //i ist row count
+					if (i != 1)
+							System.out.println("Fehler beim Schreiben in DB");
+				}// else, also update
 				
 			}catch ( SQLException e ) {
 				System.err.println( "SQL Statement fehlgeschlagen!" );
 				e.printStackTrace();
 		    }
-		}		
+		}// if (!offlineMode)		
 		return id;
 	} // ende saveGame (Game game)
 	
 	
 	/**
 	 * 
-	 * @param Set, Satz der gespeichert werden soll
+	 * Speichert einen Satz
+	 * @param Set: Satz der gespeichert werden soll
+	 * @param gameID: ID des sazugehörigen Spiels
 	 * @return boolean true, wenn erfolgreich gespeichert, false bei Fehler
 	 */
 	public synchronized boolean saveSet(Set set, int gameID) {
 	
 		boolean success = false;
+		String sql;
 		
-		if (!offlineMode){
-		
+		if (!offlineMode){	
 			// Daten zum Speichern von game holen
 			int setID = set.getID();
 			char winner = set.getWinner();
@@ -179,14 +208,25 @@ public class DBConnection {
 			if (endtime == null)
 				endtime = starttime;
 			
-			try {
-				//SQL Statement bauen
-				String sql = "INSERT INTO gameSet VALUES ("+ gameID + ", " + setID +",'"+ winner + "', '"+ starttime +"', '" + endtime +"');";
-				System.out.println ("SQL: "+sql);
+			// überprüfen ob update oder insert
+			String selectSql = "SELECT * FROM gameSet WHERE gameID = " + gameID + 
+					" and setID = " + setID + ";"; 
+			ResultSet rs = this.sendSelectStatementInternal(selectSql);
+			try{
+				if (!rs.next()){ //also keine Zeile im ResultSet vorhanden
+					//falls neues Insert-Statement
+					sql = "INSERT INTO gameSet VALUES ("+ gameID + ", " + setID +",'"+ winner + "', '"+ starttime +"', '" + endtime +"');";
+					System.out.println ("SQL: "+sql);
+				}else {
+					// update machen
+					sql = "UPDATE gameSet SET (winner, startTime, endTime) = ('" + winner + "', '" + starttime + "', '" 
+							+ endtime + "') WHERE gameID = " + gameID + " AND setID = " + setID +  ";"; 
+					System.out.println (sql);
+				}
 				Statement stmt = con.createStatement();
 				// Insert an DB schicken
-				int i = stmt.executeUpdate(sql); //i ist row count
-				if (i == 1)
+				int i = stmt.executeUpdate(sql); 
+				if (i == 1) //i ist row count
 					success = true;
 				
 			}catch (SQLException e){
@@ -200,11 +240,15 @@ public class DBConnection {
 	
 	/**
 	 * 
-	 * @param move, ein Zug der gespeichert werden soll
-	 * @return true bei erfolgreichem Speichern, false bei Fehler
+	 * Speichert einen Move
+	 * @param move: ein Zug der gespeichert werden soll
+	 * @param gameID: ID des dazugeörigen Games
+	 * @param setID: ID des dazugehörigen Sets
+	 * @return boolean: true bei erfolgreichem Speichern, false bei Fehler
 	 */
 	public synchronized boolean saveMove(Move move, int gameID, int setID) {
 		boolean success = false;
+		String sql;
 		
 		if (!offlineMode){
 		
@@ -213,17 +257,27 @@ public class DBConnection {
 			char role = move.getRole();
 			int column = move.getColumn();
 			Timestamp time = move.getTime();
-				
-			try {
-				//SQL Statement bauen
-				String sql = "INSERT INTO move VALUES ("+ gameID + ", " + setID +","+ moveID + ", '"+ role +"', " + column + ", '" + time +"');";
-				System.out.println ("SQL: "+sql);
+			
+			// überprüfen ob update oder insert
+			String selectSql = "SELECT * FROM move WHERE gameID = " + gameID + 
+					" and setID = " + setID + " and moveID = " + moveID + ";"; 
+			ResultSet rs = this.sendSelectStatementInternal(selectSql);
+			try{
+				if (!rs.next()){ //also keine Zeile im ResultSet vorhanden
+					//Insert:	
+					sql = "INSERT INTO move VALUES ("+ gameID + ", " + setID +","+ moveID + ", '"+ role +"', " + column + ", '" + time +"');";
+				}else{ 
+					// update:
+					sql = "UPDATE move SET (role, column, time) = ('" + role + "', " + column + ", '" 
+							+ time + "') WHERE gameID = " + gameID + " AND setID = " + setID 
+							+ " AND moveID = " + moveID + ";"; 
+					System.out.println (sql);
+				}
 				Statement stmt = con.createStatement();
 				// Insert an DB schicken
 				int i = stmt.executeUpdate(sql); //i ist row count
 				if (i == 1)
 					success = true;
-		
 			}catch (SQLException e){
 				e.printStackTrace();
 				System.out.println ("SQL Insert Set fehlgeschlagen");
@@ -232,7 +286,56 @@ public class DBConnection {
 		return success;
 	}
 	
-	
+	/**
+	 * 
+	 * lädt ein game, inklusive aller Sets und Moves
+	 * @param gameID: ID des zu ladenen Games
+	 * @return Game
+	 */
+	public synchronized Game loadGame(int gameID) {
+		// Daten aus DB laden
+		String srole = "";
+        String soppName = "";
+        String sownPoints = "";
+        String soppPoints = "";
+        String spath = "";
+        String stimeServer = "";
+        String stimeDraw = "";
+		
+		String sql = "SELECT * FROM game WHERE gameID = " + gameID + ";"; 
+		ResultSet rs = this.sendSelectStatementInternal(sql);
+		
+		try{
+			if ( rs.next() ){
+				//Infos aus rs holen und auflisten
+		        srole = rs.getString(2);
+		        soppName = rs.getString(3);
+		        sownPoints = rs.getString(4);
+		        soppPoints = rs.getString(5);
+		        spath = rs.getString(6);
+		        stimeServer = rs.getString(7);
+		        stimeDraw = rs.getString(8);
+		        String resultset = gameID + ","+ srole +  ","+ soppName +  ","+ sownPoints +',' +soppPoints +  ","
+		        		+ spath +  ","+ stimeServer + ", " + stimeDraw;
+		        System.out.println (resultset);
+		      }
+		}catch (SQLException e){
+			e.printStackTrace();
+		}
+		
+		//in game übernehmen
+		char role = srole.charAt(0);
+		String oppname = soppName; 
+		String path = spath;
+		int timeServer = Integer.valueOf(stimeServer);
+		int timedraw = Integer.valueOf(stimeDraw);
+		int columns = Constants.gamefieldcolcount;
+		int rows = Constants.gamefieldrowcount;
+		
+		Game game = new Game(columns, rows, role, oppname, path, timeServer, timedraw, gameID);
+		
+		return game;
+	}
 	
 ///////////////////////////// bis hier gekommen
 //	
@@ -245,9 +348,6 @@ public class DBConnection {
 //	}
 //
 //
-//	public void loadGame() {
-//
-//	}
 //	
 //	public void loadSet(){
 //		
