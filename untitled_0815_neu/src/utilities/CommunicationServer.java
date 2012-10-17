@@ -182,8 +182,8 @@ public class CommunicationServer extends Thread {
 			}
 			// Sieger ist bestimmt
 			if (!msg.getSieger().equals("offen")) {
-				this.fireGameEvent(GameEvent.Type.OppMove, String.valueOf(msg.getGegnerzug()));
-				Log.getInstance().write("Communication Server: Event gesendet");
+				this.fireGameEvent(GameEvent.Type.WinnerSet, String.valueOf(msg.getSieger()));
+				Log.getInstance().write("Communication Server: WinnerSet Event gesendet");
 			}
 			lastchange = serverFile.lastModified();
 
