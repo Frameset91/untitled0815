@@ -47,24 +47,31 @@ public class CommunicationServer extends Thread {
 	 */
 	
 	
-	private synchronized void fireEvent(byte type) {
-//		GameEvent event = new GameEvent(this, type);
-//		Iterator i = _listeners.iterator();
-//		while (i.hasNext()) {
-//			((GameEventListener_old) i.next()).handleEvent(event);
-//		}
-				
-		Task aufgabe = new Task<Void>() {
-			protected Void call() throws Exception {
-				EventDispatcher Dispatcher = EventDispatcher.getInstance();
-				GameEvent e = (GameEvent)Dispatcher.triggerEvent("GameEvent", true);
-				return null;
-			}};
-    	new Thread(aufgabe).start();	
-		
-		
-		
-	}
+//	private synchronized void fireEvent(byte type) {
+////		GameEvent event = new GameEvent(this, type);
+////		Iterator i = _listeners.iterator();
+////		while (i.hasNext()) {
+////			((GameEventListener_old) i.next()).handleEvent(event);
+////		}
+//				
+//		Task aufgabe = new Task<Void>() {
+//			protected Void call() throws Exception {
+//				EventDispatcher Dispatcher = EventDispatcher.getInstance();
+//				GameEvent e = (GameEvent)Dispatcher.triggerEvent("GameEvent", true);
+//				return null;
+//			}};
+//    	new Thread(aufgabe).start();	
+//		
+//		
+//		
+//	}
+	
+	/**
+	 * Diese Methode löst die jeweiligen Events aus und startet deren Verarbeitung
+	 * 
+	 * @param type Typ des GameEvents
+	 * @param arg Argumente, die zusätzlich mit dem GameEvent übergeben werden
+	 */
 
 	public void fireGameEvent(final GameEvent.Type type, final String arg){
 		Log.getInstance().write("GameEvent gefeuert: " + type.toString());
@@ -123,7 +130,10 @@ public class CommunicationServer extends Thread {
 		this.serverfilepath = serverFilePath + "/server2spieler" + role + ".xml";
 		this.serverfilepath = this.serverfilepath.toLowerCase();
 		this.serverFile = new File(serverfilepath);
+		
+		// Puefung, ob noch ein Leserthread läuft
 		if(this.leserthread != null){
+			//alten Leserthread stoppen
 			this.leserthread.interrupt();
 			this.leserthread = null;
 		}
@@ -131,6 +141,10 @@ public class CommunicationServer extends Thread {
 		this.leserthread.start();
 
 	}
+	
+	/**
+	 * Diese Methode setzt die Variable lastchange zurück, damit eine neue Datei gelesen werden kann.
+	 */
 	
 	public void resetLastChange() {
 		this.lastchange = (Long) null;
@@ -141,7 +155,6 @@ public class CommunicationServer extends Thread {
 	 */
 	public void disableReading() {
 		this.leserthread.interrupt();
-//		this.bla.stop();
 	}
 
 	/**
@@ -150,47 +163,38 @@ public class CommunicationServer extends Thread {
 	 */
 	public void ueberwachen() {
 		// Auslesen der Datei
-		System.out.println("Ueberwachen startet");
-		// ExampleListener blub = new ExampleListener();
-		// this.addEventListener(blub);
-		//while (true) {
+		Log.getInstance().write("Communication Server:Ueberwachen startet");
 			try{
 			ServerMessage msg = this.read();
 			
 			System.out.println(msg.getFreigabe());
 			System.out.println(msg.getSatzstatus());
 
-			// Wenn Freigabe erfolgt ist - Set Objekt benachrichtigen
+			// Wenn Freigabe erfolgt ist - Benachritigung, dass nächster Zug gemacht werden muss
 			if (msg.getFreigabe().equals("true")) {
 				this.fireGameEvent(GameEvent.Type.OppMove, String.valueOf(msg.getGegnerzug()));
-				
-//				this.disableReading();
-//				break;
-				
+				Log.getInstance().write("Communication Server: Event OppMove gesendet");
 			}
 			// Satz ist beendet
 			if (msg.getSatzstatus().equals("beendet")) {
 				this.fireGameEvent(GameEvent.Type.EndSet, String.valueOf(msg.getGegnerzug()));
-				
-//				this.disableReading();
-//				break;
+				Log.getInstance().write("Communication Server: Event EndSet gesendet");
 			}
 			// Sieger ist bestimmt
 			if (!msg.getSieger().equals("offen")) {
-				this.fireGameEvent(GameEvent.Type.OppMove, String.valueOf(msg.getGegnerzug()));
-				
-//				break;
+				this.fireGameEvent(GameEvent.Type.WinnerSet, String.valueOf(msg.getSieger()));
+				Log.getInstance().write("Communication Server: WinnerSet Event gesendet");
 			}
 			lastchange = serverFile.lastModified();
 
 			} catch (Exception e){
-				System.out.println("Lesefehler.....");
+				Log.getInstance().write("Communication Server: Lesefehler.....");
 			}
 			
 			
 			
-					//}
-		System.out.println("Ende While schleife");
+					
+		Log.getInstance().write("Communication Server: Ende Überwachung");
 
 	}
 

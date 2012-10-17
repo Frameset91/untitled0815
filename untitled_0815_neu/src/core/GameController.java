@@ -70,11 +70,12 @@ public class GameController extends Application implements GameEventListener, Ob
 		}
 		ki = new KI(model);
 		
-		model.newSet();
+		model.newSet().setStatus(Constants.STATE_SET_RUNNING);
 		
 		//ComServer starten
 		comServ.enableReading(model.getTimeoutServer(), model.getPath(), model.getRole());
 		properties[STATE_PROPERTY].set(Constants.STATE_SET_RUNNING);
+		
 	}
 	
 	/**
@@ -134,15 +135,17 @@ public class GameController extends Application implements GameEventListener, Ob
 	 */	
 	public void oppMove(byte col){
 		Log.getInstance().write("Controller: gegnerischen Zug empfangen, FxThread:" + Platform.isFxApplicationThread());
-		if (col > -1){
-			addOppMove(col);					
+		if(model.getLatestSet() != null && model.getLatestSet().getStatus() == Constants.STATE_SET_RUNNING){
+			if (col > -1){
+				addOppMove(col);					
+			}
+			byte newCol = ki.calculateNextMove(col);			
+			//Zug auf Server schreiben und Server wieder überwachen
+			comServ.writeMove(newCol, model.getPath(), model.getRole());
+			comServ.enableReading(model.getTimeoutServer(), model.getPath(), model.getRole());
+			
+			model.addMove(model.getRole(), newCol);
 		}
-		byte newCol = ki.calculateNextMove(col);			
-		//Zug auf Server schreiben und Server wieder überwachen
-		comServ.writeMove(newCol, model.getPath(), model.getRole());
-		comServ.enableReading(model.getTimeoutServer(), model.getPath(), model.getRole());
-		
-		model.addMove(model.getRole(), newCol);
 	}
 	
 	/**
@@ -208,6 +211,7 @@ public class GameController extends Application implements GameEventListener, Ob
 				startSet();		
 				break;
 			case EndSet:	//--------- Satz abbrechen gedrückt oder Server hat den Satz beendet
+				Log.getInstance().write("Controller: EndSet Event empfange");
 				if(event.getArg() == "")
 					endSet((byte)-1);
 				else
