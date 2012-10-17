@@ -19,6 +19,8 @@ import view.*;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.Initializable;
@@ -29,6 +31,7 @@ public class GameController extends Application implements GameEventListener, Ob
 	private Game model;
 	private CommunicationServer comServ;
 	private KI ki;
+	private KIWorkerThread kiwt;
 
 	//Konstanten für Zugriff auf Property Array
 	public final int ROLE_PROPERTY = 0;
@@ -74,7 +77,8 @@ public class GameController extends Application implements GameEventListener, Ob
 	 */
 	public void startGame(){
 		Log.getInstance().write("Controller: starte Spiel, FxThread:" + Platform.isFxApplicationThread());
-		newGame(Constants.gamefieldcolcount, Constants.gamefieldrowcount);		
+		newGame(Constants.gamefieldcolcount, Constants.gamefieldrowcount);	
+		Log.getInstance().write("Controller: Spiel gestartet, FxThread:" + Platform.isFxApplicationThread());
 		properties[STATE_PROPERTY].set(Constants.STATE_GAME_RUNNING);
 	}
 	
@@ -158,12 +162,19 @@ public class GameController extends Application implements GameEventListener, Ob
 			if (col > -1){
 				addOppMove(col);					
 			}
-			byte newCol = ki.calculateNextMove(col);			
-			//Zug auf Server schreiben und Server wieder überwachen
-			comServ.writeMove(newCol, model.getPath(), model.getRole());
-			comServ.enableReading(model.getTimeoutServer(), model.getPath(), model.getRole());
-			
-			model.addMove(model.getRole(), newCol);
+//			byte newCol = ki.calculateNextMove(col);			
+//			//Zug auf Server schreiben und Server wieder überwachen
+//			comServ.writeMove(newCol, model.getPath(), model.getRole());
+//			comServ.enableReading(model.getTimeoutServer(), model.getPath(), model.getRole());
+//			
+//			model.addMove(model.getRole(), newCol);
+		    if(kiwt != null && kiwt.isAlive()){
+		    	Log.getInstance().write("Controller: Neuer oppMove obwohl KI Thread noch läuft!");
+		    }else{
+				kiwt = new KIWorkerThread(col);
+				kiwt.start();
+				Log.getInstance().write("Controller: KI Workerthread gestartet");
+		    }
 		}
 	}
 	
@@ -171,6 +182,7 @@ public class GameController extends Application implements GameEventListener, Ob
 	 * Methode um vom UI aus den Gewinner zu bestätigen und somit den Satz abzuschließen
 	 */	
 	public void confirmSetWinner(){
+		Log.getInstance().write("Controller: Gewinner bestätigt, FxThread:" + Platform.isFxApplicationThread());
 		model.save();
 		properties[STATE_PROPERTY].set(Constants.STATE_GAME_RUNNING);
 	}
@@ -297,7 +309,7 @@ public class GameController extends Application implements GameEventListener, Ob
 			for(int j = 0; j< rows; j++){
 				styleField[i][j].set(Constants.emptyToken);
 			}
-		}		
+		}
 		model.save();			
 	}
 	
@@ -341,6 +353,7 @@ public class GameController extends Application implements GameEventListener, Ob
 			Platform.runLater(new Runnable() {					
 				@Override
 				public void run() {
+					properties[WINNER_PROPERTY].setValue(String.valueOf(model.getLatestSet().getWinner()));
 					properties[OWNPOINTS_PROPERTY].setValue(String.valueOf(model.getOwnPoints()));
 					properties[OPPPOINTS_PROPERTY].setValue(String.valueOf(model.getOppPoints()));					
 				}
@@ -461,7 +474,7 @@ public class GameController extends Application implements GameEventListener, Ob
 //			
 //		sets = FXCollections.observableArrayList();		
 //		savedGames = FXCollections.observableArrayList();	
-		
+		properties[ROLE_PROPERTY].set(String.valueOf(Constants.defaultRole));
 		properties[OWNPOINTS_PROPERTY].set("0");
 		properties[OPPPOINTS_PROPERTY].set("0");
 		properties[TIMEOUTSERVER_PROPERTY].set(String.valueOf(Constants.defaultTimeoutServer));
@@ -469,7 +482,12 @@ public class GameController extends Application implements GameEventListener, Ob
 		properties[OPPTOKEN_PROPERTY].set(Constants.oToken);
 		properties[OWNTOKEN_PROPERTY].set(Constants.xToken);		
 		properties[STATE_PROPERTY].set(Constants.STATE_APP_RUNNING);
-		
+		properties[WINNER_PROPERTY].set(String.valueOf(Constants.noRole));
+		properties[WINNER_PROPERTY].addListener(new ChangeListener<String>() {
+			@Override
+			public void changed(ObservableValue<? extends String> arg0,
+					String arg1, String arg2) {model.getLatestSet().setWinner(properties[WINNER_PROPERTY].get().charAt(0));}
+		});
 		
 		logItems = Log.getInstance().getLogEntries();
 			
@@ -490,6 +508,26 @@ public class GameController extends Application implements GameEventListener, Ob
 			e.printStackTrace();
 		}		
 	}
-
 	
+	public class KIWorkerThread extends Thread{
+		
+		private byte oppMove;
+		
+		public KIWorkerThread(byte oppMove){
+			this.oppMove = oppMove;
+		}
+		
+		/* (non-Javadoc)
+		 * @see java.lang.Thread#run()
+		 */
+		@Override
+		public void run() {
+			byte newCol = ki.calculateNextMove(oppMove);			
+			//Zug auf Server schreiben und Server wieder überwachen
+			comServ.writeMove(newCol, model.getPath(), model.getRole());
+			comServ.enableReading(model.getTimeoutServer(), model.getPath(), model.getRole());
+			
+			model.addMove(model.getRole(), newCol);
+		}		
+	}
 }

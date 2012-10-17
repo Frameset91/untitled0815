@@ -170,7 +170,7 @@ public class FieldTestController implements Initializable {
 		logTabelle.setMinWidth(384);
 		spalte1.setCellValueFactory(
 				new PropertyValueFactory<Log.LogEntry, String>("text"));
-		logTabelle.setItems(viewModel.logItems());
+		logTabelle.setItems(Log.getInstance().getLogEntries());
 		Log.getInstance().write("Binding fuer Log erstellt");
 		
 		tableColumnSet.setCellValueFactory(
@@ -180,8 +180,8 @@ public class FieldTestController implements Initializable {
 		tableStatistic.setItems(viewModel.sets());
 		
 		winner = new ChoiceBox<String>();
-		winner.valueProperty().bindBidirectional(viewModel.properties()[viewModel.ROLE_PROPERTY]);
-		winner.getItems().addAll(String.valueOf(Constants.xRole), String.valueOf(Constants.oRole));
+		winner.valueProperty().bindBidirectional(viewModel.properties()[viewModel.WINNER_PROPERTY]);
+		winner.getItems().addAll(String.valueOf(Constants.noRole), String.valueOf(Constants.xRole), String.valueOf(Constants.oRole));
 		
 		viewModel.initialize(null, null);
 	 }
@@ -227,8 +227,7 @@ public class FieldTestController implements Initializable {
 	private void showConfirmWinner() {
 		final Stage stageConfirmWinner = new Stage();
 		Group rootLog = new Group();
-		Scene sceneLog = new Scene(rootLog, 484,500, Color.WHITESMOKE);
-//		rootLog.getChildren().add(logTabelle);
+		Scene sceneLog = new Scene(rootLog, 400,120, Color.WHITESMOKE);
 		stageConfirmWinner.setScene(sceneLog);
 		stageConfirmWinner.centerOnScreen();
 		stageConfirmWinner.show();
@@ -358,7 +357,7 @@ public class FieldTestController implements Initializable {
 		final Stage stageAnleitung = new Stage();
 		Group rootLog = new Group();
 		Scene sceneLog = new Scene(rootLog, 484,500, Color.WHITESMOKE);
-		rootLog.getChildren().add(logTabelle);
+//		rootLog.getChildren().add(logTabelle);
 		stageAnleitung.setScene(sceneLog);
 		stageAnleitung.centerOnScreen();
 		stageAnleitung.show();
