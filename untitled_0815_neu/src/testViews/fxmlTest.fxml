@@ -76,6 +76,7 @@
         	</GridPane>
         	<Line startX="110" startY="0" endX="110" endY="500"/> 
         </HBox>
+        <Button text="Satz abbrechen"/>
     </left>
    
     <center><!-- Mittlerer Bereich -->
@@ -103,7 +104,7 @@
        		<VBox spacing="10" alignment="CENTER_LEFT" fx:id="rightBox">
        			<Button fx:id="satz" text="neuen Satz spielen" disable="false"/>
        			<Label text="Statistik"/>
-       			<GridPane gridLinesVisible="true" alignment="center">
+       			<GridPane gridLinesVisible="true">
        				<Label text="Satznr." GridPane.columnIndex="0" GridPane.rowIndex="0"/>
        				<Label text="Zeit" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
        				<Label text="..." GridPane.columnIndex="0" GridPane.rowIndex="2"/>
