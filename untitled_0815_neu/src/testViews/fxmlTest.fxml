@@ -110,14 +110,14 @@
        			</VBox>
        			<Button fx:id="btnEndSet" text="Satz abbrechen" onMouseClicked="#handleEndSet"/>
        			<Label text="Statistik"/>
-       			<GridPane gridLinesVisible="true">
-       				<Label text="Satznr." GridPane.columnIndex="0" GridPane.rowIndex="0"/>
-       				<Label text="Zeit" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
-       				<Label text="..." GridPane.columnIndex="0" GridPane.rowIndex="2"/>
-       				<Label text="Hallo" GridPane.columnIndex="1" GridPane.rowIndex="0"/>
-       				<Label text=" " GridPane.columnIndex="1" GridPane.rowIndex="1"/>
-       				<Label text=" " GridPane.columnIndex="1" GridPane.rowIndex="2"/>
-       			</GridPane>
+       			<TableView fx:id="tableStatistic" maxHeight="100" maxWidth="150">
+       				<columns>
+       					<TableColumn fx:id="tableColumnSet" text="Satznr." maxWidth="50"/>
+       					<TableColumn fx:id="tableColumnWinner" text="Gewinner"/>
+       				</columns>
+       				<items>
+       				</items>
+       			</TableView>
        			<Button fx:id="logAnzeigen" text="Log anzeigen" disable="false" onMouseClicked="#handleLogAnzeigen"/>
  	  		</VBox>
        	</center>
