@@ -15,6 +15,7 @@ public class Connect4 extends Application {
         stage.setTitle("Test für Spielfeld mit FXML"); 
         Parent root = FXMLLoader.load(getClass().getResource("fxmlTest.fxml")); 
         stage.setScene(new Scene(root)); 
+        stage.setResizable(false);	
         stage.show();
 	}
 
