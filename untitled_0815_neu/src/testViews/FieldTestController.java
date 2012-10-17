@@ -179,34 +179,34 @@ public class FieldTestController implements Initializable {
 	//----------------------- Methoden zum handeln von UI Input ----------------------------
 	//Spiel starten gedrückt
 	@FXML
-	public void handleStartGame(ActionEvent e){
+	public void handleStartGame(MouseEvent e){
 		viewModel.startGame();
 	}
 	//Spiel beenden gedrückt
 	@FXML
-	public void handleEndGame(ActionEvent e){
+	public void handleEndGame(MouseEvent e){
 		viewModel.endGame();
 	}
 	//Satz starten gedrückt
 	@FXML
-	public void handleStartSet(ActionEvent e){
+	public void handleStartSet(MouseEvent e){
 		viewModel.startSet();
 	}
 	//Satz beenden gedrückt
 	@FXML
-	public void handleEndSet(ActionEvent e){
+	public void handleEndSet(MouseEvent e){
 		viewModel.endSet((byte) -1);		
 	}
 	
 	//Spiel laden
 	@FXML
-	public void handleLoadGame(ActionEvent e){
+	public void handleLoadGame(MouseEvent e){
 //		viewModel.loadGame(gameID);	
 	}
 	
 	@FXML
     // Menü: Schließen des Programms
-	public void handleSchließen(ActionEvent close){System.exit(0);}
+	public void handleSchliessen(ActionEvent close){System.exit(0);}
 	@FXML
 	// Menü: Spielanleitung aufrufen
 	public void handleAnleitung(ActionEvent anleitung){
