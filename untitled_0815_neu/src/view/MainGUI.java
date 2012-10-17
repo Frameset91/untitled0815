@@ -458,7 +458,8 @@ public class MainGUI implements IGameView{
 						@Override
 						protected Void call() throws Exception {
 							// TODO Auto-generated method stub
-							fireGameEvent(GameEvent.Type.EndSet);
+							Log.getInstance().write("EndSet Event wird gefeuert");
+							fireGameEvent(GameEvent.Type.EndSet);							
 //							satz.setText("neuen Satz spielen");
 							return null;
 						} // ENde call()	

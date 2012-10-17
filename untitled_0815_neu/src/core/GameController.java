@@ -50,6 +50,24 @@ public class GameController extends Application implements GameEventListener, Ob
 	private ObservableList<SetProperty> sets;
 	private ObservableList<GameProperty> savedGames;
 	
+	public GameController(){
+		styleField = new SimpleStringProperty[Constants.gamefieldcolcount][Constants.gamefieldrowcount];
+		for(int i = 0; i < Constants.gamefieldcolcount; i++){
+			for(int j = 0; j< Constants.gamefieldrowcount; j++){
+				styleField[i][j] = new SimpleStringProperty(); 
+			}
+		}
+		
+		properties = new SimpleStringProperty[11];
+		for(int i = 0; i < properties.length; i++){
+			properties[i] = new SimpleStringProperty();
+		}
+		
+		sets = FXCollections.observableArrayList();		
+		savedGames = FXCollections.observableArrayList();
+		logItems = FXCollections.observableArrayList();
+	}
+	
 	//--------------------- API Methoden für UI-Controller -----------------------------------------	
 	/**
 	 * Methode um ein Spiel zu starten	  
@@ -70,11 +88,12 @@ public class GameController extends Application implements GameEventListener, Ob
 		}
 		ki = new KI(model);
 		
-		model.newSet();
+		model.newSet().setStatus(Constants.STATE_SET_RUNNING);
 		
 		//ComServer starten
 		comServ.enableReading(model.getTimeoutServer(), model.getPath(), model.getRole());
 		properties[STATE_PROPERTY].set(Constants.STATE_SET_RUNNING);
+		
 	}
 	
 	/**
@@ -96,6 +115,7 @@ public class GameController extends Application implements GameEventListener, Ob
 	 */	
 	public void endGame(){
 		Log.getInstance().write("Controller: beende Spiel, FxThread:" + Platform.isFxApplicationThread());
+		//TODO: STATE_PROPERTY auf ended setzen, nachdem MainGUI abgeschafft wurde
 		properties[STATE_PROPERTY].set(Constants.STATE_APP_RUNNING);
 		model.save();
 	}
@@ -134,22 +154,25 @@ public class GameController extends Application implements GameEventListener, Ob
 	 */	
 	public void oppMove(byte col){
 		Log.getInstance().write("Controller: gegnerischen Zug empfangen, FxThread:" + Platform.isFxApplicationThread());
-		if (col > -1){
-			addOppMove(col);					
+		if(model.getLatestSet() != null && model.getLatestSet().getStatus() == Constants.STATE_SET_RUNNING){
+			if (col > -1){
+				addOppMove(col);					
+			}
+			byte newCol = ki.calculateNextMove(col);			
+			//Zug auf Server schreiben und Server wieder überwachen
+			comServ.writeMove(newCol, model.getPath(), model.getRole());
+			comServ.enableReading(model.getTimeoutServer(), model.getPath(), model.getRole());
+			
+			model.addMove(model.getRole(), newCol);
 		}
-		byte newCol = ki.calculateNextMove(col);			
-		//Zug auf Server schreiben und Server wieder überwachen
-		comServ.writeMove(newCol, model.getPath(), model.getRole());
-		comServ.enableReading(model.getTimeoutServer(), model.getPath(), model.getRole());
-		
-		model.addMove(model.getRole(), newCol);
 	}
 	
 	/**
 	 * Methode um vom UI aus den Gewinner zu bestätigen und somit den Satz abzuschließen
 	 */	
 	public void confirmSetWinner(){
-		
+		model.save();
+		properties[STATE_PROPERTY].set(Constants.STATE_GAME_RUNNING);
 	}
 	
 	// Getter für Properties 	
@@ -208,6 +231,7 @@ public class GameController extends Application implements GameEventListener, Ob
 				startSet();		
 				break;
 			case EndSet:	//--------- Satz abbrechen gedrückt oder Server hat den Satz beendet
+				Log.getInstance().write("Controller: EndSet Event empfange");
 				if(event.getArg() == "")
 					endSet((byte)-1);
 				else
@@ -414,28 +438,38 @@ public class GameController extends Application implements GameEventListener, Ob
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
 		//Property Initialisierung
-		styleField = new SimpleStringProperty[Constants.gamefieldcolcount][Constants.gamefieldrowcount];
+//		styleField = new SimpleStringProperty[Constants.gamefieldcolcount][Constants.gamefieldrowcount];
 		for(int i = 0; i < Constants.gamefieldcolcount; i++){
 			for(int j = 0; j< Constants.gamefieldrowcount; j++){
-				styleField[i][j] = new SimpleStringProperty(Constants.emptyToken); 
+//				styleField[i][j] = new SimpleStringProperty(Constants.emptyToken);
+				styleField[i][j].set(Constants.emptyToken); 
 			}
 		}
+//		
+//		properties = new SimpleStringProperty[12];
+//		properties[ROLE_PROPERTY] = new SimpleStringProperty();
+//		properties[OWNPOINTS_PROPERTY] = new SimpleStringProperty("0");
+//		properties[OPPPOINTS_PROPERTY] = new SimpleStringProperty("0");
+//		properties[OPPNAME_PROPERTY] = new SimpleStringProperty();
+//		properties[PATH_PROPERTY] = new SimpleStringProperty();
+//		properties[TIMEOUTSERVER_PROPERTY] = new SimpleStringProperty(String.valueOf(Constants.defaultTimeoutServer));
+//		properties[TIMEOUTDRAW_PROPERTY] = new SimpleStringProperty(String.valueOf(Constants.defaultTimeoutDraw));
+//		properties[OPPTOKEN_PROPERTY] = new SimpleStringProperty(Constants.oToken);
+//		properties[OWNTOKEN_PROPERTY] = new SimpleStringProperty(Constants.xToken);		
+//		properties[WINNER_PROPERTY] = new SimpleStringProperty();
+//		properties[STATE_PROPERTY] = new SimpleStringProperty(Constants.STATE_APP_RUNNING);
+//			
+//		sets = FXCollections.observableArrayList();		
+//		savedGames = FXCollections.observableArrayList();	
 		
-		properties = new SimpleStringProperty[12];
-		properties[ROLE_PROPERTY] = new SimpleStringProperty();
-		properties[OWNPOINTS_PROPERTY] = new SimpleStringProperty("0");
-		properties[OPPPOINTS_PROPERTY] = new SimpleStringProperty("0");
-		properties[OPPNAME_PROPERTY] = new SimpleStringProperty();
-		properties[PATH_PROPERTY] = new SimpleStringProperty();
-		properties[TIMEOUTSERVER_PROPERTY] = new SimpleStringProperty(String.valueOf(Constants.defaultTimeoutServer));
-		properties[TIMEOUTDRAW_PROPERTY] = new SimpleStringProperty(String.valueOf(Constants.defaultTimeoutDraw));
-		properties[OPPTOKEN_PROPERTY] = new SimpleStringProperty(Constants.oToken);
-		properties[OWNTOKEN_PROPERTY] = new SimpleStringProperty(Constants.xToken);		
-		properties[WINNER_PROPERTY] = new SimpleStringProperty();
-		properties[STATE_PROPERTY] = new SimpleStringProperty(Constants.STATE_APP_RUNNING);
-			
-		sets = FXCollections.observableArrayList();		
-		savedGames = FXCollections.observableArrayList();	
+		properties[OWNPOINTS_PROPERTY].set("0");
+		properties[OPPPOINTS_PROPERTY].set("0");
+		properties[TIMEOUTSERVER_PROPERTY].set(String.valueOf(Constants.defaultTimeoutServer));
+		properties[TIMEOUTDRAW_PROPERTY].set(String.valueOf(Constants.defaultTimeoutDraw));
+		properties[OPPTOKEN_PROPERTY].set(Constants.oToken);
+		properties[OWNTOKEN_PROPERTY].set(Constants.xToken);		
+		properties[STATE_PROPERTY].set(Constants.STATE_APP_RUNNING);
+		
 		
 		logItems = Log.getInstance().getLogEntries();
 			
