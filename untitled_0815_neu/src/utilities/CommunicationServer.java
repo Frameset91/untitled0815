@@ -155,7 +155,6 @@ public class CommunicationServer extends Thread {
 	 */
 	public void disableReading() {
 		this.leserthread.interrupt();
-//		this.bla.stop();
 	}
 
 	/**
@@ -164,47 +163,38 @@ public class CommunicationServer extends Thread {
 	 */
 	public void ueberwachen() {
 		// Auslesen der Datei
-		System.out.println("Ueberwachen startet");
-		// ExampleListener blub = new ExampleListener();
-		// this.addEventListener(blub);
-		//while (true) {
+		Log.getInstance().write("Communication Server:Ueberwachen startet");
 			try{
 			ServerMessage msg = this.read();
 			
 			System.out.println(msg.getFreigabe());
 			System.out.println(msg.getSatzstatus());
 
-			// Wenn Freigabe erfolgt ist - Set Objekt benachrichtigen
+			// Wenn Freigabe erfolgt ist - Benachritigung, dass nächster Zug gemacht werden muss
 			if (msg.getFreigabe().equals("true")) {
 				this.fireGameEvent(GameEvent.Type.OppMove, String.valueOf(msg.getGegnerzug()));
-				
-//				this.disableReading();
-//				break;
-				
+				Log.getInstance().write("Communication Server: Event OppMove gesendet");
 			}
 			// Satz ist beendet
 			if (msg.getSatzstatus().equals("beendet")) {
 				this.fireGameEvent(GameEvent.Type.EndSet, String.valueOf(msg.getGegnerzug()));
-				
-//				this.disableReading();
-//				break;
+				Log.getInstance().write("Communication Server: Event EndSet gesendet");
 			}
 			// Sieger ist bestimmt
 			if (!msg.getSieger().equals("offen")) {
 				this.fireGameEvent(GameEvent.Type.OppMove, String.valueOf(msg.getGegnerzug()));
-				
-//				break;
+				Log.getInstance().write("Communication Server: Event gesendet");
 			}
 			lastchange = serverFile.lastModified();
 
 			} catch (Exception e){
-				System.out.println("Lesefehler.....");
+				Log.getInstance().write("Communication Server: Lesefehler.....");
 			}
 			
 			
 			
-					//}
-		System.out.println("Ende While schleife");
+					
+		Log.getInstance().write("Communication Server: Ende Überwachung");
 
 	}
 
