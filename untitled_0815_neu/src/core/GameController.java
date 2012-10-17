@@ -79,7 +79,7 @@ public class GameController extends Application implements GameEventListener, Ob
 	
 	/**
 	 * Methode um ein Satz zu beenden, falls es keinen letzten Zug gibt: oppMove = -1
-	 * @param der letzte Zug des Gegners :byte  
+	 * @param der letzte Zug des Gegners :Byte  
 	 */	
 	public void endSet(byte oppMove){
 		Log.getInstance().write("Controller: beende Satz, FxThread:" + Platform.isFxApplicationThread());
@@ -102,7 +102,7 @@ public class GameController extends Application implements GameEventListener, Ob
 	
 	/**
 	 * Methode um ein Spiel zu laden
-	 * @param ID von Game 
+	 * @param ID von Game :Integer
 	 */	
 	public void loadGame(int gameID){
 		Log.getInstance().write("Controller: Spiel wird geladen, FxThread:" + Platform.isFxApplicationThread());
@@ -125,6 +125,24 @@ public class GameController extends Application implements GameEventListener, Ob
 			}
 		});	
 		properties[STATE_PROPERTY].set(Constants.STATE_GAME_RUNNING);
+	}
+	
+	/**
+	 * Methode um einen gegnerischen Zug hinzuzufügen -> Berechnung und Ausführung eines neuen Zuges.
+	 * Sollte nur für das manuelle Spielen verwendet werden, ansonsten über Event starten.
+	 * @param Spalte :Byte 
+	 */	
+	public void oppMove(byte col){
+		Log.getInstance().write("Controller: gegnerischen Zug empfangen, FxThread:" + Platform.isFxApplicationThread());
+		if (col > -1){
+			addOppMove(col);					
+		}
+		byte newCol = ki.calculateNextMove(col);			
+		//Zug auf Server schreiben und Server wieder überwachen
+		comServ.writeMove(newCol, model.getPath(), model.getRole());
+		comServ.enableReading(model.getTimeoutServer(), model.getPath(), model.getRole());
+		
+		model.addMove(model.getRole(), newCol);
 	}
 	
 	/**
@@ -196,19 +214,7 @@ public class GameController extends Application implements GameEventListener, Ob
 				endGame();
 				break;				
 			case OppMove:	//--------- ein gegnerischer Zug wurde vom Server mitgeteilt 
-				Log.getInstance().write("Controller: Event empfangen ( " + event.getType().toString() + " ) FxThread:" + Platform.isFxApplicationThread());
-//				comServ.disableReading();
-				
-				
-				if (Integer.parseInt(event.getArg()) > -1){
-					addOppMove((byte)Integer.parseInt(event.getArg()));					
-				}
-				byte col = ki.calculateNextMove((byte) Integer.parseInt(event.getArg()));			
-				//Zug auf Server schreiben und Server wieder überwachen
-				comServ.writeMove(col, model.getPath(), model.getRole());
-				comServ.enableReading(model.getTimeoutServer(), model.getPath(), model.getRole());
-				
-				model.addMove(model.getRole(), col);							
+				oppMove((byte) Integer.parseInt(event.getArg()));					
 				break;		
 			case LoadGame: //Ein Spiel soll geladen werden
 				loadGame(Integer.parseInt(event.getArg()));				
