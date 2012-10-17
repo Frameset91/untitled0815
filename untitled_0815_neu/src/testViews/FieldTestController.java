@@ -173,6 +173,12 @@ public class FieldTestController implements Initializable {
 		logTabelle.setItems(viewModel.logItems());
 		Log.getInstance().write("Binding fuer Log erstellt");
 		
+		tableColumnSet.setCellValueFactory(
+				new PropertyValueFactory<SetProperty, String>("setNr"));
+		tableColumnWinner.setCellValueFactory(
+				new PropertyValueFactory<SetProperty, String>("winner"));
+		tableStatistic.setItems(viewModel.sets());
+		
 		winner = new ChoiceBox<String>();
 		winner.valueProperty().bindBidirectional(viewModel.properties()[viewModel.ROLE_PROPERTY]);
 		winner.getItems().addAll(String.valueOf(Constants.xRole), String.valueOf(Constants.oRole));
