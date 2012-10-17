@@ -208,6 +208,7 @@ public class GameController extends Application implements GameEventListener, Ob
 				startSet();		
 				break;
 			case EndSet:	//--------- Satz abbrechen gedrückt oder Server hat den Satz beendet
+				Log.getInstance().write("Controller: EndSet Event empfange");
 				if(event.getArg() == "")
 					endSet((byte)-1);
 				else
