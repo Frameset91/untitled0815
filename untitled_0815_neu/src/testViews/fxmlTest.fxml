@@ -74,7 +74,8 @@
         				<Label text="ms"/>
         			</HBox>
         		</GridPane>
-        		<Button text="Spiel abbrechen" fx:id="btnEndGame" onMouseClicked="#handleEndGame"/>
+        		<Button text="Spiel abbrechen" fx:id="btnEndGame" onMouseClicked="#handleEndGame" alignment="CENTER">
+        		</Button>
         	</VBox>
         	<Line startX="110" startY="0" endX="110" endY="500"/> 
         </HBox>
