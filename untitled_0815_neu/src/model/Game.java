@@ -30,7 +30,8 @@ public class Game extends Observable implements Observer{
 	/**
 	 * Konstruktor von Game 
 	 *  
-	 * @param Spaltenanzahl, Zeilenanzahl des Spielfelds, Rolle, Gegnername, Serverpfad, Min INtervall zur Serverabfrage, Zeit für einen Zug
+	 * @param Spaltenanzahl :Integer, Zeilenanzahl des Spielfelds :Integer, Rolle :Char, Gegnername :String, Serverpfad :String, 
+	 * Min Intervall zur Serverabfrage :Integer, Zeit für einen Zug :Integer
 	 */
 	public Game(int cols, int rows, char role, String oppName, String path, int timeoutServer, int timeoutDraw){
 		this.cols = cols;
@@ -47,7 +48,8 @@ public class Game extends Observable implements Observer{
 	/**
 	 * Konstruktor von Game (nur für die Verwendung beim Laden)
 	 *  
-	 * @param Spaltenanzahl, Zeilenanzahl des Spielfelds, Rolle, Gegnername, Serverpfad, Min INtervall zur Serverabfrage, Zeit für einen Zug, PrimaryKey aus DB
+	 * @param Spaltenanzahl :Integer, Zeilenanzahl des Spielfelds :Integer, Rolle :Char, Gegnername :String, Serverpfad :String, 
+	 * Min Intervall zur Serverabfrage :Integer, Zeit für einen Zug :Integer, PrimaryKey aus DB :Integer
 	 */
 	public Game(int cols, int rows, char role, String oppName, String path, int timeoutServer, int timeoutDraw, int ID){
 		this.cols = cols;
@@ -90,6 +92,12 @@ public class Game extends Observable implements Observer{
 	/* (non-Javadoc)
 	 * @see java.util.Observer#update(java.util.Observable, java.lang.Object)
 	 */
+	/**
+	 * Methode um auf Veränderungen in Set zu reagieren
+	 * Als Argument wird der Name der Variable übergeben, die sich geändert hat
+	 * 
+	 * @param das Objekt das sich veränder hat :Observable, Argumente die mit übergeben werden :Object
+	 */	
 	@Override
 	public void update(Observable arg0, Object arg1) {
 		String changed = (String)arg1;
@@ -141,7 +149,7 @@ public class Game extends Observable implements Observer{
 	/**
 	 * Methode zum Hinzufügen eines Zuges  
 	 *  
-	 * @param der neue Zug :Move
+	 * @param Rolle :Char, Spalte :Byte
 	 */
 	public void addMove(char role, byte col){
 		sets.get(sets.size()-1).addMove(role, col);

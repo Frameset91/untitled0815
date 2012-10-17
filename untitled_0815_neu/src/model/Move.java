@@ -32,7 +32,7 @@ public class Move {
 	}
 	
 	/**
-	 * Konstruktor von Move 
+	 * Konstruktor von Move (nur für Ladeprozess)
 	 *  
 	 * @param Rolle die gezogen hat :String, Spalte :Integer, Zugzeitpunkt :Timestamp
 	 */
@@ -43,17 +43,6 @@ public class Move {
 		this.time = time;
 		isSaved = true;
 	}
-//	
-//	/**
-//	 * Konstruktor von Move 
-//	 *  
-//	 * @param Rolle die gezogen hat :String, Spalte :Integer
-//	 */
-//	public Move(char role, int column){
-//		this.role = role;
-//		this.column = column;		
-////		this.time = new Timestamp(new java.util.Date().getTime());
-//	}
 	
 	/**
 	 * Methode zum Speichern eines Zuges

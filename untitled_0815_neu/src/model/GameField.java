@@ -20,7 +20,7 @@ public class GameField{
 	/**
 	 * Konstruktor von GameField 
 	 *  
-	 * @param Spaltenanzahl, Zeilenanzahl des Spielfelds
+	 * @param Spaltenanzahl :Integer, Zeilenanzahl des Spielfelds :Integer
 	 */
 	public GameField(int cols, int rows){
 		field = new Boolean[cols][rows];

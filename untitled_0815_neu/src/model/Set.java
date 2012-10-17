@@ -27,7 +27,7 @@ public class Set extends Observable{
 	
 	/**
 	 * Konstruktor von Set
-	 * @param Spaltenanzahl, Zeilenanzahl des Spielfelds, Satznummer :Integer
+	 * @param Spaltenanzahl :Integer, Zeilenanzahl des Spielfelds :Integer, Satznummer :Integer
 	 */
 	public Set(int cols, int rows, int id){
 		this.ID = id;
@@ -40,7 +40,7 @@ public class Set extends Observable{
 	
 	/**
 	 * Konstruktor von Set (nur für Ladevorgang)
-	 * @param Spaltenanzahl, Zeilenanzahl des Spielfelds, Satznummer, Startzeit, Endzeit, Satzstatus, Gewinner
+	 * @param Spaltenanzahl :Integer, Zeilenanzahl des Spielfelds :Integer, Satznummer :Integer, Startzeit :Timestamp, Endzeit :Timestamp, Satzstatus :String, Gewinner :Char
 	 */
 	public Set(int cols, int rows, int id, Timestamp startTime, Timestamp endTime, String status, char winner){
 		this.ID = id;
@@ -55,7 +55,7 @@ public class Set extends Observable{
 	
 	/**
 	 * Methode zum Hinzufügen eines Zuges  
-	 * @param Rolle die gesetzt hat, gesetzte Spalte
+	 * @param Rolle die gesetzt hat :Char, gesetzte Spalte :Byte
 	 */
 	public synchronized void addMove(char role, byte col){
 		Move move = new Move(role, col, moves.size()+1);

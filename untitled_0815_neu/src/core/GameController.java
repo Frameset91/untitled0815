@@ -1,4 +1,10 @@
 package core;
+/**
+ * Der GameController stellt das ViewModel nach dem MVVM Entwurfsmuster dar,
+ * er bereitet die Daten für die Visualisierung auf und beinhaltet die Ablauflogik
+ *  
+ * @author Sascha Ulbrich 
+ */
 
 import java.net.URL;
 import java.util.Iterator;
@@ -151,7 +157,7 @@ public class GameController extends Application implements GameEventListener, Ob
 	}
 	
 	/**
-	 * @return Logeinträge :ObservableList<Log.LogEntry>
+	 * @return Gespielte Sätze :ObservableList<Log.LogEntry>
 	 */
 	public ObservableList<SetProperty> sets() {
 		return sets;
@@ -365,7 +371,7 @@ public class GameController extends Application implements GameEventListener, Ob
 	//---------------- Methoden zum starten und initialisieren des Programms -------------------
 	
 	/**
-	 * 1. Main Methode zum Starten des Programms  
+	 * 1. Main Methode zum Starten des Programms 	 *  
 	 * @param Argumente :String[]
 	 */	
 	public static void main(String[] args) {
@@ -373,7 +379,8 @@ public class GameController extends Application implements GameEventListener, Ob
 	}
 	
 	/**
-	 * 2. start Method von Application, wird aufgerufen, nach dem durch launch ein JavaFX Programm aufgebaut wurde  
+	 * 2. start Method von Application, wird aufgerufen, nach dem durch launch ein JavaFX Programm aufgebaut wurde.
+	 * Von Interface Application  
 	 * @param Stage von JavaFX :Stage
 	 */
 	@Override 
@@ -391,8 +398,9 @@ public class GameController extends Application implements GameEventListener, Ob
 	}	
 	
 	/**
-	 * 3. Initialisierungs Methode die durch das laden der FXML in der Startmethode ausgelöst wird, nach dem das UI Konstrukt erstellt wurde
-	 * @param TODO
+	 * 3. Initialisierungs Methode die durch das laden der FXML in der Startmethode ausgelöst wird, nach dem das UI Konstrukt erstellt wurde.
+	 * Von Interface Initializable
+	 * @param erstes Argument :URL, zweites Argument :ResourceBundle
 	 */
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
