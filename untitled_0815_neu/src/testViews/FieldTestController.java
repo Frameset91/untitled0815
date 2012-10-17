@@ -180,7 +180,19 @@ public class FieldTestController implements Initializable {
 	//Spiel starten gedrückt
 	@FXML
 	public void handleStartGame(MouseEvent e){
-		viewModel.startGame();
+		if (rolle.getValue() != null && gegnername.getText() != null && verzeichnispfad.getText() != null){
+			viewModel.startGame();
+		}
+		else{
+			final Stage stage = new Stage();
+			Group rootEinstellungen = new Group();
+			Scene scene = new Scene(rootEinstellungen, 250, 80, Color.WHITESMOKE);
+			stage.setScene(scene);
+			stage.centerOnScreen();
+			Text text = new Text(20,40, "Bitte alle Spieleinstellungen definieren!");
+			rootEinstellungen.getChildren().add(text);
+			stage.show();
+		}
 	}
 	//Spiel beenden gedrückt
 	@FXML
