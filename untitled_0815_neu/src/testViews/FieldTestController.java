@@ -163,10 +163,12 @@ public class FieldTestController implements Initializable {
 		satzstatus.textProperty().bind(viewModel.properties()[viewModel.STATE_PROPERTY]);
 		
 		//Tabelle für die Logs
-		logTabelle.setPrefWidth(400);
+//		logTabelle.setPrefWidth(400);
+//		logTabelle.set
 		TableColumn<Log.LogEntry, String> spalte1 = new TableColumn<Log.LogEntry, String>("Log-Eintrag");
 		spalte1.setEditable(false);
-		spalte1.setPrefWidth(398);
+//		spalte1.setMinWidth(398);
+		spalte1.prefWidthProperty().bind(logTabelle.widthProperty().subtract(2));
 		logTabelle.getColumns().clear();
 		logTabelle.getColumns().add(spalte1);
 		logTabelle.setMinWidth(384);
@@ -379,8 +381,9 @@ public class FieldTestController implements Initializable {
 				stageAnleitung.close();
 			}
 		});
-		//Anordnen		
+		//Anordnen
 		VBox Logs = new VBox(20);
+		logTabelle.prefWidthProperty().bind(sceneLog.widthProperty().subtract(100));
 		Logs.getChildren().addAll(ueberschrift, logTabelle, close);
 		Logs.setLayoutX(50);
 		rootLog.getChildren().add(Logs);
