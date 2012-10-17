@@ -115,6 +115,7 @@ public class GameController extends Application implements GameEventListener, Ob
 	 */	
 	public void endGame(){
 		Log.getInstance().write("Controller: beende Spiel, FxThread:" + Platform.isFxApplicationThread());
+		//TODO: STATE_PROPERTY auf ended setzen, nachdem MainGUI abgeschafft wurde
 		properties[STATE_PROPERTY].set(Constants.STATE_APP_RUNNING);
 		model.save();
 	}
@@ -170,7 +171,8 @@ public class GameController extends Application implements GameEventListener, Ob
 	 * Methode um vom UI aus den Gewinner zu bestätigen und somit den Satz abzuschließen
 	 */	
 	public void confirmSetWinner(){
-		
+		model.save();
+		properties[STATE_PROPERTY].set(Constants.STATE_GAME_RUNNING);
 	}
 	
 	// Getter für Properties 	

@@ -8,6 +8,7 @@ import utilities.Log.LogEntry;
 
 import core.Constants;
 import core.GameController;
+import core.SetProperty;
 
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -21,7 +22,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.effect.Lighting;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.HBox;
+//import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
@@ -75,9 +76,16 @@ public class FieldTestController implements Initializable {
 	private Circle tokenGegner;
 	@FXML
 	private Circle tokenSpieler;
+	@FXML
+	private TableView<SetProperty> tableStatistic;
+	@FXML
+	private TableColumn<SetProperty, String> tableColumnSet;
+	@FXML
+	private TableColumn<SetProperty, String> tableColumnWinner;
 
 	//Elemente die nicht im FXML definiert sind
 	private TableView<LogEntry> logTabelle; 
+	private ChoiceBox<String> winner;
 	
 
 	//Methode die für "Controller" vorgeschrieben ist und nach dem Aufbau des UI Konstrukts aufgerufen wird
@@ -100,6 +108,36 @@ public class FieldTestController implements Initializable {
 	        feld.add(spielfeld[i][j], i, j);
 	      }
 	    }
+		
+		//manuelles Spielen:
+		spielfeld[0][0].setOnMouseClicked(new EventHandler<MouseEvent>() {
+			@Override
+			public void handle(MouseEvent arg0) {viewModel.oppMove((byte)0);}
+		});
+		spielfeld[1][0].setOnMouseClicked(new EventHandler<MouseEvent>() {
+			@Override
+			public void handle(MouseEvent arg0) {viewModel.oppMove((byte)1);}
+		});
+		spielfeld[2][0].setOnMouseClicked(new EventHandler<MouseEvent>() {
+			@Override
+			public void handle(MouseEvent arg0) {viewModel.oppMove((byte)2);}
+		});
+		spielfeld[3][0].setOnMouseClicked(new EventHandler<MouseEvent>() {
+			@Override
+			public void handle(MouseEvent arg0) {viewModel.oppMove((byte)3);}
+		});
+		spielfeld[4][0].setOnMouseClicked(new EventHandler<MouseEvent>() {
+			@Override
+			public void handle(MouseEvent arg0) {viewModel.oppMove((byte)4);}
+		});
+		spielfeld[5][0].setOnMouseClicked(new EventHandler<MouseEvent>() {
+			@Override
+			public void handle(MouseEvent arg0) {viewModel.oppMove((byte)5);}
+		});
+		spielfeld[6][0].setOnMouseClicked(new EventHandler<MouseEvent>() {
+			@Override
+			public void handle(MouseEvent arg0) {viewModel.oppMove((byte)6);}
+		});
 	
 		//-------------------------------------- weiteres Binding------------------------------
 			
@@ -135,6 +173,10 @@ public class FieldTestController implements Initializable {
 		logTabelle.setItems(viewModel.logItems());
 		Log.getInstance().write("Binding fuer Log erstellt");
 		
+		winner = new ChoiceBox<String>();
+		winner.valueProperty().bindBidirectional(viewModel.properties()[viewModel.ROLE_PROPERTY]);
+		winner.getItems().addAll(String.valueOf(Constants.xRole), String.valueOf(Constants.oRole));
+		
 		viewModel.initialize(null, null);
 	 }
 	
@@ -168,7 +210,7 @@ public class FieldTestController implements Initializable {
 			setSettings.disableProperty().set(true);
 			btnEndSet.disableProperty().set(true);
 			btnEndGame.disableProperty().set(true);
-			//TODO: Popup zum festlegen des Gewinners
+			showConfirmWinner();
 			break;
 		default:
 			
@@ -176,6 +218,32 @@ public class FieldTestController implements Initializable {
 		}	
 	}	
 	
+	private void showConfirmWinner() {
+		final Stage stageConfirmWinner = new Stage();
+		Group rootLog = new Group();
+		Scene sceneLog = new Scene(rootLog, 484,500, Color.WHITESMOKE);
+//		rootLog.getChildren().add(logTabelle);
+		stageConfirmWinner.setScene(sceneLog);
+		stageConfirmWinner.centerOnScreen();
+		stageConfirmWinner.show();
+						
+	//Inhalt
+		Text ueberschrift = new Text(20, 20,"Der Satz wurde beendet, bitte den Gewinner bestätigen:");
+		Button close = new Button("Bestätigen");
+		close.setOnMouseClicked(new EventHandler<MouseEvent>(){
+			public void handle(MouseEvent close){
+				stageConfirmWinner.close();
+				viewModel.confirmSetWinner();
+			}
+		});
+		//Anordnen
+		VBox Logs = new VBox(20);
+		Logs.getChildren().addAll(ueberschrift, winner, close);
+		Logs.setLayoutX(50);
+		rootLog.getChildren().add(Logs);
+		
+	}
+
 	//----------------------- Methoden zum handeln von UI Input ----------------------------
 	//Spiel starten gedrückt
 	@FXML
