@@ -36,11 +36,15 @@ public class FieldTestController implements Initializable {
 	//Elemente die in der FXML definiert sind	
 	//Bereiche
 	@FXML
-	private HBox leftBox;
+	private GridPane gameSettings;
 	@FXML
-	private VBox centerBox;
+	private VBox gameField;
 	@FXML
-	private VBox rightBox;
+	private VBox setSettings;
+	@FXML
+	private Button btnEndGame;
+	@FXML
+	private Button btnEndSet;
 	
 	//Menü
 	@FXML
@@ -138,36 +142,32 @@ public class FieldTestController implements Initializable {
 		//UI bei Zustandsänderungen anpassen
 		switch (viewModel.properties()[viewModel.STATE_PROPERTY].getValue()) {
 		case Constants.STATE_APP_RUNNING:
-			leftBox.disableProperty().set(false);
-			centerBox.disableProperty().set(true);
-			rightBox.disableProperty().set(true);
-	//					array[DISABLE_SET_ABORT] = true;
-	//					array[DISABLE_GAME_ABORT] = true;
-	//					array[SHOW_SETEND_POPUP] = false;
+			gameSettings.disableProperty().set(false);
+			gameField.disableProperty().set(true);
+			setSettings.disableProperty().set(true);
+			btnEndSet.disableProperty().set(true);
+			btnEndGame.disableProperty().set(true);
 			break;
 		case Constants.STATE_GAME_RUNNING:
-			leftBox.disableProperty().set(true);
-			centerBox.disableProperty().set(true);
-			rightBox.disableProperty().set(false);
-	//					array[DISABLE_SET_ABORT] = true;
-	//					array[DISABLE_GAME_ABORT] = false;
-	//					array[SHOW_SETEND_POPUP] = false;
+			gameSettings.disableProperty().set(true);
+			gameField.disableProperty().set(true);
+			setSettings.disableProperty().set(false);
+			btnEndSet.disableProperty().set(true);
+			btnEndGame.disableProperty().set(false);
 			break;
 		case Constants.STATE_SET_RUNNING:
-			leftBox.disableProperty().set(true);
-			centerBox.disableProperty().set(false);
-			rightBox.disableProperty().set(true);	
-	//					array[DISABLE_SET_ABORT] = false;
-	//					array[DISABLE_GAME_ABORT] = true;
-	//					array[SHOW_SETEND_POPUP] = false;
+			gameSettings.disableProperty().set(true);
+			gameField.disableProperty().set(false);
+			setSettings.disableProperty().set(true);	
+			btnEndSet.disableProperty().set(false);
+			btnEndGame.disableProperty().set(true);
 			break;
 		case Constants.STATE_SET_ENDED:	
-			leftBox.disableProperty().set(true);
-			centerBox.disableProperty().set(false);
-			rightBox.disableProperty().set(true);
-	//					array[DISABLE_SET_ABORT] = true;
-	//					array[DISABLE_GAME_ABORT] = true;
-	//					array[SHOW_SETEND_POPUP] = true;
+			gameSettings.disableProperty().set(true);
+			gameField.disableProperty().set(false);
+			setSettings.disableProperty().set(true);
+			btnEndSet.disableProperty().set(true);
+			btnEndGame.disableProperty().set(true);
 			//TODO: Popup zum festlegen des Gewinners
 			break;
 		default:
@@ -196,6 +196,12 @@ public class FieldTestController implements Initializable {
 	@FXML
 	public void handleEndSet(ActionEvent e){
 		viewModel.endSet((byte) -1);		
+	}
+	
+	//Spiel laden
+	@FXML
+	public void handleLoadGame(ActionEvent e){
+//		viewModel.loadGame(gameID);	
 	}
 	
 	@FXML
