@@ -73,9 +73,9 @@ public class MainUIController implements Initializable {
 	@FXML
 	private Label punkteSpieler;	
 	@FXML
-	private Circle tokenGegner;
+	private Label tokenGegner;
 	@FXML
-	private Circle tokenSpieler;
+	private Label tokenSpieler;
 	@FXML
 	private TableView<SetProperty> tableStatistic;
 	@FXML
@@ -109,8 +109,8 @@ public class MainUIController implements Initializable {
 //	      }
 //	    }
 //		
-		feld.minHeightProperty().set(280);
-		feld.minWidthProperty().set(320);
+		feld.minHeightProperty().set(265);
+		feld.minWidthProperty().set(308);
 		Label[][] spielfeld = new Label[Constants.gamefieldcolcount][Constants.gamefieldrowcount];
 		for (int i = 0; i < Constants.gamefieldcolcount; i++)
 	    {
@@ -120,7 +120,7 @@ public class MainUIController implements Initializable {
             spielfeld[i][j].prefHeightProperty().set(40);
 	        spielfeld[i][j].prefWidthProperty().set(40); 
 	        spielfeld[i][j].styleProperty().bindBidirectional(viewModel.styleField()[i][Constants.gamefieldrowcount -1 -j], new StyleConverter());
-	        spielfeld[i][j].textProperty().bindBidirectional(viewModel.styleField()[i][Constants.gamefieldrowcount -1 -j], new TokenTextConverter());
+	        spielfeld[i][j].textProperty().bindBidirectional(viewModel.styleField()[i][Constants.gamefieldrowcount -1 -j]);
 	        feld.add(spielfeld[i][j], i, j);
 	      }
 	    }
@@ -173,8 +173,10 @@ public class MainUIController implements Initializable {
 		verzeichnispfad.textProperty().bindBidirectional(viewModel.properties()[viewModel.PATH_PROPERTY]);
 		punkteGegner.textProperty().bindBidirectional(viewModel.properties()[viewModel.OPPPOINTS_PROPERTY]);
 		punkteSpieler.textProperty().bindBidirectional(viewModel.properties()[viewModel.OWNPOINTS_PROPERTY]);
-		tokenGegner.styleProperty().bindBidirectional(viewModel.properties()[viewModel.OPPTOKEN_PROPERTY]);
-		tokenSpieler.styleProperty().bindBidirectional(viewModel.properties()[viewModel.OWNTOKEN_PROPERTY]);		
+		tokenGegner.styleProperty().bindBidirectional(viewModel.properties()[viewModel.OPPTOKEN_PROPERTY], new StyleConverter());
+		tokenGegner.textProperty().bindBidirectional(viewModel.properties()[viewModel.OPPTOKEN_PROPERTY]);
+		tokenSpieler.styleProperty().bindBidirectional(viewModel.properties()[viewModel.OWNTOKEN_PROPERTY], new StyleConverter());		
+		tokenSpieler.textProperty().bindBidirectional(viewModel.properties()[viewModel.OWNTOKEN_PROPERTY]);
 		satzstatus.textProperty().bind(viewModel.properties()[viewModel.STATE_PROPERTY]);
 		
 		//Tabelle für die Logs

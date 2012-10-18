@@ -1,7 +1,7 @@
 @CHARSET "ISO-8859-1";
 
 .field{
-	-fx-padding:10; 
+	-fx-padding:5; 
 	-fx-background-color: #1a3399;
 }
 
@@ -20,13 +20,6 @@
 	-fx-effect: innershadow(two-pass-box, grey, 10, 0.5, 0, 0);
 }
 
-.xToken{
-	-fx-background-color: red;
-	-fx-background-radius: 15;
-	-fx-font-size: 15;
-	-fx-effect: innershadow(two-pass-box, grey, 10, 0.5, 0, 0);
-	-fx-alignment: center;
-}
 
 .punkte{
 	-fx-padding: 10;

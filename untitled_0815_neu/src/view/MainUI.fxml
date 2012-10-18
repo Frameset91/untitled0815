@@ -88,9 +88,11 @@
         	<VBox styleClass="spieleranzeige" fx:id="gameField">
         		<HBox fx:id="spielerAnzeige" spacing="20" styleClass="spieler">
         			<Label text="untitled0815:"/>
-        			<Circle fx:id="tokenSpieler" radius="15.0f" styleClass="token-red"/>
+        			<!-- <Circle fx:id="tokenSpieler" radius="15.0f" styleClass="token-red"/>-->
+        			 <Label fx:id="tokenSpieler" text=" " prefWidth="40" prefHeight="40"/> 
         			<Label text="Gegner:"/>
-        			<Circle fx:id="tokenGegner" radius="15.0f" styleClass="token-yellow"/>
+        			<!-- <Circle fx:id="tokenGegner" radius="15.0f" styleClass="token-yellow"/>-->
+        			<Label fx:id="tokenGegner" text=" " prefWidth="40" prefHeight="40"/> 
         		</HBox>
         		<HBox fx:id="spielstandAnzeige">
         			<Label text="Spielstand" styleClass="punkte"/>
@@ -98,7 +100,7 @@
         			<Label text=":" styleClass="punkte"/>
         			<Label fx:id="punkteGegner" text="0" styleClass="punkte"/>
         		</HBox>
-        		<GridPane fx:id="feld" hgap="6" vgap="6" maxHeight="200" maxWidth="250" styleClass="field">
+        		<GridPane fx:id="feld" hgap="3" vgap="3" maxHeight="200" maxWidth="250" styleClass="field">
         		</GridPane>
         	</VBox>
         </left>

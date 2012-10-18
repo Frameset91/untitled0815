@@ -13,7 +13,6 @@ import java.util.Observer;
 import model.*;
 import utilities.*;
 
-import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.value.ChangeListener;
@@ -284,7 +283,7 @@ public class GameController implements GameEventListener, Observer{
 		
 		for(int i = 0; i < cols; i++){
 			for(int j = 0; j< rows; j++){
-				styleField[i][j].set(Constants.emptyToken);
+				styleField[i][j].set(String.valueOf(Constants.noRole));
 			}
 		}
 		model.save();			
@@ -296,11 +295,11 @@ public class GameController implements GameEventListener, Observer{
 	 */	
 	private void setTokens(){
 		if(model.getRole() == Constants.oRole){
-			properties[OWNTOKEN_PROPERTY].setValue(Constants.oToken);
-			properties[OPPTOKEN_PROPERTY].setValue(Constants.xToken);
+			properties[OWNTOKEN_PROPERTY].setValue(String.valueOf(Constants.oRole));
+			properties[OPPTOKEN_PROPERTY].setValue(String.valueOf(Constants.xRole));
 		}else{
-			properties[OWNTOKEN_PROPERTY].setValue(Constants.xToken);
-			properties[OPPTOKEN_PROPERTY].setValue(Constants.oToken);
+			properties[OWNTOKEN_PROPERTY].setValue(String.valueOf(Constants.xRole));
+			properties[OPPTOKEN_PROPERTY].setValue(String.valueOf(Constants.oRole));
 		}
 	}
 	
@@ -360,11 +359,11 @@ public class GameController implements GameEventListener, Observer{
 					for(int j = 0; j< Constants.gamefieldrowcount; j++){
 						String newStyle;
 						if(boolField[i][j] == null)
-							newStyle  = Constants.emptyToken;
+							newStyle  = String.valueOf(Constants.noRole);
 						else if(boolField[i][j])
-							newStyle = Constants.xToken;
+							newStyle = String.valueOf(Constants.xRole);
 						else
-							newStyle = Constants.oToken;
+							newStyle = String.valueOf(Constants.oRole);
 						
 						if(styleField[i][j].getValue() != newStyle) styleField[i][j].set(newStyle);
 					}
@@ -394,7 +393,7 @@ public class GameController implements GameEventListener, Observer{
 		//Property Initialisierung
 		for(int i = 0; i < Constants.gamefieldcolcount; i++){
 			for(int j = 0; j< Constants.gamefieldrowcount; j++){
-				styleField[i][j].set(Constants.emptyToken); 
+				styleField[i][j].set(String.valueOf(Constants.noRole)); 
 			}
 		}
 
@@ -403,8 +402,8 @@ public class GameController implements GameEventListener, Observer{
 		properties[OPPPOINTS_PROPERTY].set("0");
 		properties[TIMEOUTSERVER_PROPERTY].set(String.valueOf(Constants.defaultTimeoutServer));
 		properties[TIMEOUTDRAW_PROPERTY].set(String.valueOf(Constants.defaultTimeoutDraw));
-		properties[OPPTOKEN_PROPERTY].set(Constants.oToken);
-		properties[OWNTOKEN_PROPERTY].set(Constants.xToken);		
+		properties[OPPTOKEN_PROPERTY].set(String.valueOf(Constants.oRole));
+		properties[OWNTOKEN_PROPERTY].set(String.valueOf(Constants.xRole));		
 		properties[STATE_PROPERTY].set(Constants.STATE_APP_RUNNING);
 		properties[WINNER_PROPERTY].set(String.valueOf(Constants.noRole));
 		properties[WINNER_PROPERTY].addListener(new ChangeListener<String>() {
