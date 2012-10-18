@@ -291,7 +291,6 @@ public class GameController implements GameEventListener, Observer{
 	
 	/**
 	 * Methode um anhand der eigenen Rolle die Styles der Token bestimmen
-	 * TODO: in UI Controller auslagern
 	 */	
 	private void setTokens(){
 		if(model.getRole() == Constants.oRole){
@@ -348,7 +347,6 @@ public class GameController implements GameEventListener, Observer{
 	
 	/**
 	 * Field Property aktualisieren
-	 * TODO: Converter im UI Controller? Um unabhängig von UI Styles zu sein
 	 */	
 	private void updateField(){
 		Platform.runLater(new Runnable() {			
