@@ -6,27 +6,22 @@ package core;
  * @author Sascha Ulbrich 
  */
 
-import java.net.URL;
 import java.util.Iterator;
 import java.util.Observable;
 import java.util.Observer;
-import java.util.ResourceBundle;
 
 import model.*;
 import utilities.*;
-//import view.*;
 
-//import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.fxml.Initializable;
-//import javafx.stage.Stage;
 
-public class GameController implements GameEventListener, Observer, Initializable{
+
+public class GameController implements GameEventListener, Observer{
 
 	private Game model;
 	private CommunicationServer comServ;
@@ -87,17 +82,13 @@ public class GameController implements GameEventListener, Observer, Initializabl
 	 */
 	public void startSet(){
 		Log.getInstance().write("Controller: starte Satz, FxThread:" + Platform.isFxApplicationThread());
-//		if(model.getLatestSet() != null){
-//			model.save();
-//		}
 		ki = new KI(model);
 		
 		model.newSet().setStatus(Constants.STATE_SET_RUNNING);
 		
 		//ComServer starten
 		comServ.enableReading(model.getTimeoutServer(), model.getPath(), model.getRole());
-		properties[STATE_PROPERTY].set(Constants.STATE_SET_RUNNING);
-		
+		properties[STATE_PROPERTY].set(Constants.STATE_SET_RUNNING);		
 	}
 	
 	/**
@@ -120,7 +111,6 @@ public class GameController implements GameEventListener, Observer, Initializabl
 	public void endGame(){
 		Log.getInstance().write("Controller: beende Spiel, FxThread:" + Platform.isFxApplicationThread());
 		properties[STATE_PROPERTY].set(Constants.STATE_SET_ENDED);
-//		model.save();
 	}
 	
 	/**
@@ -161,12 +151,7 @@ public class GameController implements GameEventListener, Observer, Initializabl
 			if (col > -1){
 				addOppMove(col);					
 			}
-//			byte newCol = ki.calculateNextMove(col);			
-//			//Zug auf Server schreiben und Server wieder überwachen
-//			comServ.writeMove(newCol, model.getPath(), model.getRole());
-//			comServ.enableReading(model.getTimeoutServer(), model.getPath(), model.getRole());
-//			
-//			model.addMove(model.getRole(), newCol);
+			//KI Workerthread starten
 		    if(kiwt != null && kiwt.isAlive()){
 		    	Log.getInstance().write("Controller: Neuer oppMove obwohl KI Thread noch läuft!");
 		    }else{
@@ -244,41 +229,25 @@ public class GameController implements GameEventListener, Observer, Initializabl
 	public void handleEvent(GameEvent event) {
 		
 		switch (event.getType()) {
-//			case StartGame:  //--------- Spiel starten gedrückt
-//				startGame();
-//				break;			
-//			case StartSet: 	//--------- Satz starten gedrückt 
-//				startSet();		
-//				break;
-			case EndSet:	//--------- Satz abbrechen gedrückt oder Server hat den Satz beendet
+			case EndSet:	//--------- Server hat den Satz beendet
 				Log.getInstance().write("Controller: EndSet Event empfange");
 				if(event.getArg() == "")
 					endSet((byte)-1);
 				else
 					endSet((byte)Integer.parseInt(event.getArg()));
 				break;
-//			case EndGame:	//--------- Spiel beenden gedrückt
-//				endGame();
-//				break;				
 			case OppMove:	//--------- ein gegnerischer Zug wurde vom Server mitgeteilt 
 				oppMove((byte) Integer.parseInt(event.getArg()));					
 				break;		
-//			case LoadGame: //Ein Spiel soll geladen werden
-//				loadGame(Integer.parseInt(event.getArg()));				
-//				break;
 			case WinnerSet: //Der Server hat einen Gewinner gesetzt
 				if(((String)event.getArg()).charAt(0) == Constants.xRole || ((String)event.getArg()).charAt(0) == Constants.oRole){
 					model.getLatestSet().setWinner(((String)event.getArg()).charAt(0));
 				}
-//				model.save();
-//				properties[STATE_PROPERTY].set(Constants.STATE_GAME_RUNNING);
 				break;
 			default:
 				break;
 			}
-		}
-	
-	
+		}	
 
 	//Hilfsmethoden 
 	
@@ -353,23 +322,11 @@ public class GameController implements GameEventListener, Observer, Initializabl
 					"Controller: Winner changed empfangen, Stand: " +model.getOwnPoints()+":"+model.getOppPoints() 
 					+ "; FxThread:" + Platform.isFxApplicationThread());
 			
-			
-//			sets.get(model.getLatestSet().getID()-1).setWinner(String.valueOf(model.getLatestSet().getWinner()));
 			updateSets();
-			//Sicherstellen, dass updates von TextProperties im UI Thread stattfinden
-//			Platform.runLater(new Runnable() {					
-//				@Override
-//				public void run() {
-					properties[WINNER_PROPERTY].setValue(String.valueOf(model.getLatestSet().getWinner()));
-					properties[OWNPOINTS_PROPERTY].setValue(String.valueOf(model.getOwnPoints()));
-					properties[OPPPOINTS_PROPERTY].setValue(String.valueOf(model.getOppPoints()));					
-//				}
-//			});		
-//			model.save();
-			break;
-		case "status":
-			Log.getInstance().write("Controller: Status changed empfangen, FxThread:" + Platform.isFxApplicationThread());
-//			properties[STATUS_PROPERTY].set(model.getLatestSet().getStatus());
+
+			properties[WINNER_PROPERTY].setValue(String.valueOf(model.getLatestSet().getWinner()));
+			properties[OWNPOINTS_PROPERTY].setValue(String.valueOf(model.getOwnPoints()));
+			properties[OPPPOINTS_PROPERTY].setValue(String.valueOf(model.getOppPoints()));					
 			break;
 		case "sets":
 			Log.getInstance().write("Controller: Set changed empfangen; FxThread:" + Platform.isFxApplicationThread());
@@ -422,66 +379,19 @@ public class GameController implements GameEventListener, Observer, Initializabl
 		}
 	}
 	
-	//---------------- Methoden zum starten und initialisieren des Programms -------------------
-	
-//	/**
-//	 * 1. Main Methode zum Starten des Programms 	 *  
-//	 * @param Argumente :String[]
-//	 */	
-//	public static void main(String[] args) {
-//		launch(args);
-//	}
-//	
-//	/**
-//	 * 2. start Method von Application, wird aufgerufen, nach dem durch launch ein JavaFX Programm aufgebaut wurde.
-//	 * Von Interface Application  
-//	 * @param Stage von JavaFX :Stage
-//	 */
-//	@Override 
-//	public void start (Stage mainstage) throws Exception{
-//		
-//		IGameView view = new MainGUI();
-//		initialize(null, null);
-//		view.init(mainstage, this);
-//		mainstage.setHeight(550);
-//		mainstage.setWidth(820);
-//		mainstage.setTitle("4 Gewinnt - untitled0815");
-//		mainstage.show();
-//		
-//		
-//	}	
+	//---------------- Initialisieren der Properties -------------------
 	
 	/**
-	 * 3. Initialisierungs Methode die durch das laden der FXML in der Startmethode ausgelöst wird, nach dem das UI Konstrukt erstellt wurde.
-	 * Von Interface Initializable
-	 * @param erstes Argument :URL, zweites Argument :ResourceBundle
+	 * Initialisierungs Methode um initiale Werte zu setzen
 	 */
-	@Override
-	public void initialize(URL arg0, ResourceBundle arg1) {
+	public void initialize() {
 		//Property Initialisierung
-//		styleField = new SimpleStringProperty[Constants.gamefieldcolcount][Constants.gamefieldrowcount];
 		for(int i = 0; i < Constants.gamefieldcolcount; i++){
 			for(int j = 0; j< Constants.gamefieldrowcount; j++){
-//				styleField[i][j] = new SimpleStringProperty(Constants.emptyToken);
 				styleField[i][j].set(Constants.emptyToken); 
 			}
 		}
-//		
-//		properties = new SimpleStringProperty[12];
-//		properties[ROLE_PROPERTY] = new SimpleStringProperty();
-//		properties[OWNPOINTS_PROPERTY] = new SimpleStringProperty("0");
-//		properties[OPPPOINTS_PROPERTY] = new SimpleStringProperty("0");
-//		properties[OPPNAME_PROPERTY] = new SimpleStringProperty();
-//		properties[PATH_PROPERTY] = new SimpleStringProperty();
-//		properties[TIMEOUTSERVER_PROPERTY] = new SimpleStringProperty(String.valueOf(Constants.defaultTimeoutServer));
-//		properties[TIMEOUTDRAW_PROPERTY] = new SimpleStringProperty(String.valueOf(Constants.defaultTimeoutDraw));
-//		properties[OPPTOKEN_PROPERTY] = new SimpleStringProperty(Constants.oToken);
-//		properties[OWNTOKEN_PROPERTY] = new SimpleStringProperty(Constants.xToken);		
-//		properties[WINNER_PROPERTY] = new SimpleStringProperty();
-//		properties[STATE_PROPERTY] = new SimpleStringProperty(Constants.STATE_APP_RUNNING);
-//			
-//		sets = FXCollections.observableArrayList();		
-//		savedGames = FXCollections.observableArrayList();	
+
 		properties[ROLE_PROPERTY].set(String.valueOf(Constants.defaultRole));
 		properties[OWNPOINTS_PROPERTY].set("0");
 		properties[OPPPOINTS_PROPERTY].set("0");

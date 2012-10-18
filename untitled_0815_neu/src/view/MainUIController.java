@@ -187,7 +187,7 @@ public class MainUIController implements Initializable {
 		winner.valueProperty().bindBidirectional(viewModel.properties()[viewModel.WINNER_PROPERTY]);
 		winner.getItems().addAll(String.valueOf(Constants.noRole), String.valueOf(Constants.xRole), String.valueOf(Constants.oRole));
 		
-		viewModel.initialize(null, null);
+		viewModel.initialize();
 	 }
 	
 	private void updateState(){
