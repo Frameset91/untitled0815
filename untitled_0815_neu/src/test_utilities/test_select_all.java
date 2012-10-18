@@ -38,7 +38,11 @@ public class test_select_all {
 		        String oppName = rs.getString(3);
 		        String ownPoints = rs.getString(4);
 		        String oppPoints = rs.getString(5);
-		        String resultset = gameID + ","+ role +  ","+ oppName +  ","+ ownPoints +',' +oppPoints;
+		        String path = rs.getString(6);
+		        String timeServer = rs.getString(7);
+		        String timeDraw = rs.getString(8);
+		        String resultset = gameID + ","+ role +  ","+ oppName +  ","+ ownPoints +',' +oppPoints +  ","
+		        		+ path +  ","+ timeServer + ", " + timeDraw;
 		        System.out.println (resultset);
 		      }
 		}catch (Exception e){
