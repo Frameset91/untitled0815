@@ -14,9 +14,9 @@ import java.util.ResourceBundle;
 
 import model.*;
 import utilities.*;
-import view.*;
+//import view.*;
 
-import javafx.application.Application;
+//import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.value.ChangeListener;
@@ -24,9 +24,9 @@ import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.Initializable;
-import javafx.stage.Stage;
+//import javafx.stage.Stage;
 
-public class GameController extends Application implements GameEventListener, Observer, Initializable{
+public class GameController implements GameEventListener, Observer, Initializable{
 
 	private Game model;
 	private CommunicationServer comServ;
@@ -119,9 +119,8 @@ public class GameController extends Application implements GameEventListener, Ob
 	 */	
 	public void endGame(){
 		Log.getInstance().write("Controller: beende Spiel, FxThread:" + Platform.isFxApplicationThread());
-		//TODO: STATE_PROPERTY auf ended setzen, nachdem MainGUI abgeschafft wurde, model.save entfernen
-		properties[STATE_PROPERTY].set(Constants.STATE_APP_RUNNING);
-		model.save();
+		properties[STATE_PROPERTY].set(Constants.STATE_SET_ENDED);
+//		model.save();
 	}
 	
 	/**
@@ -245,12 +244,12 @@ public class GameController extends Application implements GameEventListener, Ob
 	public void handleEvent(GameEvent event) {
 		
 		switch (event.getType()) {
-			case StartGame:  //--------- Spiel starten gedrückt
-				startGame();
-				break;			
-			case StartSet: 	//--------- Satz starten gedrückt 
-				startSet();		
-				break;
+//			case StartGame:  //--------- Spiel starten gedrückt
+//				startGame();
+//				break;			
+//			case StartSet: 	//--------- Satz starten gedrückt 
+//				startSet();		
+//				break;
 			case EndSet:	//--------- Satz abbrechen gedrückt oder Server hat den Satz beendet
 				Log.getInstance().write("Controller: EndSet Event empfange");
 				if(event.getArg() == "")
@@ -258,23 +257,21 @@ public class GameController extends Application implements GameEventListener, Ob
 				else
 					endSet((byte)Integer.parseInt(event.getArg()));
 				break;
-			case EndGame:	//--------- Spiel beenden gedrückt
-				endGame();
-				break;				
+//			case EndGame:	//--------- Spiel beenden gedrückt
+//				endGame();
+//				break;				
 			case OppMove:	//--------- ein gegnerischer Zug wurde vom Server mitgeteilt 
 				oppMove((byte) Integer.parseInt(event.getArg()));					
 				break;		
-			case LoadGame: //Ein Spiel soll geladen werden
-				loadGame(Integer.parseInt(event.getArg()));				
-				break;
+//			case LoadGame: //Ein Spiel soll geladen werden
+//				loadGame(Integer.parseInt(event.getArg()));				
+//				break;
 			case WinnerSet: //Der Server hat einen Gewinner gesetzt
 				if(((String)event.getArg()).charAt(0) == Constants.xRole || ((String)event.getArg()).charAt(0) == Constants.oRole){
 					model.getLatestSet().setWinner(((String)event.getArg()).charAt(0));
 				}
-				//TODO: nach Verknüpfung mit FXML: entfernen! 
-//				confirmSetWinner();
-				model.save();
-				properties[STATE_PROPERTY].set(Constants.STATE_GAME_RUNNING);
+//				model.save();
+//				properties[STATE_PROPERTY].set(Constants.STATE_GAME_RUNNING);
 				break;
 			default:
 				break;
@@ -427,32 +424,32 @@ public class GameController extends Application implements GameEventListener, Ob
 	
 	//---------------- Methoden zum starten und initialisieren des Programms -------------------
 	
-	/**
-	 * 1. Main Methode zum Starten des Programms 	 *  
-	 * @param Argumente :String[]
-	 */	
-	public static void main(String[] args) {
-		launch(args);
-	}
-	
-	/**
-	 * 2. start Method von Application, wird aufgerufen, nach dem durch launch ein JavaFX Programm aufgebaut wurde.
-	 * Von Interface Application  
-	 * @param Stage von JavaFX :Stage
-	 */
-	@Override 
-	public void start (Stage mainstage) throws Exception{
-		
-		IGameView view = new MainGUI();
-		initialize(null, null);
-		view.init(mainstage, this);
-		mainstage.setHeight(550);
-		mainstage.setWidth(820);
-		mainstage.setTitle("4 Gewinnt - untitled0815");
-		mainstage.show();
-		
-		
-	}	
+//	/**
+//	 * 1. Main Methode zum Starten des Programms 	 *  
+//	 * @param Argumente :String[]
+//	 */	
+//	public static void main(String[] args) {
+//		launch(args);
+//	}
+//	
+//	/**
+//	 * 2. start Method von Application, wird aufgerufen, nach dem durch launch ein JavaFX Programm aufgebaut wurde.
+//	 * Von Interface Application  
+//	 * @param Stage von JavaFX :Stage
+//	 */
+//	@Override 
+//	public void start (Stage mainstage) throws Exception{
+//		
+//		IGameView view = new MainGUI();
+//		initialize(null, null);
+//		view.init(mainstage, this);
+//		mainstage.setHeight(550);
+//		mainstage.setWidth(820);
+//		mainstage.setTitle("4 Gewinnt - untitled0815");
+//		mainstage.show();
+//		
+//		
+//	}	
 	
 	/**
 	 * 3. Initialisierungs Methode die durch das laden der FXML in der Startmethode ausgelöst wird, nach dem das UI Konstrukt erstellt wurde.

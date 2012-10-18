@@ -11,7 +11,7 @@
 
 
  
-<BorderPane xmlns:fx="http://javafx.com/fxml" prefHeight="200" prefWidth="320" stylesheets="test.css" fx:controller="testViews.FieldTestController">			<!-- BorderPane zum Anordnen -->  
+<BorderPane xmlns:fx="http://javafx.com/fxml" prefHeight="200" prefWidth="320" stylesheets="test.css" fx:controller="view.MainUIController">			<!-- BorderPane zum Anordnen -->  
     <top><!-- Oberer Bereich: Menü-Bar -->
     	<MenuBar minWidth="820">
     		<Menu text="Datei">

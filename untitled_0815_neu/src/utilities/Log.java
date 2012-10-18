@@ -62,7 +62,7 @@ public class Log {
 
 	}
 	
-	public void write (String text) {
+	public synchronized void write (String text) {
 		Date timestamp = new Date(System.currentTimeMillis());
 		SimpleDateFormat ausgabe = new SimpleDateFormat("yyyy-MM-dd kk:mm:ss:S"); 
         String zeitstempel = ausgabe.format(timestamp);

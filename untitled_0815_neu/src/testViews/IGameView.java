@@ -1,4 +1,4 @@
-package view;
+package testViews;
 import core.GameController;
 import model.Game;
 import model.GameField;

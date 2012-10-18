@@ -1,4 +1,4 @@
-package testViews;
+package view;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -30,7 +30,7 @@ import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
-public class FieldTestController implements Initializable {
+public class MainUIController implements Initializable {
 	
 	private GameController viewModel; 
 	

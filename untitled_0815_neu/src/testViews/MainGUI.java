@@ -1,4 +1,4 @@
-package view;
+package testViews;
 	/**
 	 * Diese Klasse initialisiert die Benutzeroberfläche
 	 * @author NHerentrey

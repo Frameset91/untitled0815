@@ -1,4 +1,4 @@
-package testViews;
+package view;
 
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -13,7 +13,7 @@ public class Connect4 extends Application {
 	@Override
 	public void start(Stage stage) throws Exception {
         stage.setTitle("Test für Spielfeld mit FXML"); 
-        Parent root = FXMLLoader.load(getClass().getResource("fxmlTest.fxml")); 
+        Parent root = FXMLLoader.load(getClass().getResource("MainUI.fxml")); 
         stage.setScene(new Scene(root)); 
         stage.setResizable(false);	
         stage.show();
