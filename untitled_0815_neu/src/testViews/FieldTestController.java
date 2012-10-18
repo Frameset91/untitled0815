@@ -163,19 +163,29 @@ public class FieldTestController implements Initializable {
 		satzstatus.textProperty().bind(viewModel.properties()[viewModel.STATE_PROPERTY]);
 		
 		//Tabelle für die Logs
+//		logTabelle.setPrefWidth(400);
+//		logTabelle.set
 		TableColumn<Log.LogEntry, String> spalte1 = new TableColumn<Log.LogEntry, String>("Log-Eintrag");
 		spalte1.setEditable(false);
+//		spalte1.setMinWidth(398);
+		spalte1.prefWidthProperty().bind(logTabelle.widthProperty().subtract(2));
 		logTabelle.getColumns().clear();
 		logTabelle.getColumns().add(spalte1);
 		logTabelle.setMinWidth(384);
 		spalte1.setCellValueFactory(
 				new PropertyValueFactory<Log.LogEntry, String>("text"));
-		logTabelle.setItems(viewModel.logItems());
+		logTabelle.setItems(Log.getInstance().getLogEntries());
 		Log.getInstance().write("Binding fuer Log erstellt");
 		
+		tableColumnSet.setCellValueFactory(
+				new PropertyValueFactory<SetProperty, String>("setNr"));
+		tableColumnWinner.setCellValueFactory(
+				new PropertyValueFactory<SetProperty, String>("winner"));
+		tableStatistic.setItems(viewModel.sets());
+		
 		winner = new ChoiceBox<String>();
-		winner.valueProperty().bindBidirectional(viewModel.properties()[viewModel.ROLE_PROPERTY]);
-		winner.getItems().addAll(String.valueOf(Constants.xRole), String.valueOf(Constants.oRole));
+		winner.valueProperty().bindBidirectional(viewModel.properties()[viewModel.WINNER_PROPERTY]);
+		winner.getItems().addAll(String.valueOf(Constants.noRole), String.valueOf(Constants.xRole), String.valueOf(Constants.oRole));
 		
 		viewModel.initialize(null, null);
 	 }
@@ -221,24 +231,30 @@ public class FieldTestController implements Initializable {
 	private void showConfirmWinner() {
 		final Stage stageConfirmWinner = new Stage();
 		Group rootLog = new Group();
-		Scene sceneLog = new Scene(rootLog, 484,500, Color.WHITESMOKE);
-//		rootLog.getChildren().add(logTabelle);
+		Scene sceneLog = new Scene(rootLog, 500,180, Color.WHITESMOKE);
 		stageConfirmWinner.setScene(sceneLog);
 		stageConfirmWinner.centerOnScreen();
 		stageConfirmWinner.show();
 						
 	//Inhalt
-		Text ueberschrift = new Text(20, 20,"Der Satz wurde beendet, bitte den Gewinner bestätigen:");
-		Button close = new Button("Bestätigen");
-		close.setOnMouseClicked(new EventHandler<MouseEvent>(){
+		Text ueberschrift = new Text(20, 20,"Der Satz wurde beendet, bitte den Gewinner bestätigen oder den Satz verwerfen:");
+		Button confirm = new Button("Bestätigen");		
+		confirm.setOnMouseClicked(new EventHandler<MouseEvent>(){
 			public void handle(MouseEvent close){
 				stageConfirmWinner.close();
 				viewModel.confirmSetWinner();
 			}
 		});
+		Button discard = new Button("Verwerfen");
+		discard.setOnMouseClicked(new EventHandler<MouseEvent>(){
+			public void handle(MouseEvent close){
+				stageConfirmWinner.close();
+				viewModel.discardSet();
+			}
+		});
 		//Anordnen
 		VBox Logs = new VBox(20);
-		Logs.getChildren().addAll(ueberschrift, winner, close);
+		Logs.getChildren().addAll(ueberschrift, winner, confirm, discard);
 		Logs.setLayoutX(50);
 		rootLog.getChildren().add(Logs);
 		
@@ -351,8 +367,8 @@ public class FieldTestController implements Initializable {
 		//Fenster mit Log öffnen
 		final Stage stageAnleitung = new Stage();
 		Group rootLog = new Group();
-		Scene sceneLog = new Scene(rootLog, 484,500, Color.WHITESMOKE);
-		rootLog.getChildren().add(logTabelle);
+		Scene sceneLog = new Scene(rootLog, 500,500, Color.WHITESMOKE);
+//		rootLog.getChildren().add(logTabelle);
 		stageAnleitung.setScene(sceneLog);
 		stageAnleitung.centerOnScreen();
 		stageAnleitung.show();
@@ -367,6 +383,7 @@ public class FieldTestController implements Initializable {
 		});
 		//Anordnen
 		VBox Logs = new VBox(20);
+		logTabelle.prefWidthProperty().bind(sceneLog.widthProperty().subtract(100));
 		Logs.getChildren().addAll(ueberschrift, logTabelle, close);
 		Logs.setLayoutX(50);
 		rootLog.getChildren().add(Logs);

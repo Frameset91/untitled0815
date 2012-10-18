@@ -19,6 +19,8 @@ import view.*;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.Initializable;
@@ -29,6 +31,7 @@ public class GameController extends Application implements GameEventListener, Ob
 	private Game model;
 	private CommunicationServer comServ;
 	private KI ki;
+	private KIWorkerThread kiwt;
 
 	//Konstanten für Zugriff auf Property Array
 	public final int ROLE_PROPERTY = 0;
@@ -74,7 +77,8 @@ public class GameController extends Application implements GameEventListener, Ob
 	 */
 	public void startGame(){
 		Log.getInstance().write("Controller: starte Spiel, FxThread:" + Platform.isFxApplicationThread());
-		newGame(Constants.gamefieldcolcount, Constants.gamefieldrowcount);		
+		newGame(Constants.gamefieldcolcount, Constants.gamefieldrowcount);	
+		Log.getInstance().write("Controller: Spiel gestartet, FxThread:" + Platform.isFxApplicationThread());
 		properties[STATE_PROPERTY].set(Constants.STATE_GAME_RUNNING);
 	}
 	
@@ -83,9 +87,9 @@ public class GameController extends Application implements GameEventListener, Ob
 	 */
 	public void startSet(){
 		Log.getInstance().write("Controller: starte Satz, FxThread:" + Platform.isFxApplicationThread());
-		if(model.getLatestSet() != null){
-			model.save();
-		}
+//		if(model.getLatestSet() != null){
+//			model.save();
+//		}
 		ki = new KI(model);
 		
 		model.newSet().setStatus(Constants.STATE_SET_RUNNING);
@@ -115,7 +119,7 @@ public class GameController extends Application implements GameEventListener, Ob
 	 */	
 	public void endGame(){
 		Log.getInstance().write("Controller: beende Spiel, FxThread:" + Platform.isFxApplicationThread());
-		//TODO: STATE_PROPERTY auf ended setzen, nachdem MainGUI abgeschafft wurde
+		//TODO: STATE_PROPERTY auf ended setzen, nachdem MainGUI abgeschafft wurde, model.save entfernen
 		properties[STATE_PROPERTY].set(Constants.STATE_APP_RUNNING);
 		model.save();
 	}
@@ -158,20 +162,37 @@ public class GameController extends Application implements GameEventListener, Ob
 			if (col > -1){
 				addOppMove(col);					
 			}
-			byte newCol = ki.calculateNextMove(col);			
-			//Zug auf Server schreiben und Server wieder überwachen
-			comServ.writeMove(newCol, model.getPath(), model.getRole());
-			comServ.enableReading(model.getTimeoutServer(), model.getPath(), model.getRole());
-			
-			model.addMove(model.getRole(), newCol);
+//			byte newCol = ki.calculateNextMove(col);			
+//			//Zug auf Server schreiben und Server wieder überwachen
+//			comServ.writeMove(newCol, model.getPath(), model.getRole());
+//			comServ.enableReading(model.getTimeoutServer(), model.getPath(), model.getRole());
+//			
+//			model.addMove(model.getRole(), newCol);
+		    if(kiwt != null && kiwt.isAlive()){
+		    	Log.getInstance().write("Controller: Neuer oppMove obwohl KI Thread noch läuft!");
+		    }else{
+				kiwt = new KIWorkerThread(col);
+				kiwt.start();
+				Log.getInstance().write("Controller: KI Workerthread gestartet");
+		    }
 		}
 	}
 	
 	/**
-	 * Methode um vom UI aus den Gewinner zu bestätigen und somit den Satz abzuschließen
+	 * Methode um vom UI aus den Gewinner zu bestätigen und somit den Satz abzuschließen und zu speichern
 	 */	
 	public void confirmSetWinner(){
+		Log.getInstance().write("Controller: Gewinner bestätigt, FxThread:" + Platform.isFxApplicationThread());
 		model.save();
+		properties[STATE_PROPERTY].set(Constants.STATE_GAME_RUNNING);
+	}
+	
+	/**
+	 * Methode um vom UI aus den aktuellen Satz zu verwerfen
+	 */	
+	public void discardSet(){
+		Log.getInstance().write("Controller: Satz verworfen, FxThread:" + Platform.isFxApplicationThread());
+		model.discardLatestSet();
 		properties[STATE_PROPERTY].set(Constants.STATE_GAME_RUNNING);
 	}
 	
@@ -250,7 +271,8 @@ public class GameController extends Application implements GameEventListener, Ob
 				if(((String)event.getArg()).charAt(0) == Constants.xRole || ((String)event.getArg()).charAt(0) == Constants.oRole){
 					model.getLatestSet().setWinner(((String)event.getArg()).charAt(0));
 				}
-				//TODO: nach Verknüpfung mit FXML: in die confirmSetWinner verschieben
+				//TODO: nach Verknüpfung mit FXML: entfernen! 
+//				confirmSetWinner();
 				model.save();
 				properties[STATE_PROPERTY].set(Constants.STATE_GAME_RUNNING);
 				break;
@@ -279,9 +301,9 @@ public class GameController extends Application implements GameEventListener, Ob
 	 * @param Spaltenanzahl :Integer, Zeilenanzahl :Integer
 	 */	
 	private void newGame(int cols, int rows){		
-		if(model != null){			
-			model.save();
-		}
+//		if(model != null){			
+//			model.save();
+//		}
 		
 		//create new model		
 		model = new Game(cols, rows, properties[ROLE_PROPERTY].get().charAt(0), 
@@ -297,7 +319,7 @@ public class GameController extends Application implements GameEventListener, Ob
 			for(int j = 0; j< rows; j++){
 				styleField[i][j].set(Constants.emptyToken);
 			}
-		}		
+		}
 		model.save();			
 	}
 	
@@ -338,14 +360,15 @@ public class GameController extends Application implements GameEventListener, Ob
 //			sets.get(model.getLatestSet().getID()-1).setWinner(String.valueOf(model.getLatestSet().getWinner()));
 			updateSets();
 			//Sicherstellen, dass updates von TextProperties im UI Thread stattfinden
-			Platform.runLater(new Runnable() {					
-				@Override
-				public void run() {
+//			Platform.runLater(new Runnable() {					
+//				@Override
+//				public void run() {
+					properties[WINNER_PROPERTY].setValue(String.valueOf(model.getLatestSet().getWinner()));
 					properties[OWNPOINTS_PROPERTY].setValue(String.valueOf(model.getOwnPoints()));
 					properties[OPPPOINTS_PROPERTY].setValue(String.valueOf(model.getOppPoints()));					
-				}
-			});		
-			model.save();
+//				}
+//			});		
+//			model.save();
 			break;
 		case "status":
 			Log.getInstance().write("Controller: Status changed empfangen, FxThread:" + Platform.isFxApplicationThread());
@@ -355,6 +378,7 @@ public class GameController extends Application implements GameEventListener, Ob
 			Log.getInstance().write("Controller: Set changed empfangen; FxThread:" + Platform.isFxApplicationThread());
 			updateField();
 			updateSets();
+			properties[WINNER_PROPERTY].setValue(String.valueOf(model.getLatestSet().getWinner()));
 			break;
 		case "field":
 			Log.getInstance().write("Controller: Field changed empfangen; FxThread:" + Platform.isFxApplicationThread());
@@ -461,7 +485,7 @@ public class GameController extends Application implements GameEventListener, Ob
 //			
 //		sets = FXCollections.observableArrayList();		
 //		savedGames = FXCollections.observableArrayList();	
-		
+		properties[ROLE_PROPERTY].set(String.valueOf(Constants.defaultRole));
 		properties[OWNPOINTS_PROPERTY].set("0");
 		properties[OPPPOINTS_PROPERTY].set("0");
 		properties[TIMEOUTSERVER_PROPERTY].set(String.valueOf(Constants.defaultTimeoutServer));
@@ -469,7 +493,12 @@ public class GameController extends Application implements GameEventListener, Ob
 		properties[OPPTOKEN_PROPERTY].set(Constants.oToken);
 		properties[OWNTOKEN_PROPERTY].set(Constants.xToken);		
 		properties[STATE_PROPERTY].set(Constants.STATE_APP_RUNNING);
-		
+		properties[WINNER_PROPERTY].set(String.valueOf(Constants.noRole));
+		properties[WINNER_PROPERTY].addListener(new ChangeListener<String>() {
+			@Override
+			public void changed(ObservableValue<? extends String> arg0,
+					String arg1, String arg2) {model.getLatestSet().setWinner(properties[WINNER_PROPERTY].get().charAt(0));}
+		});
 		
 		logItems = Log.getInstance().getLogEntries();
 			
@@ -490,6 +519,26 @@ public class GameController extends Application implements GameEventListener, Ob
 			e.printStackTrace();
 		}		
 	}
-
 	
+	public class KIWorkerThread extends Thread{
+		
+		private byte oppMove;
+		
+		public KIWorkerThread(byte oppMove){
+			this.oppMove = oppMove;
+		}
+		
+		/* (non-Javadoc)
+		 * @see java.lang.Thread#run()
+		 */
+		@Override
+		public void run() {
+			byte newCol = ki.calculateNextMove(oppMove);			
+			//Zug auf Server schreiben und Server wieder überwachen
+			comServ.writeMove(newCol, model.getPath(), model.getRole());
+			comServ.enableReading(model.getTimeoutServer(), model.getPath(), model.getRole());
+			
+			model.addMove(model.getRole(), newCol);
+		}		
+	}
 }
