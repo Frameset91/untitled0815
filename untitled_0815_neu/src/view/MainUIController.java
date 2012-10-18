@@ -98,17 +98,32 @@ public class MainUIController implements Initializable {
 		
 		
 		//GridPane mit Circles füllen
-		Circle[][] spielfeld = new Circle[Constants.gamefieldcolcount][Constants.gamefieldrowcount];
+//		Circle[][] spielfeld = new Circle[Constants.gamefieldcolcount][Constants.gamefieldrowcount];
+//		for (int i = 0; i < Constants.gamefieldcolcount; i++)
+//	    {
+//	      for (int j = 0; j < Constants.gamefieldrowcount; j++)
+//	      {
+//	        spielfeld[i][j] = new Circle(20.0f);
+//	        spielfeld[i][j].styleProperty().bind(viewModel.styleField()[i][Constants.gamefieldrowcount -1 -j]);
+//	        feld.add(spielfeld[i][j], i, j);
+//	      }
+//	    }
+//		
+		feld.minHeightProperty().set(280);
+		feld.minWidthProperty().set(320);
+		Label[][] spielfeld = new Label[Constants.gamefieldcolcount][Constants.gamefieldrowcount];
 		for (int i = 0; i < Constants.gamefieldcolcount; i++)
 	    {
 	      for (int j = 0; j < Constants.gamefieldrowcount; j++)
 	      {
-	        spielfeld[i][j] = new Circle(20.0f);
-	        spielfeld[i][j].styleProperty().bind(viewModel.styleField()[i][Constants.gamefieldrowcount -1 -j]);
+	        spielfeld[i][j] = new Label(" ");
+            spielfeld[i][j].prefHeightProperty().set(40);
+	        spielfeld[i][j].prefWidthProperty().set(40); 
+	        spielfeld[i][j].styleProperty().bindBidirectional(viewModel.styleField()[i][Constants.gamefieldrowcount -1 -j], new StyleConverter());
+	        spielfeld[i][j].textProperty().bindBidirectional(viewModel.styleField()[i][Constants.gamefieldrowcount -1 -j], new TokenTextConverter());
 	        feld.add(spielfeld[i][j], i, j);
 	      }
 	    }
-		
 		//manuelles Spielen:
 		spielfeld[0][0].setOnMouseClicked(new EventHandler<MouseEvent>() {
 			@Override

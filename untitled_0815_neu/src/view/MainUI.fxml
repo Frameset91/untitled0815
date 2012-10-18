@@ -98,7 +98,7 @@
         			<Label text=":" styleClass="punkte"/>
         			<Label fx:id="punkteGegner" text="0" styleClass="punkte"/>
         		</HBox>
-        		<GridPane fx:id="feld" hgap="3" vgap="3" maxHeight="200" maxWidth="250" styleClass="field">
+        		<GridPane fx:id="feld" hgap="6" vgap="6" maxHeight="200" maxWidth="250" styleClass="field">
         		</GridPane>
         	</VBox>
         </left>

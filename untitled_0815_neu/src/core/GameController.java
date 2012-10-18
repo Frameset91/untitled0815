@@ -13,6 +13,7 @@ import java.util.Observer;
 import model.*;
 import utilities.*;
 
+import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.value.ChangeListener;
@@ -351,20 +352,25 @@ public class GameController implements GameEventListener, Observer{
 	 * TODO: Converter im UI Controller? Um unabhängig von UI Styles zu sein
 	 */	
 	private void updateField(){
-		Boolean[][] boolField = model.getLatestSet().getField();
-		for(int i = 0; i < Constants.gamefieldcolcount; i++){
-			for(int j = 0; j< Constants.gamefieldrowcount; j++){
-				String newStyle;
-				if(boolField[i][j] == null)
-					newStyle  = Constants.emptyToken;
-				else if(boolField[i][j])
-					newStyle = Constants.xToken;
-				else
-					newStyle = Constants.oToken;
-				
-				if(styleField[i][j].getValue() != newStyle) styleField[i][j].set(newStyle);
+		Platform.runLater(new Runnable() {			
+			@Override
+			public void run() {
+				Boolean[][] boolField = model.getLatestSet().getField();
+				for(int i = 0; i < Constants.gamefieldcolcount; i++){
+					for(int j = 0; j< Constants.gamefieldrowcount; j++){
+						String newStyle;
+						if(boolField[i][j] == null)
+							newStyle  = Constants.emptyToken;
+						else if(boolField[i][j])
+							newStyle = Constants.xToken;
+						else
+							newStyle = Constants.oToken;
+						
+						if(styleField[i][j].getValue() != newStyle) styleField[i][j].set(newStyle);
+					}
+				}				
 			}
-		}
+		});	
 	}
 	
 	/**
