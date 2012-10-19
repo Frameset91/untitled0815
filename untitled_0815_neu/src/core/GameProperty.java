@@ -14,7 +14,8 @@ public class GameProperty {
 	
 	/**
 	 * Konstruktor von GameProperty
-	 * @param ID des Spiels :String, Gegnername :String
+	 * @param gamID ID des Spiels
+	 * @param oppName Name des Gegners
 	 */
 	public GameProperty(String gameID, String oppName){
 		this.gameID = new SimpleStringProperty(gameID);
@@ -22,14 +23,14 @@ public class GameProperty {
 	}
 
 	/**
-	 * @return die ID von Game :String
+	 * @return ID von Game
 	 */
 	public String getGameID() {
 		return gameID.get();
 	}
 	
 	/**
-	 * @return den Gegner :String
+	 * @return Name des Gegners
 	 */
 	public String getOppName() {
 		return oppName.get();
