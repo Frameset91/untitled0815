@@ -20,7 +20,8 @@ public class GameField{
 	/**
 	 * Konstruktor von GameField 
 	 *  
-	 * @param Spaltenanzahl :Integer, Zeilenanzahl des Spielfelds :Integer
+	 * @param cols Spaltenanzahl 
+	 * @param rows Zeilenanzahl des Spielfelds
 	 */
 	public GameField(int cols, int rows){
 		field = new Boolean[cols][rows];
@@ -45,7 +46,7 @@ public class GameField{
 	}
 
 	/**
-	 * @return Spielfeld mit Booleans für jedes Feld :Boolean[][] (true = X; false = O; null wenn leer)
+	 * @return Spielfeld mit Boolean für jedes Feld (true = xRole|false = oRole|null = noRole)
 	 */
 	public Boolean[][] getField(){
 		Boolean[][] array = new Boolean[field.length][field[0].length];

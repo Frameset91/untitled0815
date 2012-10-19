@@ -21,7 +21,8 @@ public class Move {
 	/**
 	 * Konstruktor von Move 
 	 *  
-	 * @param Rolle die gezogen hat :String, Spalte :Integer, Zugzeitpunkt :Timestamp
+	 * @param role Rolle die gezogen hat
+	 * @param column Spalte in die gesetzt wird
 	 */
 	public Move(char role, int column){
 		this.role = role;
@@ -34,8 +35,11 @@ public class Move {
 	/**
 	 * @deprecated
 	 * Konstruktor von Move 
-	 *  
-	 * @param Rolle die gezogen hat :String, Spalte :Integer, Zugzeitpunkt :Timestamp
+	 * bitte entfernen, für Ladeprozess die Zeit mit übergeben
+	 * 
+	 * @param role Rolle die gezogen hat
+	 * @param column Spalte in die gesetzt wird
+	 * @param id ID (Primarykey) des Satzes
 	 */
 	public Move(char role, int column, int id){
 		this.role = role;
@@ -47,8 +51,11 @@ public class Move {
 	
 	/**
 	 * Konstruktor von Move (nur für Ladeprozess)
-	 *  
-	 * @param Rolle die gezogen hat :String, Spalte :Integer, Zugzeitpunkt :Timestamp
+	 * 
+	 * @param role Rolle die gezogen hat
+	 * @param column Spalte in die gesetzt wird
+	 * @param id ID (Primarykey) des Satzes
+	 * @param time Zugzeitpunkt 
 	 */
 	public Move(char role, int column, int id, Timestamp time){
 		this.role = role;
@@ -61,7 +68,8 @@ public class Move {
 	/**
 	 * Methode zum Speichern eines Zuges
 	 *  
-	 * @param ID des Games :Integer, ID des Satzes :Integer
+	 * @param gameID ID des dazugehörigen Spiels
+	 * @param setID ID des  dazugehörigen Satzes
 	 */
 	public void save(int gameID, int setID){
 		//In Datenbank speichern (Primarykey = GameID + SetID + ID von Move)
@@ -70,42 +78,41 @@ public class Move {
 	}
 	
 	/**
-	 * @return Zugnummer :Integer
+	 * @return Zugnummer
 	 */
 	public int getID() {
 		return ID;
 	}
 	
 	/**
-	 * @return Gespeichert :Boolean
+	 * @return Aussage, ob der aktuelle Zustand des Zuges gespeichert wurde
 	 */
 	public Boolean isSaved() {
 		return isSaved;
 	}
 	
 	/**
-	 * @return Zugnummer :Integer
+	 * @return Zugnummer 
 	 */
 	public Timestamp getTime() {
 		return time;
 	}
 	/**
-	 * @return Rolel die gezogen hat :String
+	 * @return Rolle die gezogen hat
 	 */
 	public char getRole() {
 		return role;
 	}
 	/**
-	 * @return Spalte :Integer
+	 * @return Spalte in die gesetzt werden soll
 	 */
 	public int getColumn() {
 		return column;
 	}
-
+	/**
+	 * @param id Zugnummer
+	 */
 	public void setID(int id) {
 		this.ID = id;		
 	}
-	
-	
-	
 }

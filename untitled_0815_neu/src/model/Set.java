@@ -27,7 +27,9 @@ public class Set extends Observable{
 	
 	/**
 	 * Konstruktor von Set
-	 * @param Spaltenanzahl :Integer, Zeilenanzahl des Spielfelds :Integer, Satznummer :Integer
+	 * @param cols Spaltenanzahl
+	 * @param rows Zeilenanzahl des Spielfelds
+	 * @param id Satznummer
 	 */
 	public Set(int cols, int rows, int id){
 		this.ID = id;
@@ -40,7 +42,13 @@ public class Set extends Observable{
 	
 	/**
 	 * Konstruktor von Set (nur für Ladevorgang)
-	 * @param Spaltenanzahl :Integer, Zeilenanzahl des Spielfelds :Integer, Satznummer :Integer, Startzeit :Timestamp, Endzeit :Timestamp, Satzstatus :String, Gewinner :Char
+	 * @param cols Spaltenanzahl
+	 * @param rows Zeilenanzahl des Spielfelds
+	 * @param id Satznummer
+	 * @param startTime Startzeit des Satzes 
+	 * @param endTime Endzeit des Satzes
+	 * @param status Satzstatus
+	 * @param winner Gewinner (Konstante oRole|xRole|noRole)
 	 */
 	public Set(int cols, int rows, int id, Timestamp startTime, Timestamp endTime, String status, char winner){
 		this.ID = id;
@@ -54,12 +62,13 @@ public class Set extends Observable{
 	}
 	
 	/**
-	 * Methode zum Hinzufügen eines Zuges  
-	 * @param Rolle die gesetzt hat :Char, gesetzte Spalte :Byte
+	 * Methode zum Hinzufügen eines Zuges, falls die ID des Zuges nicht gesetzt ist (-1), wird eine ID vergeben (= Position in Liste)
+	 * @param move der einzufügende Zug
 	 */
 	public synchronized void addMove(Move move){
-//		Move move = new Move(role, col, moves.size()+1);
-		move.setID(moves.size()+1);
+		if(move.getID() == -1){
+			move.setID(moves.size()+1);
+		}
 		moves.add(move);
 		field.addMove(move);
 		setChanged();
@@ -68,20 +77,10 @@ public class Set extends Observable{
 		notifyObservers("field");
 	}
 	
-//	/**
-//	 * Methode zum Hinzufügen eines Zuges (nur für Ladevorgang)
-//	 * @param der neue Zug :Move
-//	 */
-//	public void addMove(Move move){
-//		moves.add(move);
-//		field.addMove(move);		
-//	}
-	
-	
 	/**
 	 * Methode zum Speichern eines Satzes
 	 *  
-	 * @param ID des Games :Integer
+	 * @param gameID ID des Games 
 	 */
 	public void save(int gameID){
 		//In Datenbank speichern (Primarykey = GameID + SetID), erzeugte setID an Moves weitergeben 
@@ -102,7 +101,7 @@ public class Set extends Observable{
 	}
 	
 	/**
-	 * @param der neue Status :String
+	 * @param status der neue Status
 	 */
 	public void setStatus(String status) {
 		this.status = status;
@@ -115,7 +114,7 @@ public class Set extends Observable{
 	}
 	
 	/**
-	 * @param Gewinner :String
+	 * @param winner Gewinner des Satzes 
 	 */
 	public void setWinner(char winner) {
 		this.winner = winner;
@@ -125,13 +124,13 @@ public class Set extends Observable{
 	}
 	
 	/**
-	 * @return Satznummer :String
+	 * @return Satznummer 
 	 */
 	public int getID() {
 		return ID;
 	}	
 	/**
-	 * @return Status des Satzes :String
+	 * @return Status des Satzes
 	 */
 	public String getStatus() {
 		return status;
@@ -139,7 +138,7 @@ public class Set extends Observable{
 
 	
 	/**
-	 * @return Gewinner :String
+	 * @return Gewinner des Satzes
 	 */
 	public char getWinner() {
 		return winner;
@@ -147,35 +146,35 @@ public class Set extends Observable{
 
 	
 	/**
-	 * @return alle Züge des Satzes :List<Move>
+	 * @return Liste aller Züge des Satzes
 	 */
 	public List<Move> getMoves() {
 		return moves;
 	}
 
 	/**
-	 * @return Spielfeld :Boolean[][]
+	 * @return Spielfeld 
 	 */
 	public Boolean[][] getField() {
 		return field.getField();
 	}
 	
 	/**
-	 * @return Startzeit :java.sql.Timestamp
+	 * @return Startzeit 
 	 */
 	public Timestamp getStarttime() {
 		return startTime;
 	}
 	
 	/**
-	 * @return Endzeit :java.sql.Timestamp
+	 * @return Endzeit
 	 */
 	public Timestamp getEndtime() {
 		return endTime;
 	}
 
 	/**
-	 * @return Endzeit :java.sql.Timestamp
+	 * @return Aussage ob der aktuelle Zustand des Satzes gespeichert wurde
 	 */
 	public Boolean isSaved() {
 		return isSaved;
