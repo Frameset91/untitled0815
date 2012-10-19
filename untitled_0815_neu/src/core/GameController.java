@@ -43,16 +43,20 @@ public class GameController implements GameEventListener, Observer{
 	
 	//Properties für DataBinding	
 	private SimpleStringProperty[] properties;
-	private SimpleStringProperty[][] styleField;
-	private ObservableList<Log.LogEntry> logItems;
+	private SimpleStringProperty[][] field;
+//	private ObservableList<Log.LogEntry> logItems;
 	private ObservableList<SetProperty> sets;
 	private ObservableList<GameProperty> savedGames;
 	
+	/**
+	 * Konstruktor von Game
+	 * Die Property Objekte werden erstellt, aber noch nicht initialisiert
+	 */
 	public GameController(){
-		styleField = new SimpleStringProperty[Constants.gamefieldcolcount][Constants.gamefieldrowcount];
+		field = new SimpleStringProperty[Constants.gamefieldcolcount][Constants.gamefieldrowcount];
 		for(int i = 0; i < Constants.gamefieldcolcount; i++){
 			for(int j = 0; j< Constants.gamefieldrowcount; j++){
-				styleField[i][j] = new SimpleStringProperty(); 
+				field[i][j] = new SimpleStringProperty(); 
 			}
 		}
 		
@@ -63,7 +67,7 @@ public class GameController implements GameEventListener, Observer{
 		
 		sets = FXCollections.observableArrayList();		
 		savedGames = FXCollections.observableArrayList();
-		logItems = FXCollections.observableArrayList();
+//		logItems = FXCollections.observableArrayList();
 	}
 	
 	//--------------------- API Methoden für UI-Controller -----------------------------------------	
@@ -92,8 +96,8 @@ public class GameController implements GameEventListener, Observer{
 	}
 	
 	/**
-	 * Methode um ein Satz zu beenden, falls es keinen letzten Zug gibt: oppMove = -1
-	 * @param der letzte Zug des Gegners :Byte  
+	 * Methode um ein Satz zu beenden
+	 * @param oppMove der letzte Zug des Gegners, falls es keinen letzten Zug gibt: -1  
 	 */	
 	public void endSet(byte oppMove){
 		Log.getInstance().write("Controller: beende Satz, FxThread:" + Platform.isFxApplicationThread());
@@ -115,7 +119,7 @@ public class GameController implements GameEventListener, Observer{
 	
 	/**
 	 * Methode um ein Spiel zu laden
-	 * @param ID von Game :Integer
+	 * @param gameID ID von Game :Integer
 	 */	
 	public void loadGame(int gameID){
 		Log.getInstance().write("Controller: Spiel wird geladen, FxThread:" + Platform.isFxApplicationThread());
@@ -143,7 +147,7 @@ public class GameController implements GameEventListener, Observer{
 	/**
 	 * Methode um einen gegnerischen Zug hinzuzufügen -> Berechnung und Ausführung eines neuen Zuges.
 	 * Sollte nur für das manuelle Spielen verwendet werden, ansonsten über Event starten.
-	 * @param Spalte :Byte 
+	 * @param col Spalte in die der Gegner gesetzt hat
 	 */	
 	public void oppMove(byte col){
 		Log.getInstance().write("Controller: gegnerischen Zug empfangen, FxThread:" + Platform.isFxApplicationThread());
@@ -182,35 +186,35 @@ public class GameController implements GameEventListener, Observer{
 	
 	// Getter für Properties 	
 	/**
-	 * @return Properties für DataBinding mit UI:StringProperty
+	 * @return Properties für DataBinding mit UI
 	 */
 	public SimpleStringProperty[] properties() {
 		return properties;
 	}
 	
 	/**
-	 * @return Spielfeld :GameField
+	 * @return das Spielfeld (je Feld die Konstante xRole|oRole|noRole) 
 	 */
-	public SimpleStringProperty[][] styleField() {
-		return styleField;
+	public SimpleStringProperty[][] field() {
+		return field;
 	}	
 	
-	/**
-	 * @return Logeinträge :ObservableList<Log.LogEntry>
-	 */
-	public ObservableList<Log.LogEntry> logItems() {
-		return logItems;
-	}
+//	/**
+//	 * @return Logeinträge :ObservableList<Log.LogEntry>
+//	 */
+//	public ObservableList<Log.LogEntry> logItems() {
+//		return logItems;
+//	}
 	
 	/**
-	 * @return Gespielte Sätze :ObservableList<Log.LogEntry>
+	 * @return Liste der gespielte Sätze 
 	 */
 	public ObservableList<SetProperty> sets() {
 		return sets;
 	}
 	
 	/**
-	 * @return Liste der gespeicherten Spiele :ObservableList<GameProperty>
+	 * @return Liste der gespeicherten Spiele
 	 */
 	public ObservableList<GameProperty> savedGames() {
 		//TODO: Liste der gespeicherten Spiel
@@ -223,7 +227,8 @@ public class GameController implements GameEventListener, Observer{
 	 */	
 	/**
 	 * Methode um auf GameEvents zu reagieren
-	 * @param das geworfene Event :GameEvent
+	 * Umsetzung des Interfaces GameEventListener
+	 * @param event das geworfene GameEvent
 	 */	
 	@Override
 	public void handleEvent(GameEvent event) {
@@ -251,10 +256,7 @@ public class GameController implements GameEventListener, Observer{
 
 	//Hilfsmethoden 
 	
-	/**
-	 * einen Gegnerischen Zug in das Datenmodell einfügen
-	 * @param Spalte :byte
-	 */	
+	// Anhand der eigenen Rolle bestimme welche Rolle der Gegner hat und Zug entsprechend einfügen
 	private void addOppMove(byte col) {
 		if(model.getRole() == Constants.xRole)
 			model.addMove(Constants.oRole, col);
@@ -262,10 +264,7 @@ public class GameController implements GameEventListener, Observer{
 			model.addMove(Constants.xRole, col);		
 	}
 	
-	/**
-	 * Methode um ein neues Spiel zu starten
-	 * @param Spaltenanzahl :Integer, Zeilenanzahl :Integer
-	 */	
+	//neues Spiel mit einer bestimmten Spalten- und Zeilenanzahl
 	private void newGame(int cols, int rows){		
 //		if(model != null){			
 //			model.save();
@@ -283,15 +282,13 @@ public class GameController implements GameEventListener, Observer{
 		
 		for(int i = 0; i < cols; i++){
 			for(int j = 0; j< rows; j++){
-				styleField[i][j].set(String.valueOf(Constants.noRole));
+				field[i][j].set(String.valueOf(Constants.noRole));
 			}
 		}
 		model.save();			
 	}
 	
-	/**
-	 * Methode um anhand der eigenen Rolle die Styles der Token bestimmen
-	 */	
+	//Methode um anhand der eigenen Rolle die Styles der Token bestimmen
 	private void setTokens(){
 		if(model.getRole() == Constants.oRole){
 			properties[OWNTOKEN_PROPERTY].setValue(String.valueOf(Constants.oRole));
@@ -308,9 +305,10 @@ public class GameController implements GameEventListener, Observer{
 	 */
 	/**
 	 * Methode um auf Veränderungen im Datenmodell zu reagieren
-	 * Als Argument wird der Name der Variable übergeben, die sich geändert hat
+	 * Umsetzung des Interfaces Observer
 	 * 
-	 * @param das Objekt das sich veränder hat :Observable, Argumente die mit übergeben werden :Object
+	 * @param o das Objekt das sich veränder hat
+	 * @param arg Argumente die mit übergeben werden: der Name der Variable, die sich geändert hat
 	 */	
 	@Override
 	public void update(Observable o, Object arg) {
@@ -345,9 +343,7 @@ public class GameController implements GameEventListener, Observer{
 	
 	//Hilfsmethoden
 	
-	/**
-	 * Field Property aktualisieren
-	 */	
+	//Field Property aktualisieren
 	private void updateField(){
 		Platform.runLater(new Runnable() {			
 			@Override
@@ -363,16 +359,14 @@ public class GameController implements GameEventListener, Observer{
 						else
 							newStyle = String.valueOf(Constants.oRole);
 						
-						if(styleField[i][j].getValue() != newStyle) styleField[i][j].set(newStyle);
+						if(field[i][j].getValue() != newStyle) field[i][j].set(newStyle);
 					}
 				}				
 			}
 		});	
 	}
 	
-	/**
-	 * Tabelle der Sets neu erstellen
-	 */
+	//Tabelle der Sets neu erstellen
 	private void updateSets() {
 		sets.clear();
 		Iterator<Set> it = model.getSets().listIterator();
@@ -391,7 +385,7 @@ public class GameController implements GameEventListener, Observer{
 		//Property Initialisierung
 		for(int i = 0; i < Constants.gamefieldcolcount; i++){
 			for(int j = 0; j< Constants.gamefieldrowcount; j++){
-				styleField[i][j].set(String.valueOf(Constants.noRole)); 
+				field[i][j].set(String.valueOf(Constants.noRole)); 
 			}
 		}
 
@@ -410,7 +404,7 @@ public class GameController implements GameEventListener, Observer{
 					String arg1, String arg2) {model.getLatestSet().setWinner(properties[WINNER_PROPERTY].get().charAt(0));}
 		});
 		
-		logItems = Log.getInstance().getLogEntries();
+//		logItems = Log.getInstance().getLogEntries();
 			
 		//Communication Server
 		comServ = CommunicationServer.getInstance();
@@ -430,7 +424,7 @@ public class GameController implements GameEventListener, Observer{
 		}		
 	}
 	
-	public class KIWorkerThread extends Thread{
+	private class KIWorkerThread extends Thread{
 		
 		private byte oppMove;
 		

@@ -119,8 +119,8 @@ public class MainUIController implements Initializable {
 	        spielfeld[i][j] = new Label(" ");
             spielfeld[i][j].prefHeightProperty().set(40);
 	        spielfeld[i][j].prefWidthProperty().set(40); 
-	        spielfeld[i][j].styleProperty().bindBidirectional(viewModel.styleField()[i][Constants.gamefieldrowcount -1 -j], new StyleConverter());
-	        spielfeld[i][j].textProperty().bindBidirectional(viewModel.styleField()[i][Constants.gamefieldrowcount -1 -j]);
+	        spielfeld[i][j].styleProperty().bindBidirectional(viewModel.field()[i][Constants.gamefieldrowcount -1 -j], new StyleConverter());
+	        spielfeld[i][j].textProperty().bindBidirectional(viewModel.field()[i][Constants.gamefieldrowcount -1 -j]);
 	        feld.add(spielfeld[i][j], i, j);
 	      }
 	    }
