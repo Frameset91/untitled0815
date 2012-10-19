@@ -30,8 +30,13 @@ public class Game extends Observable implements Observer{
 	/**
 	 * Konstruktor von Game 
 	 *  
-	 * @param Spaltenanzahl :Integer, Zeilenanzahl des Spielfelds :Integer, Rolle :Char, Gegnername :String, Serverpfad :String, 
-	 * Min Intervall zur Serverabfrage :Integer, Zeit für einen Zug :Integer
+	 * @param cols Spaltenanzahl
+	 * @param rows Zeilenanzahl des Spielfelds
+	 * @param role Rolle
+	 * @param oppName Name des Gegners
+	 * @param path Serverpfad
+	 * @param timeoutServer Min Intervall zur Serverabfrage
+	 * @param timeoutDraw Zeit für einen Zug
 	 */
 	public Game(int cols, int rows, char role, String oppName, String path, int timeoutServer, int timeoutDraw){
 		this.cols = cols;
@@ -48,8 +53,14 @@ public class Game extends Observable implements Observer{
 	/**
 	 * Konstruktor von Game (nur für die Verwendung beim Laden)
 	 *  
-	 * @param Spaltenanzahl :Integer, Zeilenanzahl des Spielfelds :Integer, Rolle :Char, Gegnername :String, Serverpfad :String, 
-	 * Min Intervall zur Serverabfrage :Integer, Zeit für einen Zug :Integer, PrimaryKey aus DB :Integer
+	 * @param cols Spaltenanzahl
+	 * @param rows Zeilenanzahl des Spielfelds
+	 * @param role Rolle
+	 * @param oppName Name des Gegners
+	 * @param path Serverpfad
+	 * @param timeoutServer Min Intervall zur Serverabfrage
+	 * @param timeoutDraw Zeit für einen Zug
+	 * @param ID Primarykey von Game
 	 */
 	public Game(int cols, int rows, char role, String oppName, String path, int timeoutServer, int timeoutDraw, int ID){
 		this.cols = cols;
@@ -66,7 +77,7 @@ public class Game extends Observable implements Observer{
 	/**
 	 * Methoden zum Erstellen und Hinzufügen eines weiteren Satzes zum Datenmodell
 	 *  
-	 * @return der neu erstellte Satz :Set
+	 * @return der neu erstellte Satz
 	 */
 	public Set newSet(){
 		Set set = new Set(cols, rows, sets.size()+1); 
@@ -80,7 +91,7 @@ public class Game extends Observable implements Observer{
 	/**
 	 * Methoden zum Hinzufügen eines weiteren Satzes zum Datenmodell (nur für Ladevorgang)
 	 *  
-	 * @param der geladene Satz :Set
+	 * @param set der geladene Satz
 	 */
 	public void addSet(Set set){
 		set.addObserver(this);
@@ -93,11 +104,12 @@ public class Game extends Observable implements Observer{
 	 * @see java.util.Observer#update(java.util.Observable, java.lang.Object)
 	 */
 	/**
-	 * Methode um auf Veränderungen in Set zu reagieren
-	 * Als Argument wird der Name der Variable übergeben, die sich geändert hat
+	 * Methode um auf Veränderungen im Datenmodell zu reagieren
+	 * Umsetzung des Interfaces Observer
 	 * 
-	 * @param das Objekt das sich veränder hat :Observable, Argumente die mit übergeben werden :Object
-	 */	
+	 * @param o das Objekt das sich veränder hat
+	 * @param arg Argumente die mit übergeben werden: der Name der Variable, die sich geändert hat
+	 */		
 	@Override
 	public void update(Observable arg0, Object arg1) {
 		String changed = (String)arg1;
@@ -137,7 +149,7 @@ public class Game extends Observable implements Observer{
 	/**
 	 * Methode zur Abfrage des letzten Satzes
 	 *  
-	 * @return der zuletzt erstellte Satz :Set
+	 * @return der zuletzt erstellte Satz
 	 */
 	public Set getLatestSet(){
 		if(sets.size() > 0)
@@ -160,10 +172,10 @@ public class Game extends Observable implements Observer{
 	/**
 	 * Methode zum Hinzufügen eines Zuges  
 	 *  
-	 * @param Rolle :Char, Spalte :Byte
+	 * @param move der Zug, der hinzugefügt werden soll
 	 */
-	public void addMove(char role, byte col){
-		sets.get(sets.size()-1).addMove(role, col);
+	public void addMove(Move move){
+		sets.get(sets.size()-1).addMove(move);
 	}
 	
 	/**
@@ -188,63 +200,63 @@ public class Game extends Observable implements Observer{
 	
 	//-------------------get set	
 	/**
-	 * @return Alle Sätze :ArrayList<Set>
+	 * @return Liste aller Sätze
 	 */
 	public ArrayList<Set> getSets() {
 		return sets;
 	}
 
 	/**
-	 * @return Minimales Intervall für die Serverabfrage in ms :Integer  
+	 * @return Minimales Intervall für die Serverabfrage in ms  
 	 */
 	public int getTimeoutServer() {
 		return timeoutServer;
 	}
 
 	/**
-	 * @return Maximale Zeit zur Berechnung eines Zuges in ms :Integer
+	 * @return Maximale Zeit zur Berechnung eines Zuges in ms 
 	 */
 	public int getTimeoutDraw() {
 		return timeoutDraw;
 	}
 	
 	/**
-	 * @return eigene Rolle :String
+	 * @return eigene Rolle: Konstante xRole|oRole
 	 */
 	public char getRole() {
 		return role;
 	}
 	
 	/**
-	 * @return eigene Punkte :Integer
+	 * @return eigene Punkte
 	 */
 	public int getOwnPoints() {
 		return ownPoints;
 	}
 	
 	/**
-	 * @return gegnerische Punkte :Integer
+	 * @return gegnerische Punkte
 	 */
 	public int getOppPoints() {
 		return oppPoints;
 	}
 	
 	/**
-	 * @return Name des Gegner :String
+	 * @return Name des Gegners
 	 */
 	public String getOppName() {
 		return oppName;
 	}
 
 	/**
-	 * @return Pfad für Serverdateien :String
+	 * @return Pfad für Serverdateien
 	 */
 	public String getPath() {
 		return path;
 	}	
 	
 	/**
-	 * @return ID/PrimaryKey :String
+	 * @return ID/PrimaryKey 
 	 */
 	public int getID() {
 		return ID;

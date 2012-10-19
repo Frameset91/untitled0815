@@ -23,6 +23,20 @@ public class Move {
 	 *  
 	 * @param Rolle die gezogen hat :String, Spalte :Integer, Zugzeitpunkt :Timestamp
 	 */
+	public Move(char role, int column){
+		this.role = role;
+		this.column = column;
+		this.ID = -1;
+		this.time = new Timestamp(new java.util.Date().getTime());
+		isSaved = false;
+	}
+	
+	/**
+	 * @deprecated
+	 * Konstruktor von Move 
+	 *  
+	 * @param Rolle die gezogen hat :String, Spalte :Integer, Zugzeitpunkt :Timestamp
+	 */
 	public Move(char role, int column, int id){
 		this.role = role;
 		this.column = column;
@@ -86,6 +100,10 @@ public class Move {
 	 */
 	public int getColumn() {
 		return column;
+	}
+
+	public void setID(int id) {
+		this.ID = id;		
 	}
 	
 	

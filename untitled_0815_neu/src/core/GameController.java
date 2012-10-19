@@ -259,9 +259,9 @@ public class GameController implements GameEventListener, Observer{
 	// Anhand der eigenen Rolle bestimme welche Rolle der Gegner hat und Zug entsprechend einfügen
 	private void addOppMove(byte col) {
 		if(model.getRole() == Constants.xRole)
-			model.addMove(Constants.oRole, col);
+			model.addMove(new Move(Constants.oRole, col));
 		else
-			model.addMove(Constants.xRole, col);		
+			model.addMove(new Move(Constants.xRole, col));		
 	}
 	
 	//neues Spiel mit einer bestimmten Spalten- und Zeilenanzahl
@@ -442,7 +442,7 @@ public class GameController implements GameEventListener, Observer{
 			comServ.writeMove(newCol, model.getPath(), model.getRole());
 			comServ.enableReading(model.getTimeoutServer(), model.getPath(), model.getRole());
 			
-			model.addMove(model.getRole(), newCol);
+			model.addMove(new Move(model.getRole(), newCol));
 		}		
 	}
 }

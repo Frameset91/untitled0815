@@ -57,8 +57,9 @@ public class Set extends Observable{
 	 * Methode zum Hinzufügen eines Zuges  
 	 * @param Rolle die gesetzt hat :Char, gesetzte Spalte :Byte
 	 */
-	public synchronized void addMove(char role, byte col){
-		Move move = new Move(role, col, moves.size()+1);
+	public synchronized void addMove(Move move){
+//		Move move = new Move(role, col, moves.size()+1);
+		move.setID(moves.size()+1);
 		moves.add(move);
 		field.addMove(move);
 		setChanged();
@@ -67,14 +68,14 @@ public class Set extends Observable{
 		notifyObservers("field");
 	}
 	
-	/**
-	 * Methode zum Hinzufügen eines Zuges (nur für Ladevorgang)
-	 * @param der neue Zug :Move
-	 */
-	public void addMove(Move move){
-		moves.add(move);
-		field.addMove(move);		
-	}
+//	/**
+//	 * Methode zum Hinzufügen eines Zuges (nur für Ladevorgang)
+//	 * @param der neue Zug :Move
+//	 */
+//	public void addMove(Move move){
+//		moves.add(move);
+//		field.addMove(move);		
+//	}
 	
 	
 	/**
