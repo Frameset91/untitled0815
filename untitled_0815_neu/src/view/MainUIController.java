@@ -22,10 +22,8 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.effect.Lighting;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
-//import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Circle;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
@@ -280,7 +278,7 @@ public class MainUIController implements Initializable {
 	//----------------------- Methoden zum handeln von UI Input ----------------------------
 	//Spiel starten gedrückt
 	@FXML
-	public void handleStartGame(MouseEvent e){
+	private void handleStartGame(MouseEvent e){
 		if (rolle.getValue() != null && gegnername.getText() != null && verzeichnispfad.getText() != null){
 			viewModel.startGame();
 		}
@@ -297,32 +295,32 @@ public class MainUIController implements Initializable {
 	}
 	//Spiel beenden gedrückt
 	@FXML
-	public void handleEndGame(MouseEvent e){
+	private void handleEndGame(MouseEvent e){
 		viewModel.endGame();
 	}
 	//Satz starten gedrückt
 	@FXML
-	public void handleStartSet(MouseEvent e){
+	private void handleStartSet(MouseEvent e){
 		viewModel.startSet();
 	}
 	//Satz beenden gedrückt
 	@FXML
-	public void handleEndSet(MouseEvent e){
+	private void handleEndSet(MouseEvent e){
 		viewModel.endSet((byte) -1);		
 	}
 	
 	//Spiel laden
 	@FXML
-	public void handleLoadGame(MouseEvent e){
+	private void handleLoadGame(MouseEvent e){
 //		viewModel.loadGame(gameID);	
 	}
 	
 	@FXML
     // Menü: Schließen des Programms
-	public void handleSchliessen(ActionEvent close){System.exit(0);}
+	private void handleSchliessen(ActionEvent close){System.exit(0);}
 	@FXML
 	// Menü: Spielanleitung aufrufen
-	public void handleAnleitung(ActionEvent anleitung){
+	private void handleAnleitung(ActionEvent anleitung){
 		//Fenster mit Anleitung öffnen
 		final Stage stageAnleitung = new Stage();
 		Group rootAnleitung = new Group();
@@ -347,7 +345,7 @@ public class MainUIController implements Initializable {
 	}
 	@FXML
 	// Einstellungen: Timeouts hoch/ runter setzen
-	public void handleHoch1(MouseEvent arg0){
+	private void handleHoch1(MouseEvent arg0){
 		int timeoutFileabfruf;
 		timeoutFileabfruf = Integer.parseInt(timeoutAbfrage.getText());
 		timeoutFileabfruf = timeoutFileabfruf + 25;
@@ -355,7 +353,7 @@ public class MainUIController implements Initializable {
 		timeoutAbfrage.setText(zeitz);
 	}
 	@FXML
-	public void handleRunter1(MouseEvent arg0){
+	private void handleRunter1(MouseEvent arg0){
 		int timeoutFileabruf;
 		timeoutFileabruf = Integer.parseInt(timeoutAbfrage.getText());
 		timeoutFileabruf = timeoutFileabruf - 25;
@@ -363,7 +361,7 @@ public class MainUIController implements Initializable {
 		timeoutAbfrage.setText(zeitz);
 	}
 	@FXML
-	public void handleHoch2(MouseEvent arg0){
+	private void handleHoch2(MouseEvent arg0){
 		int timeoutFileabfruf;
 		timeoutFileabfruf = Integer.parseInt(timeoutZugzeit.getText());
 		timeoutFileabfruf = timeoutFileabfruf + 100;
@@ -371,7 +369,7 @@ public class MainUIController implements Initializable {
 		timeoutZugzeit.setText(zeitz);
 	}
 	@FXML
-	public void handleRunter2(MouseEvent arg0){
+	private void handleRunter2(MouseEvent arg0){
 		int timeoutFileabruf;
 		timeoutFileabruf = Integer.parseInt(timeoutZugzeit.getText());
 		timeoutFileabruf = timeoutFileabruf - 100;
@@ -380,7 +378,7 @@ public class MainUIController implements Initializable {
 	}
 	// Log anzeigen
 	@FXML
-	public void handleLogAnzeigen(MouseEvent arg0){
+	private void handleLogAnzeigen(MouseEvent arg0){
 		//Fenster mit Log öffnen
 		final Stage stageAnleitung = new Stage();
 		Group rootLog = new Group();
