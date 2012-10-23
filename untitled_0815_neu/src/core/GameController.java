@@ -125,7 +125,7 @@ public class GameController implements GameEventListener, Observer{
 	 */	
 	public void endGame(){
 		Log.getInstance().write("Controller: beende Spiel, FxThread:" + Platform.isFxApplicationThread());
-		properties[STATE_PROPERTY].set(Constants.STATE_SET_ENDED);
+		properties[STATE_PROPERTY].set(Constants.STATE_APP_RUNNING);
 	}
 	
 	/**
