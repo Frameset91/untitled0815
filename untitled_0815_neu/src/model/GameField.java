@@ -30,7 +30,7 @@ public class GameField{
 	/**
 	 * Methode zum Hinzufügen eines Zuges  
 	 *  
-	 * @param der neue Zug :Move
+	 * @param move der neue Zug
 	 */
 	public void addMove(Move move){
 		int col = move.getColumn();
