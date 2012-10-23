@@ -431,6 +431,7 @@ public class GameController implements GameEventListener, Observer{
 			Dispatcher.addListener(GameEvent.Type.LoadGame.toString(), this);
 			Dispatcher.addListener(GameEvent.Type.StartSet.toString(), this);
 			Dispatcher.addListener(GameEvent.Type.OppMove.toString(), this);
+			Dispatcher.addListener(GameEvent.Type.WinnerSet.toString(), this);
 			
 		} catch (Exception e) {
 			e.printStackTrace();
