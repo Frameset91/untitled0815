@@ -14,8 +14,8 @@ public class SetProperty {
 	
 	/**
 	 * Konstruktor von SetProperty
-	 * @param Satznummer
-	 * @param Gewinner
+	 * @param setNr Satznummer
+	 * @param winner Gewinner
 	 */
 	public SetProperty(String setNr, String winner){
 		this.setNr = new SimpleStringProperty(setNr);

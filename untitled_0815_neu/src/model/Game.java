@@ -107,8 +107,8 @@ public class Game extends Observable implements Observer{
 	 * Methode um auf Veränderungen im Datenmodell zu reagieren
 	 * Umsetzung des Interfaces Observer
 	 * 
-	 * @param o das Objekt das sich veränder hat
-	 * @param arg Argumente die mit übergeben werden: der Name der Variable, die sich geändert hat
+	 * @param arg0 das Objekt das sich veränder hat
+	 * @param arg1 Argumente die mit übergeben werden: der Name der Variable, die sich geändert hat
 	 */		
 	@Override
 	public void update(Observable arg0, Object arg1) {
