@@ -5,8 +5,9 @@ package utilities;
  * @author Bjoern List
  *
  */
-import java.io.*;
+import java.io.*; 
 import javafx.concurrent.Task;
+import core.*;
 
 import utilities.*;
 
@@ -229,10 +230,13 @@ public class CommunicationServer extends Thread {
 			}
 			// Sieger ist bestimmt
 						if (!msg.getSieger().equals("offen")) {
+							char Winner = msg.getSieger().substring(
+									msg.getSieger().indexOf(" ")+1).charAt(0);
+							
 							this.fireGameEvent(GameEvent.Type.WinnerSet,
-									String.valueOf(msg.getSieger()));
+									String.valueOf(Winner));
 							Log.getInstance().write(
-									"Communication Server: WinnerSet Event gesendet");
+									"Communication Server: WinnerSet Event gesendet " + Winner);
 						}
 			// Satz ist beendet
 			if (msg.getSatzstatus().equals("beendet")) {
