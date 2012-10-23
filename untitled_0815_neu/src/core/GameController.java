@@ -105,8 +105,19 @@ public class GameController implements GameEventListener, Observer{
 		if (oppMove > -1){
 			addOppMove(oppMove);					
 		}
-		properties[STATE_PROPERTY].set(Constants.STATE_SET_ENDED);
-		model.getLatestSet().setStatus(Constants.STATE_SET_ENDED);
+		if(!Platform.isFxApplicationThread()){
+			Platform.runLater(new Runnable() {
+				
+				@Override
+				public void run() {
+					properties[STATE_PROPERTY].set(Constants.STATE_SET_ENDED);
+					model.getLatestSet().setStatus(Constants.STATE_SET_ENDED);
+				}
+			});
+		}else{
+			properties[STATE_PROPERTY].set(Constants.STATE_SET_ENDED);
+			model.getLatestSet().setStatus(Constants.STATE_SET_ENDED);
+		}
 	}
 	
 	/**
@@ -245,7 +256,9 @@ public class GameController implements GameEventListener, Observer{
 				oppMove((byte) Integer.parseInt(event.getArg()));					
 				break;		
 			case WinnerSet: //Der Server hat einen Gewinner gesetzt
+				Log.getInstance().write("Controller: WinnerSet empfangen, FxThread:" + Platform.isFxApplicationThread());
 				if(((String)event.getArg()).charAt(0) == Constants.xRole || ((String)event.getArg()).charAt(0) == Constants.oRole){
+					Log.getInstance().write("Controller: WinnerSet gültig, FxThread:" + Platform.isFxApplicationThread());
 					model.getLatestSet().setWinner(((String)event.getArg()).charAt(0));
 				}
 				break;
