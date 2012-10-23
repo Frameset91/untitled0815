@@ -9,15 +9,15 @@ import core.Constants;
 import model.*;
 
 /**
- * @author Johannes Riedel
  * Klasse enthält alle Methoden für die KI des Spiels
+ * @author Johannes Riedel
  */
 
 public class KI{
 	private Boolean self;
 	private Boolean opp;
 	private final Boolean empty = null;
-	private final byte suchtiefe = 6;
+	private final byte suchtiefe = 4;
 
 	private Game gameobject;
 	private Boolean[][] spielfeld;
@@ -194,18 +194,18 @@ public class KI{
 			for (Trap einefalle : bisherbesteFalleSelf)
 				if(einefalle.getSize()>0)
 					{
-					Log.getInstance().write("KI: Reihen-Falle für KI." + einefalle);
+					//Log.getInstance().write("KI: Reihen-Falle für KI." + einefalle);
 					if(einefalle.getSize()==4)
-						bewertung += Constants.KImaxbewertung;
+						return Constants.KImaxbewertung;
 					else
 						bewertung += einefalle.getSize()*einefalle.getSize();
 					}
 			for (Trap einefalle : bisherbesteFalleOpp)
 				if(einefalle.getSize()>0)
 					{
-					Log.getInstance().write("KI: Reihen-Falle für Gegner." + einefalle);
+					//Log.getInstance().write("KI: Reihen-Falle für Gegner." + einefalle);
 					if(einefalle.getSize()==4)
-						bewertung -= Constants.KImaxbewertung;
+						return -Constants.KImaxbewertung;
 					else
 						bewertung -= einefalle.getSize()*einefalle.getSize();
 					}
@@ -236,12 +236,12 @@ public class KI{
 					//		+ " für mich? " + (spielfeld[i][j]==self));
 					if(spielfeld[i][watermark[i]]==self)
 						if(anzsteine==4)
-							bewertung += Constants.KImaxbewertung;
+							return Constants.KImaxbewertung;
 						else
 							bewertung += anzsteine * anzsteine;
 					else
 						if(anzsteine==4)
-							bewertung -= 5*Constants.KImaxbewertung;
+							return -Constants.KImaxbewertung;
 						else
 							bewertung -= anzsteine * anzsteine;
 					}
@@ -252,11 +252,12 @@ public class KI{
 		// zähle diagonale Fallen Richtung nach rechts oben:
 		// #####################################
 		bewertung = ueberpruefediagonale(bewertung,(byte)1,(byte)1,(byte) 0,(byte) (Constants.gamefieldrowcount-4));
+		if(bewertung != Constants.KImaxbewertung && bewertung != -Constants.KImaxbewertung)
 		bewertung = ueberpruefediagonale(bewertung,(byte)-1,(byte)1,
 				(byte)(Constants.gamefieldcolcount-1),(byte) (Constants.gamefieldrowcount-4));
 		 
-		Log.getInstance().write("Bewertung des Feldes: " + String.valueOf(bewertung) + 
-			 " Ausführungszeit: " + String.valueOf((System.nanoTime() - startzeit)/1000000));
+		/*Log.getInstance().write("Bewertung des Feldes: " + String.valueOf(bewertung) + 
+			 " Ausführungszeit: " + String.valueOf((System.nanoTime() - startzeit)/1000000));*/
 		return bewertung;
 	 }
 	 
@@ -315,9 +316,9 @@ public class KI{
 				
 				for (Position einfreierstein : freiesteine) 
 					message += "(" + einfreierstein.getX() + "," + einfreierstein.getY() + "), "; 
-				Log.getInstance().write(message);
+				//Log.getInstance().write(message);
 				if(anzself==4)
-					bewertung += Constants.KImaxbewertung;
+					return Constants.KImaxbewertung;
 				else
 					bewertung += anzself*anzself;
 				}
@@ -330,9 +331,9 @@ public class KI{
 				
 				for (Position einfreierstein : freiesteine) 
 					message += "(" + einfreierstein.getX() + "," + einfreierstein.getY() + "), "; 
-				Log.getInstance().write(message);	
+				//Log.getInstance().write(message);	
 				if(anzopp==4)
-					bewertung -= Constants.KImaxbewertung;
+					return -Constants.KImaxbewertung;
 				else
 					bewertung -= anzopp*anzopp;
 				}
@@ -374,7 +375,7 @@ public class KI{
 	 * @return Bewertungszahl des besten Spielzuges
 	 */
 	private int Max(int tiefe, int alpha, int beta) {
-	Log.getInstance().write("KI: Max " + tiefe);
+	//Log.getInstance().write("KI: Max " + tiefe);
 	/*return beta;*/
 	   if (tiefe == 0)
 	       return Bewertung();
@@ -397,24 +398,31 @@ public class KI{
 		    // Der Gegner ist dran und wird sich für den Zug entscheiden, bei dem er am besten ist
 		    // (== Bewertungsfunktion minimal)
 		    wert = Bewertung();
-		    if(wert<= Constants.KImaxbewertung - 200)
-		    	wert = Min(tiefe-1, alpha, beta);       
+		    if(wert<Constants.KImaxbewertung)
+		    	wert = (int) (0.9 * Min(tiefe-1, alpha, beta));       
 		    //MacheZugRueckgaengig();
 		    loeschestein(aktzuginspalte);
-			if (wert > localAlpha)       
+			if (wert > (int) (0.9 * localAlpha))       
 				{          
-				if (wert >= beta)             
-					return wert;   // Beta-Cutoff-> Dieser Knoten muss nicht weiter verfolgt werden
+				besterspielzug = aktzuginspalte;
+				
+				if (wert >= beta)   
+					if(tiefe==suchtiefe)
+				    	return besterspielzug;
+					else
+						return wert;   // Beta-Cutoff-> Dieser Knoten muss nicht weiter verfolgt werden
 					// weil im letzten untersuchten Zug ein so guter Wert für den Gegner gefunden 
 					// wurde, das wir uns lieber für einen schon bekannten Spielzug, bei dem
 					// der Gegner schlechter dasteht, entscheiden
 				localAlpha = wert;
-				besterspielzug = aktzuginspalte;
+				
 				if (wert > alpha)
 					alpha = wert;       
 				}   
 			i++;
 	    }
+	    if(besterspielzug==-1)
+	    	besterspielzug = moeglichezuegelokal.get(0);
 	    if(tiefe==suchtiefe)
 	    	return besterspielzug;
 	    return localAlpha;
@@ -427,7 +435,7 @@ public class KI{
 	 * @return Bewertungszahl des schlechtesten Spielzuges
 	 */
 	int Min(int tiefe, int alpha, int beta) {
-		Log.getInstance().write("KI: Min " + tiefe);
+		//Log.getInstance().write("KI: Min " + tiefe);
 		if (tiefe == 0)
 			return Bewertung();
 		// GeneriereMoeglicheZuege();
@@ -444,12 +452,12 @@ public class KI{
 			aktzuginspalte = moeglichezuegelokal.get(i);
 			setzestein(opp,aktzuginspalte);
 		    wert = Bewertung();
-		    if(wert<= -Constants.KImaxbewertung + 200)
-		    	wert = Max(tiefe-1, alpha, beta);       
+		    if(wert> -Constants.KImaxbewertung)
+		    	wert = (int) (0.9 * Max(tiefe-1, alpha, beta));       
 			//wert = Max(tiefe-1,alpha, beta);       
 			//MacheZugRueckgaengig();
 		    loeschestein(aktzuginspalte);
-			if (wert < localBeta)       
+			if (wert < (int) (0.9*localBeta))       
 				{          
 				   if (wert <= alpha)             
 					   return wert;      // Alpha-Cutoff    
@@ -485,14 +493,17 @@ public class KI{
 		//byte spalte = 6;
 		//byte spalte = (byte) (5 + r.nextInt(2));
 		//byte spalte = (byte) (r.nextInt(7));
-		byte spalte = (byte) Max(suchtiefe, -10*Constants.KImaxbewertung, 10*Constants.KImaxbewertung);
-		
-		
+		long laufzeit = System.nanoTime();
+		byte spalte = (byte) Max(suchtiefe, -Constants.KImaxbewertung, Constants.KImaxbewertung);
+		// TODO
 		setzestein(self, spalte);
 		Log.getInstance().write("KI hat Stein in Spalte " + String.valueOf(spalte)
-				+ " gesetzt!");
-		Bewertung(/*aktspielfeld, (byte) generierterZug.getColumn()*/);
-
+				+ " gesetzt! Rechenzeit in ms: " + ((System.nanoTime()-laufzeit)/100000));
+		int bewertungvar = Bewertung();
+		Log.getInstance().write(""+bewertungvar);
+		if(Bewertung()==Constants.KImaxbewertung)
+			Log.getInstance().write("KI HAT GEWONNEN!");
+		
 		
 		return spalte;
 	}
