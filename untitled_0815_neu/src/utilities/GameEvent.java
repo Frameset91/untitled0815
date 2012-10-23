@@ -1,14 +1,9 @@
 package utilities;
 
-
-
-
-
-
 /**
  * Event class, that contains information about a generic event.
  * 
- * @author Stephan Schmidt <stephan.schmidt@schlund.de>
+ * 
  */
 public class GameEvent {
     private String name       =  null;

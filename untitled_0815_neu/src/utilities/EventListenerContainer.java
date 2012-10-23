@@ -8,7 +8,7 @@ package utilities;
  * Currently it only stores the the autoRemove flag,
  * but this will probably extended in future versions
  * 
- * @author Stephan Schmidt <stephan.schmidt@schlund.de>
+ * 
  */
 public class EventListenerContainer {
 

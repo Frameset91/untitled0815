@@ -8,7 +8,7 @@ import java.util.Iterator;
  * 
  * Stores the listener objects and notifies them.
  * 
- * @author Stephan Schmidt <stephan.schmidt@schlund.de>
+ * 
  */
 public class EventDispatcher {
     

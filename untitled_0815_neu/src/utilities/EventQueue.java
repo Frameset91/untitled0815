@@ -7,7 +7,7 @@ import java.util.Iterator;
 /**
  * Storage class for queued events
  * 
- * @author Stephan Schmidt <stephan.schmidt@schlund.de>
+ * 
  */
 class EventQueue {
     

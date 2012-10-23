@@ -7,7 +7,7 @@ import java.util.Iterator;
 /**
  * Stores all event listeners for one event
  * 
- * @author Stephan Schmidt <stephan.schmidt@schlund.de>
+ * 
  */
 public class EventListenerCollection {
  
