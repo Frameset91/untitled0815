@@ -86,22 +86,14 @@ public class CommunicationServer extends Thread {
 
 	public void fireGameEvent(final GameEvent.Type type, final String arg) {
 		Log.getInstance().write("GameEvent gefeuert: " + type.toString());
-		// GameEvent event = new GameEvent(type.toString(),type, arg);
-		// try {
-		// EventDispatcher.getInstance().triggerEvent(event, true);
-		// } catch (Exception e) {
-		// // TODO Auto-generated catch block
-		// e.printStackTrace();
-		// }
-		Task aufgabe = new Task<Void>() {
-			protected Void call() throws Exception {
-				GameEvent event = new GameEvent(type.toString(), type, arg);
-				GameEvent Dispatcher = EventDispatcher.getInstance()
-						.triggerEvent(event, true);
-				return null;
-			}
-		};
-		new Thread(aufgabe).start();
+
+				GameEvent event = new GameEvent(type, arg);
+				try {
+					GameEvent Dispatcher = EventDispatcher.getInstance().triggerEvent(event);
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					Log.getInstance().write("Fehler: Event konnte nicht geworfen werden!");
+				}
 
 	}
 
@@ -314,40 +306,9 @@ public class CommunicationServer extends Thread {
 
 	}
 
-	/**
-	 * Methode zum Test des CommunicationServers
-	 * 
-	 * Erl‰uterung: CommunicationServer wird durch enable Methode gestartet.
-	 * ‹bergabeparameter bestimmt die Zeit zwischen 2 Pr¸fungen des Serverfiles
-	 * --> Abfrage wird in einem neuem Thread gestartet, sendet ein Event bei
-	 * Ereignis und beendet sich
-	 * 
-	 * Thread kann von auﬂen durch disable Methode gestoppt werden
-	 * 
-	 * @param args
-	 */
-
-	// public static void main(String[] args) {
-	// //
-	// CommunicationServer.getInstance().enableReading(300, "server.xml");
-	// try {
-	// Thread.sleep(500);
-	// } catch (InterruptedException e) {
-	// e.printStackTrace();
-	// }
-	// System.out
-	// .println("----------------THREAD schlieﬂen!-------------------");
-	// CommunicationServer.getInstance().writeMove((byte) 2, "spieler.txt");
-	// // CommunicationServer.getInstance().disable();
-	//
+	
 }
 
-// ###########################################################################################
-// ###########################################################################################
-// ###########################################################################################
-// ###########################################################################################
-// ###########################################################################################
-// ###########################################################################################
 
 /**
  * Threadklasse zur ‹berwachung des Serverfiles

@@ -1,125 +1,85 @@
 package utilities;
 
-
 import java.util.ArrayList;
 import java.util.Iterator;
 
+import javafx.concurrent.Task;
+
 /**
- * Stores all event listeners for one event
+ * Sicherung aller Event Listener
+ * 
+ * @author Bjoern
  * 
  * 
  */
 public class EventListenerCollection {
- 
-   /**
-    * All event listeners
-    */
-    private ArrayList<EventListenerContainer> listeners = new ArrayList<EventListenerContainer>();
-    
-   /**
-    * Add a new event listener to the collection
-    * 
-    * @param listener       Listener to add
-    * @return               amount of event listeners in this collection
-    */
-    public int addListener(GameEventListener listener, boolean autoRemove) {
 
-        EventListenerContainer container = new EventListenerContainer(listener);
-        container.enableAutoRemove(autoRemove);
-        
-        this.listeners.add(container);
-        return this.listeners.size();
-    }
+	private ArrayList<GameEventListener> listeners = new ArrayList<GameEventListener>();
 
-   /**
-    * Propagate an event to all listeners in this collection
-    * 
-    * @param e      event to propagate
-    * @return       event
-    */
-    public GameEvent propagate(GameEvent e) throws Exception {
-        ArrayList<GameEventListener> remove = new ArrayList<GameEventListener>();
-        for (int i = 0; i < this.listeners.size(); i++) {
-            EventListenerContainer container = (EventListenerContainer)this.listeners.get(i);
-            container.getListener().handleEvent(e);
-            
-            // remove the listener
-            if (container.isAutoRemoveEnabled()) {
-                remove.add(container.getListener());
-            }
-            if (e.isCancelled()) {
-                break;
-            }
-        }
-        // remove the listeners that have been set to autoRemove
-        for (Iterator iter = remove.iterator(); iter.hasNext();) {
-            GameEventListener listener = (GameEventListener) iter.next();
-            this.removeListener(listener);
-        }
-        return e;
-    }
+	/**
+	 * Listener hinzufuegen
+	 * 
+	 * @param listener
+	 *            Event Listener
+	 * @return ANzahl der gesamten Listener
+	 */
+	public int addListener(GameEventListener listener) {
+		this.listeners.add(listener);
+		return this.listeners.size();
+	}
 
-   /**
-    * Remove a listener from the list
-    * 
-    * @param index  index of the event listener   
-    * @return
-    */
-    public EventListenerContainer removeListener(int index) {
-        return (EventListenerContainer)this.listeners.remove(index);
-    }
+	/**
+	 * Event an Listener senden
+	 * 
+	 * @param e
+	 *            event
+	 * @return event
+	 */
+	public GameEvent propagate(final GameEvent e) throws Exception {
+		ArrayList<GameEventListener> remove = new ArrayList<GameEventListener>();
+		for (int i = 0; i < this.listeners.size(); i++) {
 
-    /**
-     * Remove a listener of a sepciefied class from the list
-     * 
-     * @param className
-     * @return
-     */
-    public EventListenerContainer removeListener(String className) {
-        for (Iterator iter = this.listeners.iterator(); iter.hasNext();) {
-            EventListenerContainer container = (EventListenerContainer) iter.next();
-            if (container.getListener().getClass().getName().equals(className)) {
-                this.listeners.remove(container);
-                return container;
-            }
-        }
-        return null;
-    }
-    
-    /**
-     * Remove a listener from the list
-     * 
-     * If a listener has been added more the once, only the
-     * first listener is removed
-     * 
-     * @param listener      listener to remove   
-     * @return
-     */
-     public EventListenerContainer removeListener(GameEventListener listener) {
-         for (Iterator iter = this.listeners.iterator(); iter.hasNext();) {
-            EventListenerContainer container = (EventListenerContainer) iter.next();
-            if (container.getListener().equals(listener)) {
-                this.listeners.remove(container);
-                return container;
-            }
-         }
-         return null;
-     }
+			Task aufgabe = new Task<Void>() {
+				protected Void call() throws Exception {
+					for (int i = 0; i < listeners.size(); i++) {
+						listeners.get(i).handleEvent(e);
+					}
+					return null;
+				}
+			};
+			new Thread(aufgabe).start();
 
-     /**
-      * Remove all listeners from this collection
-      */
-     public void removeAllListeners() {
-    	 this.listeners.clear();
-     }
-     
-     /**
-      * Get an iterator to iterate over the event listeners in this
-      * Collection
-      * 
-      * @return
-      */
-     public Iterator iterator() {
-         return this.listeners.iterator();
-     }
+		}
+		return e;
+	}
+
+	/**
+	 * Listener aus Liste entfernen
+	 * 
+	 * 
+	 * @param listener
+	 *            listener to remove
+	 * @return
+	 */
+	public void removeListener(GameEventListener listener) {
+		for (Iterator<GameEventListener> iter = this.listeners.iterator(); iter
+				.hasNext();) {
+			GameEventListener next = (GameEventListener) iter.next();
+
+			if (iter.next().equals(listener)) {
+				this.listeners.remove(next);
+
+			}
+		}
+
+	}
+
+	/**
+	 * Iterator für die Verarbeitung der Listener
+	 * 
+	 * @return
+	 */
+	public Iterator<GameEventListener> iterator() {
+		return this.listeners.iterator();
+	}
 }

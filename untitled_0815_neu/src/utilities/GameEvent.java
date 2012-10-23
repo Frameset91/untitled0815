@@ -19,7 +19,7 @@ public class GameEvent {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 1L;
+//	private static final long serialVersionUID = 1L;
 	private Type type;
 	private String arg;
 
@@ -28,8 +28,8 @@ public class GameEvent {
     * 
     * @param name       name of the event
     */
-    public GameEvent(String name,Type t, String arg) {
-        this.name = name;
+    public GameEvent(Type t, String arg) {
+      
         type = t;
 		this.arg = arg;
     }
@@ -41,10 +41,7 @@ public class GameEvent {
 		return arg;
 	}
 	
-	public GameEvent(String name) {
-        this.name = name;
-         }
-   
+	 
 	
 
     /**
@@ -53,10 +50,10 @@ public class GameEvent {
      * @param name       name of the event
      * @param context    context of the event
      */
-    public GameEvent(String name, Object context) {
-        this.name    = name;
-        this.context = context;
-    }
+//    public GameEvent(String name, Object context) {
+//        this.name    = name;
+//        this.context = context;
+//    }
 
     /**
      * Create a new event
@@ -65,68 +62,68 @@ public class GameEvent {
      * @param context    context of the event
      * @param userInfo   user info for the event
      */
-    public GameEvent(String name, Object context, Object userInfo) {
-        this.name     = name;
-        this.context  = context;
-        this.userInfo = userInfo;
-    }
+//    public GameEvent(String name, Object context, Object userInfo) {
+//        this.name     = name;
+//        this.context  = context;
+//        this.userInfo = userInfo;
+//    }
 
    /**
     * Cancel the event
     */
-    public void cancel() {
-        this.cancelled = true;
-    }
+//    public void cancel() {
+//        this.cancelled = true;
+//    }
 
     /**
      * Flag the event as queued
      */
-     public void queueEvent() {
-         this.inQueue = true;;
-     }
+//     public void queueEvent() {
+//         this.inQueue = true;;
+//     }
     
    /**
     * Check, whether the event has been cancelled
     * 
     * @return       true, if the event has been cancelled, false otherwise
     */
-    public boolean isCancelled() {
-        return this.cancelled;
-    }
+//    public boolean isCancelled() {
+//        return this.cancelled;
+//    }
 
     /**
      * Check, whether the event already is in a queue
      * 
      * @return       true, if the event is queued, false otherwise
      */
-     public boolean isQueued() {
-         return this.inQueue;
-     }
+//     public boolean isQueued() {
+//         return this.inQueue;
+//     }
     
    /**
     * Get the name of the event
     * 
     * @return   name of the event
     */
-    public String getName() {
-        return this.name;
-    }
+//    public String getName() {
+//        return this.name;
+//    }
 
    /**
     * Get the event context
     * 
     * @return   Context of the ecent
     */
-    public Object getContext() {
-        return this.context;
-    }
+//    public Object getContext() {
+//        return this.context;
+//    }
 
    /**
     * Get the (optional) user info
     * 
     * @return   any user info that has been passed to the constructor
     */
-    public Object getUserInfo() {
-        return this.userInfo;
-    }
+//    public Object getUserInfo() {
+//        return this.userInfo;
+//    }
 }
