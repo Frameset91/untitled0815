@@ -165,6 +165,13 @@ public class CommunicationServer extends Thread {
 			} // while
 
 		} // if
+		
+		// Umwandlung von backslashes im Pfad in normale Slashes		
+		if(serverFilePath.contains("\\")){
+			serverFilePath = serverFilePath.replace("\\", "/");
+		}
+		
+		//vollstaendige Pfade mit Dateinamen bauen
 		this.serverfilepath = serverFilePath + "/server2spieler" + role
 				+ ".xml";
 		this.serverfilepath = this.serverfilepath.toLowerCase();
@@ -220,6 +227,13 @@ public class CommunicationServer extends Thread {
 				Log.getInstance().write(
 						"Communication Server: Event OppMove gesendet");
 			}
+			// Sieger ist bestimmt
+						if (!msg.getSieger().equals("offen")) {
+							this.fireGameEvent(GameEvent.Type.WinnerSet,
+									String.valueOf(msg.getSieger()));
+							Log.getInstance().write(
+									"Communication Server: WinnerSet Event gesendet");
+						}
 			// Satz ist beendet
 			if (msg.getSatzstatus().equals("beendet")) {
 				this.fireGameEvent(GameEvent.Type.EndSet,
@@ -227,13 +241,7 @@ public class CommunicationServer extends Thread {
 				Log.getInstance().write(
 						"Communication Server: Event EndSet gesendet");
 			}
-			// Sieger ist bestimmt
-			if (!msg.getSieger().equals("offen")) {
-				this.fireGameEvent(GameEvent.Type.WinnerSet,
-						String.valueOf(msg.getSieger()));
-				Log.getInstance().write(
-						"Communication Server: WinnerSet Event gesendet");
-			}
+			
 			lastchange = serverFile.lastModified();
 
 		} catch (Exception e) {
