@@ -10,22 +10,22 @@ body {
     margin:0;
 }
 a:link, a:visited {
-    text-decoration:none;
+    text-decoration: none;
     color:#4c6b87;
 }
 a:hover, a:focus {
-    text-decoration:none;
+    text-decoration: none;
     color:#bb7a2a;
 }
 a:active {
-    text-decoration:none;
+    text-decoration: none;
     color:#4c6b87;
 }
 a[name] {
     color:#353833;
 }
 a[name]:hover {
-    text-decoration:none;
+    text-decoration: none;
     color:#353833;
 }
 pre {
@@ -85,7 +85,7 @@ Document title and Copyright styles
 }
 .bar a, .bar a:link, .bar a:visited, .bar a:active {
     color:#FFFFFF;
-    text-decoration:none;
+    text-decoration: none;
 }
 .bar a:hover, .bar a:focus {
     color:#bb7a2a;
@@ -94,7 +94,7 @@ Document title and Copyright styles
     background-color:#0066FF;
     background-image:url("resources/titlebar.gif");
     background-position:left top;
-    background-repeat:no-repeat;
+    background-repeat: no-repeat;
     color:#ffffff;
     padding:8px;
     width:5em;
@@ -155,21 +155,21 @@ ul.navList, ul.subNavList {
     padding:0;
 }
 ul.navList li{
-    list-style:none;
+    list-style: none;
     float:left;
     padding:3px 6px;
 }
 ul.subNavList li{
-    list-style:none;
+    list-style: none;
     float:left;
     font-size:90%;
 }
 .topNav a:link, .topNav a:active, .topNav a:visited, .bottomNav a:link, .bottomNav a:active, .bottomNav a:visited {
     color:#FFFFFF;
-    text-decoration:none;
+    text-decoration: none;
 }
 .topNav a:hover, .bottomNav a:hover {
-    text-decoration:none;
+    text-decoration: none;
     color:#bb7a2a;
 }
 .navBarCell1Rev {
@@ -209,7 +209,7 @@ Page header and footer styles
     margin:20px 0 5px 0;
 }
 .header ul li, .footer ul li {
-    list-style:none;
+    list-style: none;
     font-size:1.2em;
 }
 /*
@@ -258,7 +258,7 @@ Page layout container styles
     padding:0;
 }
 .indexContainer ul li {
-    list-style:none;
+    list-style: none;
 }
 .contentContainer .description dl dt, .contentContainer .details dl dt, .serializedFormContainer dl dt {
     font-size:1.1em;
@@ -293,7 +293,7 @@ ul.inheritance {
 }
 ul.inheritance li {
     display:inline;
-    list-style:none;
+    list-style: none;
 }
 ul.inheritance li ul.inheritance {
     margin-left:15px;
@@ -305,7 +305,7 @@ ul.blockList, ul.blockListLast {
     padding:0;
 }
 ul.blockList li.blockList, ul.blockListLast li.blockList {
-    list-style:none;
+    list-style: none;
     margin-bottom:25px;
 }
 ul.blockList ul.blockList li.blockList, ul.blockList ul.blockListLast li.blockList {
@@ -317,18 +317,18 @@ ul.blockList ul.blockList ul.blockList li.blockList, ul.blockList ul.blockList u
     padding:0 0 5px 8px;
     background-color:#ffffff;
     border:1px solid #9eadc0;
-    border-top:none;
+    border-top: none;
 }
 ul.blockList ul.blockList ul.blockList ul.blockList li.blockList {
     margin-left:0;
     padding-left:0;
     padding-bottom:15px;
-    border:none;
+    border: none;
     border-bottom:1px solid #9eadc0;
 }
 ul.blockList ul.blockList ul.blockList ul.blockList li.blockListLast {
-    list-style:none;
-    border-bottom:none;
+    list-style: none;
+    border-bottom: none;
     padding-bottom:0;
 }
 table tr td dl, table tr td dl dt, table tr td dl dd {
@@ -346,7 +346,7 @@ Table styles
     width:100%;
 }
 .contentContainer .description table, .contentContainer .details table {
-    border-bottom:none;
+    border-bottom: none;
 }
 .contentContainer ul li table th.colOne, .contentContainer ul li table th.colFirst, .contentContainer ul li table th.colLast, .classUseContainer ul li table th, .constantValuesContainer ul li table th, .contentContainer ul li table td.colOne, .contentContainer ul li table td.colFirst, .contentContainer ul li table td.colLast, .classUseContainer ul li table td, .constantValuesContainer ul li table td{
     vertical-align:top;
@@ -361,10 +361,10 @@ Table styles
 .overviewSummary caption, .packageSummary caption, .contentContainer ul.blockList li.blockList caption, .summary caption, .classUseContainer caption, .constantValuesContainer caption {
     position:relative;
     text-align:left;
-    background-repeat:no-repeat;
+    background-repeat: no-repeat;
     color:#FFFFFF;
     font-weight:bold;
-    clear:none;
+    clear: none;
     overflow:hidden;
     padding:0px;
     margin:0px;
@@ -373,7 +373,7 @@ caption a:link, caption a:hover, caption a:active, caption a:visited {
     color:#FFFFFF;
 }
 .overviewSummary caption span, .packageSummary caption span, .contentContainer ul.blockList li.blockList caption span, .summary caption span, .classUseContainer caption span, .constantValuesContainer caption span {
-    white-space:nowrap;
+    white-space: nowrap;
     padding-top:8px;
     padding-left:8px;
     display:block;
@@ -384,7 +384,7 @@ caption a:link, caption a:hover, caption a:active, caption a:visited {
 .overviewSummary .tabEnd, .packageSummary .tabEnd, .contentContainer ul.blockList li.blockList .tabEnd, .summary .tabEnd, .classUseContainer .tabEnd, .constantValuesContainer .tabEnd {
     width:10px;
     background-image:url("resources/titlebar_end.gif");
-    background-repeat:no-repeat;
+    background-repeat: no-repeat;
     background-position:top right;
     position:relative;
     float:left;
@@ -418,7 +418,7 @@ td.colOne a:link, td.colOne a:active, td.colOne a:visited, td.colOne a:hover, td
 }
 td.colFirst, th.colFirst {
     border-left:1px solid #9eadc0;
-    white-space:nowrap;
+    white-space: nowrap;
 }
 td.colLast, th.colLast {
     border-right:1px solid #9eadc0;
