@@ -6,10 +6,9 @@ package utilities;
  *
  */
 import java.io.*; 
-import javafx.concurrent.Task;
-import core.*;
 
-import utilities.*;
+
+
 
 public class CommunicationServer extends Thread {
 	// Singleton Referenz
@@ -23,57 +22,7 @@ public class CommunicationServer extends Thread {
 	private Thread leserthread;
 	private boolean newFile = true;
 
-	// private List<GameEventListener_old> _listeners = new
-	// ArrayList<GameEventListener_old>();
-	//
-	//
-	//
-	// /**
-	// * Listener für Events hinzufügen
-	// * @param listener
-	// */
-	// public synchronized void addEventListener(GameEventListener_old listener)
-	// {
-	// _listeners.add(listener);
-	// }
-	//
-	// /**
-	// * Listener für Events löschen
-	// * @param listener
-	// */
-	//
-	// public synchronized void removeEventListener(GameEventListener_old
-	// listener) {
-	// _listeners.remove(listener);
-	// }
-
-	/**
-	 * call this method whenever you want to notify the event listeners of the
-	 * particular event
-	 * 
-	 * @param type
-	 *            Typ des Events
-	 */
-
-	// private synchronized void fireEvent(byte type) {
-	// // GameEvent event = new GameEvent(this, type);
-	// // Iterator i = _listeners.iterator();
-	// // while (i.hasNext()) {
-	// // ((GameEventListener_old) i.next()).handleEvent(event);
-	// // }
-	//
-	// Task aufgabe = new Task<Void>() {
-	// protected Void call() throws Exception {
-	// EventDispatcher Dispatcher = EventDispatcher.getInstance();
-	// GameEvent e = (GameEvent)Dispatcher.triggerEvent("GameEvent", true);
-	// return null;
-	// }};
-	// new Thread(aufgabe).start();
-	//
-	//
-	//
-	// }
-
+	
 	/**
 	 * Diese Methode löst die jeweiligen Events aus und startet deren
 	 * Verarbeitung
@@ -89,9 +38,8 @@ public class CommunicationServer extends Thread {
 
 				GameEvent event = new GameEvent(type, arg);
 				try {
-					GameEvent Dispatcher = EventDispatcher.getInstance().triggerEvent(event);
+					EventDispatcher.getInstance().triggerEvent(event);
 				} catch (Exception e) {
-					// TODO Auto-generated catch block
 					Log.getInstance().write("Fehler: Event konnte nicht geworfen werden!");
 				}
 
@@ -147,7 +95,7 @@ public class CommunicationServer extends Thread {
 				if (old.exists() && (lastchange == old.lastModified())) {
 
 					try {
-						this.sleep(300);
+						Thread.sleep(300);
 					} catch (InterruptedException e) {}
 				} else {
 					newFile = true;
@@ -260,14 +208,6 @@ public class CommunicationServer extends Thread {
 			Thread.sleep(this.timeout);
 		}
 		msg = XmlParser.readXML(serverFile);
-		// if(this.lastchange == serverFile.lastModified()){
-		// msg = null;
-		// }
-		// if (msg == null){
-		// Thread.sleep(this.timeout);
-		// }
-		// }
-
 		return msg;
 	}
 
@@ -316,8 +256,6 @@ public class CommunicationServer extends Thread {
  * @author Bjoern List
  * 
  */
-
-// TODO ggf. in die CommunicationServer Klasse auslagern
 
 class ReadServerFileThread extends Thread {
 	@Override

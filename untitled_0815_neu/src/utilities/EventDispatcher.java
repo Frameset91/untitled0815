@@ -1,7 +1,4 @@
 package utilities;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
 
 /**
  * Dispatcher für die Events
@@ -52,13 +49,9 @@ public class EventDispatcher {
      * EventListener loeschen
      * 
      * @param listener       EventListener Instanz
-     * @return
+     *
      */
      public void removeEventListener( GameEventListener listener) {
-//         if (!this.listeners.containsKey(eventName)) {
-//             return null;
-//         }
-         
     	 listeners.removeListener(listener);
               
      }
@@ -68,12 +61,11 @@ public class EventDispatcher {
      *	Event an die Listener weiterreichen
      * 
      * @param e  Event 
-     * @return   Event
      * @throws Exception 
      */
-     public GameEvent triggerEvent(GameEvent e) throws Exception {
+     public  void triggerEvent(GameEvent e) throws Exception {
     	 listeners.propagate(e);
-    	 return e;
+    	
      }
     
    

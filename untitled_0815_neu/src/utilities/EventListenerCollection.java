@@ -21,11 +21,10 @@ public class EventListenerCollection {
 	 * 
 	 * @param listener
 	 *            Event Listener
-	 * @return ANzahl der gesamten Listener
+	 * 
 	 */
-	public int addListener(GameEventListener listener) {
+	public void addListener(GameEventListener listener) {
 		this.listeners.add(listener);
-		return this.listeners.size();
 	}
 
 	/**
@@ -33,13 +32,12 @@ public class EventListenerCollection {
 	 * 
 	 * @param e
 	 *            event
-	 * @return event
+	 * 
 	 */
-	public GameEvent propagate(final GameEvent e) throws Exception {
-		ArrayList<GameEventListener> remove = new ArrayList<GameEventListener>();
+	public void propagate(final GameEvent e) throws Exception {
 		for (int i = 0; i < this.listeners.size(); i++) {
 
-			Task aufgabe = new Task<Void>() {
+			Task<Void> aufgabe = new Task<Void>() {
 				protected Void call() throws Exception {
 					for (int i = 0; i < listeners.size(); i++) {
 						listeners.get(i).handleEvent(e);
@@ -50,7 +48,6 @@ public class EventListenerCollection {
 			new Thread(aufgabe).start();
 
 		}
-		return e;
 	}
 
 	/**
@@ -59,7 +56,7 @@ public class EventListenerCollection {
 	 * 
 	 * @param listener
 	 *            listener to remove
-	 * @return
+	 * 
 	 */
 	public void removeListener(GameEventListener listener) {
 		for (Iterator<GameEventListener> iter = this.listeners.iterator(); iter
