@@ -26,6 +26,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 public class MainUIController implements Initializable {
@@ -284,6 +285,7 @@ public class MainUIController implements Initializable {
 		}
 		else{
 			final Stage stage = new Stage();
+			stage.initModality(Modality.APPLICATION_MODAL);
 			Group rootEinstellungen = new Group();
 			Scene scene = new Scene(rootEinstellungen, 250, 80, Color.WHITESMOKE);
 			stage.setScene(scene);
