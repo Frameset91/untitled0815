@@ -289,7 +289,15 @@ public class MainUIController implements Initializable {
 			stage.setScene(scene);
 			stage.centerOnScreen();
 			Text text = new Text(20,40, "Bitte alle Spieleinstellungen definieren!");
-			rootEinstellungen.getChildren().add(text);
+			Button button = new Button("OK");
+			button.setOnAction(new EventHandler<ActionEvent>(){
+				public void handle(ActionEvent close){
+					stage.close();
+				}
+			});
+			VBox vbox = new VBox(10);
+			vbox.getChildren().addAll(text, button);
+			rootEinstellungen.getChildren().add(vbox);
 			stage.show();
 		}
 	}
