@@ -98,6 +98,7 @@ public class CommunicationServer {
 		// neuen Thread starten
 		this.leserthread = new Thread(new ReadServerFileThread());
 		this.leserthread.start();
+		this.leserthread.setName("CommunicationServer Thread");
 
 	}
 
@@ -246,7 +247,7 @@ public class CommunicationServer {
 
 				this.agentfilepath = agentFilePath + "/spieler" + role
 						+ "2server.txt";
-				this.agentfilepath = this.agentfilepath.toLowerCase();
+				
 				this.agentFile = new File(agentfilepath);
 				FileWriter schreiber = new FileWriter(this.agentFile);
 				schreiber.write(Integer.toString(spalte));
@@ -283,4 +284,5 @@ class ReadServerFileThread extends Thread {
 		this.interrupt();
 	}
 
+	
 }

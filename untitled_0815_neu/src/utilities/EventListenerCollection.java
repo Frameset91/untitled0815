@@ -45,7 +45,9 @@ public class EventListenerCollection {
 					return null;
 				}
 			};
-			new Thread(aufgabe).start();
+			Thread t = new Thread(aufgabe);
+			t.setName("Event "+ e.getType() +  " abarbeiten");
+			t.start();
 
 		}
 	}
