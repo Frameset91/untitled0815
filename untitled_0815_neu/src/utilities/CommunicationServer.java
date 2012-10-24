@@ -18,15 +18,14 @@ public class CommunicationServer {
 	private File agentFile;
 	private Thread leserthread;
 	private boolean newFile = true;
-
+	private char ownRole;
+	
 	/**
 	 * Diese Methode löst die jeweiligen Events aus und startet deren
 	 * Verarbeitung
 	 * 
-	 * @param type
-	 *            Typ des GameEvents
-	 * @param arg
-	 *            Argumente, die zusätzlich mit dem GameEvent übergeben werden
+	 * @param type  Typ des GameEvents
+	 * @param args  Argumente, die zusätzlich mit dem GameEvent übergeben werden
 	 */
 
 	public void fireGameEvent(final GameEvent.Type type, final String arg) {
@@ -83,42 +82,10 @@ public class CommunicationServer {
 	 */
 	public void enableReading(int timeout, String serverFilePath, char role) {
 		this.timeout = timeout;
+		this.serverfilepath = serverFilePath;
+		this.ownRole = role;
 
-		if (!newFile) {
-
-			// warten bis File gelöscht
-			while (true) {
-				File old = new File(serverFilePath + "/server2spieler" + role
-						+ ".xml");
-
-				// prüfen ob File noch vorhanden und ob wirklich das alte File
-				if (old.exists() && (lastchange == old.lastModified())) {
-
-					try {
-						Thread.sleep(300);
-					} catch (InterruptedException e) {
-					}
-				} else {
-					newFile = true;
-					break;
-
-				} // if
-
-			} // while
-
-		} // if
-
-		// Umwandlung von backslashes im Pfad in normale Slashes
-		if (serverFilePath.contains("\\")) {
-			serverFilePath = serverFilePath.replace("\\", "/");
-		}
-
-		// vollstaendige Pfade mit Dateinamen bauen
-		this.serverfilepath = serverFilePath + "/server2spieler" + role
-				+ ".xml";
-		this.serverfilepath = this.serverfilepath.toLowerCase();
-		this.serverFile = new File(serverfilepath);
-
+		
 		// Puefung, ob noch ein Leserthread läuft
 		if (this.leserthread != null) {
 			// alten Leserthread stoppen
@@ -153,6 +120,42 @@ public class CommunicationServer {
 	 * Ueberwachung der Serverdatei Meldung an alle Event Listener auslösen
 	 */
 	public void ueberwachen() {
+		if (!newFile) {
+
+			// warten bis File gelöscht
+			while (true) {
+				File old = new File(serverfilepath + "/server2spieler" + ownRole
+						+ ".xml");
+
+				// prüfen ob File noch vorhanden und ob wirklich das alte File
+				if (old.exists() && (lastchange == old.lastModified())) {
+
+					try {
+						Thread.sleep(300);
+					} catch (InterruptedException e) {
+					}
+				} else {
+					newFile = true;
+					break;
+
+				} // if
+
+			} // while
+
+		} // if
+
+		// Umwandlung von backslashes im Pfad in normale Slashes
+		if (serverfilepath.contains("\\")) {
+			serverfilepath = serverfilepath.replace("\\", "/");
+		}
+
+		// vollstaendige Pfade mit Dateinamen bauen
+		this.serverfilepath = serverfilepath + "/server2spieler" + ownRole
+				+ ".xml";
+		this.serverfilepath = this.serverfilepath.toLowerCase();
+		this.serverFile = new File(serverfilepath);
+
+		
 		// Auslesen der Datei
 		Log.getInstance().write("Communication Server:Ueberwachen startet");
 		try {
