@@ -49,11 +49,15 @@ public class MainUIController implements Initializable{
 	
 	//Menü
 	@FXML
+	private MenuItem menuSpielStarten;
+	@FXML
 	private MenuItem menuSchliessen; 
 	@FXML
 	private MenuItem menuSteuerung;
 	@FXML
 	private MenuItem logAnzeigen;
+	@FXML
+	private MenuItem menuSpielBeenden;
 	
 	//Für Binding relevant
 	@FXML
@@ -246,6 +250,8 @@ public class MainUIController implements Initializable{
 			btnEndGame.disableProperty().set(true);
 			break;
 		case Constants.STATE_SET_ENDED:	
+			menuSpielStarten.disableProperty().set(true);
+			
 			gameSettings.disableProperty().set(true);
 			gameField.disableProperty().set(false);
 			btnNewSet.disableProperty().set(true);
@@ -261,7 +267,9 @@ public class MainUIController implements Initializable{
 			btnEndGame.disableProperty().set(true);
 			if(!viewModel.isReplay().get()) break;
 		case Constants.STATE_GAME_RUNNING:
+			menuSpielStarten.disableProperty().set(true);
 			menuSchliessen.disableProperty().set(true);
+			menuSpielBeenden.disableProperty().set(false);
 			gameSettings.disableProperty().set(true);
 			gameField.disableProperty().set(true);
 			btnNewSet.disableProperty().set(false);
@@ -321,7 +329,7 @@ public class MainUIController implements Initializable{
 	
 	//Spiel starten gedrückt
 	@FXML
-	private void handleStartGame(MouseEvent e){
+	private void handleStartGame(ActionEvent e){
 		if (rolle.getValue() != null && gegnername.getText() != null && verzeichnispfad.getText() != null){
 			viewModel.startGame();
 		}
@@ -347,7 +355,7 @@ public class MainUIController implements Initializable{
 	}
 	//Spiel beenden gedrückt
 	@FXML
-	private void handleEndGame(MouseEvent e){
+	private void handleEndGame(ActionEvent e){
 		viewModel.endGame();
 	}
 	//Satz starten gedrückt
@@ -398,7 +406,7 @@ public class MainUIController implements Initializable{
 		 * @TODO Tabelle der gespeicherten Spiele einbinden
 		 */
 		savedGamesTable.prefWidthProperty().bind(sceneLog.widthProperty().subtract(100));
-		Loads.getChildren().addAll(ueberschrift, savedGamesTable, close, load);
+		Loads.getChildren().addAll(ueberschrift, savedGamesTable, load, close);
 		Loads.setLayoutX(50);
 		rootLoad.getChildren().add(Loads);
 		savedGamesTable.getSelectionModel().selectFirst();
