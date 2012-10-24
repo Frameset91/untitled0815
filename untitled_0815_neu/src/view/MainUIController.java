@@ -53,6 +53,8 @@ public class MainUIController implements Initializable{
 	@FXML
 	private MenuItem menuSchliessen; 
 	@FXML
+	private MenuItem menuSpielLaden;
+	@FXML
 	private MenuItem menuSteuerung;
 	@FXML
 	private MenuItem logAnzeigen;
@@ -172,6 +174,12 @@ public class MainUIController implements Initializable{
 		
 		btnNextMove.visibleProperty().bind(viewModel.isReplay());
 		
+		//Menü-Einträge an Buttons binden
+		menuSpielStarten.disableProperty().bind(gameSettings.disableProperty());
+		menuSpielBeenden.disableProperty().bind(btnEndGame.disableProperty());
+		menuSpielLaden.disableProperty().bind(gameSettings.disableProperty());
+		menuSchliessen.disableProperty().bind(gameSettings.disabledProperty());
+		
 		//Rollen Auswahl
 		rolle.valueProperty().bindBidirectional(viewModel.properties()[viewModel.ROLE_PROPERTY]);
 		rolle.getItems().addAll(String.valueOf(Constants.xRole), String.valueOf(Constants.oRole));
@@ -242,8 +250,6 @@ public class MainUIController implements Initializable{
 		//UI bei Zustandsänderungen anpassen
 		switch (viewModel.properties()[viewModel.STATE_PROPERTY].getValue()) {
 		case Constants.STATE_APP_RUNNING:
-			menuSpielStarten.disableProperty().set(false);
-			menuSchliessen.disableProperty().set(false);
 			gameSettings.disableProperty().set(false);
 			gameField.disableProperty().set(true);
 			btnNewSet.disableProperty().set(true);
@@ -251,8 +257,6 @@ public class MainUIController implements Initializable{
 			btnEndGame.disableProperty().set(true);
 			break;
 		case Constants.STATE_SET_ENDED:	
-			menuSpielStarten.disableProperty().set(true);
-			
 			gameSettings.disableProperty().set(true);
 			gameField.disableProperty().set(false);
 			btnNewSet.disableProperty().set(true);
@@ -268,9 +272,6 @@ public class MainUIController implements Initializable{
 			btnEndGame.disableProperty().set(true);
 			if(!viewModel.isReplay().get()) break;
 		case Constants.STATE_GAME_RUNNING:
-			menuSpielStarten.disableProperty().set(true);
-			menuSchliessen.disableProperty().set(true);
-			menuSpielBeenden.disableProperty().set(false);
 			gameSettings.disableProperty().set(true);
 			gameField.disableProperty().set(true);
 			btnNewSet.disableProperty().set(false);
