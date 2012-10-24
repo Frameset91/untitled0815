@@ -149,6 +149,7 @@ public class DBConnection {
 			String path = game.getPath();
 			int timeServer = game.getTimeoutServer();
 			int timeDraw = game.getTimeoutDraw();
+			Log log = Log.getInstance();
 			
 			try{
 				// überprüfen ob es sich um ein update oder insert handeln muss
@@ -168,6 +169,27 @@ public class DBConnection {
 				      }
 					//Anzahl geänderter Zeilen lesen
 					i = pstmt.getUpdateCount();
+					log.write(sql);
+					ResultSet rs1 = this.sendSelectStatementInternal("SELECT * FROM game WHERE gameID = " + id +";");
+					System.out.println("SELECT * FROM game WHERE gameID = " + id +";");
+					try{
+						while ( rs1.next() )
+					      {
+							String rs_gameID = rs1.getString(1);
+					        String rs_role = rs1.getString(2);
+					        String rs_oppName = rs1.getString(3);
+					        String rs_ownPoints = rs1.getString(4);
+					        String rs_oppPoints = rs1.getString(5);
+					        String rs_path = rs1.getString(6);
+					        String rs_timeServer = rs1.getString(7);
+					        String rs_timeDraw = rs1.getString(8);
+					        String saved = rs_gameID + ","+ rs_role +  ","+ rs_oppName +  ","+ rs_ownPoints +',' +rs_oppPoints +  ","
+					        		+ rs_path +  ","+ rs_timeServer + ", " + rs_timeDraw;
+					        log.write(saved);
+					      }
+						}catch (Exception e){
+								e.printStackTrace();
+							}
 				}else {
 					// falls update
 					sql = "UPDATE game SET (role, oppname, ownPoints, oppPoints) = ('" + role + "', '" + oppName + "', '" 
@@ -176,8 +198,33 @@ public class DBConnection {
 					Statement stmt = con.createStatement();
 					// update an DB schicken
 					i = stmt.executeUpdate(sql); //i ist row count
-					if (i != 1)
+					
+					if (i != 1){
 							System.out.println("Fehler beim Schreiben in DB");
+							log.write("Game wurde nicht gespeichert");
+					}else{
+						log.write(sql);
+						ResultSet rs = this.sendSelectStatementInternal("SELECT * FROM game WHERE gameID = " + gameID +";");
+						try{
+							while ( rs.next() )
+						      {
+								String rs_gameID = rs.getString(1);
+						        String rs_role = rs.getString(2);
+						        String rs_oppName = rs.getString(3);
+						        String rs_ownPoints = rs.getString(4);
+						        String rs_oppPoints = rs.getString(5);
+						        String rs_path = rs.getString(6);
+						        String rs_timeServer = rs.getString(7);
+						        String rs_timeDraw = rs.getString(8);
+						        String saved = rs_gameID + ","+ rs_role +  ","+ rs_oppName +  ","+ rs_ownPoints +',' +rs_oppPoints +  ","
+						        		+ rs_path +  ","+ rs_timeServer + ", " + rs_timeDraw;
+						        log.write(saved);
+						      }
+						}catch (Exception e){
+							e.printStackTrace();
+						}
+						
+					}
 				}// else, also update
 				
 			}catch ( SQLException e ) {
