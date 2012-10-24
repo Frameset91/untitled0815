@@ -9,8 +9,10 @@ import utilities.*;
 
 public class Connect4 extends Application {
 
-	//Methoden um das Prog zu starten
-
+	
+	/**
+	 * Start Methode für das UI
+	 */
 	@Override
 	public void start(Stage stage) throws Exception {
         stage.setTitle("Test für Spielfeld mit FXML"); 
@@ -21,16 +23,19 @@ public class Connect4 extends Application {
 	}
 
 	/**
+	 * Start der 4-Gewinnt Applikation
 	 * @param args
 	 */
 	public static void main(String[] args) {
 		launch(args);
-
 	}
 	
+	/**
+	 * Stop Methode, wenn Programm geschlossen wird
+	 * 
+	 */
 	@Override
 	public void stop() throws Exception {
-		// TODO Auto-generated method stub
 		CommunicationServer.getInstance().disableReading();
 		super.stop();
 	}
