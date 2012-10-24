@@ -181,9 +181,9 @@ public class GameController implements GameEventListener, Observer{
 	 * Methode um vom UI aus den Gewinner zu best‰tigen und somit den Satz abzuschlieﬂen und zu speichern
 	 */	
 	public void confirmSetWinner(){
-		Log.getInstance().write("Controller: Gewinner best‰tigt, FxThread:" + Platform.isFxApplicationThread());
-		model.save();
+		Log.getInstance().write("Controller: Gewinner best‰tigt, FxThread:" + Platform.isFxApplicationThread());		
 		properties[STATE_PROPERTY].set(Constants.STATE_GAME_RUNNING);
+		model.save();
 	}
 	
 	/**
