@@ -12,12 +12,12 @@ public class CommunicationServer {
 	private static CommunicationServer singleton = null;
 	private String serverfilepath;
 	private String agentfilepath;
-	private long lastchange;
+	private long lastchange = 0;
 	private int timeout;
 	private File serverFile;
 	private File agentFile;
 	private Thread leserthread;
-	private boolean newFile = true;
+	private boolean newSet;
 	private char ownRole;
 
 	/**
@@ -82,11 +82,12 @@ public class CommunicationServer {
 	 * die alte, bereits gelesene, Datei noch vorhanden ist und wartet bis diese
 	 * gelöscht ist.
 	 */
-	public void enableReading(int timeout, String serverFilePath, char role) {
+	public void enableReading(int timeout, String serverFilePath, char role, boolean Set) {
 		this.timeout = timeout;
 		this.serverfilepath = serverFilePath;
 		this.ownRole = role;
-
+		this.newSet = Set;
+		
 		// Puefung, ob noch ein Leserthread läuft
 		if (this.leserthread != null) {
 			// alten Leserthread stoppen
@@ -121,33 +122,42 @@ public class CommunicationServer {
 	 * Ueberwachung der Serverdatei Meldung an alle Event Listener auslösen
 	 */
 	public void ueberwachen() {
-		if (!newFile) {
-
-			// warten bis File gelöscht
-			while (true) {
-				File old = new File(serverfilepath + "/server2spieler"
-						+ ownRole + ".xml");
-
-				// prüfen ob File noch vorhanden und ob wirklich das alte File
-				if (old.exists() && (lastchange == old.lastModified())) {
-
-					try {
-						Thread.sleep(300);
-					} catch (InterruptedException e) {
+		
+		
+		try {
+			File old = new File(serverfilepath + "/server2spieler"
+					+ ownRole + ".xml");
+			// neuer Satz
+			if(this.newSet){
+				if (old.exists()){
+					ServerMessage msg = XmlParser.getInstance()
+							.readXML(old);
+					if (msg.getSatzstatus().equals("beendet")) {
+						old.delete();
 					}
-				} else {
-					newFile = true;
+				}
+			} else{
+				while(true){
+				if (old.exists() && (lastchange ==  old.lastModified())){
+					Thread.sleep(300);
+				}else{
 					break;
-
-				} // if
-
-			} // while
-
-		} // if
+				}
+				}
+				
+			}
+			
+					} catch (Exception e) {
+		}
 
 		// Umwandlung von backslashes im Pfad in normale Slashes
 		if (serverfilepath.contains("\\")) {
 			serverfilepath = serverfilepath.replace("\\", "/");
+		}
+		
+		//Slash am Ende entfernen, falls vorhanden
+		if(serverfilepath.lastIndexOf("/") == serverfilepath.length()-1){
+			serverfilepath = serverfilepath.substring(0, serverfilepath.length()-1);
 		}
 
 		// vollstaendige Pfade mit Dateinamen bauen
@@ -160,8 +170,6 @@ public class CommunicationServer {
 		Log.getInstance().write("Communication Server:Ueberwachen startet");
 		try {
 			ServerMessage msg = this.read();
-			newFile = false;
-
 			// Auswerten des ServerFiles und werfen der entsprehenden Events
 			if (msg.getFreigabe().equals("true")) {
 				this.fireGameEvent(GameEvent.Type.OppMove,
@@ -226,9 +234,14 @@ public class CommunicationServer {
 				Log.getInstance().write(
 						"Zug schreiben im Pfad " + agentFilePath + "in Spalte "
 								+ spalte);
-
+				// Backslash in slash umwandeln
 				if (agentFilePath.contains("\\")) {
 					agentFilePath = agentFilePath.replace("\\", "/");
+				}
+				
+				//Slash am Ende entfernen, falls vorhanden
+				if(agentFilePath.lastIndexOf("/") == agentFilePath.length()-1){
+					agentFilePath = agentFilePath.substring(0, agentFilePath.length()-1);
 				}
 
 				this.agentfilepath = agentFilePath + "/spieler" + role
