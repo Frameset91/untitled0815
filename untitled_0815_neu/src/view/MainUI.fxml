@@ -18,6 +18,7 @@
     			<MenuItem fx:id="menuNeuesSpiel" text="Neues Spiel"/>
     			<MenuItem fx:id="menuSpielLaden" text="Spiel laden"/>
     			<MenuItem fx:id="menuSpielBeenden" text="Spiel beenden" disable="true"/>
+    			<MenuItem fx:id="LogAnzeigen" text="Log anzeigen" onAction="#handleLogAnzeigen"/>
     			<MenuItem fx:id="menuSchliessen" text="Schließen" onAction="#handleSchliessen"/>
     		</Menu>
     		<Menu text="Hilfe">
@@ -120,7 +121,6 @@
        				<items>
        				</items>
        			</TableView>
-       			<Button fx:id="logAnzeigen" text="Log anzeigen" disable="false" onMouseClicked="#handleLogAnzeigen"/>
  	  		</VBox>
        	</center>
        <bottom>

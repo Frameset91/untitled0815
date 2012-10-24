@@ -52,6 +52,8 @@ public class MainUIController implements Initializable{
 	private MenuItem menuSchließen; 
 	@FXML
 	private MenuItem menuAnleitung;
+	@FXML
+	private MenuItem logAnzeigen;
 	
 	//Für Binding relevant
 	@FXML
@@ -392,7 +394,7 @@ public class MainUIController implements Initializable{
 	}
 	// Log anzeigen
 	@FXML
-	private void handleLogAnzeigen(MouseEvent arg0){
+	private void handleLogAnzeigen(ActionEvent log){
 		//Fenster mit Log öffnen
 		final Stage stageAnleitung = new Stage();
 		Group rootLog = new Group();
