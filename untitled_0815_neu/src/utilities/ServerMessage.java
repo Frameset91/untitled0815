@@ -1,5 +1,5 @@
 package utilities;
-/*
+/**
  * Diese Klasse beschreibt eine neue Nachricht des Servers an die Agenten
  * 
  * @author Bjoern List 
@@ -11,10 +11,16 @@ private String satzstatus;
 private int gegnerzug;
 private String sieger;
 
+/**
+ * Konstruktor
+ */
 public ServerMessage() {
 	
 }
 
+/**
+ *  Beginn Getter und Setter
+ */
 
 
 public String getFreigabe() {
@@ -42,6 +48,9 @@ public void setSieger(String sieger) {
 	this.sieger = sieger;
 }
 
+/**
+ * Ende Getter und Setter
+ */
 
 
 

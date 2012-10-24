@@ -5,10 +5,7 @@ package utilities;
  * @author Bjoern List
  *
  */
-import java.io.*; 
-
-
-
+import java.io.*;
 
 public class CommunicationServer extends Thread {
 	// Singleton Referenz
@@ -22,7 +19,6 @@ public class CommunicationServer extends Thread {
 	private Thread leserthread;
 	private boolean newFile = true;
 
-	
 	/**
 	 * Diese Methode löst die jeweiligen Events aus und startet deren
 	 * Verarbeitung
@@ -36,12 +32,13 @@ public class CommunicationServer extends Thread {
 	public void fireGameEvent(final GameEvent.Type type, final String arg) {
 		Log.getInstance().write("GameEvent gefeuert: " + type.toString());
 
-				GameEvent event = new GameEvent(type, arg);
-				try {
-					EventDispatcher.getInstance().triggerEvent(event);
-				} catch (Exception e) {
-					Log.getInstance().write("Fehler: Event konnte nicht geworfen werden!");
-				}
+		GameEvent event = new GameEvent(type, arg);
+		try {
+			EventDispatcher.getInstance().triggerEvent(event);
+		} catch (Exception e) {
+			Log.getInstance().write(
+					"Fehler: Event konnte nicht geworfen werden!");
+		}
 
 	}
 
@@ -68,9 +65,11 @@ public class CommunicationServer extends Thread {
 	private CommunicationServer() {
 
 	}
-	
+
 	/**
-	 * Liefert den eingestellten Timeoutwert zwischen 2 Zugriffen auf die Serverdatei
+	 * Liefert den eingestellten Timeoutwert zwischen 2 Zugriffen auf die
+	 * Serverdatei
+	 * 
 	 * @return int timeout
 	 */
 	public int getTimeout() {
@@ -78,14 +77,15 @@ public class CommunicationServer extends Thread {
 	}
 
 	/**
-	 * Startet die Abfrage der Serverdatei in einem neuen Thread.
-	 * Überprüft, ob die alte, bereits gelesene, Datei noch vorhanden ist und wartet bis diese gelöscht ist.
+	 * Startet die Abfrage der Serverdatei in einem neuen Thread. Überprüft, ob
+	 * die alte, bereits gelesene, Datei noch vorhanden ist und wartet bis diese
+	 * gelöscht ist.
 	 */
 	public void enableReading(int timeout, String serverFilePath, char role) {
 		this.timeout = timeout;
 
 		if (!newFile) {
-			
+
 			// warten bis File gelöscht
 			while (true) {
 				File old = new File(serverFilePath + "/server2spieler" + role
@@ -96,23 +96,24 @@ public class CommunicationServer extends Thread {
 
 					try {
 						Thread.sleep(300);
-					} catch (InterruptedException e) {}
+					} catch (InterruptedException e) {
+					}
 				} else {
 					newFile = true;
 					break;
 
-				} //if
+				} // if
 
 			} // while
 
 		} // if
-		
-		// Umwandlung von backslashes im Pfad in normale Slashes		
-		if(serverFilePath.contains("\\")){
+
+		// Umwandlung von backslashes im Pfad in normale Slashes
+		if (serverFilePath.contains("\\")) {
 			serverFilePath = serverFilePath.replace("\\", "/");
 		}
-		
-		//vollstaendige Pfade mit Dateinamen bauen
+
+		// vollstaendige Pfade mit Dateinamen bauen
 		this.serverfilepath = serverFilePath + "/server2spieler" + role
 				+ ".xml";
 		this.serverfilepath = this.serverfilepath.toLowerCase();
@@ -124,9 +125,8 @@ public class CommunicationServer extends Thread {
 			this.leserthread.interrupt();
 			this.leserthread = null;
 		} // if
-		
-		
-		//neuen Thread starten
+
+		// neuen Thread starten
 		this.leserthread = new Thread(new ReadServerFileThread());
 		this.leserthread.start();
 
@@ -166,15 +166,16 @@ public class CommunicationServer extends Thread {
 						"Communication Server: Event OppMove gesendet");
 			}
 			// Sieger ist bestimmt
-						if (!msg.getSieger().equals("offen")) {
-							char Winner = msg.getSieger().substring(
-									msg.getSieger().indexOf(" ")+1).charAt(0);
-							
-							this.fireGameEvent(GameEvent.Type.WinnerSet,
-									String.valueOf(Winner));
-							Log.getInstance().write(
-									"Communication Server: WinnerSet Event gesendet " + Winner);
-						}
+			if (!msg.getSieger().equals("offen")) {
+				char Winner = msg.getSieger()
+						.substring(msg.getSieger().indexOf(" ") + 1).charAt(0);
+
+				this.fireGameEvent(GameEvent.Type.WinnerSet,
+						String.valueOf(Winner));
+				Log.getInstance().write(
+						"Communication Server: WinnerSet Event gesendet "
+								+ Winner);
+			}
 			// Satz ist beendet
 			if (msg.getSatzstatus().equals("beendet")) {
 				this.fireGameEvent(GameEvent.Type.EndSet,
@@ -182,7 +183,7 @@ public class CommunicationServer extends Thread {
 				Log.getInstance().write(
 						"Communication Server: Event EndSet gesendet");
 			}
-			
+
 			lastchange = serverFile.lastModified();
 
 		} catch (Exception e) {
@@ -204,7 +205,7 @@ public class CommunicationServer extends Thread {
 		while (!serverFile.exists()) {
 			Thread.sleep(this.timeout);
 		}
-		msg = XmlParser.readXML(serverFile);
+		msg = XmlParser.getInstance().readXML(serverFile);
 		return msg;
 	}
 
@@ -221,11 +222,11 @@ public class CommunicationServer extends Thread {
 				Log.getInstance().write(
 						"Zug schreiben im Pfad " + agentFilePath + "in Spalte "
 								+ spalte);
-				
-				if(agentFilePath.contains("\\")){
+
+				if (agentFilePath.contains("\\")) {
 					agentFilePath = agentFilePath.replace("\\", "/");
 				}
-				
+
 				this.agentfilepath = agentFilePath + "/spieler" + role
 						+ "2server.txt";
 				this.agentfilepath = this.agentfilepath.toLowerCase();
@@ -238,17 +239,17 @@ public class CommunicationServer extends Thread {
 
 			} catch (Exception e) {
 				// e.printStackTrace();
-				Log.getInstance().write("Fehler - Move konnte nicht geschrieben werden!");
+				Log.getInstance().write(
+						"Fehler - Move konnte nicht geschrieben werden!");
 			}
 		} else {
-			Log.getInstance().write("Fehler - falsche Spalte ausgewaehlt oder Pfad nicht gesetzt");
+			Log.getInstance()
+					.write("Fehler - falsche Spalte ausgewaehlt oder Pfad nicht gesetzt");
 		}
 
 	}
 
-	
 }
-
 
 /**
  * Threadklasse zur Überwachung des Serverfiles

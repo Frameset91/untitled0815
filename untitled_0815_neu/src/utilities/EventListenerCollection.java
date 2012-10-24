@@ -8,7 +8,7 @@ import javafx.concurrent.Task;
 /**
  * Sicherung aller Event Listener
  * 
- * @author Bjoern
+ * @author Bjoern List
  * 
  * 
  */

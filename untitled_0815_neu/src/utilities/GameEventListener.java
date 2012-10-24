@@ -1,11 +1,10 @@
 package utilities;
 
-
 /**
- * 	Interface für die EventListener
+ * Interface für die EventListener
  * 
- * @author Bjoern
+ * @author Bjoern List
  */
 public interface GameEventListener {
-    public void handleEvent(GameEvent e) throws Exception;
+	public void handleEvent(GameEvent e) throws Exception;
 }

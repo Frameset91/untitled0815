@@ -1,12 +1,48 @@
 package utilities;
+
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.*;
 import org.w3c.dom.*;
 
+/**
+ * Klasse zum Parsen des Serverfiles und zur Erstellung eines ServerMessage
+ * Objektes
+ * 
+ * @author Bjoern List
+ * 
+ */
 public class XmlParser {
 
-	public static ServerMessage readXML(File file) throws Exception {
+	private static XmlParser singleton = null;
+
+	/**
+	 * privater Konstruktor
+	 */
+	private XmlParser() {
+
+	}
+	
+	/**
+	 * Liefert das Singleton Objekt zurück und erstellt es wenn notwendig
+	 * @return XmlParser singleton
+	 */
+	public static XmlParser getInstance() {
+		if (singleton == null) {
+			singleton = new XmlParser();
+		}
+		return singleton;
+
+	}
+
+	/**
+	 * Die Methode parst eine XML und speichert alle Elemente in einem ServerMessage Objekt
+	 * 
+	 * @param file XML Datei, die geparst werden soll
+	 * @return ServerMessage
+	 * @throws Exception
+	 */
+	public ServerMessage readXML(File file) throws Exception {
 		ServerMessage msg = null;
 		try {
 			DocumentBuilderFactory dbfactory = DocumentBuilderFactory
@@ -15,20 +51,19 @@ public class XmlParser {
 			Document doc = dBuilder.parse(file);
 			doc.getDocumentElement().normalize();
 
-			
 			// alle Elemente des XML Files in NodeList einfügen
 			NodeList nList = doc.getElementsByTagName(doc.getDocumentElement()
 					.getNodeName());
 
-			// create ServerMessage instance
+			// neue ServerMessage erzeugen
 			msg = new ServerMessage();
 
 			// jedes Node Element behandeln
 			for (int temp = 0; temp < nList.getLength(); temp++) {
 				// Node Element aus Liste erzeugen
 				Node nNode = nList.item(temp);
-				
-				//Wenn ein ELEMENT und kein KOPF Node
+
+				// Wenn ein ELEMENT und kein KOPF Node
 				if (nNode.getNodeType() == Node.ELEMENT_NODE) {
 					Element eElement = (Element) nNode;
 					msg.setFreigabe(getTagValue("freigabe", eElement));
@@ -48,11 +83,13 @@ public class XmlParser {
 
 	/**
 	 * Diese Methode liefert den Wert eines Tags im XML File
-	 * @param sTag String Name des Tags
+	 * 
+	 * @param sTag
+	 *            String Name des Tags
 	 * @param eElement
 	 * @return String Wert des Tags
 	 */
-	private static String getTagValue(String sTag, Element eElement) {
+	private String getTagValue(String sTag, Element eElement) {
 		NodeList nlList = eElement.getElementsByTagName(sTag).item(0)
 				.getChildNodes();
 
