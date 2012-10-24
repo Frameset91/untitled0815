@@ -91,7 +91,7 @@ public class GameController implements GameEventListener, Observer{
 		model.newSet().setStatus(Constants.STATE_SET_RUNNING);
 		
 		//ComServer starten
-		comServ.enableReading(model.getTimeoutServer(), model.getPath(), model.getRole());
+		comServ.enableReading(model.getTimeoutServer(), model.getPath(), model.getRole(),true);
 		properties[STATE_PROPERTY].set(Constants.STATE_SET_RUNNING);		
 	}
 	
@@ -453,7 +453,7 @@ public class GameController implements GameEventListener, Observer{
 			byte newCol = ki.calculateNextMove(oppMove);			
 			//Zug auf Server schreiben und Server wieder überwachen
 			comServ.writeMove(newCol, model.getPath(), model.getRole());
-			comServ.enableReading(model.getTimeoutServer(), model.getPath(), model.getRole());
+			comServ.enableReading(model.getTimeoutServer(), model.getPath(), model.getRole(), false);
 			
 			model.addMove(new Move(model.getRole(), newCol));
 		}		
