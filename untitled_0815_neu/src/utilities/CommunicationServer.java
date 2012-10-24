@@ -154,6 +154,11 @@ public class CommunicationServer {
 		if (serverfilepath.contains("\\")) {
 			serverfilepath = serverfilepath.replace("\\", "/");
 		}
+		
+		//Slash am Ende entfernen, falls vorhanden
+		if(serverfilepath.lastIndexOf("/") == serverfilepath.length()-1){
+			serverfilepath = serverfilepath.substring(0, serverfilepath.length()-1);
+		}
 
 		// vollstaendige Pfade mit Dateinamen bauen
 		this.serverfilepath = serverfilepath + "/server2spieler" + ownRole
@@ -229,9 +234,14 @@ public class CommunicationServer {
 				Log.getInstance().write(
 						"Zug schreiben im Pfad " + agentFilePath + "in Spalte "
 								+ spalte);
-
+				// Backslash in slash umwandeln
 				if (agentFilePath.contains("\\")) {
 					agentFilePath = agentFilePath.replace("\\", "/");
+				}
+				
+				//Slash am Ende entfernen, falls vorhanden
+				if(agentFilePath.lastIndexOf("/") == agentFilePath.length()-1){
+					agentFilePath = agentFilePath.substring(0, agentFilePath.length()-1);
 				}
 
 				this.agentfilepath = agentFilePath + "/spieler" + role
