@@ -157,9 +157,6 @@ public class CommunicationServer extends Thread {
 		try {
 			ServerMessage msg = this.read();
 			newFile = false;
-			System.out.println(msg.getFreigabe());
-			System.out.println(msg.getSatzstatus());
-
 			// Wenn Freigabe erfolgt ist - Benachritigung, dass nächster Zug
 			// gemacht werden muss
 			if (msg.getFreigabe().equals("true")) {
@@ -224,6 +221,11 @@ public class CommunicationServer extends Thread {
 				Log.getInstance().write(
 						"Zug schreiben im Pfad " + agentFilePath + "in Spalte "
 								+ spalte);
+				
+				if(agentFilePath.contains("\\")){
+					agentFilePath = agentFilePath.replace("\\", "/");
+				}
+				
 				this.agentfilepath = agentFilePath + "/spieler" + role
 						+ "2server.txt";
 				this.agentfilepath = this.agentfilepath.toLowerCase();
@@ -236,12 +238,10 @@ public class CommunicationServer extends Thread {
 
 			} catch (Exception e) {
 				// e.printStackTrace();
-				System.out
-						.println("Fehler - Move konnte nicht geschrieben werden!");
+				Log.getInstance().write("Fehler - Move konnte nicht geschrieben werden!");
 			}
 		} else {
-			System.out
-					.println("Fehler - falsche Spalte ausgewaehlt oder Pfad nicht gesetzt");
+			Log.getInstance().write("Fehler - falsche Spalte ausgewaehlt oder Pfad nicht gesetzt");
 		}
 
 	}
@@ -260,10 +260,8 @@ public class CommunicationServer extends Thread {
 class ReadServerFileThread extends Thread {
 	@Override
 	public void run() {
-		System.out.println("Thread startet");
 		Log.getInstance().write("Ueberwachung gestartet");
 		CommunicationServer.getInstance().ueberwachen();
-		Log.getInstance().write("Event gefeuert -- While Schleife verlassen");
 		this.interrupt();
 	}
 
