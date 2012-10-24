@@ -28,8 +28,9 @@ import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 
-public class MainUIController implements Initializable {
+public class MainUIController implements Initializable{
 	
 	private GameController viewModel; 
 	
