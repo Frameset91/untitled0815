@@ -242,6 +242,7 @@ public class MainUIController implements Initializable{
 		//UI bei Zustandsänderungen anpassen
 		switch (viewModel.properties()[viewModel.STATE_PROPERTY].getValue()) {
 		case Constants.STATE_APP_RUNNING:
+			menuSpielStarten.disableProperty().set(false);
 			menuSchliessen.disableProperty().set(false);
 			gameSettings.disableProperty().set(false);
 			gameField.disableProperty().set(true);
