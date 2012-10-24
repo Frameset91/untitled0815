@@ -15,7 +15,10 @@ import model.Set;
 /**
  * TO DO: 
  * bei save set: testaufruf für endtime enthalten
- * alle load-Methoden
+ * bei loadGame (ID): ownPoints und oppPoints setzen
+ * load-Methoden:
+ * 	set [] loadSets(gameID)
+ * 	move [] loadMoves (gameID, setID)
  *
  */
 
@@ -288,9 +291,9 @@ public class DBConnection {
 	
 	/**
 	 * 
-	 * lädt ein game, inklusive aller Sets und Moves
+	 * lädt ein game, entsprechend einer ID
 	 * @param gameID: ID des zu ladenen Games
-	 * @return Game
+	 * @return Game: Objekt des gewünschten Spiels
 	 */
 	public synchronized Game loadGame(int gameID) {
 		// Daten aus DB laden
@@ -324,18 +327,29 @@ public class DBConnection {
 		}
 		
 		//in game übernehmen
+		int timeServer;
+		int timedraw;
+		
 		char role = srole.charAt(0);
 		String oppname = soppName; 
 		String path = spath;
-		int timeServer = Integer.valueOf(stimeServer);
-		int timedraw = Integer.valueOf(stimeDraw);
+		if (stimeServer != null){
+			timeServer = Integer.valueOf(stimeServer);
+		}else timeServer = 0;
+		if (stimeDraw != null){
+			timedraw = Integer.valueOf(stimeDraw);
+		}else timedraw = 0;
 		int columns = Constants.gamefieldcolcount;
 		int rows = Constants.gamefieldrowcount;
+		
+////////////////// hier noch die Ounkte own und opp zuweisen --> funktion von Game benötigt!
 		
 		Game game = new Game(columns, rows, role, oppname, path, timeServer, timedraw, gameID);
 		
 		return game;
 	}
+	
+	
 	
 ///////////////////////////// bis hier gekommen
 //	

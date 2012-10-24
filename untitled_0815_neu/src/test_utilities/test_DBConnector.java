@@ -13,8 +13,12 @@ public class test_DBConnector {
 	
 	public static DBConnection con;
 
+/**
+ * testet saveMove(...)	
+ */
 	public static void testMove(){
-		Move myMove = new Move ('0', 3, 3); // letztes ist ID, immer ändern
+		Move myMove = new Move ('0', 3); // letztes ist ID, immer ändern
+		myMove.setID(3);
 		
 		boolean moveIns = con.saveMove(myMove, 1000, 1);
 		System.out.println ("erfolg: " + moveIns);
@@ -39,6 +43,9 @@ public class test_DBConnector {
 		
 	}// ende testMove
 	
+	/**
+	 * testet saveSet(...)
+	 */
 	public static void testSet() {
 		Set mySet = new Set (7,6,3); // letztes ist ID, immer ändern
 		
@@ -64,6 +71,9 @@ public class test_DBConnector {
 		
 	}// ende testSet
 	
+	/**
+	 * testet saveGame(...)
+	 */
 	public static void testGame() {
 		Game game = new Game(7, 6, 'x', "abc", "", 1,1);
 		
@@ -95,6 +105,17 @@ public class test_DBConnector {
 		
 	}
 	
+	/**
+	 * testet loadGame
+	 */
+	public static void testLoadGame(){
+		Game myGame = null;
+		myGame = con.loadGame(1001);
+		
+		System.out.println("Game: "+myGame.getID() +" opp: "+ myGame.getOppName() +" oppPoint: "+ myGame.getOppPoints() 
+				+" ownPoints: "+ myGame.getOwnPoints() +" path: "+ myGame.getPath() +" role: "+ myGame.getRole() 
+				+ " timoutDraw: "+ myGame.getTimeoutDraw() +" timoutServer: "+ myGame.getTimeoutServer());
+	}
 	
 	/**
 	 * @param args
@@ -106,7 +127,8 @@ public class test_DBConnector {
 		// zum testen jeweils auskommentieren (und bei Move und Set je in den Methoden eins hoch zählen):
 		//testMove();
 		//testSet();
-		testGame();
+		//testGame();
+		testLoadGame();
 				
 	}
 
