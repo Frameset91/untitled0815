@@ -59,8 +59,8 @@
  		       		<HBox GridPane.columnIndex="1" GridPane.rowIndex="5" spacing="5">
         				<TextField fx:id="timeoutAbfrage" maxWidth="60" text="300" styleClass="textfeld"/>
         				<VBox>
-        					<Button fx:id="timeoutHochAbfrage" text="+" maxWidth="15" maxHeight="16" styleClass="timeoutButton" onMouseClicked="#handleHoch1"/>
-        					<Button fx:id="timeoutRunterAbfrage" text="-" minHeight="15" maxHeight="12" styleClass="timeoutButton" onMouseClicked="#handleRunter1"/>
+        					<Button fx:id="timeoutHochAbfrage" text="+" maxHeight="16" maxWidth="23" styleClass="timeoutButton" onMouseClicked="#handleHoch1"/>
+        					<Button fx:id="timeoutRunterAbfrage" text="-" maxHeight="16" maxWidth="23" styleClass="timeoutButton" onMouseClicked="#handleRunter1"/>
         				</VBox>
        	 				<Label text="ms"/>
         			</HBox>
@@ -68,8 +68,8 @@
         			<HBox GridPane.columnIndex="1" GridPane.rowIndex="6" spacing="5">
         				<TextField fx:id="timeoutZugzeit" maxWidth="60" text="2000" styleClass="textfeld"/>
         				<VBox> <!-- Hoch/Runter -->
-        					<Button fx:id="timeoutHochZugzeit" text="+" minHeight="15" styleClass="timeoutButton" onMouseClicked="#handleHoch2"/>
-        					<Button fx:id="timeoutRunterZugzeit" text="-" minHeight="15" maxHeight="12" styleClass="timeoutButton" onMouseClicked="#handleRunter2"/>
+        					<Button fx:id="timeoutHochZugzeit" text="+" maxHeight="16" maxWidth="23" styleClass="timeoutButton" onMouseClicked="#handleHoch2"/>
+        					<Button fx:id="timeoutRunterZugzeit" text="-" maxHeight="16" maxWidth="23" styleClass="timeoutButton" onMouseClicked="#handleRunter2"/>
         				</VBox>
         				<Label text="ms"/>
         			</HBox>
