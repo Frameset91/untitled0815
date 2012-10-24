@@ -36,7 +36,7 @@ public class Connect4 extends Application {
 	 */
 	@Override
 	public void stop() throws Exception {
-		CommunicationServer.getInstance().disableReading();
+		//CommunicationServer.getInstance().disableReading();
 		super.stop();
 	}
 
