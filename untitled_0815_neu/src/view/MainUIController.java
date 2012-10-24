@@ -41,7 +41,7 @@ public class MainUIController implements Initializable{
 	@FXML
 	private VBox gameField;
 	@FXML
-	private VBox setSettings;
+	private Button btnNewSet;
 	@FXML
 	private Button btnEndGame;
 	@FXML
@@ -49,9 +49,9 @@ public class MainUIController implements Initializable{
 	
 	//Menü
 	@FXML
-	private MenuItem menuSchließen; 
+	private MenuItem menuSchliessen; 
 	@FXML
-	private MenuItem menuAnleitung;
+	private MenuItem menuSteuerung;
 	@FXML
 	private MenuItem logAnzeigen;
 	
@@ -215,30 +215,32 @@ public class MainUIController implements Initializable{
 		//UI bei Zustandsänderungen anpassen
 		switch (viewModel.properties()[viewModel.STATE_PROPERTY].getValue()) {
 		case Constants.STATE_APP_RUNNING:
+			menuSchliessen.disableProperty().set(false);
 			gameSettings.disableProperty().set(false);
 			gameField.disableProperty().set(true);
-			setSettings.disableProperty().set(true);
+			btnNewSet.disableProperty().set(true);
 			btnEndSet.disableProperty().set(true);
 			btnEndGame.disableProperty().set(true);
 			break;
 		case Constants.STATE_GAME_RUNNING:
+			menuSchliessen.disableProperty().set(true);
 			gameSettings.disableProperty().set(true);
 			gameField.disableProperty().set(true);
-			setSettings.disableProperty().set(false);
+			btnNewSet.disableProperty().set(false);
 			btnEndSet.disableProperty().set(true);
 			btnEndGame.disableProperty().set(false);
 			break;
 		case Constants.STATE_SET_RUNNING:
 			gameSettings.disableProperty().set(true);
 			gameField.disableProperty().set(false);
-			setSettings.disableProperty().set(true);	
+			btnNewSet.disableProperty().set(true);	
 			btnEndSet.disableProperty().set(false);
 			btnEndGame.disableProperty().set(true);
 			break;
 		case Constants.STATE_SET_ENDED:	
 			gameSettings.disableProperty().set(true);
 			gameField.disableProperty().set(false);
-			setSettings.disableProperty().set(true);
+			btnNewSet.disableProperty().set(true);
 			btnEndSet.disableProperty().set(true);
 			btnEndGame.disableProperty().set(true);
 			showConfirmWinner();
@@ -324,25 +326,51 @@ public class MainUIController implements Initializable{
 		viewModel.endSet((byte) -1);		
 	}
 	
-	//Spiel laden
 	@FXML
-	private void handleLoadGame(MouseEvent e){
+	private void handleLoadGame(ActionEvent e){
 //		viewModel.loadGame(gameID);	
+		//Fenster mit gespeicherten Spielen öffnen
+		final Stage stageLoad = new Stage();
+		stageLoad.initModality(Modality.APPLICATION_MODAL);
+		Group rootLoad = new Group();
+		Scene sceneLog = new Scene(rootLoad, 500,500, Color.WHITESMOKE);
+//		rootLog.getChildren().add(logTabelle);
+		stageLoad.setScene(sceneLog);
+		stageLoad.centerOnScreen();
+		stageLoad.show();
+						
+	//Inhalt
+		Text ueberschrift = new Text(20, 20,"Wählen Sie ein gespeichertes Spiel aus:");
+		Button close = new Button("Schließen");
+		close.setOnAction(new EventHandler<ActionEvent>(){
+			public void handle(ActionEvent close){
+				stageLoad.close();
+			}
+		});
+		//Anordnen
+		VBox Loads = new VBox(20);
+		/**
+		 * @TODO Tabelle der gespeicherten Spiele einbinden
+		 */
+		logTabelle.prefWidthProperty().bind(sceneLog.widthProperty().subtract(100));
+		Loads.getChildren().addAll(ueberschrift, logTabelle, close);
+		Loads.setLayoutX(50);
+		rootLoad.getChildren().add(Loads);
 	}
 	
 	@FXML
     // Menü: Schließen des Programms
 	private void handleSchliessen(ActionEvent close){System.exit(0);}
 	@FXML
-	// Menü: Spielanleitung aufrufen
-	private void handleAnleitung(ActionEvent anleitung){
-		//Fenster mit Anleitung öffnen
-		final Stage stageAnleitung = new Stage();
-		Group rootAnleitung = new Group();
-		Scene sceneAnleitung = new Scene(rootAnleitung, 400,400, Color.WHITESMOKE);
-		stageAnleitung.setScene(sceneAnleitung);
-		stageAnleitung.centerOnScreen();
-		stageAnleitung.show();
+	// Menü: Spielsteuerung aufrufen
+	private void handleSteuerung(ActionEvent steuerung){
+		//Fenster mit Steuerung öffnen
+		final Stage stageSteuerung = new Stage();
+		Group rootSteuerung = new Group();
+		Scene sceneSteuerung = new Scene(rootSteuerung, 400,400, Color.WHITESMOKE);
+		stageSteuerung.setScene(sceneSteuerung);
+		stageSteuerung.centerOnScreen();
+		stageSteuerung.show();
 		//Inhalt
 		Text ueberschrift = new Text(20, 20,"\"4 Gewinnt\"");
 		ueberschrift.setFill(Color.BLACK);
@@ -352,14 +380,15 @@ public class MainUIController implements Initializable{
 		Button close = new Button("Schließen");
 		close.setOnAction(new EventHandler<ActionEvent>(){
 			public void handle(ActionEvent close){
-				stageAnleitung.close();
+				stageSteuerung.close();
 			}});
 		VBox textUndButton = new VBox(100);
 		textUndButton.getChildren().addAll(ueberschrift,text, close);
-		rootAnleitung.getChildren().add(textUndButton);
+		rootSteuerung.getChildren().add(textUndButton);
 	}
-	@FXML
+	
 	// Einstellungen: Timeouts hoch/ runter setzen
+	@FXML
 	private void handleHoch1(MouseEvent arg0){
 		int timeoutFileabfruf;
 		timeoutFileabfruf = Integer.parseInt(timeoutAbfrage.getText());
@@ -396,20 +425,19 @@ public class MainUIController implements Initializable{
 	@FXML
 	private void handleLogAnzeigen(ActionEvent log){
 		//Fenster mit Log öffnen
-		final Stage stageAnleitung = new Stage();
+		final Stage stageLog = new Stage();
 		Group rootLog = new Group();
 		Scene sceneLog = new Scene(rootLog, 500,500, Color.WHITESMOKE);
-//		rootLog.getChildren().add(logTabelle);
-		stageAnleitung.setScene(sceneLog);
-		stageAnleitung.centerOnScreen();
-		stageAnleitung.show();
+		stageLog.setScene(sceneLog);
+		stageLog.centerOnScreen();
+		stageLog.show();
 						
 	//Inhalt
 		Text ueberschrift = new Text(20, 20,"Log");
 		Button close = new Button("Schließen");
 		close.setOnAction(new EventHandler<ActionEvent>(){
 			public void handle(ActionEvent close){
-				stageAnleitung.close();
+				stageLog.close();
 			}
 		});
 		//Anordnen
