@@ -1,9 +1,10 @@
 package utilities;
 
-
 /**
- * @author Stephan Schmidt <stephan.schmidt@schlund.de>
+ * Interface für die EventListener
+ * 
+ * @author Bjoern List
  */
 public interface GameEventListener {
-    public void handleEvent(GameEvent e) throws Exception;
+	public void handleEvent(GameEvent e) throws Exception;
 }

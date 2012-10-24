@@ -14,7 +14,7 @@ public class GameProperty {
 	
 	/**
 	 * Konstruktor von GameProperty
-	 * @param gamID ID des Spiels
+	 * @param gameID ID des Spiels
 	 * @param oppName Name des Gegners
 	 */
 	public GameProperty(String gameID, String oppName){

@@ -1,15 +1,13 @@
 package utilities;
+
 /**
  * Diese Klasse fungiert zur Kommunikation mit dem Server und der Benachrichtigung der KI.
  * @author Bjoern List
  *
  */
 import java.io.*;
-import javafx.concurrent.Task;
 
-import utilities.*;
-
-public class CommunicationServer extends Thread {
+public class CommunicationServer {
 	// Singleton Referenz
 	private static CommunicationServer singleton = null;
 	private String serverfilepath;
@@ -19,78 +17,30 @@ public class CommunicationServer extends Thread {
 	private File serverFile;
 	private File agentFile;
 	private Thread leserthread;
-//	private List<GameEventListener_old> _listeners = new ArrayList<GameEventListener_old>();
-//
-//	
-//	
-//	/**
-//	 * Listener für Events hinzufügen
-//	 * @param listener
-//	 */
-//	public synchronized void addEventListener(GameEventListener_old listener) {
-//		_listeners.add(listener);
-//	}
-//
-//	/**
-//	 * Listener für Events löschen
-//	 * @param listener 
-//	 */
-//	
-//	public synchronized void removeEventListener(GameEventListener_old listener) {
-//		_listeners.remove(listener);
-//	}
+	private boolean newFile = true;
+	private char ownRole;
 
 	/**
-	 * call this method whenever you want to notify
-	 * the event listeners of the particular event
-	 * @param type Typ des Events
-	 */
-	
-	
-//	private synchronized void fireEvent(byte type) {
-////		GameEvent event = new GameEvent(this, type);
-////		Iterator i = _listeners.iterator();
-////		while (i.hasNext()) {
-////			((GameEventListener_old) i.next()).handleEvent(event);
-////		}
-//				
-//		Task aufgabe = new Task<Void>() {
-//			protected Void call() throws Exception {
-//				EventDispatcher Dispatcher = EventDispatcher.getInstance();
-//				GameEvent e = (GameEvent)Dispatcher.triggerEvent("GameEvent", true);
-//				return null;
-//			}};
-//    	new Thread(aufgabe).start();	
-//		
-//		
-//		
-//	}
-	
-	/**
-	 * Diese Methode löst die jeweiligen Events aus und startet deren Verarbeitung
+	 * Diese Methode löst die jeweiligen Events aus und startet deren
+	 * Verarbeitung
 	 * 
-	 * @param type Typ des GameEvents
-	 * @param arg Argumente, die zusätzlich mit dem GameEvent übergeben werden
+	 * @param type
+	 *            Typ des GameEvents
+	 * @param args
+	 *            Argumente, die zusätzlich mit dem GameEvent übergeben werden
 	 */
 
-	public void fireGameEvent(final GameEvent.Type type, final String arg){
+	public void fireGameEvent(final GameEvent.Type type, final String arg) {
 		Log.getInstance().write("GameEvent gefeuert: " + type.toString());
-//		GameEvent event = new GameEvent(type.toString(),type, arg);
-//		try {
-//			EventDispatcher.getInstance().triggerEvent(event, true);
-//		} catch (Exception e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
-		Task aufgabe = new Task<Void>() {
-			protected Void call() throws Exception {
-				GameEvent event = new GameEvent(type.toString(),type, arg);
-				GameEvent Dispatcher = EventDispatcher.getInstance().triggerEvent(event, true);				
-				return null;
-			}};
-    	new Thread(aufgabe).start();	
-		
-		
+
+		GameEvent event = new GameEvent(type, arg);
+		try {
+			EventDispatcher.getInstance().triggerEvent(event);
+		} catch (Exception e) {
+			Log.getInstance().write(
+					"Fehler: Event konnte nicht geworfen werden!");
+		}
+
 	}
 
 	/**
@@ -117,35 +67,44 @@ public class CommunicationServer extends Thread {
 
 	}
 
+	/**
+	 * Liefert den eingestellten Timeoutwert zwischen 2 Zugriffen auf die
+	 * Serverdatei
+	 * 
+	 * @return int timeout
+	 */
 	public int getTimeout() {
 		return timeout;
 	}
 
 	/**
-	 * Startet die Abfrage der Serverdatei in einem neuen Thread
+	 * Startet die Abfrage der Serverdatei in einem neuen Thread. Überprüft, ob
+	 * die alte, bereits gelesene, Datei noch vorhanden ist und wartet bis diese
+	 * gelöscht ist.
 	 */
 	public void enableReading(int timeout, String serverFilePath, char role) {
 		this.timeout = timeout;
+		this.serverfilepath = serverFilePath;
+		this.ownRole = role;
 
-		this.serverfilepath = serverFilePath + "/server2spieler" + role + ".xml";
-		this.serverfilepath = this.serverfilepath.toLowerCase();
-		this.serverFile = new File(serverfilepath);
-		
 		// Puefung, ob noch ein Leserthread läuft
-		if(this.leserthread != null){
-			//alten Leserthread stoppen
+		if (this.leserthread != null) {
+			// alten Leserthread stoppen
 			this.leserthread.interrupt();
 			this.leserthread = null;
-		}
+		} // if
+
+		// neuen Thread starten
 		this.leserthread = new Thread(new ReadServerFileThread());
 		this.leserthread.start();
 
 	}
-	
+
 	/**
-	 * Diese Methode setzt die Variable lastchange zurück, damit eine neue Datei gelesen werden kann.
+	 * Diese Methode setzt die Variable lastchange zurück, damit eine neue Datei
+	 * gelesen werden kann.
 	 */
-	
+
 	public void resetLastChange() {
 		this.lastchange = (Long) null;
 	}
@@ -154,46 +113,87 @@ public class CommunicationServer extends Thread {
 	 * Beendet die Abfrage der Serverdatei
 	 */
 	public void disableReading() {
-		this.leserthread.interrupt();
+		if (this.leserthread.isAlive())
+			this.leserthread.interrupt();
 	}
 
 	/**
-	 * Ueberwachung der Serverdatei
-	 * Meldung an alle Event Listener auslösen
+	 * Ueberwachung der Serverdatei Meldung an alle Event Listener auslösen
 	 */
 	public void ueberwachen() {
+		if (!newFile) {
+
+			// warten bis File gelöscht
+			while (true) {
+				File old = new File(serverfilepath + "/server2spieler"
+						+ ownRole + ".xml");
+
+				// prüfen ob File noch vorhanden und ob wirklich das alte File
+				if (old.exists() && (lastchange == old.lastModified())) {
+
+					try {
+						Thread.sleep(300);
+					} catch (InterruptedException e) {
+					}
+				} else {
+					newFile = true;
+					break;
+
+				} // if
+
+			} // while
+
+		} // if
+
+		// Umwandlung von backslashes im Pfad in normale Slashes
+		if (serverfilepath.contains("\\")) {
+			serverfilepath = serverfilepath.replace("\\", "/");
+		}
+
+		// vollstaendige Pfade mit Dateinamen bauen
+		this.serverfilepath = serverfilepath + "/server2spieler" + ownRole
+				+ ".xml";
+		this.serverfilepath = this.serverfilepath.toLowerCase();
+		this.serverFile = new File(serverfilepath);
+
 		// Auslesen der Datei
 		Log.getInstance().write("Communication Server:Ueberwachen startet");
-			try{
+		try {
 			ServerMessage msg = this.read();
-			
-			System.out.println(msg.getFreigabe());
-			System.out.println(msg.getSatzstatus());
+			newFile = false;
 
-			// Wenn Freigabe erfolgt ist - Benachritigung, dass nächster Zug gemacht werden muss
+			// Auswerten des ServerFiles und werfen der entsprehenden Events
 			if (msg.getFreigabe().equals("true")) {
-				this.fireGameEvent(GameEvent.Type.OppMove, String.valueOf(msg.getGegnerzug()));
-				Log.getInstance().write("Communication Server: Event OppMove gesendet");
-			}
-			// Satz ist beendet
-			if (msg.getSatzstatus().equals("beendet")) {
-				this.fireGameEvent(GameEvent.Type.EndSet, String.valueOf(msg.getGegnerzug()));
-				Log.getInstance().write("Communication Server: Event EndSet gesendet");
+				this.fireGameEvent(GameEvent.Type.OppMove,
+						String.valueOf(msg.getGegnerzug()));
+				Log.getInstance().write(
+						"Communication Server: Event OppMove gesendet");
 			}
 			// Sieger ist bestimmt
 			if (!msg.getSieger().equals("offen")) {
-				this.fireGameEvent(GameEvent.Type.WinnerSet, String.valueOf(msg.getSieger()));
-				Log.getInstance().write("Communication Server: WinnerSet Event gesendet");
+				char Winner = msg.getSieger()
+						.substring(msg.getSieger().indexOf(" ") + 1).charAt(0);
+
+				this.fireGameEvent(GameEvent.Type.WinnerSet,
+						String.valueOf(Winner));
+				Log.getInstance().write(
+						"Communication Server: WinnerSet Event gesendet "
+								+ Winner);
 			}
+			// Satz ist beendet
+			if (msg.getSatzstatus().equals("beendet")) {
+				this.fireGameEvent(GameEvent.Type.EndSet,
+						String.valueOf(msg.getGegnerzug()));
+				Log.getInstance().write(
+						"Communication Server: Event EndSet gesendet");
+			}
+
 			lastchange = serverFile.lastModified();
 
-			} catch (Exception e){
-				Log.getInstance().write("Communication Server: Lesefehler.....");
-			}
-			
-			
-			
-					
+		} catch (Exception e) {
+			Log.getInstance().write("Communication Server: Lesefehler.....");
+		}
+
 		Log.getInstance().write("Communication Server: Ende Überwachung");
 
 	}
@@ -202,19 +202,14 @@ public class CommunicationServer extends Thread {
 	 * Lesen des Serverfiles
 	 */
 
-	public ServerMessage read() throws Exception{
+	public ServerMessage read() throws Exception {
 		// Serverfile auslesen
 		ServerMessage msg = null;
-		while (msg == null) {
-			msg = XmlParser.readXML(serverFile);
-			if(this.lastchange == serverFile.lastModified()){
-				msg = null;
-			}
-			if (msg == null){
+		// while (msg == null) {
+		while (!serverFile.exists()) {
 			Thread.sleep(this.timeout);
-			}
 		}
-		
+		msg = XmlParser.getInstance().readXML(serverFile);
 		return msg;
 	}
 
@@ -224,12 +219,21 @@ public class CommunicationServer extends Thread {
 	 * @param spalte
 	 *            Nummer der Spalte, in die der naechste STein gelgt wird
 	 */
-	public synchronized void writeMove(byte spalte, String agentFilePath, char role) {
+	public synchronized void writeMove(byte spalte, String agentFilePath,
+			char role) {
 		if ((spalte > -1 && spalte < 7) && (agentFilePath != null)) {
 			try {
-				Log.getInstance().write("Zug schreiben im Pfad " + agentFilePath + "in Spalte " + spalte );
-				this.agentfilepath = agentFilePath + "/spieler" + role + "2server.txt";
-				this. agentfilepath = this.agentfilepath.toLowerCase();
+				Log.getInstance().write(
+						"Zug schreiben im Pfad " + agentFilePath + "in Spalte "
+								+ spalte);
+
+				if (agentFilePath.contains("\\")) {
+					agentFilePath = agentFilePath.replace("\\", "/");
+				}
+
+				this.agentfilepath = agentFilePath + "/spieler" + role
+						+ "2server.txt";
+				this.agentfilepath = this.agentfilepath.toLowerCase();
 				this.agentFile = new File(agentfilepath);
 				FileWriter schreiber = new FileWriter(this.agentFile);
 				schreiber.write(Integer.toString(spalte));
@@ -238,50 +242,18 @@ public class CommunicationServer extends Thread {
 				Log.getInstance().write("Schreiben erfolgreich");
 
 			} catch (Exception e) {
-				//e.printStackTrace();
-				System.out.println("Fehler - Move konnte nicht geschrieben werden!");
+				// e.printStackTrace();
+				Log.getInstance().write(
+						"Fehler - Move konnte nicht geschrieben werden!");
 			}
 		} else {
-			System.out.println("Fehler - falsche Spalte ausgewaehlt oder Pfad nicht gesetzt");
+			Log.getInstance()
+					.write("Fehler - falsche Spalte ausgewaehlt oder Pfad nicht gesetzt");
 		}
 
 	}
 
-	/**
-	 * Methode zum Test des CommunicationServers
-	 * 
-	 * Erläuterung: CommunicationServer wird durch enable Methode gestartet.
-	 * Übergabeparameter bestimmt die Zeit zwischen 2 Prüfungen des Serverfiles
-	 * --> Abfrage wird in einem neuem Thread gestartet, sendet ein Event bei
-	 * Ereignis und beendet sich
-	 * 
-	 * Thread kann von außen durch disable Methode gestoppt werden
-	 * 
-	 * @param args
-	 */
-	
-//	public static void main(String[] args) {
-//		//
-//		CommunicationServer.getInstance().enableReading(300, "server.xml");
-//		try {
-//			Thread.sleep(500);
-//		} catch (InterruptedException e) {
-//			e.printStackTrace();
-//		}
-//		System.out
-//				.println("----------------THREAD schließen!-------------------");
-//		CommunicationServer.getInstance().writeMove((byte) 2, "spieler.txt");
-//		// CommunicationServer.getInstance().disable();
-//	
-	}
-
-
-// ###########################################################################################
-// ###########################################################################################
-// ###########################################################################################
-// ###########################################################################################
-// ###########################################################################################
-// ###########################################################################################
+}
 
 /**
  * Threadklasse zur Überwachung des Serverfiles
@@ -290,15 +262,11 @@ public class CommunicationServer extends Thread {
  * 
  */
 
-// TODO ggf. in die CommunicationServer Klasse auslagern
-
 class ReadServerFileThread extends Thread {
 	@Override
 	public void run() {
-		System.out.println("Thread startet");
 		Log.getInstance().write("Ueberwachung gestartet");
 		CommunicationServer.getInstance().ueberwachen();
-		Log.getInstance().write("Event gefeuert -- While Schleife verlassen");
 		this.interrupt();
 	}
 
