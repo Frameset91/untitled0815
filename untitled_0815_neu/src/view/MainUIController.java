@@ -245,21 +245,6 @@ public class MainUIController implements Initializable{
 			btnEndSet.disableProperty().set(true);
 			btnEndGame.disableProperty().set(true);
 			break;
-		case Constants.STATE_GAME_RUNNING:
-			menuSchliessen.disableProperty().set(true);
-			gameSettings.disableProperty().set(true);
-			gameField.disableProperty().set(true);
-			btnNewSet.disableProperty().set(false);
-			btnEndSet.disableProperty().set(true);
-			btnEndGame.disableProperty().set(false);
-			//break;
-		case Constants.STATE_SET_RUNNING:
-			gameSettings.disableProperty().set(true);
-			gameField.disableProperty().set(false);
-			btnNewSet.disableProperty().set(true);	
-			btnEndSet.disableProperty().set(false);
-			btnEndGame.disableProperty().set(true);
-			//break;
 		case Constants.STATE_SET_ENDED:	
 			gameSettings.disableProperty().set(true);
 			gameField.disableProperty().set(false);
@@ -268,6 +253,21 @@ public class MainUIController implements Initializable{
 			btnEndGame.disableProperty().set(true);
 			if(!viewModel.isReplay().get()) showConfirmWinner();
 			break;
+		case Constants.STATE_SET_RUNNING:
+			gameSettings.disableProperty().set(true);
+			gameField.disableProperty().set(false);
+			btnNewSet.disableProperty().set(true);	
+			btnEndSet.disableProperty().set(false);
+			btnEndGame.disableProperty().set(true);
+			if(!viewModel.isReplay().get()) break;
+		case Constants.STATE_GAME_RUNNING:
+			menuSchliessen.disableProperty().set(true);
+			gameSettings.disableProperty().set(true);
+			gameField.disableProperty().set(true);
+			btnNewSet.disableProperty().set(false);
+			btnEndSet.disableProperty().set(true);
+			btnEndGame.disableProperty().set(false);
+			if(!viewModel.isReplay().get()) break;
 		default:
 			if(viewModel.isReplay().get()){
 				gameSettings.disableProperty().set(true);

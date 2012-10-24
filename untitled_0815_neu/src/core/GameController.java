@@ -271,9 +271,16 @@ public class GameController implements GameEventListener, Observer{
 	private void processNextMove() {
 		if(loadedMoves.length <= nextMove){
 			if(currentSet == loadedSets.length -1){
-				//letzter Satz -> Replay beenden
-				isReplay.set(false);
-				properties[STATE_PROPERTY].set(Constants.STATE_GAME_RUNNING);				
+				//letzter Satz -> Replay beenden				
+				
+//				Platform.runLater(new Runnable() {					
+//					@Override
+//					public void run() {
+						properties[STATE_PROPERTY].set(Constants.STATE_APP_RUNNING);	
+						isReplay.set(false);						
+						properties[STATE_PROPERTY].set(Constants.STATE_GAME_RUNNING);
+//					}
+//				});				
 			}else{
 				//neues Set laden
 				properties[STATE_PROPERTY].set(Constants.STATE_SET_RUNNING);
@@ -281,6 +288,7 @@ public class GameController implements GameEventListener, Observer{
 				nextMove = 0;
 				model.addSet(loadedSets[currentSet]);	
 				loadedMoves = DBConnection.getInstance().loadAllMoves(model.getID(), model.getLatestSet().getID());
+				if(loadedMoves == null) loadedMoves = new Move[0];
 				updateField();
 				updateSets();
 			}		
