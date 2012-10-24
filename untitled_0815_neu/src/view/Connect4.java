@@ -34,10 +34,10 @@ public class Connect4 extends Application {
 	 * Stop Methode, wenn Programm geschlossen wird
 	 * 
 	 */
-	@Override
-	public void stop() throws Exception {
-		//CommunicationServer.getInstance().disableReading();
-		super.stop();
-	}
+//	@Override
+//	public void stop() throws Exception {
+//		//CommunicationServer.getInstance().disableReading();
+//		super.stop();
+//	}
 
 }
