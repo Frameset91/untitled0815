@@ -328,15 +328,20 @@ public class GameController implements GameEventListener, Observer{
 		String changed = (String)arg;
 		switch (changed) {
 		case "winner":
-			Log.getInstance().write(
-					"Controller: Winner changed empfangen, Stand: " +model.getOwnPoints()+":"+model.getOppPoints() 
-					+ "; FxThread:" + Platform.isFxApplicationThread());
-			
-			updateSets();
+			Platform.runLater(new Runnable() {				
+				@Override
+				public void run() {
+					Log.getInstance().write(
+							"Controller: Winner changed empfangen, Stand: " +model.getOwnPoints()+":"+model.getOppPoints() 
+							+ "; FxThread:" + Platform.isFxApplicationThread());
+					
+					updateSets();
 
-			properties[WINNER_PROPERTY].setValue(String.valueOf(model.getLatestSet().getWinner()));
-			properties[OWNPOINTS_PROPERTY].setValue(String.valueOf(model.getOwnPoints()));
-			properties[OPPPOINTS_PROPERTY].setValue(String.valueOf(model.getOppPoints()));					
+					properties[WINNER_PROPERTY].setValue(String.valueOf(model.getLatestSet().getWinner()));
+					properties[OWNPOINTS_PROPERTY].setValue(String.valueOf(model.getOwnPoints()));
+					properties[OPPPOINTS_PROPERTY].setValue(String.valueOf(model.getOppPoints()));					
+				}
+			});								
 			break;
 		case "sets":
 			Log.getInstance().write("Controller: Set changed empfangen; FxThread:" + Platform.isFxApplicationThread());
