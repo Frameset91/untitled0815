@@ -8,6 +8,7 @@ import utilities.Log.LogEntry;
 
 import core.Constants;
 import core.GameController;
+import core.GameProperty;
 import core.SetProperty;
 
 import javafx.beans.value.ChangeListener;
@@ -28,7 +29,6 @@ import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-import javafx.stage.WindowEvent;
 
 public class MainUIController implements Initializable{
 	
@@ -86,11 +86,13 @@ public class MainUIController implements Initializable{
 	private TableColumn<SetProperty, String> tableColumnSet;
 	@FXML
 	private TableColumn<SetProperty, String> tableColumnWinner;
+	@FXML
+	private Button btnNextMove;
 
 	//Elemente die nicht im FXML definiert sind
 	private TableView<LogEntry> logTabelle; 
 	private ChoiceBox<String> winner;
-	
+	private TableView<GameProperty> savedGamesTable; 
 
 	//Methode die für "Controller" vorgeschrieben ist und nach dem Aufbau des UI Konstrukts aufgerufen wird
 	@Override
@@ -98,9 +100,7 @@ public class MainUIController implements Initializable{
 		viewModel = new GameController();
 //		viewModel.initialize(null, null);
 		
-		logTabelle = new TableView<LogEntry>();
-		
-		
+				
 		//GridPane mit Circles füllen
 //		Circle[][] spielfeld = new Circle[Constants.gamefieldcolcount][Constants.gamefieldrowcount];
 //		for (int i = 0; i < Constants.gamefieldcolcount; i++)
@@ -166,6 +166,8 @@ public class MainUIController implements Initializable{
 			public void changed(ObservableValue<? extends String> arg0,
 					String arg1, String arg2) {	updateState(); }});
 		
+		btnNextMove.visibleProperty().bind(viewModel.isReplay());
+		
 		//Rollen Auswahl
 		rolle.valueProperty().bindBidirectional(viewModel.properties()[viewModel.ROLE_PROPERTY]);
 		rolle.getItems().addAll(String.valueOf(Constants.xRole), String.valueOf(Constants.oRole));
@@ -184,11 +186,9 @@ public class MainUIController implements Initializable{
 		satzstatus.textProperty().bind(viewModel.properties()[viewModel.STATE_PROPERTY]);
 		
 		//Tabelle für die Logs
-//		logTabelle.setPrefWidth(400);
-//		logTabelle.set
+		logTabelle = new TableView<LogEntry>();
 		TableColumn<Log.LogEntry, String> spalte1 = new TableColumn<Log.LogEntry, String>("Log-Eintrag");
 		spalte1.setEditable(false);
-//		spalte1.setMinWidth(398);
 		spalte1.prefWidthProperty().bind(logTabelle.widthProperty().subtract(2));
 		logTabelle.getColumns().clear();
 		logTabelle.getColumns().add(spalte1);
@@ -198,6 +198,29 @@ public class MainUIController implements Initializable{
 		logTabelle.setItems(Log.getInstance().getLogEntries());
 		Log.getInstance().write("Binding fuer Log erstellt");
 		
+		//Tabelle für die gespeicherten Spiele
+		savedGamesTable = new TableView<GameProperty>();
+		savedGamesTable.getColumns().clear();
+			//Erste Spalte
+		TableColumn<GameProperty, String> c1 = new TableColumn<GameProperty, String>("Spiel Nr.");
+		c1.setEditable(false);
+		c1.prefWidthProperty().bind(savedGamesTable.widthProperty().subtract(2).divide(2));
+
+		savedGamesTable.getColumns().add(c1);
+		savedGamesTable.setMinWidth(100);
+		c1.setCellValueFactory(
+				new PropertyValueFactory<GameProperty, String>("gameID"));
+			//Zweite Spalte
+		TableColumn<GameProperty, String> c2 = new TableColumn<GameProperty, String>("Gegner");
+		c2.setEditable(false);
+		c2.prefWidthProperty().bind(savedGamesTable.widthProperty().subtract(2).divide(2));
+		savedGamesTable.getColumns().add(c2);
+		savedGamesTable.setMinWidth(100);
+		c2.setCellValueFactory(
+				new PropertyValueFactory<GameProperty, String>("oppName"));
+		savedGamesTable.setItems(viewModel.savedGames());
+				
+		//Tabelle für Sets
 		tableColumnSet.setCellValueFactory(
 				new PropertyValueFactory<SetProperty, String>("setNr"));
 		tableColumnWinner.setCellValueFactory(
@@ -229,24 +252,30 @@ public class MainUIController implements Initializable{
 			btnNewSet.disableProperty().set(false);
 			btnEndSet.disableProperty().set(true);
 			btnEndGame.disableProperty().set(false);
-			break;
+			//break;
 		case Constants.STATE_SET_RUNNING:
 			gameSettings.disableProperty().set(true);
 			gameField.disableProperty().set(false);
 			btnNewSet.disableProperty().set(true);	
 			btnEndSet.disableProperty().set(false);
 			btnEndGame.disableProperty().set(true);
-			break;
+			//break;
 		case Constants.STATE_SET_ENDED:	
 			gameSettings.disableProperty().set(true);
 			gameField.disableProperty().set(false);
 			btnNewSet.disableProperty().set(true);
 			btnEndSet.disableProperty().set(true);
 			btnEndGame.disableProperty().set(true);
-			showConfirmWinner();
+			if(!viewModel.isReplay().get()) showConfirmWinner();
 			break;
 		default:
-			
+			if(viewModel.isReplay().get()){
+				gameSettings.disableProperty().set(true);
+				gameField.disableProperty().set(false);
+				btnNewSet.disableProperty().set(true);	
+				btnEndSet.disableProperty().set(true);
+				btnEndGame.disableProperty().set(true);
+			}
 			break;
 		}	
 	}	
@@ -284,6 +313,12 @@ public class MainUIController implements Initializable{
 	}
 
 	//----------------------- Methoden zum handeln von UI Input ----------------------------
+	@FXML
+	private void handleNextMove(MouseEvent e){
+		viewModel.loadNextMove();
+	}
+	
+	
 	//Spiel starten gedrückt
 	@FXML
 	private void handleStartGame(MouseEvent e){
@@ -333,7 +368,7 @@ public class MainUIController implements Initializable{
 		final Stage stageLoad = new Stage();
 		stageLoad.initModality(Modality.APPLICATION_MODAL);
 		Group rootLoad = new Group();
-		Scene sceneLog = new Scene(rootLoad, 500,500, Color.WHITESMOKE);
+		Scene sceneLog = new Scene(rootLoad, 500,600, Color.WHITESMOKE);
 //		rootLog.getChildren().add(logTabelle);
 		stageLoad.setScene(sceneLog);
 		stageLoad.centerOnScreen();
@@ -341,21 +376,32 @@ public class MainUIController implements Initializable{
 						
 	//Inhalt
 		Text ueberschrift = new Text(20, 20,"Wählen Sie ein gespeichertes Spiel aus:");
-		Button close = new Button("Schließen");
+		Button close = new Button("Abbrechen");
 		close.setOnAction(new EventHandler<ActionEvent>(){
 			public void handle(ActionEvent close){
 				stageLoad.close();
 			}
 		});
+		
+		Button load = new Button("Laden");
+		load.setOnAction(new EventHandler<ActionEvent>(){
+			public void handle(ActionEvent close){
+				String gameID = savedGamesTable.getSelectionModel().getSelectedItem().getGameID();
+				stageLoad.close();
+				viewModel.loadGame(Integer.parseInt(gameID));
+			}
+		});
+	
 		//Anordnen
 		VBox Loads = new VBox(20);
 		/**
 		 * @TODO Tabelle der gespeicherten Spiele einbinden
 		 */
-		logTabelle.prefWidthProperty().bind(sceneLog.widthProperty().subtract(100));
-		Loads.getChildren().addAll(ueberschrift, logTabelle, close);
+		savedGamesTable.prefWidthProperty().bind(sceneLog.widthProperty().subtract(100));
+		Loads.getChildren().addAll(ueberschrift, savedGamesTable, close, load);
 		Loads.setLayoutX(50);
 		rootLoad.getChildren().add(Loads);
+		savedGamesTable.getSelectionModel().selectFirst();
 	}
 	
 	@FXML
