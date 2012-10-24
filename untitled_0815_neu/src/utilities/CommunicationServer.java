@@ -19,13 +19,15 @@ public class CommunicationServer {
 	private Thread leserthread;
 	private boolean newFile = true;
 	private char ownRole;
-	
+
 	/**
 	 * Diese Methode löst die jeweiligen Events aus und startet deren
 	 * Verarbeitung
 	 * 
-	 * @param type  Typ des GameEvents
-	 * @param args  Argumente, die zusätzlich mit dem GameEvent übergeben werden
+	 * @param type
+	 *            Typ des GameEvents
+	 * @param args
+	 *            Argumente, die zusätzlich mit dem GameEvent übergeben werden
 	 */
 
 	public void fireGameEvent(final GameEvent.Type type, final String arg) {
@@ -85,7 +87,6 @@ public class CommunicationServer {
 		this.serverfilepath = serverFilePath;
 		this.ownRole = role;
 
-		
 		// Puefung, ob noch ein Leserthread läuft
 		if (this.leserthread != null) {
 			// alten Leserthread stoppen
@@ -113,7 +114,7 @@ public class CommunicationServer {
 	 */
 	public void disableReading() {
 		if (this.leserthread.isAlive())
-		this.leserthread.interrupt();
+			this.leserthread.interrupt();
 	}
 
 	/**
@@ -124,8 +125,8 @@ public class CommunicationServer {
 
 			// warten bis File gelöscht
 			while (true) {
-				File old = new File(serverfilepath + "/server2spieler" + ownRole
-						+ ".xml");
+				File old = new File(serverfilepath + "/server2spieler"
+						+ ownRole + ".xml");
 
 				// prüfen ob File noch vorhanden und ob wirklich das alte File
 				if (old.exists() && (lastchange == old.lastModified())) {
@@ -155,14 +156,13 @@ public class CommunicationServer {
 		this.serverfilepath = this.serverfilepath.toLowerCase();
 		this.serverFile = new File(serverfilepath);
 
-		
 		// Auslesen der Datei
 		Log.getInstance().write("Communication Server:Ueberwachen startet");
 		try {
 			ServerMessage msg = this.read();
 			newFile = false;
-			// Wenn Freigabe erfolgt ist - Benachritigung, dass nächster Zug
-			// gemacht werden muss
+
+			// Auswerten des ServerFiles und werfen der entsprehenden Events
 			if (msg.getFreigabe().equals("true")) {
 				this.fireGameEvent(GameEvent.Type.OppMove,
 						String.valueOf(msg.getGegnerzug()));
