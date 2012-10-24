@@ -7,7 +7,7 @@ package utilities;
  */
 import java.io.*;
 
-public class CommunicationServer extends Thread {
+public class CommunicationServer {
 	// Singleton Referenz
 	private static CommunicationServer singleton = null;
 	private String serverfilepath;
@@ -145,6 +145,7 @@ public class CommunicationServer extends Thread {
 	 * Beendet die Abfrage der Serverdatei
 	 */
 	public void disableReading() {
+		if (this.leserthread.isAlive())
 		this.leserthread.interrupt();
 	}
 
