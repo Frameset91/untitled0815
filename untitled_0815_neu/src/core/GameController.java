@@ -416,7 +416,7 @@ public class GameController implements GameEventListener, Observer{
 			Log.getInstance().write("Controller: Set changed empfangen; FxThread:" + Platform.isFxApplicationThread());
 			updateField();
 			updateSets();
-			properties[WINNER_PROPERTY].setValue(String.valueOf(model.getLatestSet().getWinner()));
+			if(model.getLatestSet() != null) properties[WINNER_PROPERTY].setValue(String.valueOf(model.getLatestSet().getWinner()));
 			break;
 		case "field":
 			Log.getInstance().write("Controller: Field changed empfangen; FxThread:" + Platform.isFxApplicationThread());
@@ -432,25 +432,27 @@ public class GameController implements GameEventListener, Observer{
 	
 	//Field Property aktualisieren
 	private void updateField(){
-		Platform.runLater(new Runnable() {			
-			@Override
-			public void run() {
-				Boolean[][] boolField = model.getLatestSet().getField();
-				for(int i = 0; i < Constants.gamefieldcolcount; i++){
-					for(int j = 0; j< Constants.gamefieldrowcount; j++){
-						String newStyle;
-						if(boolField[i][j] == null)
-							newStyle  = String.valueOf(Constants.noRole);
-						else if(boolField[i][j])
-							newStyle = String.valueOf(Constants.xRole);
-						else
-							newStyle = String.valueOf(Constants.oRole);
-						
-						if(field[i][j].getValue() != newStyle) field[i][j].set(newStyle);
-					}
-				}				
-			}
-		});	
+		if(model.getLatestSet() != null){
+			Platform.runLater(new Runnable() {			
+				@Override
+				public void run() {
+					Boolean[][] boolField = model.getLatestSet().getField();
+					for(int i = 0; i < Constants.gamefieldcolcount; i++){
+						for(int j = 0; j< Constants.gamefieldrowcount; j++){
+							String newStyle;
+							if(boolField[i][j] == null)
+								newStyle  = String.valueOf(Constants.noRole);
+							else if(boolField[i][j])
+								newStyle = String.valueOf(Constants.xRole);
+							else
+								newStyle = String.valueOf(Constants.oRole);
+							
+							if(field[i][j].getValue() != newStyle) field[i][j].set(newStyle);
+						}
+					}				
+				}
+			});
+		}
 	}
 	
 	//Tabelle der Sets neu erstellen
