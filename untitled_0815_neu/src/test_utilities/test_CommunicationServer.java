@@ -45,7 +45,7 @@ public class test_CommunicationServer implements GameEventListener {
 	
 	private void processTestData(String[] data){
 		//ComServer starten
-		comServer.enableReading(timeoutServer, path, role);		
+		comServer.enableReading(timeoutServer, path, role, false);		
 	
 		events[0] = null;
 		events[1] = null;
