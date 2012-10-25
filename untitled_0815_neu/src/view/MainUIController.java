@@ -29,6 +29,7 @@ import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 
 public class MainUIController implements Initializable{
 	
@@ -292,17 +293,26 @@ public class MainUIController implements Initializable{
 	
 	private void showConfirmWinner() {
 		final Stage stageConfirmWinner = new Stage();
-		Group rootLog = new Group();
-		Scene sceneLog = new Scene(rootLog, 500,180, Color.WHITESMOKE);
-		stageConfirmWinner.setScene(sceneLog);
+		Group rootConfirm = new Group();
+		Scene sceneConfirm = new Scene(rootConfirm, 500,180, Color.WHITESMOKE);
+		stageConfirmWinner.setScene(sceneConfirm);
 		stageConfirmWinner.centerOnScreen();
 		stageConfirmWinner.show();
+		
+		stageConfirmWinner.setOnCloseRequest(new EventHandler<WindowEvent>(){
+			public void handle(WindowEvent e){
+				viewModel.discardSet();
+			}
+		});
 						
 	//Inhalt
 		Text ueberschrift = new Text(20, 20,"Der Satz wurde beendet, bitte den Gewinner bestätigen oder den Satz verwerfen:");
 		Button confirm = new Button("Bestätigen");		
 		confirm.setOnMouseClicked(new EventHandler<MouseEvent>(){
 			public void handle(MouseEvent close){
+				/**
+				 * @TODO "Bestätigen" nur möglich, wenn eine Rolle ausgewählt wurde
+				 */
 				stageConfirmWinner.close();
 				viewModel.confirmSetWinner();
 			}
@@ -315,10 +325,17 @@ public class MainUIController implements Initializable{
 			}
 		});
 		//Anordnen
-		VBox Logs = new VBox(20);
-		Logs.getChildren().addAll(ueberschrift, winner, confirm, discard);
-		Logs.setLayoutX(50);
-		rootLog.getChildren().add(Logs);
+		GridPane gpconfirm = new GridPane();
+		gpconfirm.setLayoutX(20);
+		gpconfirm.setVgap(20);
+		gpconfirm.setHgap(10);
+		gpconfirm.add(ueberschrift, 0, 0);
+		gpconfirm.setColumnSpan(ueberschrift, 3);
+		gpconfirm.add(new Label("Gewinner:"), 0, 1);
+		gpconfirm.add(winner, 1, 1);
+		gpconfirm.add(confirm, 1, 2);
+		gpconfirm.add(discard, 2, 2);
+		rootConfirm.getChildren().add(gpconfirm);
 		
 	}
 
