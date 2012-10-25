@@ -33,6 +33,7 @@ import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
+import javafx.util.StringConverter;
 
 public class MainUIController implements Initializable{
 	
@@ -136,7 +137,7 @@ public class MainUIController implements Initializable{
             spielfeld[i][j].prefHeightProperty().set(40);
 	        spielfeld[i][j].prefWidthProperty().set(40); 
 	        spielfeld[i][j].styleProperty().bindBidirectional(viewModel.field()[i][Constants.gamefieldrowcount -1 -j], new StyleConverter());
-	        spielfeld[i][j].textProperty().bindBidirectional(viewModel.field()[i][Constants.gamefieldrowcount -1 -j]);
+	        spielfeld[i][j].textProperty().bindBidirectional(viewModel.field()[i][Constants.gamefieldrowcount -1 -j], new TokenRoleConverter());
 	        feld.add(spielfeld[i][j], i, j);
 	      }
 	    }
@@ -532,5 +533,73 @@ public class MainUIController implements Initializable{
 		Logs.getChildren().addAll(ueberschrift, logTabelle, close);
 		Logs.setLayoutX(50);
 		rootLog.getChildren().add(Logs);
+	}
+	
+	private class TokenRoleConverter extends StringConverter<String>{
+
+		@Override
+		public String fromString(String arg0) {
+			if(arg0.equals(String.valueOf(Constants.noRole))) 
+				return " ";
+			else
+				
+				return arg0;			
+		}
+
+		@Override
+		public String toString(String arg0) {
+			// nicht nötig
+			return null;
+		}
+		
+	}
+	private class StyleConverter extends StringConverter<String> {	
+
+		@Override
+		public String fromString(String arg0) {
+			//nicht nötig
+			return null;
+		}
+
+		@Override
+		public String toString(String arg0) {
+			//Property hat sich verändert -> UI anpassen
+			String style ="";
+			if(arg0 != null){
+				switch (arg0.charAt(0)) {
+				case Constants.xRole:
+					style="-fx-background-color: red; " +
+							"-fx-background-radius: 20; " +
+							"-fx-font-size: 15; " +
+							"-fx-effect: innershadow(two-pass-box, grey, 10, 0.5, 0, 0); " +
+							"-fx-alignment: center;" + 
+							"-fx-font-weight: bold;" +
+							"-fx-text-fill: RGB(100,100,100,0.5);";
+					break;
+				case Constants.oRole:
+					style="-fx-background-color: yellow; " +
+							"-fx-background-radius: 20; " +
+							"-fx-font-size: 15; " +
+							"-fx-effect: innershadow(two-pass-box, grey, 10, 0.5, 0, 0); " +
+							"-fx-alignment: center;" +
+							"-fx-font-weight: bold;" +
+							"-fx-text-fill: RGB(100,100,100,0.5);";
+					break;
+				case Constants.noRole:
+					style="-fx-background-color: white; " +
+							"-fx-background-radius: 20; " +
+							"-fx-font-size: 15; " +
+							"-fx-effect: innershadow(two-pass-box, grey, 10, 0.5, 0, 0); " +
+							"-fx-alignment: center;" + 
+							"-fx-font-weight: bold;" +
+							"-fx-text-fill: RGB(100,100,100,0.5);";
+					break;
+				default:
+					break;
+				}		
+			}
+			return style;
+		}
+
 	}
 }
