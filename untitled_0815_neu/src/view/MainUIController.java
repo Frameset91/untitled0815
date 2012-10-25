@@ -27,6 +27,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
+import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
@@ -344,7 +345,6 @@ public class MainUIController implements Initializable{
 	private void handleNextMove(MouseEvent e){
 		viewModel.loadNextMove();
 	}
-	
 	
 	//Spiel starten gedrückt
 	@FXML

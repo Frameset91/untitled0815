@@ -3,26 +3,27 @@ package view;
 import javafx.application.Application; 
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Group;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
+import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 
 public class Connect4 extends Application {
-
-	
 	/**
 	 * Start Methode für das UI
 	 */
 	@Override
-	public void start(Stage stage) throws Exception {
+	public void start(final Stage stage) throws Exception {
         stage.setTitle("Test für Spielfeld mit FXML"); 
         Parent root = FXMLLoader.load(getClass().getResource("MainUI.fxml")); 
         stage.setScene(new Scene(root)); 
