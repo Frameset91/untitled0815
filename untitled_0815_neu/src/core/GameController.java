@@ -48,6 +48,7 @@ public class GameController implements GameEventListener, Observer{
 	private ObservableList<SetProperty> sets;
 	private ObservableList<GameProperty> savedGames;
 	private SimpleBooleanProperty isReplay;
+	private SimpleBooleanProperty withoutServer;
 	
 	//Attribute für Replay
 	private int nextMove;
@@ -73,6 +74,7 @@ public class GameController implements GameEventListener, Observer{
 		}
 		
 		isReplay = new SimpleBooleanProperty();
+		withoutServer = new SimpleBooleanProperty();
 		
 		sets = FXCollections.observableArrayList();		
 		savedGames = FXCollections.observableArrayList();
@@ -99,7 +101,9 @@ public class GameController implements GameEventListener, Observer{
 		model.newSet().setStatus(Constants.STATE_SET_RUNNING);
 		
 		//ComServer starten
-		comServ.enableReading(model.getTimeoutServer(), model.getPath(), model.getRole(),true);
+		if(!withoutServer.get()){
+			comServ.enableReading(model.getTimeoutServer(), model.getPath(), model.getRole(),true);
+		}
 		properties[STATE_PROPERTY].set(Constants.STATE_SET_RUNNING);		
 	}
 	
@@ -109,7 +113,9 @@ public class GameController implements GameEventListener, Observer{
 	 */	
 	public void endSet(byte oppMove){
 		Log.getInstance().write("Controller: beende Satz, FxThread:" + Platform.isFxApplicationThread());
-		comServ.disableReading();
+		if(!withoutServer.get()){
+			comServ.disableReading();
+		}
 		if (oppMove > -1){
 			addOppMove(oppMove);					
 		}
@@ -228,6 +234,13 @@ public class GameController implements GameEventListener, Observer{
 	 */
 	public SimpleBooleanProperty isReplay() {
 		return isReplay;
+	}
+	
+	/**
+	 * @return Boolean ob mit Server gespielt wird
+	 */
+	public SimpleBooleanProperty withoutServer() {
+		return withoutServer;
 	}
 	
 	//Hilfsmethoden
@@ -494,6 +507,7 @@ public class GameController implements GameEventListener, Observer{
 		});
 		
 		isReplay.set(false);
+		withoutServer.set(false);
 		
 		loadSavedGames();
 		
@@ -525,9 +539,10 @@ public class GameController implements GameEventListener, Observer{
 		public void run() {
 			byte newCol = ki.calculateNextMove(oppMove);			
 			//Zug auf Server schreiben und Server wieder überwachen
-			comServ.writeMove(newCol, model.getPath(), model.getRole());
-			comServ.enableReading(model.getTimeoutServer(), model.getPath(), model.getRole(), false);
-			
+			if(!withoutServer.get()){
+				comServ.writeMove(newCol, model.getPath(), model.getRole());
+				comServ.enableReading(model.getTimeoutServer(), model.getPath(), model.getRole(), false);
+			}
 			model.addMove(new Move(model.getRole(), newCol));
 		}		
 	}

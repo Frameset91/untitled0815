@@ -36,6 +36,11 @@
 	-fx-text-alignment: left;
 }
 
+.colButton{
+	-fx-font-size: 9;
+	-fx-text-alignment: center;
+}
+
 .spieleranzeige{
 	-fx-padding: 20;
 }

@@ -24,6 +24,7 @@ import javafx.scene.effect.Lighting;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
@@ -34,6 +35,7 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import javafx.util.StringConverter;
+import javafx.util.converter.BooleanStringConverter;
 
 public class MainUIController implements Initializable{
 	
@@ -101,6 +103,19 @@ public class MainUIController implements Initializable{
 	private TableColumn<SetProperty, String> tableColumnWinner;
 	@FXML
 	private Button btnNextMove;
+	@FXML
+	private CheckBox cbWithoutServer;
+	@FXML
+	private Button btnDirectory;
+	@FXML
+	private HBox boxTimeoutDraw;
+	@FXML
+	private HBox boxTimeoutServer;
+	@FXML
+	private HBox boxDirectory;
+	@FXML
+	private HBox boxColButtons;
+
 
 	//Elemente die nicht im FXML definiert sind
 	private TableView<LogEntry> logTabelle; 
@@ -142,34 +157,34 @@ public class MainUIController implements Initializable{
 	      }
 	    }
 		//manuelles Spielen:
-		spielfeld[0][0].setOnMouseClicked(new EventHandler<MouseEvent>() {
-			@Override
-			public void handle(MouseEvent arg0) {viewModel.oppMove((byte)0);}
-		});
-		spielfeld[1][0].setOnMouseClicked(new EventHandler<MouseEvent>() {
-			@Override
-			public void handle(MouseEvent arg0) {viewModel.oppMove((byte)1);}
-		});
-		spielfeld[2][0].setOnMouseClicked(new EventHandler<MouseEvent>() {
-			@Override
-			public void handle(MouseEvent arg0) {viewModel.oppMove((byte)2);}
-		});
-		spielfeld[3][0].setOnMouseClicked(new EventHandler<MouseEvent>() {
-			@Override
-			public void handle(MouseEvent arg0) {viewModel.oppMove((byte)3);}
-		});
-		spielfeld[4][0].setOnMouseClicked(new EventHandler<MouseEvent>() {
-			@Override
-			public void handle(MouseEvent arg0) {viewModel.oppMove((byte)4);}
-		});
-		spielfeld[5][0].setOnMouseClicked(new EventHandler<MouseEvent>() {
-			@Override
-			public void handle(MouseEvent arg0) {viewModel.oppMove((byte)5);}
-		});
-		spielfeld[6][0].setOnMouseClicked(new EventHandler<MouseEvent>() {
-			@Override
-			public void handle(MouseEvent arg0) {viewModel.oppMove((byte)6);}
-		});
+//		spielfeld[0][0].setOnMouseClicked(new EventHandler<MouseEvent>() {
+//			@Override
+//			public void handle(MouseEvent arg0) {viewModel.oppMove((byte)0);}
+//		});
+//		spielfeld[1][0].setOnMouseClicked(new EventHandler<MouseEvent>() {
+//			@Override
+//			public void handle(MouseEvent arg0) {viewModel.oppMove((byte)1);}
+//		});
+//		spielfeld[2][0].setOnMouseClicked(new EventHandler<MouseEvent>() {
+//			@Override
+//			public void handle(MouseEvent arg0) {viewModel.oppMove((byte)2);}
+//		});
+//		spielfeld[3][0].setOnMouseClicked(new EventHandler<MouseEvent>() {
+//			@Override
+//			public void handle(MouseEvent arg0) {viewModel.oppMove((byte)3);}
+//		});
+//		spielfeld[4][0].setOnMouseClicked(new EventHandler<MouseEvent>() {
+//			@Override
+//			public void handle(MouseEvent arg0) {viewModel.oppMove((byte)4);}
+//		});
+//		spielfeld[5][0].setOnMouseClicked(new EventHandler<MouseEvent>() {
+//			@Override
+//			public void handle(MouseEvent arg0) {viewModel.oppMove((byte)5);}
+//		});
+//		spielfeld[6][0].setOnMouseClicked(new EventHandler<MouseEvent>() {
+//			@Override
+//			public void handle(MouseEvent arg0) {viewModel.oppMove((byte)6);}
+//		});
 	
 		//-------------------------------------- weiteres Binding------------------------------
 			
@@ -190,6 +205,13 @@ public class MainUIController implements Initializable{
 		//Rollen Auswahl
 		rolle.valueProperty().bindBidirectional(viewModel.properties()[viewModel.ROLE_PROPERTY]);
 		rolle.getItems().addAll(String.valueOf(Constants.xRole), String.valueOf(Constants.oRole));
+		
+		//manuelles SPiel ohne Server oder gegen Server?
+		cbWithoutServer.selectedProperty().bindBidirectional(viewModel.withoutServer());
+		boxDirectory.disableProperty().bind(cbWithoutServer.selectedProperty());
+		boxTimeoutDraw.disableProperty().bind(cbWithoutServer.selectedProperty());
+		boxTimeoutServer.disableProperty().bind(cbWithoutServer.selectedProperty());
+		boxColButtons.disableProperty().bind(cbWithoutServer.selectedProperty().not());
 		
 		//Properties
 		timeoutAbfrage.textProperty().bindBidirectional(viewModel.properties()[viewModel.TIMEOUTSERVER_PROPERTY]);
@@ -346,6 +368,15 @@ public class MainUIController implements Initializable{
 	}
 
 	//----------------------- Methoden zum handeln von UI Input ----------------------------
+	
+	@FXML
+	private void handleColButton(MouseEvent e){
+		try{
+			String data = (String)((Button) e.getSource()).getUserData();
+			viewModel.oppMove((byte)Integer.parseInt(data));
+		}catch(Exception ex){ ex.printStackTrace();}
+	}
+	
 	@FXML
 	private void handleNextMove(MouseEvent e){
 		viewModel.loadNextMove();
@@ -363,7 +394,7 @@ public class MainUIController implements Initializable{
 	//Spiel starten gedrückt
 	@FXML
 	private void handleStartGame(ActionEvent e){
-		if (rolle.getValue() != null && gegnername.getText() != null && verzeichnispfad.getText() != null){
+		if ((rolle.getValue() != null && gegnername.getText() != null && verzeichnispfad.getText() != null) || viewModel.withoutServer().get()){
 			viewModel.startGame();
 		}
 		else{
@@ -535,6 +566,7 @@ public class MainUIController implements Initializable{
 		rootLog.getChildren().add(Logs);
 	}
 	
+
 	private class TokenRoleConverter extends StringConverter<String>{
 
 		@Override
@@ -555,6 +587,7 @@ public class MainUIController implements Initializable{
 		}
 		
 	}
+	
 	private class StyleConverter extends StringConverter<String> {	
 
 		@Override
