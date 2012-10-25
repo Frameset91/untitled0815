@@ -11,7 +11,7 @@ public class Constants {
 	
 	public static final char xRole = 'X';
 	public static final char oRole = 'O';
-	public static final char noRole = ' ';
+	public static final char noRole = (char)177;
 	public static final char defaultRole = xRole;
 	
 	public static final int defaultTimeoutServer = 300;
