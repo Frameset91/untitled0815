@@ -70,6 +70,15 @@ public class DBConnection {
 		}
 		return singleton;
 	}
+	
+	/**
+	 * 
+	 * liefert zurück, ob die DB erreichbar oder offline ist
+	 * @return true, wenn DB offline ist, false, wenn DB erreichbar ist
+	 */
+	public boolean isOfflineMode(){
+		return offlineMode;
+	}// isOfflineMode()
 
 	/**
 	 * 
@@ -88,7 +97,7 @@ public class DBConnection {
 			}
 		}
 		return rs;
-	}
+	}//sendSelectStatementInternal()
 	
 	/**
 	 * Sendet ein SelectStatement an die Datenbank
@@ -101,7 +110,7 @@ public class DBConnection {
 		ResultSet rs = null;
 		rs = sendSelectStatementInternal(sql);
 		return rs;
-	}
+	}//sendSelectStatement()
 	
 	/**
 	 * 
@@ -125,7 +134,7 @@ public class DBConnection {
 			}
 		}
 		return success;
-	}
+	}//sendInsertStatement()
 	
 	/**
 	 * 
@@ -384,8 +393,8 @@ public class DBConnection {
 		// Daten aus DB laden
 		String srole = "";
         String soppName = "";
-        String sownPoints = "";
-        String soppPoints = "";
+        String sownPoints = ""; //wird nur zur Überprüfung gebraucht
+        String soppPoints = ""; //wird nur zur Überprüfung gebraucht
         String spath = "";
         String stimeServer = "";
         String stimeDraw = "";
@@ -428,8 +437,6 @@ public class DBConnection {
 		int columns = Constants.gamefieldcolcount;
 		int rows = Constants.gamefieldrowcount;
 		
-////////////////// hier noch die Ounkte own und opp zuweisen --> funktion von Game benötigt!
-		
 		Game game = new Game(columns, rows, role, oppname, path, timeServer, timedraw, gameID);
 		
 		return game;
@@ -437,11 +444,67 @@ public class DBConnection {
 	
 	/**
 	 * 
-	 * @return Game [] alle gespeicherten Games
+	 * @return Game [] alle gespeicherten Games in Array der Größe entprechend der Anzahl
 	 */
-//	public synchronized Game [] loadAllGames(){
-//		//return
-//	}
+	public synchronized Game [] loadAllGames(){
+		Log log = Log.getInstance();
+		ArrayList <Game> allGameList = new ArrayList <Game> (0);
+		Game [] allGame;
+		
+		int id;
+		int timeServer;
+		int timedraw;
+		
+		String sql = "SELECT * FROM game;"; 
+		ResultSet rs = this.sendSelectStatementInternal(sql);
+		
+		try{
+			while ( rs.next() ){
+				//Infos aus rs holen und auflisten
+				String sID = rs.getString(1);
+		        String srole = rs.getString(2);
+		        String soppName = rs.getString(3);
+		        String sownPoints = rs.getString(4);
+		        String soppPoints = rs.getString(5);
+		        String spath = rs.getString(6);
+		        String stimeServer = rs.getString(7);
+		        String stimeDraw = rs.getString(8);
+		        String resultset = sID + ","+ srole +  ","+ soppName +  ","+ sownPoints +',' +soppPoints +  ","
+		        		+ spath +  ","+ stimeServer + ", " + stimeDraw;
+		        
+		        //in game übernehmen
+		        if (sID != null)
+		        	id = Integer.valueOf(sID);
+		        else id = -1;
+				char role = srole.charAt(0);
+				String oppname = soppName; 
+				String path = spath;
+				if (stimeServer != null){
+					timeServer = Integer.valueOf(stimeServer);
+				}else timeServer = 0;
+				if (stimeDraw != null){
+					timedraw = Integer.valueOf(stimeDraw);
+				}else timedraw = 0;
+				int columns = Constants.gamefieldcolcount;
+				int rows = Constants.gamefieldrowcount;
+		        log.write("Game geladen: "+ resultset);
+		        
+		        // Game an die Liste hängen
+		        Game newGame = new Game (columns, rows, role, oppname, path, timeServer, timedraw, id);
+		        allGameList.add(newGame);
+			}//while
+		}catch (SQLException e){
+			e.printStackTrace();
+		}
+		int noGames = allGameList.size();
+		if (noGames == 0)
+				return null; // dann sind keine Sets da
+        allGame = new Game [noGames];
+        for (int i = 0; i < noGames; i++) {
+			allGame [i] = allGameList.get(i);
+        }
+		return allGame;
+	}// loadAllGames()
 	
 	/**
 	 * 
@@ -452,22 +515,16 @@ public class DBConnection {
 		Log log = Log.getInstance();
 		ArrayList <Set> allSetList = new ArrayList <Set> (0);
 		Set [] allSet;
-		//Vorbereitung für Results:
-        String ssetID = "";
-        String swinner = "";
-        String sstarttime = "";
-        String sendtime = "";
-        
-        		
+		
 		String sql = "Select * FROM gameSet WHERE gameID = " + gameID + ";";
 		ResultSet rs = this.sendSelectStatementInternal(sql);
 		try{
 			while ( rs.next() ){
 				//Infos aus rs holen und auflisten
-		        ssetID = rs.getString(2);
-		        swinner = rs.getString(3);
-		        sstarttime = rs.getString(4);
-		        sendtime = rs.getString(5);
+		        String ssetID = rs.getString(2);
+		        String swinner = rs.getString(3);
+		        String sstarttime = rs.getString(4);
+		        String sendtime = rs.getString(5);
 		        String resultset = gameID + ","+ ssetID +  ","+ swinner +  ","+ sstarttime +',' +sendtime;
 		        System.out.println (resultset);
 		        log.write("Set geladen: "+ resultset);
@@ -487,9 +544,7 @@ public class DBConnection {
 		        Set newSet = new Set(col, row, setID, starttime, endtime, Constants.STATE_SET_ENDED, winner);
 		        // an die Liste ranhängen
 		        allSetList.add(newSet);
-		      }
-			
-			
+		      }	
 		}catch (SQLException e){
 			e.printStackTrace();
 		}
@@ -513,21 +568,16 @@ public class DBConnection {
 		Log log = Log.getInstance();
 		ArrayList <Move> allMoveList = new ArrayList <Move> (0);
 		Move [] allMove;
-		//Vorbereitung für Results:
-        String smoveID = "";
-        String srole = "";
-        String scolumn = "";
-        String stime = "";
-        
+
         String sql = "Select * FROM move WHERE gameID = " + gameID + " AND setID = "+ setID +";";
 		ResultSet rs = this.sendSelectStatementInternal(sql);
 		try{
 			while ( rs.next() ){
 				//Infos aus rs holen und auflisten
-		        smoveID = rs.getString(3);
-		        srole = rs.getString(4);
-		        scolumn = rs.getString(5);
-		        stime = rs.getString(6);
+		        String smoveID = rs.getString(3);
+		        String srole = rs.getString(4);
+		        String scolumn = rs.getString(5);
+		        String stime = rs.getString(6);
 		        String resultset = gameID + ","+ setID +  ","+ smoveID +  ","+ srole +',' +scolumn +  "," + stime;
 		        System.out.println (resultset);
 		        log.write("Move geladen: "+ resultset);
@@ -548,8 +598,7 @@ public class DBConnection {
 		        Move newMove = new Move(role, col, moveID, time);
 		        // an die Liste ranhängen
 		        allMoveList.add(newMove);
-		      }
-			
+		      }//while	
 		}catch (SQLException e){
 			e.printStackTrace();
 		}

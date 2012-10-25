@@ -97,6 +97,8 @@ public class Game extends Observable implements Observer{
 		set.addObserver(this);
 		sets.add(set);		
 		update(set, "winner");
+		setChanged();
+		notifyObservers("sets");
 	}
 	
 	//Observer Methode um bei Veränderungen von Gewinnern die Punkte neu zu berechnen

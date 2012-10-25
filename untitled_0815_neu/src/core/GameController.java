@@ -14,6 +14,7 @@ import model.*;
 import utilities.*;
 
 import javafx.application.Platform;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -44,9 +45,15 @@ public class GameController implements GameEventListener, Observer{
 	//Properties für DataBinding	
 	private SimpleStringProperty[] properties;
 	private SimpleStringProperty[][] field;
-//	private ObservableList<Log.LogEntry> logItems;
 	private ObservableList<SetProperty> sets;
 	private ObservableList<GameProperty> savedGames;
+	private SimpleBooleanProperty isReplay;
+	
+	//Attribute für Replay
+	private int nextMove;
+	private int currentSet;
+	private Set[] loadedSets;
+	private Move[] loadedMoves;
 	
 	/**
 	 * Konstruktor von Game
@@ -65,9 +72,10 @@ public class GameController implements GameEventListener, Observer{
 			properties[i] = new SimpleStringProperty();
 		}
 		
+		isReplay = new SimpleBooleanProperty();
+		
 		sets = FXCollections.observableArrayList();		
 		savedGames = FXCollections.observableArrayList();
-//		logItems = FXCollections.observableArrayList();
 	}
 	
 	//--------------------- API Methoden für UI-Controller -----------------------------------------	
@@ -105,19 +113,14 @@ public class GameController implements GameEventListener, Observer{
 		if (oppMove > -1){
 			addOppMove(oppMove);					
 		}
-		if(!Platform.isFxApplicationThread()){
-			Platform.runLater(new Runnable() {
-				
-				@Override
-				public void run() {
-					properties[STATE_PROPERTY].set(Constants.STATE_SET_ENDED);
-					model.getLatestSet().setStatus(Constants.STATE_SET_ENDED);
-				}
-			});
-		}else{
-			properties[STATE_PROPERTY].set(Constants.STATE_SET_ENDED);
-			model.getLatestSet().setStatus(Constants.STATE_SET_ENDED);
-		}
+
+		Platform.runLater(new Runnable() {			
+			@Override
+			public void run() {
+				properties[STATE_PROPERTY].set(Constants.STATE_SET_ENDED);
+				model.getLatestSet().setStatus(Constants.STATE_SET_ENDED);
+			}
+		});
 	}
 	
 	/**
@@ -125,6 +128,7 @@ public class GameController implements GameEventListener, Observer{
 	 */	
 	public void endGame(){
 		Log.getInstance().write("Controller: beende Spiel, FxThread:" + Platform.isFxApplicationThread());
+		loadSavedGames();
 		properties[STATE_PROPERTY].set(Constants.STATE_APP_RUNNING);
 	}
 	
@@ -134,27 +138,22 @@ public class GameController implements GameEventListener, Observer{
 	 */	
 	public void loadGame(int gameID){
 		Log.getInstance().write("Controller: Spiel wird geladen, FxThread:" + Platform.isFxApplicationThread());
-//		TODO: DBConnection.getInstance().loadGame(gameID);
-		Platform.runLater(new Runnable() {
-			
-			@Override
-			public void run() {
-				updateField();
-				updateSets();
-				properties[ROLE_PROPERTY].set(String.valueOf(model.getRole()));
-				properties[OWNPOINTS_PROPERTY].set(String.valueOf(model.getOwnPoints()));
-				properties[OPPPOINTS_PROPERTY].set(String.valueOf(model.getOppPoints()));
-				properties[OPPNAME_PROPERTY].set(model.getOppName());
-				properties[PATH_PROPERTY].set(model.getPath());
-				properties[TIMEOUTSERVER_PROPERTY].set(String.valueOf(model.getTimeoutServer()));
-				properties[TIMEOUTDRAW_PROPERTY].set(String.valueOf(model.getTimeoutDraw()));
-				properties[WINNER_PROPERTY].set(String.valueOf(model.getLatestSet().getWinner()));
-				setTokens();				
-			}
-		});	
-		properties[STATE_PROPERTY].set(Constants.STATE_GAME_RUNNING);
+		isReplay.set(true);
+		processGameLoad(gameID);
 	}
 	
+	/**
+	 * Methode um von dem geladenen Spiel den nächsten Move zu laden	 * 
+	 */	
+	public void loadNextMove(){
+		if(isReplay.get()){
+			processNextMove();
+		}
+	}
+	
+
+	
+
 	/**
 	 * Methode um einen gegnerischen Zug hinzuzufügen -> Berechnung und Ausführung eines neuen Zuges.
 	 * Sollte nur für das manuelle Spielen verwendet werden, ansonsten über Event starten.
@@ -210,13 +209,6 @@ public class GameController implements GameEventListener, Observer{
 		return field;
 	}	
 	
-//	/**
-//	 * @return Logeinträge :ObservableList<Log.LogEntry>
-//	 */
-//	public ObservableList<Log.LogEntry> logItems() {
-//		return logItems;
-//	}
-	
 	/**
 	 * @return Liste der gespielte Sätze 
 	 */
@@ -228,8 +220,85 @@ public class GameController implements GameEventListener, Observer{
 	 * @return Liste der gespeicherten Spiele
 	 */
 	public ObservableList<GameProperty> savedGames() {
-		//TODO: Liste der gespeicherten Spiel
 		return savedGames;
+	}
+	
+	/**
+	 * @return Boolean ob es gerade ein Replay ist
+	 */
+	public SimpleBooleanProperty isReplay() {
+		return isReplay;
+	}
+	
+	//Hilfsmethoden
+	
+	private void loadSavedGames(){
+		savedGames.clear();
+		Game[] games = DBConnection.getInstance().loadAllGames();
+		for(Game game: games){
+			savedGames.add(new GameProperty(String.valueOf(game.getID()), game.getOppName()));
+		}
+//		savedGames.add(new GameProperty("1046", "fdsa"));
+	}
+	
+	
+	private void processGameLoad(int gameID) {
+		//game laden
+		model = DBConnection.getInstance().loadGame(gameID);
+		model.addObserver(this);
+		loadedSets = DBConnection.getInstance().loadAllSets(model.getID());
+		loadedMoves = new Move[0];
+		currentSet = -1;
+		Platform.runLater(new Runnable() {	
+			@Override
+			public void run() {
+//				updateField();
+//				updateSets();
+				properties[ROLE_PROPERTY].set(String.valueOf(model.getRole()));
+				properties[OWNPOINTS_PROPERTY].set(String.valueOf(model.getOwnPoints()));
+				properties[OPPPOINTS_PROPERTY].set(String.valueOf(model.getOppPoints()));
+				properties[OPPNAME_PROPERTY].set(model.getOppName());
+				properties[PATH_PROPERTY].set(model.getPath());
+				properties[TIMEOUTSERVER_PROPERTY].set(String.valueOf(model.getTimeoutServer()));
+				properties[TIMEOUTDRAW_PROPERTY].set(String.valueOf(model.getTimeoutDraw()));
+//				properties[WINNER_PROPERTY].set(String.valueOf(model.getLatestSet().getWinner()));
+				setTokens();				
+			}
+		});	
+		properties[STATE_PROPERTY].set(Constants.STATE_GAME_RUNNING);			
+	}
+	
+	private void processNextMove() {
+		if(loadedMoves.length <= nextMove){
+			if(currentSet == loadedSets.length -1){
+				//letzter Satz -> Replay beenden				
+				
+//				Platform.runLater(new Runnable() {					
+//					@Override
+//					public void run() {
+						properties[STATE_PROPERTY].set(Constants.STATE_APP_RUNNING);	
+						isReplay.set(false);						
+						properties[STATE_PROPERTY].set(Constants.STATE_GAME_RUNNING);
+//					}
+//				});				
+			}else{
+				//neues Set laden
+				properties[STATE_PROPERTY].set(Constants.STATE_SET_RUNNING);
+				currentSet++;
+				nextMove = 0;
+				model.addSet(loadedSets[currentSet]);	
+				loadedMoves = DBConnection.getInstance().loadAllMoves(model.getID(), model.getLatestSet().getID());
+				if(loadedMoves == null) loadedMoves = new Move[0];
+				updateField();
+				updateSets();
+			}		
+		}else{	
+			//Spielzug laden
+			model.addMove(loadedMoves[nextMove]);
+			nextMove++;
+		}
+
+		
 	}
 	
 	// ------------------------------------- Behandlung von GameEvents (vom ComServer) --------------------------------
@@ -347,7 +416,7 @@ public class GameController implements GameEventListener, Observer{
 			Log.getInstance().write("Controller: Set changed empfangen; FxThread:" + Platform.isFxApplicationThread());
 			updateField();
 			updateSets();
-			properties[WINNER_PROPERTY].setValue(String.valueOf(model.getLatestSet().getWinner()));
+			if(model.getLatestSet() != null) properties[WINNER_PROPERTY].setValue(String.valueOf(model.getLatestSet().getWinner()));
 			break;
 		case "field":
 			Log.getInstance().write("Controller: Field changed empfangen; FxThread:" + Platform.isFxApplicationThread());
@@ -363,25 +432,27 @@ public class GameController implements GameEventListener, Observer{
 	
 	//Field Property aktualisieren
 	private void updateField(){
-		Platform.runLater(new Runnable() {			
-			@Override
-			public void run() {
-				Boolean[][] boolField = model.getLatestSet().getField();
-				for(int i = 0; i < Constants.gamefieldcolcount; i++){
-					for(int j = 0; j< Constants.gamefieldrowcount; j++){
-						String newStyle;
-						if(boolField[i][j] == null)
-							newStyle  = String.valueOf(Constants.noRole);
-						else if(boolField[i][j])
-							newStyle = String.valueOf(Constants.xRole);
-						else
-							newStyle = String.valueOf(Constants.oRole);
-						
-						if(field[i][j].getValue() != newStyle) field[i][j].set(newStyle);
-					}
-				}				
-			}
-		});	
+		if(model.getLatestSet() != null){
+			Platform.runLater(new Runnable() {			
+				@Override
+				public void run() {
+					Boolean[][] boolField = model.getLatestSet().getField();
+					for(int i = 0; i < Constants.gamefieldcolcount; i++){
+						for(int j = 0; j< Constants.gamefieldrowcount; j++){
+							String newStyle;
+							if(boolField[i][j] == null)
+								newStyle  = String.valueOf(Constants.noRole);
+							else if(boolField[i][j])
+								newStyle = String.valueOf(Constants.xRole);
+							else
+								newStyle = String.valueOf(Constants.oRole);
+							
+							if(field[i][j].getValue() != newStyle) field[i][j].set(newStyle);
+						}
+					}				
+				}
+			});
+		}
 	}
 	
 	//Tabelle der Sets neu erstellen
@@ -422,8 +493,10 @@ public class GameController implements GameEventListener, Observer{
 					String arg1, String arg2) {model.getLatestSet().setWinner(properties[WINNER_PROPERTY].get().charAt(0));}
 		});
 		
-//		logItems = Log.getInstance().getLogEntries();
-			
+		isReplay.set(false);
+		
+		loadSavedGames();
+		
 		//Communication Server
 		comServ = CommunicationServer.getInstance();
 				

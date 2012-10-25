@@ -32,7 +32,8 @@
 }
 
 .timeoutButton{
-	-fx-font-size: 8;
+	-fx-font-size: 9;
+	-fx-text-alignment: left;
 }
 
 .spieleranzeige{
