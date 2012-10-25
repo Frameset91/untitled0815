@@ -22,9 +22,12 @@ public class Connect4 extends Application {
 	/**
 	 * Start Methode für das UI
 	 */
+	
+	public Stage stage;
 	@Override
 	public void start(Stage stage) throws Exception {
-        stage.setTitle("Test für Spielfeld mit FXML"); 
+        stage = this.stage;
+		stage.setTitle("Test für Spielfeld mit FXML"); 
         Parent root = FXMLLoader.load(getClass().getResource("MainUI.fxml")); 
         stage.setScene(new Scene(root)); 
         stage.setResizable(false);	

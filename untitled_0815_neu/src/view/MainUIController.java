@@ -346,6 +346,12 @@ public class MainUIController implements Initializable{
 		viewModel.loadNextMove();
 	}
 	
+//	@FXML
+//	private void handleChooseFile(ActionEvent e){
+//		FileChooser fc = new FileChooser();
+//		fc.showOpenDialog(stage);
+//	}
+	
 	//Spiel starten gedrückt
 	@FXML
 	private void handleStartGame(ActionEvent e){
