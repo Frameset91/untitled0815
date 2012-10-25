@@ -22,11 +22,13 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.effect.Lighting;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
+import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -38,6 +40,8 @@ public class MainUIController implements Initializable{
 	
 	//Elemente die in der FXML definiert sind	
 	//Bereiche
+	@FXML
+	private BorderPane borderPane;
 	@FXML
 	private GridPane gameSettings;
 	@FXML
@@ -346,11 +350,14 @@ public class MainUIController implements Initializable{
 		viewModel.loadNextMove();
 	}
 	
-//	@FXML
-//	private void handleChooseFile(ActionEvent e){
-//		FileChooser fc = new FileChooser();
-//		fc.showOpenDialog(stage);
-//	}
+	@FXML
+	private void handleChooseDirectory(ActionEvent e){
+		FileChooser fc = new FileChooser();
+		fc.setTitle("Pfad auswählen:");
+		//fc.setInitialDirectory(arg0);
+		fc.showOpenDialog(borderPane.getScene().getWindow());
+		
+	}
 	
 	//Spiel starten gedrückt
 	@FXML
