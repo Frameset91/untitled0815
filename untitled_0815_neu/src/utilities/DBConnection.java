@@ -70,6 +70,15 @@ public class DBConnection {
 		}
 		return singleton;
 	}
+	
+	/**
+	 * 
+	 * liefert zurück, ob die DB erreichbar oder offline ist
+	 * @return true, wenn DB offline ist, false, wenn DB erreichbar ist
+	 */
+	public boolean isOfflineMode(){
+		return offlineMode;
+	}// isOfflineMode()
 
 	/**
 	 * 
