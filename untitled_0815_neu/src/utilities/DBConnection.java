@@ -70,6 +70,15 @@ public class DBConnection {
 		}
 		return singleton;
 	}
+	
+	/**
+	 * 
+	 * liefert zurück, ob die DB erreichbar oder offline ist
+	 * @return true, wenn DB offline ist, false, wenn DB erreichbar ist
+	 */
+	public boolean isOfflineMode(){
+		return offlineMode;
+	}// isOfflineMode()
 
 	/**
 	 * 
@@ -384,8 +393,8 @@ public class DBConnection {
 		// Daten aus DB laden
 		String srole = "";
         String soppName = "";
-        String sownPoints = "";
-        String soppPoints = "";
+        String sownPoints = ""; //wird nur zur Überprüfung gebraucht
+        String soppPoints = ""; //wird nur zur Überprüfung gebraucht
         String spath = "";
         String stimeServer = "";
         String stimeDraw = "";
@@ -427,8 +436,6 @@ public class DBConnection {
 		}else timedraw = 0;
 		int columns = Constants.gamefieldcolcount;
 		int rows = Constants.gamefieldrowcount;
-		
-////////////////// hier noch die Ounkte own und opp zuweisen --> funktion von Game benötigt!
 		
 		Game game = new Game(columns, rows, role, oppname, path, timeServer, timedraw, gameID);
 		
