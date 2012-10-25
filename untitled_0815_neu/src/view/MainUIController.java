@@ -539,17 +539,19 @@ public class MainUIController implements Initializable{
 
 		@Override
 		public String fromString(String arg0) {
-			if(arg0.equals(String.valueOf(Constants.noRole))) 
-				return " ";
-			else
-				
-				return arg0;			
+			// nicht nötig
+			return null;
 		}
 
 		@Override
 		public String toString(String arg0) {
-			// nicht nötig
-			return null;
+			if(arg0 != null && arg0.equals(String.valueOf(Constants.noRole))){
+				return " ";
+			}
+			else{				
+				return arg0;
+			}
+			
 		}
 		
 	}
