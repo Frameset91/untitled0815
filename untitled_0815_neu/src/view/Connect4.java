@@ -23,7 +23,7 @@ public class Connect4 extends Application {
 	 * Start Methode für das UI
 	 */
 	@Override
-	public void start(final Stage stage) throws Exception {
+	public void start(Stage stage) throws Exception {
         stage.setTitle("Test für Spielfeld mit FXML"); 
         Parent root = FXMLLoader.load(getClass().getResource("MainUI.fxml")); 
         stage.setScene(new Scene(root)); 
@@ -49,7 +49,7 @@ public class Connect4 extends Application {
         			}
         		});
         		VBox vbox = new VBox(10);
-        		vbox.getChildren().addAll(text, button);
+        		vbox.getChildren().addAll(text, text2, button);
         		rootClosing.getChildren().add(vbox);
         		closing.initModality(Modality.APPLICATION_MODAL);
         		closing.showAndWait();

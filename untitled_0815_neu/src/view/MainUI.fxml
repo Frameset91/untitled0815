@@ -54,10 +54,10 @@
         			</HBox>
         			<!-- Eingabefelder für Gegner und Verzeichnis -->
         			<TextField fx:id="gegnername" maxWidth="150" GridPane.columnIndex="1" GridPane.rowIndex="3" styleClass="textfeld"/>
-        			<VBox>
-        				<TextField fx:id="verzeichnispfad" maxWidth="150" GridPane.columnIndex="1" GridPane.rowIndex="4" styleClass="textfeld"></TextField>
-        				<Button fx:id="btnFile" text="..." onAction="#handle"/>
-        			</VBox>
+        			<HBox GridPane.columnIndex="1" GridPane.rowIndex="4">
+        				<TextField fx:id="verzeichnispfad" maxWidth="150" styleClass="textfeld"></TextField>
+        				<Button fx:id="btnFile" text="..."/>
+        			</HBox>
         			<!-- Timeout File-Abfrage -->
  		       		<HBox GridPane.columnIndex="1" GridPane.rowIndex="5" spacing="5">
         				<TextField fx:id="timeoutAbfrage" maxWidth="60" text="300" styleClass="textfeld"/>
