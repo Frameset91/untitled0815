@@ -85,7 +85,7 @@ public class GameController implements GameEventListener, Observer{
 		logEntries =  Log.getInstance().getLogEntries();
 	}
 	
-	//-------------------------------------------------------------- API Methoden für UI-Controller -----------------------------------------	
+	//------------------------------------------------------------------------ API Methoden für UI-Controller -----------------------------------------	
 	/**
 	 * Methode um ein Spiel zu starten	  
 	 */
@@ -433,7 +433,9 @@ public class GameController implements GameEventListener, Observer{
 	//Methode um die Tokens, die zum Gewinn geführt haben zu markieren
 	private void markWinTokens(byte[][] data){
 		for(byte[] token: data){
-			field[token[0]][token[1]].set(field[token[0]][token[1]].get().charAt(0) + String.valueOf(Constants.winMarker));
+			field[token[0]][token[1]].set(
+					field[token[0]][token[1]].get().charAt(0) + 
+					String.valueOf(Constants.winMarker));
 		}
 	}
 	
@@ -521,7 +523,7 @@ public class GameController implements GameEventListener, Observer{
 		}
 	}
 	
-	//---------------------------------------------------------------------------------- Initialisieren der Properties -------------------
+	//----------------------------------------------------------------------------------- Initialisieren der Properties ----------------------------------
 	
 	/**
 	 * Initialisierungs Methode um initiale Werte zu setzen
