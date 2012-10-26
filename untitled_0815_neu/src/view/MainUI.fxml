@@ -80,6 +80,7 @@
         		</GridPane>
         		<Button text="Spiel beenden" fx:id="btnEndGame" onAction="#handleEndGame" alignment="CENTER">
         		</Button>
+        		<CheckBox text="Log aktiv" selected="true" onAction="#handleCbLog"></CheckBox>
         	</VBox>
         	<Line startX="110" startY="0" endX="110" endY="500"/> 
         </HBox>

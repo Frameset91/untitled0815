@@ -361,6 +361,15 @@ public class MainUIController implements Initializable{
 	}
 	
 	@FXML
+	private void handleCbLog(ActionEvent e){
+		if(((CheckBox)e.getSource()).isSelected()){
+			Log.getInstance().enableLog();
+		}else{
+			Log.getInstance().disableLog();
+		}
+	}
+	
+	@FXML
 	private void handleNextMove(MouseEvent e){
 		viewModel.loadNextMove();
 	}
