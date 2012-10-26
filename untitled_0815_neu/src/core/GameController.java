@@ -85,7 +85,7 @@ public class GameController implements GameEventListener, Observer{
 		logEntries =  Log.getInstance().getLogEntries();
 	}
 	
-	//--------------------- API Methoden für UI-Controller -----------------------------------------	
+	//-------------------------------------------------------------- API Methoden für UI-Controller -----------------------------------------	
 	/**
 	 * Methode um ein Spiel zu starten	  
 	 */
@@ -173,9 +173,12 @@ public class GameController implements GameEventListener, Observer{
 	 * Methode um von dem geladenen Spiel den letzten Zug wieder zu entfernen 
 	 */	
 	public void removeLastMove(){
-		//TODO: Reply mit zurück
+		if(isReplay.get()){
+			processRemoveMove();
+		}
 	}
 	
+
 	/**
 	 * Methode um einen gegnerischen Zug hinzuzufügen -> Berechnung und Ausführung eines neuen Zuges.
 	 * Sollte nur für das manuelle Spielen verwendet werden, ansonsten über Event starten.
@@ -216,7 +219,7 @@ public class GameController implements GameEventListener, Observer{
 		properties[STATE_PROPERTY].set(Constants.STATE_GAME_RUNNING);
 	}
 	
-	// Getter für Properties 	
+	//------ Getter für Properties 	
 	/**
 	 * @return Properties für DataBinding mit UI
 	 */
@@ -273,9 +276,9 @@ public class GameController implements GameEventListener, Observer{
 		return isDBAvailable;
 	}
 	
-	//Hilfsmethoden
+	//---------------Hilfsmethoden
 	
-	
+	// Methode um ein Spiel zu laden
 	private void processGameLoad(int gameID) {
 		//game laden
 		model = DBConnection.getInstance().loadGame(gameID);
@@ -299,19 +302,14 @@ public class GameController implements GameEventListener, Observer{
 		properties[STATE_PROPERTY].set(Constants.STATE_GAME_RUNNING);			
 	}
 	
+	//Methode um den nächsten Move zu laden
 	private void processNextMove() {
 		if(loadedMoves.length <= nextMove){
 			if(currentSet == loadedSets.length -1){
-				//letzter Satz -> Replay beenden				
-				
-//				Platform.runLater(new Runnable() {					
-//					@Override
-//					public void run() {
-						properties[STATE_PROPERTY].set(Constants.STATE_APP_RUNNING);	
-						isReplay.set(false);						
-						properties[STATE_PROPERTY].set(Constants.STATE_GAME_RUNNING);
-//					}
-//				});				
+				//letzter Satz -> Replay beenden			
+				//properties[STATE_PROPERTY].set(Constants.STATE_APP_RUNNING);	
+				isReplay.set(false);						
+				properties[STATE_PROPERTY].set(Constants.STATE_GAME_RUNNING);
 			}else{
 				//neues Set laden
 				properties[STATE_PROPERTY].set(Constants.STATE_SET_RUNNING);
@@ -327,12 +325,19 @@ public class GameController implements GameEventListener, Observer{
 			//Spielzug laden
 			model.addMove(loadedMoves[nextMove]);
 			nextMove++;
-		}
-
-		
+		}	
 	}
 	
-	// ------------------------------------- Behandlung von GameEvents (vom ComServer) --------------------------------
+	//Methode um einen Zug zu entfernen
+	private void processRemoveMove() {
+		if(nextMove > 0){	
+			//Spielzug entfernen
+//			TODO: model.removeMove(loadedMoves[nextMove-1]);
+			nextMove--;
+		}		
+	}
+	
+	// --------------------------------------------------------------------------- Behandlung von GameEvents (vom ComServer) --------------------------------
 	/* (non-Javadoc)
 	 * @see GameEventListener#handleEvent(GameEvent)
 	 */	
@@ -384,7 +389,7 @@ public class GameController implements GameEventListener, Observer{
 			}
 		}	
 
-	//Hilfsmethoden 
+	//-------------Hilfsmethoden 
 	
 	// Anhand der eigenen Rolle bestimme welche Rolle der Gegner hat und Zug entsprechend einfügen
 	private void addOppMove(byte col) {
@@ -396,10 +401,6 @@ public class GameController implements GameEventListener, Observer{
 	
 	//neues Spiel mit einer bestimmten Spalten- und Zeilenanzahl
 	private void newGame(int cols, int rows){		
-//		if(model != null){			
-//			model.save();
-//		}
-		
 		//create new model		
 		model = new Game(cols, rows, properties[ROLE_PROPERTY].get().charAt(0), 
 				properties[OPPNAME_PROPERTY].get(), 
@@ -436,7 +437,7 @@ public class GameController implements GameEventListener, Observer{
 		}
 	}
 	
-	//---------------------Verarbeitung von Veränderungen im Datenmodell---------------------------------------------
+	//-------------------------------------------------------------------------Verarbeitung von Veränderungen im Datenmodell---------------------------------------------
 	/* (non-Javadoc)
 	 * @see java.util.Observer#update(java.util.Observable, java.lang.Object)
 	 */
@@ -483,7 +484,7 @@ public class GameController implements GameEventListener, Observer{
 		
 	}
 	
-	//Hilfsmethoden
+	//---------------Hilfsmethoden
 	
 	//Field Property aktualisieren
 	private void updateField(){
@@ -520,7 +521,7 @@ public class GameController implements GameEventListener, Observer{
 		}
 	}
 	
-	//---------------- Initialisieren der Properties -------------------
+	//---------------------------------------------------------------------------------- Initialisieren der Properties -------------------
 	
 	/**
 	 * Initialisierungs Methode um initiale Werte zu setzen
@@ -559,7 +560,8 @@ public class GameController implements GameEventListener, Observer{
 		reset();
 	}
 	
-	//Hilfsmethoden
+	//----------Hilfsmethoden
+	
 	//Methode um die initialen Werte zu setzen, die auch nach einem Spiel, wieder gesetzt werden müssen
 	private void reset(){
 		if(model != null) model = null;
