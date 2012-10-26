@@ -78,6 +78,19 @@ public class Set extends Observable{
 	}
 	
 	/**
+	 * Methode zum Entfernen eines Zuges
+	 * @param move der zu entfernende Zug
+	 */
+	public synchronized void removeMove(Move move){
+
+		moves.remove(move);
+		field.removeMove(move);
+		setChanged();
+		Log.getInstance().write("Einen Move entfernt");
+		notifyObservers("field");
+	}
+	
+	/**
 	 * Methode zum Speichern eines Satzes
 	 *  
 	 * @param gameID ID des Games 

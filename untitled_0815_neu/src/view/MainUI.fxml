@@ -116,8 +116,8 @@
         		</HBox>
         		<GridPane fx:id="feld" hgap="3" vgap="3"  styleClass="field">
         		</GridPane>
-        		<Button text="Nächster Zug" fx:id="btnNextMove" onMouseClicked="#handleNextMove" alignment="CENTER">
-        		</Button>
+        		<Button text="Zurück" fx:id="btnRemoveMove" onMouseClicked="#handleRemoveMove" alignment="CENTER"></Button>
+        		<Button text="Vor" fx:id="btnNextMove" onMouseClicked="#handleNextMove" alignment="CENTER"></Button>
         	</VBox>
         </left>
        	<center>

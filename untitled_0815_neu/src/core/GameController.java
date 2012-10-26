@@ -332,7 +332,7 @@ public class GameController implements GameEventListener, Observer{
 	private void processRemoveMove() {
 		if(nextMove > 0){	
 			//Spielzug entfernen
-//			TODO: model.removeMove(loadedMoves[nextMove-1]);
+			model.removeMove(loadedMoves[nextMove-1]);
 			nextMove--;
 		}		
 	}

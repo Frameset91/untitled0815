@@ -44,6 +44,21 @@ public class GameField{
 			}
 		}		
 	}
+	
+	/**
+	 * Methode zum Entfernen eines Zuges  
+	 *  
+	 * @param move der zu entfernende Zug
+	 */
+	public void removeMove(Move move){
+		int col = move.getColumn();
+		for(int i=field[col].length-1; i>-1; i--){
+			if (field[col][i] != null){
+				field[col][i] = null;
+				break;
+			}
+		}		
+	}
 
 	/**
 	 * @return Spielfeld mit Boolean für jedes Feld (true = xRole|false = oRole|null = noRole)

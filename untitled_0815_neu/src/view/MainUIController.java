@@ -103,6 +103,8 @@ public class MainUIController implements Initializable{
 	@FXML
 	private Button btnNextMove;
 	@FXML
+	private Button btnRemoveMove;
+	@FXML
 	private CheckBox cbWithoutServer;
 	@FXML
 	private Button btnDirectory;
@@ -158,6 +160,7 @@ public class MainUIController implements Initializable{
 					String arg1, String arg2) {	updateState(); }});
 		
 		btnNextMove.visibleProperty().bind(viewModel.isReplay());
+		btnRemoveMove.visibleProperty().bind(viewModel.isReplay());
 		
 		//Menü-Einträge an Buttons binden
 		menuSpielStarten.disableProperty().bind(gameSettings.disableProperty());
@@ -174,7 +177,7 @@ public class MainUIController implements Initializable{
 		//manuelles Spiel ohne Server oder gegen Server?
 		cbWithoutServer.selectedProperty().bindBidirectional(viewModel.isWithoutServer());
 		boxDirectory.disableProperty().bind(cbWithoutServer.selectedProperty());
-		boxTimeoutDraw.disableProperty().bind(cbWithoutServer.selectedProperty());
+//		boxTimeoutDraw.disableProperty().bind(cbWithoutServer.selectedProperty());
 		boxTimeoutServer.disableProperty().bind(cbWithoutServer.selectedProperty());
 		boxColButtons.disableProperty().bind(cbWithoutServer.selectedProperty().not());
 		cbWithoutServer.onActionProperty().set(new EventHandler<ActionEvent>() {			
@@ -360,6 +363,11 @@ public class MainUIController implements Initializable{
 	@FXML
 	private void handleNextMove(MouseEvent e){
 		viewModel.loadNextMove();
+	}
+	
+	@FXML
+	private void handleRemoveMove(MouseEvent e){
+		viewModel.removeLastMove();
 	}
 	
 	@FXML

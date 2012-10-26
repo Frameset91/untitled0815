@@ -181,6 +181,15 @@ public class Game extends Observable implements Observer{
 	}
 	
 	/**
+	 * Methode zum Entfernen eines Zuges  
+	 *  
+	 * @param move der Zug, der entfernt werden soll
+	 */
+	public void removeMove(Move move){
+		sets.get(sets.size()-1).removeMove(move);
+	}
+	
+	/**
 	 * Methode zum Speichern des Datenmodells
 	 */
 	public void save(){
