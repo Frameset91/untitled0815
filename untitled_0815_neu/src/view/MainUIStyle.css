@@ -39,6 +39,7 @@
 .colButton{
 	-fx-font-size: 9;
 	-fx-text-alignment: center;
+	-fx-padding: 2 19 2 20;
 }
 
 .spieleranzeige{
