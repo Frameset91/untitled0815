@@ -94,7 +94,8 @@
         			<Label text="untitled0815:"/>
         			<!-- <Circle fx:id="tokenSpieler" radius="15.0f" styleClass="token-red"/>-->
         			 <Label fx:id="tokenSpieler" text=" " styleClass="token" prefWidth="40" prefHeight="40"/> 
-        			<Label text="Gegner:"/>
+        			<Label fx:id="labelOpp" text="Gegner"/>
+        			<Label text=":"/>
         			<!-- <Circle fx:id="tokenGegner" radius="15.0f" styleClass="token-yellow"/>-->
         			<Label fx:id="tokenGegner" text=" " styleClass="token" prefWidth="40" prefHeight="40"/> 
         		</HBox>

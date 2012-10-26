@@ -1,5 +1,6 @@
 package view;
 
+import java.io.File;
 import java.net.URL;
 import java.util.ResourceBundle;
 
@@ -30,12 +31,10 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.DirectoryChooser;
-import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import javafx.util.StringConverter;
-import javafx.util.converter.BooleanStringConverter;
 
 public class MainUIController implements Initializable{
 	
@@ -119,6 +118,8 @@ public class MainUIController implements Initializable{
 	private Button btnLoadGame;
 	@FXML
 	private Label labelName;
+	@FXML
+	private Label labelOpp;
 
 
 	//Elemente die nicht im FXML definiert sind
@@ -130,21 +131,7 @@ public class MainUIController implements Initializable{
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
 		viewModel = new GameController();
-//		viewModel.initialize(null, null);
-		
-				
-		//GridPane mit Circles füllen
-//		Circle[][] spielfeld = new Circle[Constants.gamefieldcolcount][Constants.gamefieldrowcount];
-//		for (int i = 0; i < Constants.gamefieldcolcount; i++)
-//	    {
-//	      for (int j = 0; j < Constants.gamefieldrowcount; j++)
-//	      {
-//	        spielfeld[i][j] = new Circle(20.0f);
-//	        spielfeld[i][j].styleProperty().bind(viewModel.styleField()[i][Constants.gamefieldrowcount -1 -j]);
-//	        feld.add(spielfeld[i][j], i, j);
-//	      }
-//	    }
-//		
+	
 		feld.minHeightProperty().set(265);
 		feld.minWidthProperty().set(308);
 		Label[][] spielfeld = new Label[Constants.gamefieldcolcount][Constants.gamefieldrowcount];
@@ -161,35 +148,6 @@ public class MainUIController implements Initializable{
 	        feld.add(spielfeld[i][j], i, j);
 	      }
 	    }
-		//manuelles Spielen:
-//		spielfeld[0][0].setOnMouseClicked(new EventHandler<MouseEvent>() {
-//			@Override
-//			public void handle(MouseEvent arg0) {viewModel.oppMove((byte)0);}
-//		});
-//		spielfeld[1][0].setOnMouseClicked(new EventHandler<MouseEvent>() {
-//			@Override
-//			public void handle(MouseEvent arg0) {viewModel.oppMove((byte)1);}
-//		});
-//		spielfeld[2][0].setOnMouseClicked(new EventHandler<MouseEvent>() {
-//			@Override
-//			public void handle(MouseEvent arg0) {viewModel.oppMove((byte)2);}
-//		});
-//		spielfeld[3][0].setOnMouseClicked(new EventHandler<MouseEvent>() {
-//			@Override
-//			public void handle(MouseEvent arg0) {viewModel.oppMove((byte)3);}
-//		});
-//		spielfeld[4][0].setOnMouseClicked(new EventHandler<MouseEvent>() {
-//			@Override
-//			public void handle(MouseEvent arg0) {viewModel.oppMove((byte)4);}
-//		});
-//		spielfeld[5][0].setOnMouseClicked(new EventHandler<MouseEvent>() {
-//			@Override
-//			public void handle(MouseEvent arg0) {viewModel.oppMove((byte)5);}
-//		});
-//		spielfeld[6][0].setOnMouseClicked(new EventHandler<MouseEvent>() {
-//			@Override
-//			public void handle(MouseEvent arg0) {viewModel.oppMove((byte)6);}
-//		});
 	
 		//-------------------------------------- weiteres Binding------------------------------
 			
@@ -210,6 +168,8 @@ public class MainUIController implements Initializable{
 		//Rollen Auswahl
 		rolle.valueProperty().bindBidirectional(viewModel.properties()[viewModel.ROLE_PROPERTY]);
 		rolle.getItems().addAll(String.valueOf(Constants.xRole), String.valueOf(Constants.oRole));
+		
+		labelOpp.textProperty().bind(gegnername.textProperty());
 		
 		//manuelles Spiel ohne Server oder gegen Server?
 		cbWithoutServer.selectedProperty().bindBidirectional(viewModel.isWithoutServer());
@@ -377,7 +337,8 @@ public class MainUIController implements Initializable{
 		gpconfirm.setVgap(20);
 		gpconfirm.setHgap(10);
 		gpconfirm.add(ueberschrift, 0, 0);
-		gpconfirm.setColumnSpan(ueberschrift, 3);
+		GridPane.setColumnSpan(ueberschrift, 3);
+//		gpconfirm.setColumnSpan(ueberschrift, 3);
 		gpconfirm.add(new Label("Gewinner:"), 0, 1);
 		gpconfirm.add(winner, 1, 1);
 		gpconfirm.add(confirm, 1, 2);
@@ -386,7 +347,7 @@ public class MainUIController implements Initializable{
 		
 	}
 
-	//----------------------- Methoden zum handeln von UI Input ----------------------------
+	//------------------------------------------------------------------ Methoden zum handeln von UI Input ----------------------------
 	
 	@FXML
 	private void handleColButton(MouseEvent e){
@@ -403,11 +364,15 @@ public class MainUIController implements Initializable{
 	
 	@FXML
 	private void handleChooseDirectory(ActionEvent e){
-		FileChooser fc = new FileChooser();
-		fc.setTitle("Pfad auswählen:");
-		//fc.setInitialDirectory(arg0);
-		fc.showOpenDialog(borderPane.getScene().getWindow());
-		
+		DirectoryChooser dc = new DirectoryChooser();
+		dc.setTitle("Pfad auswählen:");
+		String initial = "C:\\";
+		if(verzeichnispfad.getText() != null)
+			initial = verzeichnispfad.getText();
+		dc.setInitialDirectory(new File(initial));
+		File f = dc.showDialog(borderPane.getScene().getWindow());
+		if(f != null)
+			verzeichnispfad.setText(f.getPath());		
 	}
 	
 	//Spiel starten gedrückt
@@ -454,13 +419,11 @@ public class MainUIController implements Initializable{
 	
 	@FXML
 	private void handleLoadGame(ActionEvent e){
-//		viewModel.loadGame(gameID);	
 		//Fenster mit gespeicherten Spielen öffnen
 		final Stage stageLoad = new Stage();
 		stageLoad.initModality(Modality.APPLICATION_MODAL);
 		Group rootLoad = new Group();
 		Scene sceneLog = new Scene(rootLoad, 500,600, Color.WHITESMOKE);
-//		rootLog.getChildren().add(logTabelle);
 		stageLoad.setScene(sceneLog);
 		stageLoad.centerOnScreen();
 		stageLoad.show();
@@ -585,7 +548,7 @@ public class MainUIController implements Initializable{
 		rootLog.getChildren().add(Logs);
 	}
 	
-
+//---------------------------------------------------------------------------- Konverter Klassen ----------------------------------
 	private class TokenRoleConverter extends StringConverter<String>{
 
 		@Override
