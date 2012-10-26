@@ -595,13 +595,16 @@ public class MainUIController implements Initializable{
 
 		@Override
 		public String toString(String arg0) {
-			if(arg0 != null && arg0.equals(String.valueOf(Constants.noRole))){
+			if(arg0 != null && (arg0.equals(String.valueOf(Constants.noRole)) || arg0.equals(String.valueOf(Constants.noRole) + Constants.winMarker))){
+				//Leeres Feld -> kein Text!
 				return " ";
 			}
-			else{				
+			else if (arg0 != null && arg0.length() > 1 && arg0.charAt(1) == Constants.winMarker){	
+				//Gewinn Markierung aus Text entfernen
+				return String.valueOf(arg0.charAt(0));
+			}else{
 				return arg0;
 			}
-			
 		}
 		
 	}
@@ -619,37 +622,40 @@ public class MainUIController implements Initializable{
 			//Property hat sich verändert -> UI anpassen
 			String style ="";
 			if(arg0 != null){
-				switch (arg0.charAt(0)) {
-				case Constants.xRole:
-					style="-fx-background-color: red; " +
-							"-fx-background-radius: 20; " +
-							"-fx-font-size: 15; " +
-							"-fx-effect: innershadow(two-pass-box, grey, 10, 0.5, 0, 0); " +
-							"-fx-alignment: center;" + 
-							"-fx-font-weight: bold;" +
-							"-fx-text-fill: RGB(100,100,100,0.5);";
-					break;
-				case Constants.oRole:
-					style="-fx-background-color: yellow; " +
-							"-fx-background-radius: 20; " +
-							"-fx-font-size: 15; " +
-							"-fx-effect: innershadow(two-pass-box, grey, 10, 0.5, 0, 0); " +
-							"-fx-alignment: center;" +
-							"-fx-font-weight: bold;" +
-							"-fx-text-fill: RGB(100,100,100,0.5);";
-					break;
-				case Constants.noRole:
-					style="-fx-background-color: white; " +
-							"-fx-background-radius: 20; " +
-							"-fx-font-size: 15; " +
-							"-fx-effect: innershadow(two-pass-box, grey, 10, 0.5, 0, 0); " +
-							"-fx-alignment: center;" + 
-							"-fx-font-weight: bold;" +
-							"-fx-text-fill: RGB(100,100,100,0.5);";
-					break;
-				default:
-					break;
-				}		
+					switch (arg0.charAt(0)) {
+						case Constants.xRole:
+							style="-fx-background-color: red; " +
+									"-fx-background-radius: 20; " +
+									"-fx-font-size: 15; " +
+									"-fx-effect: innershadow(two-pass-box, grey, 10, 0.5, 0, 0); " +
+									"-fx-alignment: center;" + 
+									"-fx-font-weight: bold;" +
+									"-fx-text-fill: RGB(100,100,100,0.5);";
+							break;
+						case Constants.oRole:
+							style="-fx-background-color: yellow; " +
+									"-fx-background-radius: 20; " +
+									"-fx-font-size: 15; " +
+									"-fx-effect: innershadow(two-pass-box, grey, 10, 0.5, 0, 0); " +
+									"-fx-alignment: center;" +
+									"-fx-font-weight: bold;" +
+									"-fx-text-fill: RGB(100,100,100,0.5);";
+							break;
+						case Constants.noRole:
+							style="-fx-background-color: white; " +
+									"-fx-background-radius: 20; " +
+									"-fx-font-size: 15; " +
+									"-fx-effect: innershadow(two-pass-box, grey, 10, 0.5, 0, 0); " +
+									"-fx-alignment: center;" + 
+									"-fx-font-weight: bold;" +
+									"-fx-text-fill: RGB(100,100,100,0.5);";
+							break;
+						default:
+							break;
+					}
+				if( arg0.length() > 1 && arg0.charAt(1) == Constants.winMarker){
+					style += "-fx-text-fill: RGB(0,0,0);";
+				}
 			}
 			return style;
 		}
