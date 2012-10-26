@@ -13,6 +13,8 @@ public class Constants {
 	public static final char oRole = 'O';
 	public static final char noRole = (char)177;
 	public static final char defaultRole = xRole;
+	public static final char winMarker = '!';
+	
 	
 	public static final int defaultTimeoutServer = 300;
 	public static final int defaultTimeoutDraw = 2000;

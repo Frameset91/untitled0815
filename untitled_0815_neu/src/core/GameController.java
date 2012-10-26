@@ -410,6 +410,13 @@ public class GameController implements GameEventListener, Observer{
 		}
 	}
 	
+	//Methode um die Tokens, die zum Gewinn geführt haben zu markieren
+	private void markWinTokens(byte[][] data){
+		for(byte[] token: data){
+			field[token[0]][token[1]].set(field[token[0]][token[1]].get().charAt(0) + String.valueOf(Constants.winMarker));
+		}
+	}
+	
 	//---------------------Verarbeitung von Veränderungen im Datenmodell---------------------------------------------
 	/* (non-Javadoc)
 	 * @see java.util.Observer#update(java.util.Observable, java.lang.Object)
@@ -483,7 +490,7 @@ public class GameController implements GameEventListener, Observer{
 			});
 		}
 	}
-	
+			
 	//Tabelle der Sets neu erstellen
 	private void updateSets() {
 		sets.clear();

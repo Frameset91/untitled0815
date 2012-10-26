@@ -8,7 +8,7 @@ package utilities;
 public class GameEvent {
 	public enum Type {
 		// Was kann durch das Event übermittlet werden?
-		StartGame, LoadGame, EndGame, StartSet, EndSet, OppMove, WinnerSet
+		StartGame, LoadGame, EndGame, StartSet, EndSet, OppMove, WinnerSet, WinDetected
 	}
 
 	private Type type;
