@@ -78,7 +78,7 @@
         				<Label text="ms"/>
         			</HBox>        			
         		</GridPane>
-        		<Button text="Spiel abbrechen" fx:id="btnEndGame" onAction="#handleEndGame" alignment="CENTER">
+        		<Button text="Spiel beenden" fx:id="btnEndGame" onAction="#handleEndGame" alignment="CENTER">
         		</Button>
         	</VBox>
         	<Line startX="110" startY="0" endX="110" endY="500"/> 
@@ -93,10 +93,10 @@
         		<HBox fx:id="spielerAnzeige" spacing="20" styleClass="spieler">
         			<Label text="untitled0815:"/>
         			<!-- <Circle fx:id="tokenSpieler" radius="15.0f" styleClass="token-red"/>-->
-        			 <Label fx:id="tokenSpieler" text=" " prefWidth="40" prefHeight="40"/> 
+        			 <Label fx:id="tokenSpieler" text=" " styleClass="token" prefWidth="40" prefHeight="40"/> 
         			<Label text="Gegner:"/>
         			<!-- <Circle fx:id="tokenGegner" radius="15.0f" styleClass="token-yellow"/>-->
-        			<Label fx:id="tokenGegner" text=" " prefWidth="40" prefHeight="40"/> 
+        			<Label fx:id="tokenGegner" text=" " styleClass="token" prefWidth="40" prefHeight="40"/> 
         		</HBox>
         		<HBox fx:id="spielstandAnzeige">
         			<Label text="Spielstand" styleClass="punkte"/>
