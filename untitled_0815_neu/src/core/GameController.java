@@ -130,7 +130,7 @@ public class GameController implements GameEventListener, Observer{
 			addOppMove(oppMove);					
 		}
 		//TODO: TEST
-		handleEvent(new GameEvent(GameEvent.Type.WinDetected, "1,1;2,2;3,3;4,4;"));
+//		handleEvent(new GameEvent(GameEvent.Type.WinDetected, "1,1;2,2;3,3;4,4;"));
 		
 		Platform.runLater(new Runnable() {			
 			@Override
@@ -364,14 +364,20 @@ public class GameController implements GameEventListener, Observer{
 				break;
 			case WinDetected: //Die KI hat 4 Tokens entdeckt -> Event.getArg() = "t1x,t1y;t2x,t2y;t3x,t3y;t4x,t4y;"
 				Log.getInstance().write("Controller: WinDetected empfangen, FxThread:" + Platform.isFxApplicationThread());
-				
+				//Parse String als byte[][]
 				byte[][] data = new byte[4][2];				
 				String[] tokens = event.getArg().split(";");
 				for(int i=0; i < 4; i++){
 					data[i][0] =  (byte)Integer.parseInt(tokens[i].split(",")[0]);
 					data[i][1] = (byte)Integer.parseInt(tokens[i].split(",")[1]);
 				}
+				//Gewinner Tokens markieren
 				markWinTokens(data);
+				
+				//Satz beenden, falls es ein manuelles Spiel ist
+				if(isWithoutServer.get()){
+					endSet((byte)-1);
+				}
 				break;
 			default:
 				break;
