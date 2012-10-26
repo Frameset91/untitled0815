@@ -32,17 +32,19 @@ public class GameField{
 	 *  
 	 * @param move der neue Zug
 	 */
-	public void addMove(Move move){
+	public void addMove(Move move){		
 		int col = move.getColumn();
-		for(int i=0; i<field[col].length; i++){
-			if (field[col][i] == null){
-				if(move.getRole() == Constants.xRole)
-					field[col][i] = true;
-				else
-					field[col][i] = false;
-				break;
+		if(col < field.length && col > -1){
+			for(int i=0; i<field[col].length; i++){
+				if (field[col][i] == null){
+					if(move.getRole() == Constants.xRole)
+						field[col][i] = true;
+					else
+						field[col][i] = false;
+					break;
+				}
 			}
-		}		
+		}
 	}
 	
 	/**
