@@ -82,7 +82,7 @@ public class GameController implements GameEventListener, Observer{
 		
 		sets = FXCollections.observableArrayList();		
 		savedGames = FXCollections.observableArrayList();
-		logEntries = FXCollections.observableArrayList();
+		logEntries =  Log.getInstance().getLogEntries();
 	}
 	
 	//--------------------- API Methoden für UI-Controller -----------------------------------------	
@@ -144,6 +144,8 @@ public class GameController implements GameEventListener, Observer{
 	 */	
 	public void endGame(){
 		Log.getInstance().write("Controller: beende Spiel, FxThread:" + Platform.isFxApplicationThread());
+		sets.clear();
+		sets.add(new SetProperty("keine ", "Sätze"));
 		loadSavedGames();
 		properties[STATE_PROPERTY].set(Constants.STATE_APP_RUNNING);
 	}
@@ -530,15 +532,15 @@ public class GameController implements GameEventListener, Observer{
 					String arg1, String arg2) {model.getLatestSet().setWinner(properties[WINNER_PROPERTY].get().charAt(0));}
 		});
 		
+		sets.add(new SetProperty("keine ", "Sätze"));
+		
 		isReplay.set(false);
 		isWithoutServer.set(false);
 		isDBAvailable.set(!DBConnection.getInstance().isOfflineMode());
 		
 		if(isDBAvailable.get()) 
 			loadSavedGames();
-		
-		logEntries = Log.getInstance().getLogEntries();
-					
+							
 		//Dispatcher
 		EventDispatcher Dispatcher = EventDispatcher.getInstance();
 		try {			

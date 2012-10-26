@@ -117,6 +117,8 @@ public class MainUIController implements Initializable{
 	private HBox boxColButtons;
 	@FXML
 	private Button btnLoadGame;
+	@FXML
+	private Label labelName;
 
 
 	//Elemente die nicht im FXML definiert sind
@@ -208,12 +210,23 @@ public class MainUIController implements Initializable{
 		rolle.valueProperty().bindBidirectional(viewModel.properties()[viewModel.ROLE_PROPERTY]);
 		rolle.getItems().addAll(String.valueOf(Constants.xRole), String.valueOf(Constants.oRole));
 		
-		//manuelles SPiel ohne Server oder gegen Server?
+		//manuelles Spiel ohne Server oder gegen Server?
 		cbWithoutServer.selectedProperty().bindBidirectional(viewModel.isWithoutServer());
 		boxDirectory.disableProperty().bind(cbWithoutServer.selectedProperty());
 		boxTimeoutDraw.disableProperty().bind(cbWithoutServer.selectedProperty());
 		boxTimeoutServer.disableProperty().bind(cbWithoutServer.selectedProperty());
 		boxColButtons.disableProperty().bind(cbWithoutServer.selectedProperty().not());
+		cbWithoutServer.onActionProperty().set(new EventHandler<ActionEvent>() {			
+			@Override
+			public void handle(ActionEvent arg0) {
+				if(cbWithoutServer.selectedProperty().get()){
+					labelName.setText("Name: ");
+				}else{
+					labelName.setText("Gegner: ");
+				}
+				
+			}
+		});		
 		
 		//nur laden wenn DB verfügbar
 		btnLoadGame.disableProperty().bind(viewModel.isDBAvailable().not());

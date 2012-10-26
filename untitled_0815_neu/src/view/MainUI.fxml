@@ -40,7 +40,7 @@
         			<Label text="Spieleinstellungen" GridPane.columnIndex="0" GridPane.rowIndex="0" styleClass="labelSpieleinstellungen"></Label>   
      		   		<Label text="Rolle:" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
         			<Label text="ohne Server spielen:" GridPane.columnIndex="0" GridPane.rowIndex="2"/>
-        			<Label text="Gegner:" GridPane.columnIndex="0" GridPane.rowIndex="3"/>
+        			<Label fx:id="labelName" text="Gegner:" GridPane.columnIndex="0" GridPane.rowIndex="3"/>
         			<Label text="Verzeichnispfad:" GridPane.columnIndex="0" GridPane.rowIndex="4"/>
         			<Label text="Timeout File-Abfrage" GridPane.columnIndex="0" GridPane.rowIndex="5"></Label>
         			<Label text="Timeout Zugzeit:" GridPane.columnIndex="0" GridPane.rowIndex="6"/>
