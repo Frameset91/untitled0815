@@ -115,6 +115,8 @@ public class MainUIController implements Initializable{
 	private HBox boxDirectory;
 	@FXML
 	private HBox boxColButtons;
+	@FXML
+	private Button btnLoadGame;
 
 
 	//Elemente die nicht im FXML definiert sind
@@ -213,6 +215,9 @@ public class MainUIController implements Initializable{
 		boxTimeoutServer.disableProperty().bind(cbWithoutServer.selectedProperty());
 		boxColButtons.disableProperty().bind(cbWithoutServer.selectedProperty().not());
 		
+		//nur laden wenn DB verfügbar
+		btnLoadGame.disableProperty().bind(viewModel.isDBAvailable());
+		
 		//Properties
 		timeoutAbfrage.textProperty().bindBidirectional(viewModel.properties()[viewModel.TIMEOUTSERVER_PROPERTY]);
 		timeoutZugzeit.textProperty().bindBidirectional(viewModel.properties()[viewModel.TIMEOUTDRAW_PROPERTY]);
@@ -236,7 +241,7 @@ public class MainUIController implements Initializable{
 		logTabelle.setMinWidth(384);
 		spalte1.setCellValueFactory(
 				new PropertyValueFactory<Log.LogEntry, String>("text"));
-		logTabelle.setItems(Log.getInstance().getLogEntries());
+		logTabelle.setItems(viewModel.logEntries());
 		Log.getInstance().write("Binding fuer Log erstellt");
 		
 		//Tabelle für die gespeicherten Spiele
