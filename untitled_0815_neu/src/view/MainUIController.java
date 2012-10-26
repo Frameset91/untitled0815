@@ -216,7 +216,7 @@ public class MainUIController implements Initializable{
 		boxColButtons.disableProperty().bind(cbWithoutServer.selectedProperty().not());
 		
 		//nur laden wenn DB verfügbar
-		btnLoadGame.disableProperty().bind(viewModel.isDBAvailable());
+		btnLoadGame.disableProperty().bind(viewModel.isDBAvailable().not());
 		
 		//Properties
 		timeoutAbfrage.textProperty().bindBidirectional(viewModel.properties()[viewModel.TIMEOUTSERVER_PROPERTY]);

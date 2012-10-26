@@ -532,9 +532,10 @@ public class GameController implements GameEventListener, Observer{
 		
 		isReplay.set(false);
 		isWithoutServer.set(false);
-		isDBAvailable.set(DBConnection.getInstance().isOfflineMode());
+		isDBAvailable.set(!DBConnection.getInstance().isOfflineMode());
 		
-		loadSavedGames();
+		if(isDBAvailable.get()) 
+			loadSavedGames();
 		
 		logEntries = Log.getInstance().getLogEntries();
 					
