@@ -47,8 +47,11 @@ public class GameController implements GameEventListener, Observer{
 	private SimpleStringProperty[][] field;
 	private ObservableList<SetProperty> sets;
 	private ObservableList<GameProperty> savedGames;
+	private ObservableList<Log.LogEntry> logEntries;
 	private SimpleBooleanProperty isReplay;
-	private SimpleBooleanProperty withoutServer;
+	private SimpleBooleanProperty isWithoutServer;
+	private SimpleBooleanProperty isDBAvailable;
+	
 	
 	//Attribute für Replay
 	private int nextMove;
@@ -74,10 +77,12 @@ public class GameController implements GameEventListener, Observer{
 		}
 		
 		isReplay = new SimpleBooleanProperty();
-		withoutServer = new SimpleBooleanProperty();
+		isWithoutServer = new SimpleBooleanProperty();
+		isDBAvailable = new SimpleBooleanProperty();
 		
 		sets = FXCollections.observableArrayList();		
 		savedGames = FXCollections.observableArrayList();
+		logEntries = FXCollections.observableArrayList();
 	}
 	
 	//--------------------- API Methoden für UI-Controller -----------------------------------------	
@@ -87,6 +92,11 @@ public class GameController implements GameEventListener, Observer{
 	public void startGame(){
 		Log.getInstance().write("Controller: starte Spiel, FxThread:" + Platform.isFxApplicationThread());
 		newGame(Constants.gamefieldcolcount, Constants.gamefieldrowcount);	
+		
+		//Communication Server nutzen?
+		if(!isWithoutServer.get()){
+			comServ = CommunicationServer.getInstance();
+		}
 		Log.getInstance().write("Controller: Spiel gestartet, FxThread:" + Platform.isFxApplicationThread());
 		properties[STATE_PROPERTY].set(Constants.STATE_GAME_RUNNING);
 	}
@@ -101,7 +111,7 @@ public class GameController implements GameEventListener, Observer{
 		model.newSet().setStatus(Constants.STATE_SET_RUNNING);
 		
 		//ComServer starten
-		if(!withoutServer.get()){
+		if(!isWithoutServer.get()){
 			comServ.enableReading(model.getTimeoutServer(), model.getPath(), model.getRole(),true);
 		}
 		properties[STATE_PROPERTY].set(Constants.STATE_SET_RUNNING);		
@@ -113,7 +123,7 @@ public class GameController implements GameEventListener, Observer{
 	 */	
 	public void endSet(byte oppMove){
 		Log.getInstance().write("Controller: beende Satz, FxThread:" + Platform.isFxApplicationThread());
-		if(!withoutServer.get()){
+		if(!isWithoutServer.get()){
 			comServ.disableReading();
 		}
 		if (oppMove > -1){
@@ -230,6 +240,13 @@ public class GameController implements GameEventListener, Observer{
 	}
 	
 	/**
+	 * @return Liste der Logeinträge
+	 */
+	public ObservableList<Log.LogEntry> logEntries() {
+		return logEntries;
+	}
+	
+	/**
 	 * @return Boolean ob es gerade ein Replay ist
 	 */
 	public SimpleBooleanProperty isReplay() {
@@ -239,8 +256,15 @@ public class GameController implements GameEventListener, Observer{
 	/**
 	 * @return Boolean ob mit Server gespielt wird
 	 */
-	public SimpleBooleanProperty withoutServer() {
-		return withoutServer;
+	public SimpleBooleanProperty isWithoutServer() {
+		return isWithoutServer;
+	}
+	
+	/**
+	 * @return Boolean ob Datenbank vefürgbar ist
+	 */
+	public SimpleBooleanProperty isDBAvailable() {
+		return isDBAvailable;
 	}
 	
 	//Hilfsmethoden
@@ -507,13 +531,13 @@ public class GameController implements GameEventListener, Observer{
 		});
 		
 		isReplay.set(false);
-		withoutServer.set(false);
+		isWithoutServer.set(false);
+		isDBAvailable.set(DBConnection.getInstance().isOfflineMode());
 		
 		loadSavedGames();
 		
-		//Communication Server
-		comServ = CommunicationServer.getInstance();
-				
+		logEntries = Log.getInstance().getLogEntries();
+					
 		//Dispatcher
 		EventDispatcher Dispatcher = EventDispatcher.getInstance();
 		try {			
@@ -539,7 +563,7 @@ public class GameController implements GameEventListener, Observer{
 		public void run() {
 			byte newCol = ki.calculateNextMove(oppMove);			
 			//Zug auf Server schreiben und Server wieder überwachen
-			if(!withoutServer.get()){
+			if(!isWithoutServer.get()){
 				comServ.writeMove(newCol, model.getPath(), model.getRole());
 				comServ.enableReading(model.getTimeoutServer(), model.getPath(), model.getRole(), false);
 			}

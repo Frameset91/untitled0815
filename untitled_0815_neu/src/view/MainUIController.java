@@ -207,7 +207,7 @@ public class MainUIController implements Initializable{
 		rolle.getItems().addAll(String.valueOf(Constants.xRole), String.valueOf(Constants.oRole));
 		
 		//manuelles SPiel ohne Server oder gegen Server?
-		cbWithoutServer.selectedProperty().bindBidirectional(viewModel.withoutServer());
+		cbWithoutServer.selectedProperty().bindBidirectional(viewModel.isWithoutServer());
 		boxDirectory.disableProperty().bind(cbWithoutServer.selectedProperty());
 		boxTimeoutDraw.disableProperty().bind(cbWithoutServer.selectedProperty());
 		boxTimeoutServer.disableProperty().bind(cbWithoutServer.selectedProperty());
@@ -394,7 +394,7 @@ public class MainUIController implements Initializable{
 	//Spiel starten gedrückt
 	@FXML
 	private void handleStartGame(ActionEvent e){
-		if ((rolle.getValue() != null && gegnername.getText() != null && verzeichnispfad.getText() != null) || viewModel.withoutServer().get()){
+		if ((rolle.getValue() != null && gegnername.getText() != null && verzeichnispfad.getText() != null) || viewModel.isWithoutServer().get()){
 			viewModel.startGame();
 		}
 		else{
