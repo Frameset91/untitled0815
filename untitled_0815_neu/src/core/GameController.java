@@ -144,9 +144,7 @@ public class GameController implements GameEventListener, Observer{
 	 */	
 	public void endGame(){
 		Log.getInstance().write("Controller: beende Spiel, FxThread:" + Platform.isFxApplicationThread());
-		sets.clear();
-		sets.add(new SetProperty("keine ", "Sätze"));
-		loadSavedGames();
+		reset();
 		properties[STATE_PROPERTY].set(Constants.STATE_APP_RUNNING);
 	}
 	
@@ -161,7 +159,7 @@ public class GameController implements GameEventListener, Observer{
 	}
 	
 	/**
-	 * Methode um von dem geladenen Spiel den nächsten Move zu laden	 * 
+	 * Methode um von dem geladenen Spiel den nächsten Zug zu laden	
 	 */	
 	public void loadNextMove(){
 		if(isReplay.get()){
@@ -169,9 +167,13 @@ public class GameController implements GameEventListener, Observer{
 		}
 	}
 	
-
+	/**
+	 * Methode um von dem geladenen Spiel den letzten Zug wieder zu entfernen 
+	 */	
+	public void removeLastMove(){
+		//TODO: Reply mit zurück
+	}
 	
-
 	/**
 	 * Methode um einen gegnerischen Zug hinzuzufügen -> Berechnung und Ausführung eines neuen Zuges.
 	 * Sollte nur für das manuelle Spielen verwendet werden, ansonsten über Event starten.
@@ -271,15 +273,6 @@ public class GameController implements GameEventListener, Observer{
 	
 	//Hilfsmethoden
 	
-	private void loadSavedGames(){
-		savedGames.clear();
-		Game[] games = DBConnection.getInstance().loadAllGames();
-		for(Game game: games){
-			savedGames.add(new GameProperty(String.valueOf(game.getID()), game.getOppName()));
-		}
-//		savedGames.add(new GameProperty("1046", "fdsa"));
-	}
-	
 	
 	private void processGameLoad(int gameID) {
 		//game laden
@@ -291,8 +284,6 @@ public class GameController implements GameEventListener, Observer{
 		Platform.runLater(new Runnable() {	
 			@Override
 			public void run() {
-//				updateField();
-//				updateSets();
 				properties[ROLE_PROPERTY].set(String.valueOf(model.getRole()));
 				properties[OWNPOINTS_PROPERTY].set(String.valueOf(model.getOwnPoints()));
 				properties[OPPPOINTS_PROPERTY].set(String.valueOf(model.getOppPoints()));
@@ -300,7 +291,6 @@ public class GameController implements GameEventListener, Observer{
 				properties[PATH_PROPERTY].set(model.getPath());
 				properties[TIMEOUTSERVER_PROPERTY].set(String.valueOf(model.getTimeoutServer()));
 				properties[TIMEOUTDRAW_PROPERTY].set(String.valueOf(model.getTimeoutDraw()));
-//				properties[WINNER_PROPERTY].set(String.valueOf(model.getLatestSet().getWinner()));
 				setTokens();				
 			}
 		});	
@@ -511,12 +501,6 @@ public class GameController implements GameEventListener, Observer{
 	 */
 	public void initialize() {
 		//Property Initialisierung
-		for(int i = 0; i < Constants.gamefieldcolcount; i++){
-			for(int j = 0; j< Constants.gamefieldrowcount; j++){
-				field[i][j].set(String.valueOf(Constants.noRole)); 
-			}
-		}
-
 		properties[ROLE_PROPERTY].set(String.valueOf(Constants.defaultRole));
 		properties[OWNPOINTS_PROPERTY].set("0");
 		properties[OPPPOINTS_PROPERTY].set("0");
@@ -532,15 +516,11 @@ public class GameController implements GameEventListener, Observer{
 					String arg1, String arg2) {model.getLatestSet().setWinner(properties[WINNER_PROPERTY].get().charAt(0));}
 		});
 		
-		sets.add(new SetProperty("keine ", "Sätze"));
-		
+				
 		isReplay.set(false);
 		isWithoutServer.set(false);
 		isDBAvailable.set(!DBConnection.getInstance().isOfflineMode());
-		
-		if(isDBAvailable.get()) 
-			loadSavedGames();
-							
+									
 		//Dispatcher
 		EventDispatcher Dispatcher = EventDispatcher.getInstance();
 		try {			
@@ -548,8 +528,41 @@ public class GameController implements GameEventListener, Observer{
 		
 		} catch (Exception e) {
 			e.printStackTrace();
-		}		
+		}
+		
+		reset();
 	}
+	
+	//Hilfsmethoden
+	//Methode um die initialen Werte zu setzen, die auch nach einem Spiel, wieder gesetzt werden müssen
+	private void reset(){
+		if(model != null) model = null;
+		
+		//Feld leeren
+		for(int i = 0; i < Constants.gamefieldcolcount; i++){
+			for(int j = 0; j< Constants.gamefieldrowcount; j++){
+				field[i][j].set(String.valueOf(Constants.noRole)); 
+			}
+		}
+		
+		//Liste der Sätze zurück setzen
+		sets.clear();
+		sets.add(new SetProperty("keine ", "Sätze"));		
+		
+		//Liste der gespeicherten Spiele laden
+		if(isDBAvailable.get()) 
+			loadSavedGames();
+	}
+	
+	private void loadSavedGames(){
+		savedGames.clear();
+		Game[] games = DBConnection.getInstance().loadAllGames();
+		for(Game game: games){
+			savedGames.add(new GameProperty(String.valueOf(game.getID()), game.getOppName()));
+		}
+	}
+	
+	
 	
 	private class KIWorkerThread extends Thread{
 		
