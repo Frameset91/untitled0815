@@ -39,6 +39,7 @@ public class DBConnection {
 	 * Verbindung zur Datenbank herstellen, con initialisieren
 	 */
 	private void connect() {
+		Log log = Log.getInstance();
 		try {
 			//Treiber laden
 			Class.forName("org.hsqldb.jdbcDriver");
@@ -54,7 +55,11 @@ public class DBConnection {
 		
 		if (con == null){
 			offlineMode = true;
-		}else offlineMode = false;
+			log.write("DB ist offline");
+		}else{
+			offlineMode = false;
+			log.write("DB ist online!");
+		}
 		
 	}// Ende connect ()
 	
@@ -389,57 +394,60 @@ public class DBConnection {
 	 * @return Game Objekt des gewünschten Spiels
 	 */
 	public synchronized Game loadGame(int gameID) {
-		Log log = Log.getInstance();
-		// Daten aus DB laden
-		String srole = "";
-        String soppName = "";
-        String sownPoints = ""; //wird nur zur Überprüfung gebraucht
-        String soppPoints = ""; //wird nur zur Überprüfung gebraucht
-        String spath = "";
-        String stimeServer = "";
-        String stimeDraw = "";
-		
-		String sql = "SELECT * FROM game WHERE gameID = " + gameID + ";"; 
-		ResultSet rs = this.sendSelectStatementInternal(sql);
-		
-		try{
-			if ( rs.next() ){
-				//Infos aus rs holen und auflisten
-		        srole = rs.getString(2);
-		        soppName = rs.getString(3);
-		        sownPoints = rs.getString(4);
-		        soppPoints = rs.getString(5);
-		        spath = rs.getString(6);
-		        stimeServer = rs.getString(7);
-		        stimeDraw = rs.getString(8);
-		        String resultset = gameID + ","+ srole +  ","+ soppName +  ","+ sownPoints +',' +soppPoints +  ","
-		        		+ spath +  ","+ stimeServer + ", " + stimeDraw;
-		        System.out.println (resultset);
-		        log.write("Game geladen: "+ resultset);
-		      }else return null; // dann wäre nichts im resultset und nichts in der DB gefunden
-		}catch (SQLException e){
-			e.printStackTrace();
-		}
-		
-		//in game übernehmen
-		int timeServer;
-		int timedraw;
-		
-		char role = srole.charAt(0);
-		String oppname = soppName; 
-		String path = spath;
-		if (stimeServer != null){
-			timeServer = Integer.valueOf(stimeServer);
-		}else timeServer = 0;
-		if (stimeDraw != null){
-			timedraw = Integer.valueOf(stimeDraw);
-		}else timedraw = 0;
-		int columns = Constants.gamefieldcolcount;
-		int rows = Constants.gamefieldrowcount;
-		
-		Game game = new Game(columns, rows, role, oppname, path, timeServer, timedraw, gameID);
-		
-		return game;
+		if (!offlineMode){
+			Log log = Log.getInstance();
+			// Daten aus DB laden
+			String srole = "";
+	        String soppName = "";
+	        String sownPoints = ""; //wird nur zur Überprüfung gebraucht
+	        String soppPoints = ""; //wird nur zur Überprüfung gebraucht
+	        String spath = "";
+	        String stimeServer = "";
+	        String stimeDraw = "";
+			
+			String sql = "SELECT * FROM game WHERE gameID = " + gameID + ";"; 
+			ResultSet rs = this.sendSelectStatementInternal(sql);
+			
+			try{
+				if ( rs.next() ){
+					//Infos aus rs holen und auflisten
+			        srole = rs.getString(2);
+			        soppName = rs.getString(3);
+			        sownPoints = rs.getString(4);
+			        soppPoints = rs.getString(5);
+			        spath = rs.getString(6);
+			        stimeServer = rs.getString(7);
+			        stimeDraw = rs.getString(8);
+			        String resultset = gameID + ","+ srole +  ","+ soppName +  ","+ sownPoints +',' +soppPoints +  ","
+			        		+ spath +  ","+ stimeServer + ", " + stimeDraw;
+			        System.out.println (resultset);
+			        log.write("Game geladen: "+ resultset);
+			      }else return null; // dann wäre nichts im resultset und nichts in der DB gefunden
+			}catch (SQLException e){
+				e.printStackTrace();
+			}
+			
+			//in game übernehmen
+			int timeServer;
+			int timedraw;
+			
+			char role = srole.charAt(0);
+			String oppname = soppName; 
+			String path = spath;
+			if (stimeServer != null){
+				timeServer = Integer.valueOf(stimeServer);
+			}else timeServer = 0;
+			if (stimeDraw != null){
+				timedraw = Integer.valueOf(stimeDraw);
+			}else timedraw = 0;
+			int columns = Constants.gamefieldcolcount;
+			int rows = Constants.gamefieldrowcount;
+			
+			Game game = new Game(columns, rows, role, oppname, path, timeServer, timedraw, gameID);
+			
+			return game;
+		}else
+			return null;
 	}
 	
 	/**
@@ -447,63 +455,66 @@ public class DBConnection {
 	 * @return Game [] alle gespeicherten Games in Array der Größe entprechend der Anzahl
 	 */
 	public synchronized Game [] loadAllGames(){
-		Log log = Log.getInstance();
-		ArrayList <Game> allGameList = new ArrayList <Game> (0);
-		Game [] allGame;
-		
-		int id;
-		int timeServer;
-		int timedraw;
-		
-		String sql = "SELECT * FROM game;"; 
-		ResultSet rs = this.sendSelectStatementInternal(sql);
-		
-		try{
-			while ( rs.next() ){
-				//Infos aus rs holen und auflisten
-				String sID = rs.getString(1);
-		        String srole = rs.getString(2);
-		        String soppName = rs.getString(3);
-		        String sownPoints = rs.getString(4);
-		        String soppPoints = rs.getString(5);
-		        String spath = rs.getString(6);
-		        String stimeServer = rs.getString(7);
-		        String stimeDraw = rs.getString(8);
-		        String resultset = sID + ","+ srole +  ","+ soppName +  ","+ sownPoints +',' +soppPoints +  ","
-		        		+ spath +  ","+ stimeServer + ", " + stimeDraw;
-		        
-		        //in game übernehmen
-		        if (sID != null)
-		        	id = Integer.valueOf(sID);
-		        else id = -1;
-				char role = srole.charAt(0);
-				String oppname = soppName; 
-				String path = spath;
-				if (stimeServer != null){
-					timeServer = Integer.valueOf(stimeServer);
-				}else timeServer = 0;
-				if (stimeDraw != null){
-					timedraw = Integer.valueOf(stimeDraw);
-				}else timedraw = 0;
-				int columns = Constants.gamefieldcolcount;
-				int rows = Constants.gamefieldrowcount;
-		        log.write("Game geladen: "+ resultset);
-		        
-		        // Game an die Liste hängen
-		        Game newGame = new Game (columns, rows, role, oppname, path, timeServer, timedraw, id);
-		        allGameList.add(newGame);
-			}//while
-		}catch (SQLException e){
-			e.printStackTrace();
-		}
-		int noGames = allGameList.size();
-		if (noGames == 0)
-				return null; // dann sind keine Sets da
-        allGame = new Game [noGames];
-        for (int i = 0; i < noGames; i++) {
-			allGame [i] = allGameList.get(i);
-        }
-		return allGame;
+		if (!offlineMode){
+			Log log = Log.getInstance();
+			ArrayList <Game> allGameList = new ArrayList <Game> (0);
+			Game [] allGame;
+			
+			int id;
+			int timeServer;
+			int timedraw;
+			
+			String sql = "SELECT * FROM game;"; 
+			ResultSet rs = this.sendSelectStatementInternal(sql);
+			
+			try{
+				while ( rs.next() ){
+					//Infos aus rs holen und auflisten
+					String sID = rs.getString(1);
+			        String srole = rs.getString(2);
+			        String soppName = rs.getString(3);
+			        String sownPoints = rs.getString(4);
+			        String soppPoints = rs.getString(5);
+			        String spath = rs.getString(6);
+			        String stimeServer = rs.getString(7);
+			        String stimeDraw = rs.getString(8);
+			        String resultset = sID + ","+ srole +  ","+ soppName +  ","+ sownPoints +',' +soppPoints +  ","
+			        		+ spath +  ","+ stimeServer + ", " + stimeDraw;
+			        
+			        //in game übernehmen
+			        if (sID != null)
+			        	id = Integer.valueOf(sID);
+			        else id = -1;
+					char role = srole.charAt(0);
+					String oppname = soppName; 
+					String path = spath;
+					if (stimeServer != null){
+						timeServer = Integer.valueOf(stimeServer);
+					}else timeServer = 0;
+					if (stimeDraw != null){
+						timedraw = Integer.valueOf(stimeDraw);
+					}else timedraw = 0;
+					int columns = Constants.gamefieldcolcount;
+					int rows = Constants.gamefieldrowcount;
+			        log.write("Game geladen: "+ resultset);
+			        
+			        // Game an die Liste hängen
+			        Game newGame = new Game (columns, rows, role, oppname, path, timeServer, timedraw, id);
+			        allGameList.add(newGame);
+				}//while
+			}catch (SQLException e){
+				e.printStackTrace();
+			}
+			int noGames = allGameList.size();
+			if (noGames == 0)
+					return null; // dann sind keine Sets da
+	        allGame = new Game [noGames];
+	        for (int i = 0; i < noGames; i++) {
+				allGame [i] = allGameList.get(i);
+	        }
+			return allGame;
+		}else 
+			return null;
 	}// loadAllGames()
 	
 	/**
@@ -512,50 +523,53 @@ public class DBConnection {
 	 * @return Set [] aller sets zur GameID
 	 */
 	public synchronized Set [] loadAllSets(int gameID){
-		Log log = Log.getInstance();
-		ArrayList <Set> allSetList = new ArrayList <Set> (0);
-		Set [] allSet;
-		
-		String sql = "Select * FROM gameSet WHERE gameID = " + gameID + ";";
-		ResultSet rs = this.sendSelectStatementInternal(sql);
-		try{
-			while ( rs.next() ){
-				//Infos aus rs holen und auflisten
-		        String ssetID = rs.getString(2);
-		        String swinner = rs.getString(3);
-		        String sstarttime = rs.getString(4);
-		        String sendtime = rs.getString(5);
-		        String resultset = gameID + ","+ ssetID +  ","+ swinner +  ","+ sstarttime +',' +sendtime;
-		        System.out.println (resultset);
-		        log.write("Set geladen: "+ resultset);
-		        
-		        // in entsprechende Typen umwandeln:
-		        int setID;
-		        if (ssetID != null) 
-		        	setID = Integer.valueOf(ssetID);
-		        else setID = 0;
-		        char winner = swinner.charAt(0);
-		        Timestamp starttime = Timestamp.valueOf(sstarttime);
-		        Timestamp endtime = Timestamp.valueOf(sendtime);
-		        int col = Constants.gamefieldcolcount;
-		        int row = Constants.gamefieldrowcount;
-		        
-		        //Objekt erzeugen:
-		        Set newSet = new Set(col, row, setID, starttime, endtime, Constants.STATE_SET_ENDED, winner);
-		        // an die Liste ranhängen
-		        allSetList.add(newSet);
-		      }	
-		}catch (SQLException e){
-			e.printStackTrace();
-		}
-		int noSets = allSetList.size();
-		if (noSets == 0)
-				return null; // dann sind keine Sets da
-        allSet = new Set [noSets];
-        for (int i = 0; i < noSets; i++) {
-			allSet [i] = allSetList.get(i);
-        }
-		return allSet;
+		if (!offlineMode){
+			Log log = Log.getInstance();
+			ArrayList <Set> allSetList = new ArrayList <Set> (0);
+			Set [] allSet;
+			
+			String sql = "Select * FROM gameSet WHERE gameID = " + gameID + ";";
+			ResultSet rs = this.sendSelectStatementInternal(sql);
+			try{
+				while ( rs.next() ){
+					//Infos aus rs holen und auflisten
+			        String ssetID = rs.getString(2);
+			        String swinner = rs.getString(3);
+			        String sstarttime = rs.getString(4);
+			        String sendtime = rs.getString(5);
+			        String resultset = gameID + ","+ ssetID +  ","+ swinner +  ","+ sstarttime +',' +sendtime;
+			        System.out.println (resultset);
+			        log.write("Set geladen: "+ resultset);
+			        
+			        // in entsprechende Typen umwandeln:
+			        int setID;
+			        if (ssetID != null) 
+			        	setID = Integer.valueOf(ssetID);
+			        else setID = 0;
+			        char winner = swinner.charAt(0);
+			        Timestamp starttime = Timestamp.valueOf(sstarttime);
+			        Timestamp endtime = Timestamp.valueOf(sendtime);
+			        int col = Constants.gamefieldcolcount;
+			        int row = Constants.gamefieldrowcount;
+			        
+			        //Objekt erzeugen:
+			        Set newSet = new Set(col, row, setID, starttime, endtime, Constants.STATE_SET_ENDED, winner);
+			        // an die Liste ranhängen
+			        allSetList.add(newSet);
+			      }	
+			}catch (SQLException e){
+				e.printStackTrace();
+			}
+			int noSets = allSetList.size();
+			if (noSets == 0)
+					return null; // dann sind keine Sets da
+	        allSet = new Set [noSets];
+	        for (int i = 0; i < noSets; i++) {
+				allSet [i] = allSetList.get(i);
+	        }
+			return allSet;
+		}else
+			return null;
 	}// loadAllSets()
 	
 	/**
@@ -565,51 +579,54 @@ public class DBConnection {
 	 * @return Move [] Array aller Moves zum entsprechenden Set
 	 */
 	public synchronized Move [] loadAllMoves(int gameID, int setID) {
-		Log log = Log.getInstance();
-		ArrayList <Move> allMoveList = new ArrayList <Move> (0);
-		Move [] allMove;
-
-        String sql = "Select * FROM move WHERE gameID = " + gameID + " AND setID = "+ setID +";";
-		ResultSet rs = this.sendSelectStatementInternal(sql);
-		try{
-			while ( rs.next() ){
-				//Infos aus rs holen und auflisten
-		        String smoveID = rs.getString(3);
-		        String srole = rs.getString(4);
-		        String scolumn = rs.getString(5);
-		        String stime = rs.getString(6);
-		        String resultset = gameID + ","+ setID +  ","+ smoveID +  ","+ srole +',' +scolumn +  "," + stime;
-		        System.out.println (resultset);
-		        log.write("Move geladen: "+ resultset);
-		        
-		        // in entsprechende Typen umwandeln:
-		        int moveID;
-		        int col;
-		        if (smoveID != null) 
-		        	moveID = Integer.valueOf(smoveID);
-		        else moveID = 0;
-		        if (scolumn != null)
-		        	col = Integer.valueOf(scolumn);
-		        else col = 0;
-		        char role = srole.charAt(0);
-		        Timestamp time = Timestamp.valueOf(stime);
-		        
-		        //Objekt erzeugen:
-		        Move newMove = new Move(role, col, moveID, time);
-		        // an die Liste ranhängen
-		        allMoveList.add(newMove);
-		      }//while	
-		}catch (SQLException e){
-			e.printStackTrace();
-		}
-		int noMoves = allMoveList.size();
-		if (noMoves == 0)
-				return null; // dann sind keine Moves da
-        allMove = new Move [noMoves];
-        for (int i = 0; i < noMoves; i++) {
-			allMove [i] = allMoveList.get(i);
-        }
-		return allMove;
+		if (!offlineMode){
+			Log log = Log.getInstance();
+			ArrayList <Move> allMoveList = new ArrayList <Move> (0);
+			Move [] allMove;
+	
+	        String sql = "Select * FROM move WHERE gameID = " + gameID + " AND setID = "+ setID +";";
+			ResultSet rs = this.sendSelectStatementInternal(sql);
+			try{
+				while ( rs.next() ){
+					//Infos aus rs holen und auflisten
+			        String smoveID = rs.getString(3);
+			        String srole = rs.getString(4);
+			        String scolumn = rs.getString(5);
+			        String stime = rs.getString(6);
+			        String resultset = gameID + ","+ setID +  ","+ smoveID +  ","+ srole +',' +scolumn +  "," + stime;
+			        System.out.println (resultset);
+			        log.write("Move geladen: "+ resultset);
+			        
+			        // in entsprechende Typen umwandeln:
+			        int moveID;
+			        int col;
+			        if (smoveID != null) 
+			        	moveID = Integer.valueOf(smoveID);
+			        else moveID = 0;
+			        if (scolumn != null)
+			        	col = Integer.valueOf(scolumn);
+			        else col = 0;
+			        char role = srole.charAt(0);
+			        Timestamp time = Timestamp.valueOf(stime);
+			        
+			        //Objekt erzeugen:
+			        Move newMove = new Move(role, col, moveID, time);
+			        // an die Liste ranhängen
+			        allMoveList.add(newMove);
+			      }//while	
+			}catch (SQLException e){
+				e.printStackTrace();
+			}
+			int noMoves = allMoveList.size();
+			if (noMoves == 0)
+					return null; // dann sind keine Moves da
+	        allMove = new Move [noMoves];
+	        for (int i = 0; i < noMoves; i++) {
+				allMove [i] = allMoveList.get(i);
+	        }
+			return allMove;
+		}else 
+			return null;
 	}// loadAllMoves()
 
 
