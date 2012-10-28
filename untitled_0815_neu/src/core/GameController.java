@@ -94,7 +94,7 @@ public class GameController implements GameEventListener, Observer{
 		newGame(Constants.gamefieldcolcount, Constants.gamefieldrowcount);	
 		
 		//Communication Server nutzen?
-		if(!isWithoutServer.get()){
+		if(!isWithoutServer.get() && !isReplay.get()){
 			comServ = CommunicationServer.getInstance();
 		}
 		Log.getInstance().write("Controller: Spiel gestartet, FxThread:" + Platform.isFxApplicationThread());
@@ -111,7 +111,7 @@ public class GameController implements GameEventListener, Observer{
 		model.newSet().setStatus(Constants.STATE_SET_RUNNING);
 		
 		//ComServer starten
-		if(!isWithoutServer.get()){
+		if(!isWithoutServer.get() && !isReplay.get()){
 			comServ.enableReading(model.getTimeoutServer(), model.getPath(), model.getRole(),true);
 		}
 		properties[STATE_PROPERTY].set(Constants.STATE_SET_RUNNING);		
@@ -123,7 +123,7 @@ public class GameController implements GameEventListener, Observer{
 	 */	
 	public void endSet(byte oppMove){
 		Log.getInstance().write("Controller: beende Satz, FxThread:" + Platform.isFxApplicationThread());
-		if(!isWithoutServer.get()){
+		if(!isWithoutServer.get()  && !isReplay.get()){
 			comServ.disableReading();
 		}
 		if (oppMove > -1){
@@ -380,7 +380,7 @@ public class GameController implements GameEventListener, Observer{
 				markWinTokens(data);
 				
 				//Satz beenden, falls es ein manuelles Spiel ist
-				if(isWithoutServer.get()){
+				if(isWithoutServer.get()  && !isReplay.get()){
 					endSet((byte)-1);
 				}
 				break;
@@ -609,7 +609,7 @@ public class GameController implements GameEventListener, Observer{
 		public void run() {
 			byte newCol = ki.calculateNextMove(oppMove);			
 			//Zug auf Server schreiben und Server wieder überwachen
-			if(!isWithoutServer.get()){
+			if(!isWithoutServer.get()  && !isReplay.get()){
 				comServ.writeMove(newCol, model.getPath(), model.getRole());
 				comServ.enableReading(model.getTimeoutServer(), model.getPath(), model.getRole(), false);
 			}
