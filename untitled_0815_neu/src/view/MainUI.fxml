@@ -56,7 +56,7 @@
         			<!-- Eingabefelder für Gegner und Verzeichnis -->
         			<TextField fx:id="gegnername" maxWidth="150" GridPane.columnIndex="1" GridPane.rowIndex="3" styleClass="textfeld"/>
         			<HBox fx:id="boxDirectory" GridPane.columnIndex="1" GridPane.rowIndex="4">
-        				<TextField fx:id="verzeichnispfad" maxWidth="150" styleClass="textfeld"></TextField>
+        				<TextField fx:id="verzeichnispfad" maxWidth="150" styleClass="textfeld"/>
         				<Button fx:id="btnDirectory" text="..." onAction="#handleChooseDirectory"/>
         			</HBox>
         			<!-- Timeout File-Abfrage -->
