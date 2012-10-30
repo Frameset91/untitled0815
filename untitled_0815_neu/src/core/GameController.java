@@ -115,6 +115,11 @@ public class GameController implements GameEventListener, Observer{
 			comServ.enableReading(model.getTimeoutServer(), model.getPath(), model.getRole(),true);
 		}
 		properties[STATE_PROPERTY].set(Constants.STATE_SET_RUNNING);		
+		
+		//X fängt bei manuellem Spiel an -> Wenn KI = x -> oppMove mit -1 auslösen (erster Zug ohne vorherigen Gegnerzug)
+		if(isWithoutServer.get() && model.getRole() == Constants.xRole){
+			oppMove((byte)-1);
+		}
 	}
 	
 	/**
