@@ -609,8 +609,10 @@ public class GameController implements GameEventListener, Observer{
 	private void loadSavedGames(){
 		savedGames.clear();
 		Game[] games = DBConnection.getInstance().loadAllGames();
-		for(Game game: games){
-			savedGames.add(new GameProperty(String.valueOf(game.getID()), game.getOppName()));
+		if(games != null){
+			for(Game game: games){
+				savedGames.add(new GameProperty(String.valueOf(game.getID()), game.getOppName()));
+			}
 		}
 	}
 	
