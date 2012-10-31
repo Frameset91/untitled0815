@@ -6,6 +6,7 @@ package core;
  * @author Sascha Ulbrich 
  */
 
+
 import java.util.Iterator;
 import java.util.Observable;
 import java.util.Observer;
@@ -612,7 +613,15 @@ public class GameController implements GameEventListener, Observer{
 		Game[] games = DBConnection.getInstance().loadAllGames();
 		if(games != null){
 			for(Game game: games){
-				savedGames.add(new GameProperty(String.valueOf(game.getID()), game.getOppName()));
+				String opp = "";
+				String own = "";
+				if(game.getOwnName() != null) own = game.getOwnName().trim();
+				if(game.getOppName() != null) opp = game.getOppName().trim();
+				savedGames.add(
+						new GameProperty(
+								String.valueOf(game.getID()), 
+								own + " vs. " + opp, 
+								game.getOwnPoints() + " : " + game.getOppPoints()));
 			}
 		}
 	}

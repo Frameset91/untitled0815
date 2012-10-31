@@ -257,23 +257,33 @@ public class MainUIController implements Initializable{
 		//Tabelle für die gespeicherten Spiele
 		savedGamesTable = new TableView<GameProperty>();
 		savedGamesTable.getColumns().clear();
+		savedGamesTable.setMinWidth(300);
 			//Erste Spalte
 		TableColumn<GameProperty, String> c1 = new TableColumn<GameProperty, String>("Spiel Nr.");
 		c1.setEditable(false);
-		c1.prefWidthProperty().bind(savedGamesTable.widthProperty().subtract(2).divide(2));
+		c1.prefWidthProperty().bind(savedGamesTable.widthProperty().subtract(2).divide(4));
 
 		savedGamesTable.getColumns().add(c1);
 		savedGamesTable.setMinWidth(100);
 		c1.setCellValueFactory(
 				new PropertyValueFactory<GameProperty, String>("gameID"));
 			//Zweite Spalte
-		TableColumn<GameProperty, String> c2 = new TableColumn<GameProperty, String>("Gegner");
+		TableColumn<GameProperty, String> c2 = new TableColumn<GameProperty, String>("Spieler");
 		c2.setEditable(false);
 		c2.prefWidthProperty().bind(savedGamesTable.widthProperty().subtract(2).divide(2));
 		savedGamesTable.getColumns().add(c2);
 		savedGamesTable.setMinWidth(100);
 		c2.setCellValueFactory(
-				new PropertyValueFactory<GameProperty, String>("oppName"));
+				new PropertyValueFactory<GameProperty, String>("players"));
+			//Dritte Spalte
+		TableColumn<GameProperty, String> c3 = new TableColumn<GameProperty, String>("Punkte");
+		c3.setEditable(false);
+		c3.prefWidthProperty().bind(savedGamesTable.widthProperty().subtract(2).divide(4));
+		savedGamesTable.getColumns().add(c3);
+		savedGamesTable.setMinWidth(100);
+		c3.setCellValueFactory(
+				new PropertyValueFactory<GameProperty, String>("points"));		
+		//Elemente hinzufügen
 		savedGamesTable.setItems(viewModel.savedGames());
 				
 		//Tabelle für Sets
@@ -289,6 +299,8 @@ public class MainUIController implements Initializable{
 		
 		viewModel.initialize();
 	 }
+	
+	//------Hilfsmethoden
 	
 	private void updateState(){
 		//UI bei Zustandsänderungen anpassen
@@ -390,7 +402,9 @@ public class MainUIController implements Initializable{
 			}else{
 				viewModel.properties()[viewModel.ROLE_PROPERTY].set(String.valueOf(Constants.xRole));
 			}
-		}		
+		}else{
+			viewModel.properties()[viewModel.ROLE_PROPERTY].set(rolle.getValue());
+		}
 		
 	}
 
