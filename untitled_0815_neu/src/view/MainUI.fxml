@@ -44,8 +44,8 @@
         		<!-- Linke Spalte -->   
      		   		<Label text="Deine Rolle:" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
         			<Label text="ohne Server spielen:" GridPane.columnIndex="0" GridPane.rowIndex="2"/>
-        			<Label text="Dein Name:" GridPane.columnIndex="0" GridPane.rowIndex="3"/>
-        			<Label fx:id="labelName" text="Gegner:" GridPane.columnIndex="0" GridPane.rowIndex="4"/>
+        			<Label fx:id="labelOwnName" text="Dein Name:" GridPane.columnIndex="0" GridPane.rowIndex="3"/>
+        			<Label fx:id="labelOppName" text="Gegner:" GridPane.columnIndex="0" GridPane.rowIndex="4"/>
         			<Label text="Verzeichnispfad:" GridPane.columnIndex="0" GridPane.rowIndex="5"/>
         			<Label text="Timeout File-Abfrage" GridPane.columnIndex="0" GridPane.rowIndex="6"></Label>
         			<Label text="Timeout Zugzeit:" GridPane.columnIndex="0" GridPane.rowIndex="7"/>
@@ -112,13 +112,13 @@
         </HBox>
     </left>
    
-    <right><!-- Mittlerer Bereich -->
+    <center><!-- Mittlerer Bereich -->
         <!-- Spielflaeche (neue BorderPane) -->
       <BorderPane>
         <left>
-        	<VBox styleClass="spieleranzeige" fx:id="gameField">
+        	<VBox fx:id="gameField" alignment="CENTER" styleClass="spieleranzeige" >
         		<HBox fx:id="spielerAnzeige" spacing="20" styleClass="spieler">
-        			<Label text="untitled0815:"/>
+        			<Label fx:id="labelOwn" text="untitled0815:"/>
         			<!-- <Circle fx:id="tokenSpieler" radius="15.0f" styleClass="token-red"/>-->
         			 <Label fx:id="tokenSpieler" text=" " styleClass="token" prefWidth="40" prefHeight="40"/> 
         			<Label fx:id="labelOpp" text="Gegner"/>
@@ -156,5 +156,5 @@
        		</HBox>
        </bottom>
      </BorderPane>
-    </right>
+    </center>
 </BorderPane>
