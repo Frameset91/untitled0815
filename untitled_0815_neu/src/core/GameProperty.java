@@ -10,16 +10,18 @@ import javafx.beans.property.SimpleStringProperty;
 
 public class GameProperty {
 	private SimpleStringProperty gameID;
-	private SimpleStringProperty oppName;
+	private SimpleStringProperty players;
+	private SimpleStringProperty points;
 	
 	/**
 	 * Konstruktor von GameProperty
 	 * @param gameID ID des Spiels
 	 * @param oppName Name des Gegners
 	 */
-	public GameProperty(String gameID, String oppName){
+	public GameProperty(String gameID, String players, String time){
 		this.gameID = new SimpleStringProperty(gameID);
-		this.oppName = new SimpleStringProperty(oppName);
+		this.players = new SimpleStringProperty(players);
+		this.points = new SimpleStringProperty(time);
 	}
 
 	/**
@@ -30,9 +32,16 @@ public class GameProperty {
 	}
 	
 	/**
-	 * @return Name des Gegners
+	 * @return Namen der Gegner
 	 */
-	public String getOppName() {
-		return oppName.get();
+	public String getPlayers() {
+		return players.get();
+	}
+	
+	/**
+	 * @return Startzeit des Spiels
+	 */
+	public String getPoints() {
+		return points.get();
 	}
 }

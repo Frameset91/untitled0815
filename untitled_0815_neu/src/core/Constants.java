@@ -21,10 +21,10 @@ public class Constants {
 	public static final int defaultTimeoutServer = 300;
 	public static final int defaultTimeoutDraw = 2000;
 	
-	public static final String STATE_APP_RUNNING = "Programm läuft";
-	public static final String STATE_GAME_RUNNING = "Spiel läuft";
-	public static final String STATE_SET_RUNNING = "Satz läuft";
-	public static final String STATE_SET_ENDED = "Satz beendet";
+	public static final String STATE_APP_RUNNING = "Programm läuft, warte auf Spielbeginn";
+	public static final String STATE_GAME_RUNNING = "Spiel läuft, warte auf Satzbeginn";
+	public static final String STATE_SET_RUNNING = "Satz läuft, warte auf Satzende oder Satzabbruch";
+	public static final String STATE_SET_ENDED = "Satz beendet, warte auf Eingabe des Gewinners";
 	
 	//Styles
 	public static final String xToken = "xToken";
