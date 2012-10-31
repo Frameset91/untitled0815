@@ -1,5 +1,9 @@
 @CHARSET "ISO-8859-1";
 
+.settings{
+	-fx-background-color: #cce6ff;
+}
+
 .field{
 	-fx-padding:5; 
 	-fx-background-color: #1a3399;

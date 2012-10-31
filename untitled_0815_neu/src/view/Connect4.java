@@ -25,7 +25,7 @@ public class Connect4 extends Application {
 		stage.setTitle("4 Gewinnt - untitled0815"); 
         Parent root = FXMLLoader.load(getClass().getResource("MainUI.fxml")); 
         stage.setScene(new Scene(root)); 
-        stage.setResizable(false);	
+        //stage.setResizable(false);	
         stage.show();
         
         /**
