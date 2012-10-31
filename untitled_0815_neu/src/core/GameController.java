@@ -34,7 +34,7 @@ public class GameController implements GameEventListener, Observer{
 	public final int OWNPOINTS_PROPERTY = 1;
 	public final int OPPPOINTS_PROPERTY = 2;
 	public final int OPPNAME_PROPERTY = 3;
-	public final int OWNNAME_PROPERTY = 3;
+	public final int OWNNAME_PROPERTY = 4;
 	public final int PATH_PROPERTY = 5;
 	public final int TIMEOUTSERVER_PROPERTY = 6;
 	public final int TIMEOUTDRAW_PROPERTY = 7;

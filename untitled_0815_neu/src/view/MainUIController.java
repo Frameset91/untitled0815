@@ -121,9 +121,13 @@ public class MainUIController implements Initializable{
 	@FXML
 	private Button btnLoadGame;
 	@FXML
-	private Label labelName;
+	private Label labelOwnName;
+	@FXML
+	private Label labelOppName;
 	@FXML
 	private Label labelOpp;
+	@FXML
+	private Label labelOwn;
 
 
 	//Elemente die nicht im FXML definiert sind
@@ -179,9 +183,20 @@ public class MainUIController implements Initializable{
 				updateRole();						
 			}		
 		});
+		
+		viewModel.properties()[viewModel.ROLE_PROPERTY].addListener(new ChangeListener<String>() {
+			@Override
+			public void changed(ObservableValue<? extends String> arg0,
+					String arg1, String arg2) {
+				if(!viewModel.isWithoutServer().get())
+						rolle.setValue(viewModel.properties()[viewModel.ROLE_PROPERTY].get());
+				
+			}			
+		});
 		rolle.getItems().addAll(String.valueOf(Constants.xRole), String.valueOf(Constants.oRole));
 		
 		labelOpp.textProperty().bind(oppName.textProperty());
+		labelOwn.textProperty().bind(ownName.textProperty());
 		
 		//manuelles Spiel ohne Server oder gegen Server?
 		cbWithoutServer.selectedProperty().bindBidirectional(viewModel.isWithoutServer());
@@ -189,16 +204,21 @@ public class MainUIController implements Initializable{
 //		boxTimeoutDraw.disableProperty().bind(cbWithoutServer.selectedProperty());
 		boxTimeoutServer.disableProperty().bind(cbWithoutServer.selectedProperty());
 		boxColButtons.disableProperty().bind(cbWithoutServer.selectedProperty().not());
+		ownName.disableProperty().bind(cbWithoutServer.selectedProperty());
+		
 		cbWithoutServer.onActionProperty().set(new EventHandler<ActionEvent>() {			
 			@Override
 			public void handle(ActionEvent arg0) {
 				updateRole();
 				
 				if(cbWithoutServer.selectedProperty().get()){
-					labelName.setText("Name: ");
-					
+					labelOwnName.setText("Gegner: ");
+					ownName.setText("Computer");
+					labelOppName.setText("Dein Name: ");
 				}else{
-					labelName.setText("Gegner: ");
+					labelOwnName.setText("Dein Name: ");
+					ownName.setText(Constants.defaultOwnName);
+					labelOppName.setText("Gegner: ");
 				}
 				
 			}
