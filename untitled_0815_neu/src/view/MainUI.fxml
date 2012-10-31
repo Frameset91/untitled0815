@@ -12,9 +12,10 @@
 <?import javafx.scene.layout.HBox?>
 
 
- 
-<BorderPane xmlns:fx="http://javafx.com/fxml" fx:id="borderPane" prefHeight="200" prefWidth="320" stylesheets="view/MainUIStyle.css" fx:controller="view.MainUIController">			<!-- BorderPane zum Anordnen -->  
-    <top><!-- Oberer Bereich: MenÃ¼-Bar -->
+<!-- BorderPane zum Anordnen -->   
+<BorderPane xmlns:fx="http://javafx.com/fxml" fx:id="borderPane" stylesheets="view/MainUIStyle.css" fx:controller="view.MainUIController"><!-- prefHeight="200" prefWidth="320"  -->
+    <!-- Oberer Bereich: Menu-Bar -->
+    <top>
     	<MenuBar minWidth="820">
     		<Menu text="Datei">
     			<MenuItem fx:id="menuSpielStarten" text="Spiel starten" onAction="#handleStartGame"/>
@@ -28,14 +29,17 @@
     		</Menu>
     	</MenuBar>
     </top>
-    
-    <left><!-- Linker Bereich: Einstellungen, Trennlinie -->
-        <HBox spacing="5">
-        	<VBox spacing="20">
+    <!-- Linker Bereich: Einstellungen-->
+    <left>
+    	<!--Anordnung für Einstellungen und Trennlinie zum Spielfeld-->
+        <HBox styleClass="settings">
+        <!--Unteinander die Einstellungen/ Buttons-->
+        <VBox>   
+        	<padding><Insets top="10" right="10" bottom="10" left="10"/></padding>
+        	<!--Einstellungen für 1 spezielles Spiel-->
+        	<VBox spacing="50"><!--  spacing="20" -->
         		<!-- Tabelle zum Anordnen der Einstellungen -->
-        		<GridPane hgap="5" vgap="15" disable="false" fx:id="gameSettings">
-        			<padding><Insets top="10" right="10" bottom="10" left="10"/></padding>
-        			<!--  <GridPane >-->
+        		<GridPane fx:id="gameSettings" disable="false" vgap="5"> <!-- hgap="5" vgap="15"  > -->
         		<!-- Linke Spalte -->
         			<Label text="Spieleinstellungen" GridPane.columnIndex="0" GridPane.rowIndex="0" styleClass="labelSpieleinstellungen"></Label>   
      		   		<Label text="Rolle:" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
@@ -45,7 +49,7 @@
         			<Label text="Timeout File-Abfrage" GridPane.columnIndex="0" GridPane.rowIndex="5"></Label>
         			<Label text="Timeout Zugzeit:" GridPane.columnIndex="0" GridPane.rowIndex="6"/>
         			<Button fx:id="spielStarten" text="Spiel starten" onAction="#handleStartGame" GridPane.columnIndex="0" GridPane.rowIndex="7"/>
-         			<Button fx:id="btnLoadGame" text="Spiel laden" onAction="#handleLoadGame" GridPane.columnIndex="0" GridPane.rowIndex="8"/>
+         			<Button fx:id="btnLoadGame" text="Spiel laden" onAction="#handleLoadGame" GridPane.columnIndex="1" GridPane.rowIndex="7"/>
          		<!-- Rechte Spalte -->	
          			<!-- Rolle definieren -->
         			<ChoiceBox fx:id="rolle" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
@@ -53,14 +57,14 @@
         			<HBox GridPane.columnIndex="1" GridPane.rowIndex="2" styleClass="textfeld">
         				<CheckBox fx:id="cbWithoutServer" maxWidth="30" selected="false"/>
         			</HBox>
-        			<!-- Eingabefelder fÃ¼r Gegner und Verzeichnis -->
+        			<!-- Eingabefelder fuer Gegner und Verzeichnis -->
         			<TextField fx:id="gegnername" maxWidth="150" GridPane.columnIndex="1" GridPane.rowIndex="3" styleClass="textfeld"/>
         			<HBox fx:id="boxDirectory" GridPane.columnIndex="1" GridPane.rowIndex="4">
         				<TextField fx:id="verzeichnispfad" maxWidth="150" styleClass="textfeld"/>
         				<Button fx:id="btnDirectory" text="..." onAction="#handleChooseDirectory"/>
         			</HBox>
         			<!-- Timeout File-Abfrage -->
- 		       		<HBox fx:id="boxTimeoutServer" GridPane.columnIndex="1" GridPane.rowIndex="5" spacing="5">
+ 		       		<HBox fx:id="boxTimeoutServer" GridPane.columnIndex="1" GridPane.rowIndex="5"><!-- spacing="5" -->
         				<TextField fx:id="timeoutAbfrage" maxWidth="60" text="300" styleClass="textfeld"/>
         				<VBox>
         					<Button text="+" maxHeight="16" maxWidth="23" styleClass="timeoutButton" onMouseClicked="#handleHoch1"/>
@@ -69,7 +73,7 @@
        	 				<Label text="ms"/>
         			</HBox>
         			<!-- Timeout Zugzeit -->
-        			<HBox fx:id="boxTimeoutDraw" GridPane.columnIndex="1" GridPane.rowIndex="6" spacing="5">
+        			<HBox fx:id="boxTimeoutDraw" GridPane.columnIndex="1" GridPane.rowIndex="6"> <!-- spacing="5" -->
         				<TextField fx:id="timeoutZugzeit" maxWidth="60" text="2000" styleClass="textfeld"/>
         				<VBox> <!-- Hoch/Runter -->
         					<Button text="+" maxHeight="16" maxWidth="23" styleClass="timeoutButton" onMouseClicked="#handleHoch2"/>
@@ -77,17 +81,37 @@
         				</VBox>
         				<Label text="ms"/>
         			</HBox>        			
-        		</GridPane>
-        		<Button text="Spiel beenden" fx:id="btnEndGame" onAction="#handleEndGame" alignment="CENTER">
-        		</Button>
-        		<CheckBox text="Log aktiv" selected="true" onAction="#handleCbLog"></CheckBox>
+        		</GridPane><!--Button Spiel beenden noch einrücken-->
+        		<Button text="Spiel beenden" fx:id="btnEndGame" onAction="#handleEndGame" alignment="CENTER"/>
         	</VBox>
+        	<!--Trennlinie Einstellungen Spiel/ Satz-->
+        	<Line startX="0" startY="500" endX="200" endY="500"/>
+        	<!-- Einstellungen für Sätze -->
+        	<HBox> <!-- spacing="10" alignment="CENTER_LEFT" -->
+        		<VBox>
+       				<Button fx:id="btnNewSet" text="neuen Satz spielen" disable="false" onMouseClicked="#handleStartSet"/>
+       				<Button fx:id="btnEndSet" text="Satz abbrechen" onMouseClicked="#handleEndSet"/>
+       			</VBox>
+       			<VBox>
+       				<Label text="Statistik"/>
+       				<TableView fx:id="tableStatistic" maxHeight="100" maxWidth="150">
+       					<columns>
+       						<TableColumn fx:id="tableColumnSet" text="Satznr." maxWidth="50"/>
+       						<TableColumn fx:id="tableColumnWinner" text="Gewinner"/>
+       					</columns>
+       					<items>
+       					</items>
+       			</TableView>
+       			</VBox>
+ 	  		</HBox>
+ 	  		<CheckBox text="Log aktiv" selected="true" onAction="#handleCbLog"></CheckBox>
+        </VBox>
         	<Line startX="110" startY="0" endX="110" endY="500"/> 
         </HBox>
     </left>
    
-    <center><!-- Mittlerer Bereich -->
-        <!-- SpielflÃ¤che (neue BorderPane) -->
+    <right><!-- Mittlerer Bereich -->
+        <!-- Spielflaeche (neue BorderPane) -->
       <BorderPane>
         <left>
         	<VBox styleClass="spieleranzeige" fx:id="gameField">
@@ -122,21 +146,6 @@
         	</VBox>
         </left>
        	<center>
-       		<VBox spacing="10" alignment="CENTER_LEFT">
-       			<VBox spacing="10" fx:id="setSettings">
-       				<Button fx:id="btnNewSet" text="neuen Satz spielen" disable="false" onMouseClicked="#handleStartSet"/>
-       			</VBox>
-       			<Button fx:id="btnEndSet" text="Satz abbrechen" onMouseClicked="#handleEndSet"/>
-       			<Label text="Statistik"/>
-       			<TableView fx:id="tableStatistic" maxHeight="100" maxWidth="150">
-       				<columns>
-       					<TableColumn fx:id="tableColumnSet" text="Satznr." maxWidth="50"/>
-       					<TableColumn fx:id="tableColumnWinner" text="Gewinner"/>
-       				</columns>
-       				<items>
-       				</items>
-       			</TableView>
- 	  		</VBox>
        	</center>
        <bottom>
         	<HBox alignment="TOP_LEFT">
@@ -145,5 +154,5 @@
        		</HBox>
        </bottom>
      </BorderPane>
-    </center>
+    </right>
 </BorderPane>
