@@ -161,6 +161,8 @@ public class DBConnection {
 			String path = game.getPath();
 			int timeServer = game.getTimeoutServer();
 			int timeDraw = game.getTimeoutDraw();
+			String ownname = game.getOwnName();
+			
 			Log log = Log.getInstance();
 			
 			try{
@@ -169,7 +171,7 @@ public class DBConnection {
 					//neu in die DB schreiben
 					sql = "INSERT INTO game VALUES (DEFAULT, '" + role +"','"+ oppName + "', "
 							+ ownPoints +", " + oppPoints + ", '" + path + "', " + timeServer + ", "
-							+ timeDraw +");";
+							+ timeDraw +", '"+ ownname +"');";
 					PreparedStatement pstmt = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
 					// absenden zur DB
 					pstmt.execute(); 
@@ -182,26 +184,6 @@ public class DBConnection {
 					// Anzahl geänderter Zeilen lesen
 					i = pstmt.getUpdateCount();
 					// in Logs schreiben
-//					log.write("Zugriff auf DB: "+ sql);
-//					ResultSet rs1 = this.sendSelectStatementInternal("SELECT * FROM game WHERE gameID = " + id +";");
-//					try{
-//						while ( rs1.next() )
-//					      {
-//							String rs_gameID = rs1.getString(1);
-//					        String rs_role = rs1.getString(2);
-//					        String rs_oppName = rs1.getString(3);
-//					        String rs_ownPoints = rs1.getString(4);
-//					        String rs_oppPoints = rs1.getString(5);
-//					        String rs_path = rs1.getString(6);
-//					        String rs_timeServer = rs1.getString(7);
-//					        String rs_timeDraw = rs1.getString(8);
-//					        String saved = rs_gameID + ","+ rs_role +  ","+ rs_oppName +  ","+ rs_ownPoints +',' +rs_oppPoints +  ","
-//					        		+ rs_path +  ","+ rs_timeServer + ", " + rs_timeDraw;
-//					        log.write("Game"+saved);
-//					      }
-//						}catch (Exception e){
-//								log.write("Exception DB beim Spiel speichern.");
-//							}
 				}else {
 					// falls update
 					sql = "UPDATE game SET (role, oppname, ownPoints, oppPoints) = ('" + role + "', '" + oppName + "', '" 
@@ -213,27 +195,7 @@ public class DBConnection {
 					if (i != 1){
 							log.write("Game wurde nicht gespeichert");
 					}else{
-						log.write("DB erflogreich: "+sql);
-//						ResultSet rs = this.sendSelectStatementInternal("SELECT * FROM game WHERE gameID = " + gameID +";");
-//						try{
-//							while ( rs.next() )
-//						      {
-//								String rs_gameID = rs.getString(1);
-//						        String rs_role = rs.getString(2);
-//						        String rs_oppName = rs.getString(3);
-//						        String rs_ownPoints = rs.getString(4);
-//						        String rs_oppPoints = rs.getString(5);
-//						        String rs_path = rs.getString(6);
-//						        String rs_timeServer = rs.getString(7);
-//						        String rs_timeDraw = rs.getString(8);
-//						        String saved = rs_gameID + ","+ rs_role +  ","+ rs_oppName +  ","+ rs_ownPoints +',' +rs_oppPoints +  ","
-//						        		+ rs_path +  ","+ rs_timeServer + ", " + rs_timeDraw;
-//						        log.write("Game: "+saved);
-//						      }
-//						}catch (Exception e){
-//							log.write("Fehler DB bei Spiel speichern");
-//						}
-						
+						log.write("DB erflogreich: "+sql);	
 					}
 				}// else, also update
 				
@@ -287,21 +249,6 @@ public class DBConnection {
 				if (i == 1){ //i ist row count
 					success = true;
 					log.write("DB ausgeführt: " + sql);
-//					ResultSet rs1 = this.sendSelectStatementInternal("SELECT * FROM gameSet WHERE gameID = " + gameID +" AND setID = "+ setID+";");
-//					try{
-//						while ( rs1.next() )
-//					      {
-//							String rs_gameID = rs1.getString(1);
-//					        String rs_setID = rs1.getString(2);
-//					        String rs_winner = rs1.getString(3);
-//					        String rs_starttime = rs1.getString(4);
-//					        String rs_endtime = rs1.getString(5);
-//					        String saved = rs_gameID + ","+ rs_setID +  ","+ rs_winner +  ","+ rs_starttime +',' +rs_endtime;
-//					        log.write("Set: " + saved);
-//					      }
-//					}catch (Exception e){
-//						log.write("Fehler in DB bei save set.");
-//					}
 				}
 				
 			}catch (Exception e){
@@ -351,23 +298,7 @@ public class DBConnection {
 				int i = stmt.executeUpdate(sql); //i ist row count
 				if (i == 1){
 					success = true;
-					log.write("DB erfolgreich: "+sql);
-//					ResultSet rs1 = this.sendSelectStatementInternal("SELECT * FROM move WHERE gameID = " + gameID +" AND setID = "+ setID+" AND moveID = "+moveID+";");
-//					try{
-//						while ( rs1.next() )
-//					      {
-//							String rs_gameID = rs1.getString(1);
-//					        String rs_setID = rs1.getString(2);
-//					        String rs_moveid = rs1.getString(3);
-//					        String rs_role = rs1.getString(4);
-//					        String rs_column = rs1.getString(5);
-//					        String rs_time = rs1.getString(6);
-//					        String saved = rs_gameID + ","+ rs_setID +  ","+ rs_moveid +  ","+ rs_role +"," +rs_column + "," + rs_time ;
-//					        log.write("Move: " + saved);
-//					      }
-//					}catch (Exception e){
-//						log.write("Fehler in DB bei save move.");
-//					}
+					log.write("DB erfolgreich: "+sql);			
 				}
 			}catch (Exception e){
 				log.write("SQL Insert Set fehlgeschlagen");
@@ -395,6 +326,7 @@ public class DBConnection {
 	        String spath = "";
 	        String stimeServer = "";
 	        String stimeDraw = "";
+	        String sownname = "";
 			
 			String sql = "SELECT * FROM game WHERE gameID = " + gameID + ";"; 
 			ResultSet rs = this.sendSelectStatementInternal(sql);
@@ -409,6 +341,7 @@ public class DBConnection {
 			        spath = rs.getString(6);
 			        stimeServer = rs.getString(7);
 			        stimeDraw = rs.getString(8);
+			        sownname = rs.getString(9);
 			        log.write("DB: 1Game geladen");
 			      }else return null; // dann wäre nichts im resultset und nichts in der DB gefunden
 			}catch (SQLException e){
@@ -428,10 +361,11 @@ public class DBConnection {
 			if (stimeDraw != null){
 				timedraw = Integer.valueOf(stimeDraw);
 			}else timedraw = 0;
+			String ownname = sownname;
 			int columns = Constants.gamefieldcolcount;
 			int rows = Constants.gamefieldrowcount;
 			
-			Game game = new Game(columns, rows, role, oppname, path, timeServer, timedraw, gameID);
+			Game game = new Game(columns, rows, role, oppname, ownname, path, timeServer, timedraw, gameID);
 			
 			return game;
 		}else
@@ -470,6 +404,7 @@ public class DBConnection {
 			        String spath = rs.getString(6);
 			        String stimeServer = rs.getString(7);
 			        String stimeDraw = rs.getString(8);
+			        String sownname = rs.getString(9);
 			        
 			        //in game übernehmen
 			        if (sID != null)
@@ -484,11 +419,12 @@ public class DBConnection {
 					if (stimeDraw != null){
 						timedraw = Integer.valueOf(stimeDraw);
 					}else timedraw = 0;
+					String ownname = sownname;
 					int columns = Constants.gamefieldcolcount;
 					int rows = Constants.gamefieldrowcount;
 			        
 			        // Game an die Liste hängen
-			        Game newGame = new Game (columns, rows, role, oppname, path, timeServer, timedraw, id);
+			        Game newGame = new Game (columns, rows, role, oppname, ownname, path, timeServer, timedraw, id);
 			        allGameList.add(newGame);
 				}//while
 				log.write("Anzahl der geladenen Games: "+ ctr);
