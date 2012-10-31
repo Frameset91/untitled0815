@@ -164,7 +164,7 @@ public class GameController implements GameEventListener, Observer{
 	 */	
 	public void loadGame(int gameID){
 		Log.getInstance().write("Controller: Spiel wird geladen, FxThread:" + Platform.isFxApplicationThread());
-		isReplay.set(true);
+//		isReplay.set(true);
 		processGameLoad(gameID);
 	}
 	

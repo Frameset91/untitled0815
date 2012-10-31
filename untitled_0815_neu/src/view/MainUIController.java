@@ -129,6 +129,8 @@ public class MainUIController implements Initializable{
 	private Label labelOpp;
 	@FXML
 	private Label labelOwn;
+	@FXML
+	private CheckBox replay;
 
 
 	//Elemente die nicht im FXML definiert sind
@@ -155,6 +157,8 @@ public class MainUIController implements Initializable{
 	        spielfeld[i][j].getStyleClass().add("token");
 	        spielfeld[i][j].styleProperty().bindBidirectional(viewModel.field()[i][Constants.gamefieldrowcount -1 -j], new StyleConverter());
 	        spielfeld[i][j].textProperty().bindBidirectional(viewModel.field()[i][Constants.gamefieldrowcount -1 -j], new TokenRoleConverter());
+	        spielfeld[i][j].setUserData(i + "," + (Constants.gamefieldrowcount -1 -j));
+	        spielfeld[i][j].setOnMouseReleased(new TokenHandler());
 	        feld.add(spielfeld[i][j], i, j);
 	      }
 	    }
@@ -167,8 +171,8 @@ public class MainUIController implements Initializable{
 			public void changed(ObservableValue<? extends String> arg0,
 					String arg1, String arg2) {	updateState(); }});
 		
-		btnNextMove.visibleProperty().bind(viewModel.isReplay());
-		btnRemoveMove.visibleProperty().bind(viewModel.isReplay());
+		btnNextMove.disableProperty().bind(viewModel.isReplay().not());
+		btnRemoveMove.disableProperty().bind(viewModel.isReplay().not());
 		
 		//Menü-Einträge an Buttons binden
 		menuSpielStarten.disableProperty().bind(gameSettings.disableProperty());
@@ -225,9 +229,12 @@ public class MainUIController implements Initializable{
 				
 			}
 		});		
-		
+						
 		//nur laden wenn DB verfügbar
 		btnLoadGame.disableProperty().bind(viewModel.isDBAvailable().not());
+		replay = new CheckBox();
+		replay.setText("Wiederholung manuell abspielen");
+		replay.selectedProperty().bindBidirectional(viewModel.isReplay());
 		
 		tempWinner = new SimpleStringProperty();
 		tempWinner.bindBidirectional(viewModel.properties()[viewModel.WINNER_PROPERTY], new WinnerRoleConverter());		
@@ -442,6 +449,7 @@ public class MainUIController implements Initializable{
 	//------------------------------------------------------------------ Methoden zum handeln von UI Input ----------------------------
 	
 	@FXML
+	//reagieren auf Buttons über den Spalten (zum manuellen Spielen)
 	private void handleColButton(MouseEvent e){
 		try{
 			String data = (String)((Button) e.getSource()).getUserData();
@@ -450,6 +458,7 @@ public class MainUIController implements Initializable{
 	}
 	
 	@FXML
+	//Reagieren auf CheckBox für Log 
 	private void handleCbLog(ActionEvent e){
 		if(((CheckBox)e.getSource()).isSelected()){
 			Log.getInstance().enableLog();
@@ -459,16 +468,19 @@ public class MainUIController implements Initializable{
 	}
 	
 	@FXML
+	//Replay: einen Zug vor
 	private void handleNextMove(MouseEvent e){
 		viewModel.loadNextMove();
 	}
 	
 	@FXML
+	//Replay: einen Zug zurück
 	private void handleRemoveMove(MouseEvent e){
 		viewModel.removeLastMove();
 	}
 	
 	@FXML
+	//Pfad-Auswahlhilfe
 	private void handleChooseDirectory(ActionEvent e){
 		DirectoryChooser dc = new DirectoryChooser();
 		dc.setTitle("Pfad auswählen:");
@@ -534,7 +546,7 @@ public class MainUIController implements Initializable{
 		stageLoad.centerOnScreen();
 		stageLoad.show();
 						
-	//Inhalt
+		//Inhalt
 		Text ueberschrift = new Text(20, 20,"Wählen Sie ein gespeichertes Spiel aus:");
 		Button close = new Button("Abbrechen");
 		close.setOnAction(new EventHandler<ActionEvent>(){
@@ -551,6 +563,8 @@ public class MainUIController implements Initializable{
 				viewModel.loadGame(Integer.parseInt(gameID));
 			}
 		});
+		
+		
 	
 		//Anordnen
 		VBox Loads = new VBox(20);
@@ -558,7 +572,7 @@ public class MainUIController implements Initializable{
 		 * @TODO Tabelle der gespeicherten Spiele einbinden
 		 */
 		savedGamesTable.prefWidthProperty().bind(sceneLog.widthProperty().subtract(100));
-		Loads.getChildren().addAll(ueberschrift, savedGamesTable, load, close);
+		Loads.getChildren().addAll(ueberschrift, savedGamesTable, load, replay, close);
 		Loads.setLayoutX(50);
 		rootLoad.getChildren().add(Loads);
 		savedGamesTable.getSelectionModel().selectFirst();
@@ -745,5 +759,18 @@ public class MainUIController implements Initializable{
 			return style;
 		}
 
+	}
+	
+	private class TokenHandler implements EventHandler<MouseEvent>{
+
+		@Override
+		public void handle(MouseEvent e) {
+			if(viewModel.isWithoutServer().get()){
+				try{
+					String data = (String)((Label) e.getSource()).getUserData();
+					viewModel.oppMove((byte)Integer.parseInt(data.split(",")[0]));
+				}catch(Exception ex){ ex.printStackTrace();}			
+			}			
+		}		
 	}
 }
