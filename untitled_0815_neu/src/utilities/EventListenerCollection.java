@@ -35,21 +35,12 @@ public class EventListenerCollection {
 	 *            event
 	 * 
 	 */
-	public void propagate(final GameEvent e) throws Exception {
+	public void propagate(final GameEvent e) {
 		for (int i = 0; i < this.listeners.size(); i++) {
-
-			Task<Void> aufgabe = new Task<Void>() {
-				protected Void call() throws Exception {
-					for (int i = 0; i < listeners.size(); i++) {
-						listeners.get(i).handleEvent(e);
-					}
-					return null;
-				}
-			};
-			Thread t = new Thread(aufgabe);
+			Event_Handler_Thread EventHandler = new Event_Handler_Thread(this.listeners.get(i),e);
+			Thread t = new Thread(EventHandler);
 			t.setName("Event "+ e.getType() +  " abarbeiten");
 			t.start();
-
 		}
 	}
 
