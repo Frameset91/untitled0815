@@ -171,7 +171,14 @@ public class MainUIController implements Initializable{
 		menuSchliessen.disableProperty().bind(gameSettings.disabledProperty());
 		
 		//Rollen Auswahl
-		rolle.valueProperty().bindBidirectional(viewModel.properties()[viewModel.ROLE_PROPERTY]);
+//		rolle.valueProperty().bindBidirectional(viewModel.properties()[viewModel.ROLE_PROPERTY]);
+		rolle.valueProperty().addListener(new ChangeListener<String>() {
+			@Override
+			public void changed(ObservableValue<? extends String> arg0,
+					String arg1, String arg2) {
+				updateRole();						
+			}		
+		});
 		rolle.getItems().addAll(String.valueOf(Constants.xRole), String.valueOf(Constants.oRole));
 		
 		labelOpp.textProperty().bind(oppName.textProperty());
@@ -185,8 +192,11 @@ public class MainUIController implements Initializable{
 		cbWithoutServer.onActionProperty().set(new EventHandler<ActionEvent>() {			
 			@Override
 			public void handle(ActionEvent arg0) {
+				updateRole();
+				
 				if(cbWithoutServer.selectedProperty().get()){
 					labelName.setText("Name: ");
+					
 				}else{
 					labelName.setText("Gegner: ");
 				}
@@ -350,6 +360,17 @@ public class MainUIController implements Initializable{
 		gpconfirm.add(confirm, 1, 2);
 		gpconfirm.add(discard, 2, 2);
 		rootConfirm.getChildren().add(gpconfirm);
+		
+	}
+	
+	private void updateRole() {
+		if(viewModel.isWithoutServer().get()){
+			if(rolle.getValue().equals(String.valueOf(Constants.xRole))) {
+				viewModel.properties()[viewModel.ROLE_PROPERTY].set(String.valueOf(Constants.oRole));
+			}else{
+				viewModel.properties()[viewModel.ROLE_PROPERTY].set(String.valueOf(Constants.xRole));
+			}
+		}		
 		
 	}
 

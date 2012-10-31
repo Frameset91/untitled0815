@@ -555,6 +555,7 @@ public class GameController implements GameEventListener, Observer{
 		properties[ROLE_PROPERTY].set(String.valueOf(Constants.defaultRole));
 		properties[OWNPOINTS_PROPERTY].set("0");
 		properties[OPPPOINTS_PROPERTY].set("0");
+		properties[OWNNAME_PROPERTY].set(Constants.defaultOwnName);
 		properties[TIMEOUTSERVER_PROPERTY].set(String.valueOf(Constants.defaultTimeoutServer));
 		properties[TIMEOUTDRAW_PROPERTY].set(String.valueOf(Constants.defaultTimeoutDraw));
 		properties[OPPTOKEN_PROPERTY].set(String.valueOf(Constants.oRole));
