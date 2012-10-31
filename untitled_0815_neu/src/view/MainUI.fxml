@@ -37,7 +37,7 @@
         <VBox>   
         	<padding><Insets top="10" right="10" bottom="10" left="10"/></padding>
         	<!--Einstellungen für 1 spezielles Spiel-->
-        	<VBox spacing="50"><!--  spacing="20" -->
+        	<VBox spacing="5"><!--  spacing="20" -->
         		<!-- Tabelle zum Anordnen der Einstellungen -->
         		<GridPane fx:id="gameSettings" disable="false" vgap="5"> <!-- hgap="5" vgap="15"  > -->
         		<!-- Linke Spalte -->
@@ -50,7 +50,7 @@
         			<Label text="Timeout File-Abfrage" GridPane.columnIndex="0" GridPane.rowIndex="6"></Label>
         			<Label text="Timeout Zugzeit:" GridPane.columnIndex="0" GridPane.rowIndex="7"/>
         			<Button fx:id="spielStarten" text="Spiel starten" onAction="#handleStartGame" GridPane.columnIndex="0" GridPane.rowIndex="8"/>
-         			<Button fx:id="btnLoadGame" text="Spiel laden" onAction="#handleLoadGame" GridPane.columnIndex="1" GridPane.rowIndex="9"/>
+         			<Button fx:id="btnLoadGame" text="Spiel laden" onAction="#handleLoadGame" GridPane.columnIndex="1" GridPane.rowIndex="8"/>
          		<!-- Rechte Spalte -->	
          			<!-- Rolle definieren -->
         			<ChoiceBox fx:id="rolle" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
@@ -59,7 +59,7 @@
         				<CheckBox fx:id="cbWithoutServer" maxWidth="30" selected="false"/>
         			</HBox>
         			<!-- Eingabefelder fuer Gegner und Verzeichnis -->
-        			<TextField fx:id="ownName" maxWidth="150" GridPane.columnIndex="1" GridPane.rowIndex="3" styleClass="textfeld"/>
+        			<TextField fx:id="ownName" text="untitled0815" maxWidth="150" GridPane.columnIndex="1" GridPane.rowIndex="3" styleClass="textfeld"/>
         			<TextField fx:id="oppName" maxWidth="150" GridPane.columnIndex="1" GridPane.rowIndex="4" styleClass="textfeld"/>
         			<HBox fx:id="boxDirectory" GridPane.columnIndex="1" GridPane.rowIndex="5">
         				<TextField fx:id="verzeichnispfad" maxWidth="150" styleClass="textfeld"/>
