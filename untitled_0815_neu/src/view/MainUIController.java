@@ -528,7 +528,6 @@ public class MainUIController implements Initializable{
 		timeoutFileabfruf = timeoutFileabfruf + 100;
 		String zeitz = String.valueOf(timeoutFileabfruf);
 		timeoutZugzeit.setText(zeitz);
-		System.out.println(timeoutHochZugzeit.getWidth()+"höhe: "+ timeoutHochZugzeit.getHeight());
 	}
 	@FXML
 	private void handleRunter2(MouseEvent arg0){
