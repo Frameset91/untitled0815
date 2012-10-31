@@ -1,7 +1,19 @@
 @CHARSET "ISO-8859-1";
 
+.border{
+		-fx-border-width: 1;
+	-fx-border-color: #297fd5;
+}
+
 .settings{
-	-fx-background-color: #cce6ff;
+	-fx-background-color: #accbf9;
+	-fx-border-width: 2;
+	-fx-border-color: #297fd5;
+}
+
+.game{
+	-fx-background-color: #99cc99;
+	-fx-padding: 20;
 }
 
 .field{
@@ -31,7 +43,6 @@
 
 
 .punkte{
-	-fx-padding: 10;
 	-fx-font-size: 20;
 	-fx-font-weight: bold;
 }

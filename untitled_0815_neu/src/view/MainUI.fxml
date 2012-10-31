@@ -31,13 +31,12 @@
     </top>
     <!-- Linker Bereich: Einstellungen-->
     <left>
-    	<!--Anordnung für Einstellungen und Trennlinie zum Spielfeld-->
-        <HBox styleClass="settings">
         <!--Unteinander die Einstellungen/ Buttons-->
-        <VBox spacing = "20">   
-        	<padding><Insets top="10" right="10" bottom="10" left="10"/></padding>
+        <VBox spacing = "20" styleClass="settings">   
+         <padding><Insets top="10" right="10" bottom="10" left="10"/></padding>
         	<!--Einstellungen für 1 spezielles Spiel-->
-        	<VBox spacing="10"><!--  spacing="20" -->
+        	<VBox spacing="10" styleClass="settings"><!--  spacing="20" -->
+        	    <padding><Insets top="10" right="10" bottom="10" left="10"/></padding>
         		<Label text="Spieleinstellungen" GridPane.columnIndex="0" GridPane.rowIndex="0" styleClass="labelSpieleinstellungen"></Label>
         		<!-- Tabelle zum Anordnen der Einstellungen -->
         		<GridPane fx:id="gameSettings" disable="false" vgap="5" hgap="15"> <!-- hgap="5" vgap="15"  > -->
@@ -60,7 +59,7 @@
         			</HBox>
         			<!-- Eingabefelder fuer Gegner und Verzeichnis -->
         			<TextField fx:id="ownName" maxWidth="150" GridPane.columnIndex="1" GridPane.rowIndex="3" styleClass="textfeld"/>
-        			<TextField fx:id="oppName" maxWidth="150" GridPane.columnIndex="1" GridPane.rowIndex="4" styleClass="textfeld"/>
+        			<TextField fx:id="oppName" maxWidth="150" prefColumnCount="2" GridPane.columnIndex="1" GridPane.rowIndex="4" styleClass="textfeld"/>
         			<HBox fx:id="boxDirectory" GridPane.columnIndex="1" GridPane.rowIndex="5">
         				<TextField fx:id="verzeichnispfad" maxWidth="150" styleClass="textfeld"/>
         				<Button fx:id="btnDirectory" text="..." onAction="#handleChooseDirectory"/>
@@ -86,10 +85,9 @@
         		</GridPane><!--Button Spiel beenden noch einrücken-->
         		<Button text="Spiel beenden" fx:id="btnEndGame" onAction="#handleEndGame" alignment="CENTER"/>
         	</VBox>
-        	<!--Trennlinie Einstellungen Spiel/ Satz-->
-        	<Line startX="0" startY="500" endX="200" endY="500"/>
         	<!-- Einstellungen für Sätze -->
-        	<HBox spacing="20"> <!-- spacing="10" alignment="CENTER_LEFT" -->
+        	<HBox spacing="20"  styleClass="settings">
+ 				<padding><Insets top="10" right="10" bottom="10" left="10"/></padding>
         		<VBox spacing="5">
        				<Button fx:id="btnNewSet" text="Satz spielen" disable="false" onMouseClicked="#handleStartSet"/>
        				<Button fx:id="btnEndSet" text="Satz abbrechen" onMouseClicked="#handleEndSet"/>
@@ -108,31 +106,28 @@
  	  		</HBox>
  	  		<CheckBox text="Log aktiv" selected="true" onAction="#handleCbLog"></CheckBox>
         </VBox>
-        	<Line startX="110" startY="0" endX="110" endY="500"/> 
-        </HBox>
     </left>
    
     <center><!-- Mittlerer Bereich -->
         <!-- Spielflaeche (neue BorderPane) -->
-      <BorderPane>
-        <left>
-        	<VBox fx:id="gameField" alignment="CENTER" styleClass="spieleranzeige" >
-        		<HBox fx:id="spielerAnzeige" spacing="20" styleClass="spieler">
-        			<Label fx:id="labelOwn" text="untitled0815:"/>
-        			<!-- <Circle fx:id="tokenSpieler" radius="15.0f" styleClass="token-red"/>-->
-        			 <Label fx:id="tokenSpieler" text=" " styleClass="token" prefWidth="40" prefHeight="40"/> 
-        			<Label fx:id="labelOpp" text="Gegner"/>
-        			<Label text=":"/>
-        			<!-- <Circle fx:id="tokenGegner" radius="15.0f" styleClass="token-yellow"/>-->
-        			<Label fx:id="tokenGegner" text=" " styleClass="token" prefWidth="40" prefHeight="40"/> 
-        		</HBox>
-        		<HBox fx:id="spielstandAnzeige">
-        			<Label text="Spielstand" styleClass="punkte"/>
-        			<Label fx:id="punkteSpieler" text="0" styleClass="punkte"/>
-        			<Label text=":" styleClass="punkte"/>
-        			<Label fx:id="punkteGegner" text="0" styleClass="punkte"/>
-        		</HBox>
-        		<HBox fx:id="boxColButtons">
+    <VBox styleClass="game, border">
+        	<VBox fx:id="gameField" alignment="CENTER" styleClass="border" >
+        		<GridPane styleClass="spieleranzeige, spieler" hgap="15">
+        		<!-- <HBox fx:id="spielerAnzeige" spacing="20" styleClass="spieler, border"> -->
+        			<Label fx:id="labelOwn" text="untitled0815:" minWidth="150" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
+        			<Label fx:id="tokenSpieler" text=" " styleClass="token" minWidth="40" prefHeight="40" GridPane.columnIndex="1" GridPane.rowIndex="0"/> 
+        			<Label text=":" GridPane.columnIndex="2" GridPane.rowIndex="0"/>
+        			<Label fx:id="tokenGegner" text=" " styleClass="token" minWidth="40" prefHeight="40" GridPane.columnIndex="4" GridPane.rowIndex="0"/> 
+        			<Label fx:id="labelOpp" text="Gegner" GridPane.columnIndex="5" GridPane.rowIndex="0"/>
+        		<!-- </HBox> -->
+        		<!-- <HBox fx:id="spielstandAnzeige" styleClass="border"> -->
+        			<Label text="Spielstand" styleClass="punkte" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
+        			<Label fx:id="punkteSpieler" text="0" styleClass="punkte" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+        			<Label text=":" styleClass="punkte" GridPane.columnIndex="2" GridPane.rowIndex="1"/>
+        			<Label fx:id="punkteGegner" text="0" styleClass="punkte" GridPane.columnIndex="3" GridPane.rowIndex="1"/>
+        		<!-- </HBox> -->
+				</GridPane>
+        		<HBox fx:id="boxColButtons" styleClass="border" alignment="center">
         			<Button text="1" userData="0" maxHeight="20" maxWidth="30" styleClass="colButton" onMouseClicked="#handleColButton"/>
         			<Button text="2" userData="1" maxHeight="20" maxWidth="30" styleClass="colButton" onMouseClicked="#handleColButton"/>
         			<Button text="3" userData="2" maxHeight="20" maxWidth="30" styleClass="colButton" onMouseClicked="#handleColButton"/>
@@ -141,20 +136,14 @@
         			<Button text="6" userData="5" maxHeight="20" maxWidth="30" styleClass="colButton" onMouseClicked="#handleColButton"/>
         			<Button text="7" userData="6" maxHeight="20" maxWidth="30" styleClass="colButton" onMouseClicked="#handleColButton"/>
         		</HBox>
-        		<GridPane fx:id="feld" hgap="3" vgap="3"  styleClass="field">
-        		</GridPane>
+        		<GridPane fx:id="feld" hgap="3" vgap="3" styleClass="field" maxWidth="10"/>
         		<Button text="ZurÃ¼ck" fx:id="btnRemoveMove" onMouseClicked="#handleRemoveMove" alignment="CENTER"></Button>
         		<Button text="Vor" fx:id="btnNextMove" onMouseClicked="#handleNextMove" alignment="CENTER"></Button>
         	</VBox>
-        </left>
-       	<center>
-       	</center>
-       <bottom>
-        	<HBox alignment="TOP_LEFT">
+        	    <HBox alignment="TOP_LEFT" styleClass="border">
         		<Label text="Status:" styleClass="statusanzeige" />
         		<Label fx:id="satzstatus" text="Status" styleClass="statusanzeige"/>
        		</HBox>
-       </bottom>
-     </BorderPane>
+		</VBox>
     </center>
 </BorderPane>
