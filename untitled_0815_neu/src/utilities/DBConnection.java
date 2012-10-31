@@ -15,11 +15,8 @@ import model.Set;
 
 /**
  * TO DO: 
- * bei save set: testaufruf für endtime enthalten
- * bei loadGame (ID): ownPoints und oppPoints setzen
- * load-Methoden:
- * 	set [] loadSets(gameID)
- * 	move [] loadMoves (gameID, setID)
+ * 
+ * an 2 Stellen großer auskemmentierter Block: erst testen
  *
  */
 
@@ -48,9 +45,9 @@ public class DBConnection {
 					"jdbc:hsqldb:file:database/dbfiles/DB4gewinnt;shutdown=true", "SA", "");
 
 		}catch ( ClassNotFoundException e ) {
-		      System.err.println( "Treiberklasse nicht gefunden!" );
+		      log.write("Treiberklasse nicht gefunden!");
 	    }catch (SQLException e) {
-	    	System.err.println( "Datenbank nicht gefunden!" );
+	    	log.write("Datenbank nicht gefunden!");
 		}
 		
 		if (con == null){
@@ -134,8 +131,8 @@ public class DBConnection {
 					success = true;
 		
 			}catch (SQLException e){
-				e.printStackTrace();
-				System.out.println ("SQL Insert Set fehlgeschlagen");
+				Log log = Log.getInstance();
+				log.write("SQL Insert-Statement fehlgeschlagen!");
 			}
 		}
 		return success;
@@ -185,67 +182,63 @@ public class DBConnection {
 					// Anzahl geänderter Zeilen lesen
 					i = pstmt.getUpdateCount();
 					// in Logs schreiben
-					log.write(sql);
-					ResultSet rs1 = this.sendSelectStatementInternal("SELECT * FROM game WHERE gameID = " + id +";");
-					System.out.println("SELECT * FROM game WHERE gameID = " + id +";");
-					try{
-						while ( rs1.next() )
-					      {
-							String rs_gameID = rs1.getString(1);
-					        String rs_role = rs1.getString(2);
-					        String rs_oppName = rs1.getString(3);
-					        String rs_ownPoints = rs1.getString(4);
-					        String rs_oppPoints = rs1.getString(5);
-					        String rs_path = rs1.getString(6);
-					        String rs_timeServer = rs1.getString(7);
-					        String rs_timeDraw = rs1.getString(8);
-					        String saved = rs_gameID + ","+ rs_role +  ","+ rs_oppName +  ","+ rs_ownPoints +',' +rs_oppPoints +  ","
-					        		+ rs_path +  ","+ rs_timeServer + ", " + rs_timeDraw;
-					        log.write("Game"+saved);
-					      }
-						}catch (Exception e){
-								e.printStackTrace();
-							}
+//					log.write("Zugriff auf DB: "+ sql);
+//					ResultSet rs1 = this.sendSelectStatementInternal("SELECT * FROM game WHERE gameID = " + id +";");
+//					try{
+//						while ( rs1.next() )
+//					      {
+//							String rs_gameID = rs1.getString(1);
+//					        String rs_role = rs1.getString(2);
+//					        String rs_oppName = rs1.getString(3);
+//					        String rs_ownPoints = rs1.getString(4);
+//					        String rs_oppPoints = rs1.getString(5);
+//					        String rs_path = rs1.getString(6);
+//					        String rs_timeServer = rs1.getString(7);
+//					        String rs_timeDraw = rs1.getString(8);
+//					        String saved = rs_gameID + ","+ rs_role +  ","+ rs_oppName +  ","+ rs_ownPoints +',' +rs_oppPoints +  ","
+//					        		+ rs_path +  ","+ rs_timeServer + ", " + rs_timeDraw;
+//					        log.write("Game"+saved);
+//					      }
+//						}catch (Exception e){
+//								log.write("Exception DB beim Spiel speichern.");
+//							}
 				}else {
 					// falls update
 					sql = "UPDATE game SET (role, oppname, ownPoints, oppPoints) = ('" + role + "', '" + oppName + "', '" 
 							+ ownPoints + "', '"+ oppPoints + "') WHERE gameID = " + gameID + ";"; 
-					System.out.println (sql);
 					Statement stmt = con.createStatement();
 					// update an DB schicken
 					i = stmt.executeUpdate(sql); //i ist row count
 					
 					if (i != 1){
-							System.out.println("Fehler beim Schreiben in DB");
 							log.write("Game wurde nicht gespeichert");
 					}else{
-						log.write(sql);
-						ResultSet rs = this.sendSelectStatementInternal("SELECT * FROM game WHERE gameID = " + gameID +";");
-						try{
-							while ( rs.next() )
-						      {
-								String rs_gameID = rs.getString(1);
-						        String rs_role = rs.getString(2);
-						        String rs_oppName = rs.getString(3);
-						        String rs_ownPoints = rs.getString(4);
-						        String rs_oppPoints = rs.getString(5);
-						        String rs_path = rs.getString(6);
-						        String rs_timeServer = rs.getString(7);
-						        String rs_timeDraw = rs.getString(8);
-						        String saved = rs_gameID + ","+ rs_role +  ","+ rs_oppName +  ","+ rs_ownPoints +',' +rs_oppPoints +  ","
-						        		+ rs_path +  ","+ rs_timeServer + ", " + rs_timeDraw;
-						        log.write("Game: "+saved);
-						      }
-						}catch (Exception e){
-							e.printStackTrace();
-						}
+						log.write("DB erflogreich: "+sql);
+//						ResultSet rs = this.sendSelectStatementInternal("SELECT * FROM game WHERE gameID = " + gameID +";");
+//						try{
+//							while ( rs.next() )
+//						      {
+//								String rs_gameID = rs.getString(1);
+//						        String rs_role = rs.getString(2);
+//						        String rs_oppName = rs.getString(3);
+//						        String rs_ownPoints = rs.getString(4);
+//						        String rs_oppPoints = rs.getString(5);
+//						        String rs_path = rs.getString(6);
+//						        String rs_timeServer = rs.getString(7);
+//						        String rs_timeDraw = rs.getString(8);
+//						        String saved = rs_gameID + ","+ rs_role +  ","+ rs_oppName +  ","+ rs_ownPoints +',' +rs_oppPoints +  ","
+//						        		+ rs_path +  ","+ rs_timeServer + ", " + rs_timeDraw;
+//						        log.write("Game: "+saved);
+//						      }
+//						}catch (Exception e){
+//							log.write("Fehler DB bei Spiel speichern");
+//						}
 						
 					}
 				}// else, also update
 				
-			}catch ( SQLException e ) {
-				System.err.println( "SQL Statement fehlgeschlagen!" );
-				e.printStackTrace();
+			}catch ( Exception e ) {
+				log.write("Fehler in DB bei Save Game");
 		    }
 		}// if (!offlineMode)		
 		return id;
@@ -283,7 +276,6 @@ public class DBConnection {
 				if (!rs.next()){ //also keine Zeile im ResultSet vorhanden
 					//falls neues Insert-Statement
 					sql = "INSERT INTO gameSet VALUES ("+ gameID + ", " + setID +",'"+ winner + "', '"+ starttime +"', '" + endtime +"');";
-					System.out.println ("SQL: "+sql);
 				}else {
 					// update machen
 					sql = "UPDATE gameSet SET (winner, startTime, endTime) = ('" + winner + "', '" + starttime + "', '" 
@@ -294,27 +286,26 @@ public class DBConnection {
 				int i = stmt.executeUpdate(sql); 
 				if (i == 1){ //i ist row count
 					success = true;
-					log.write(sql);
-					ResultSet rs1 = this.sendSelectStatementInternal("SELECT * FROM gameSet WHERE gameID = " + gameID +" AND setID = "+ setID+";");
-					try{
-						while ( rs1.next() )
-					      {
-							String rs_gameID = rs1.getString(1);
-					        String rs_setID = rs1.getString(2);
-					        String rs_winner = rs1.getString(3);
-					        String rs_starttime = rs1.getString(4);
-					        String rs_endtime = rs1.getString(5);
-					        String saved = rs_gameID + ","+ rs_setID +  ","+ rs_winner +  ","+ rs_starttime +',' +rs_endtime;
-					        log.write("Set: " + saved);
-					      }
-					}catch (Exception e){
-						e.printStackTrace();
-					}
+					log.write("DB ausgeführt: " + sql);
+//					ResultSet rs1 = this.sendSelectStatementInternal("SELECT * FROM gameSet WHERE gameID = " + gameID +" AND setID = "+ setID+";");
+//					try{
+//						while ( rs1.next() )
+//					      {
+//							String rs_gameID = rs1.getString(1);
+//					        String rs_setID = rs1.getString(2);
+//					        String rs_winner = rs1.getString(3);
+//					        String rs_starttime = rs1.getString(4);
+//					        String rs_endtime = rs1.getString(5);
+//					        String saved = rs_gameID + ","+ rs_setID +  ","+ rs_winner +  ","+ rs_starttime +',' +rs_endtime;
+//					        log.write("Set: " + saved);
+//					      }
+//					}catch (Exception e){
+//						log.write("Fehler in DB bei save set.");
+//					}
 				}
 				
-			}catch (SQLException e){
-				e.printStackTrace();
-				System.out.println ("SQL Insert Set fehlgeschlagen");
+			}catch (Exception e){
+				log.write("SQL INSERT set fehlfegschlagen");
 			}
 		}// if (!offlineMode)
 		
@@ -354,34 +345,32 @@ public class DBConnection {
 					sql = "UPDATE move SET (role, column, time) = ('" + role + "', " + column + ", '" 
 							+ time + "') WHERE gameID = " + gameID + " AND setID = " + setID 
 							+ " AND moveID = " + moveID + ";"; 
-					System.out.println (sql);
 				}
 				Statement stmt = con.createStatement();
 				// Insert an DB schicken
 				int i = stmt.executeUpdate(sql); //i ist row count
 				if (i == 1){
 					success = true;
-					log.write(sql);
-					ResultSet rs1 = this.sendSelectStatementInternal("SELECT * FROM move WHERE gameID = " + gameID +" AND setID = "+ setID+" AND moveID = "+moveID+";");
-					try{
-						while ( rs1.next() )
-					      {
-							String rs_gameID = rs1.getString(1);
-					        String rs_setID = rs1.getString(2);
-					        String rs_moveid = rs1.getString(3);
-					        String rs_role = rs1.getString(4);
-					        String rs_column = rs1.getString(5);
-					        String rs_time = rs1.getString(6);
-					        String saved = rs_gameID + ","+ rs_setID +  ","+ rs_moveid +  ","+ rs_role +"," +rs_column + "," + rs_time ;
-					        log.write("Move: " + saved);
-					      }
-					}catch (Exception e){
-						e.printStackTrace();
-					}
+					log.write("DB erfolgreich: "+sql);
+//					ResultSet rs1 = this.sendSelectStatementInternal("SELECT * FROM move WHERE gameID = " + gameID +" AND setID = "+ setID+" AND moveID = "+moveID+";");
+//					try{
+//						while ( rs1.next() )
+//					      {
+//							String rs_gameID = rs1.getString(1);
+//					        String rs_setID = rs1.getString(2);
+//					        String rs_moveid = rs1.getString(3);
+//					        String rs_role = rs1.getString(4);
+//					        String rs_column = rs1.getString(5);
+//					        String rs_time = rs1.getString(6);
+//					        String saved = rs_gameID + ","+ rs_setID +  ","+ rs_moveid +  ","+ rs_role +"," +rs_column + "," + rs_time ;
+//					        log.write("Move: " + saved);
+//					      }
+//					}catch (Exception e){
+//						log.write("Fehler in DB bei save move.");
+//					}
 				}
-			}catch (SQLException e){
-				e.printStackTrace();
-				System.out.println ("SQL Insert Set fehlgeschlagen");
+			}catch (Exception e){
+				log.write("SQL Insert Set fehlgeschlagen");
 			}
 		}//if	
 		return success;
@@ -399,8 +388,10 @@ public class DBConnection {
 			// Daten aus DB laden
 			String srole = "";
 	        String soppName = "";
-	        String sownPoints = ""; //wird nur zur Überprüfung gebraucht
-	        String soppPoints = ""; //wird nur zur Überprüfung gebraucht
+	        @SuppressWarnings("unused")
+			String sownPoints = ""; //wird nur zur Überprüfung gebraucht
+	        @SuppressWarnings("unused")
+			String soppPoints = ""; //wird nur zur Überprüfung gebraucht
 	        String spath = "";
 	        String stimeServer = "";
 	        String stimeDraw = "";
@@ -418,13 +409,10 @@ public class DBConnection {
 			        spath = rs.getString(6);
 			        stimeServer = rs.getString(7);
 			        stimeDraw = rs.getString(8);
-			        String resultset = gameID + ","+ srole +  ","+ soppName +  ","+ sownPoints +',' +soppPoints +  ","
-			        		+ spath +  ","+ stimeServer + ", " + stimeDraw;
-			        System.out.println (resultset);
-			        log.write("Game geladen: "+ resultset);
+			        log.write("DB: 1Game geladen");
 			      }else return null; // dann wäre nichts im resultset und nichts in der DB gefunden
 			}catch (SQLException e){
-				e.printStackTrace();
+				log.write("Fehler in DB beim Laden eines Spiels");
 			}
 			
 			//in game übernehmen
@@ -459,27 +447,29 @@ public class DBConnection {
 			Log log = Log.getInstance();
 			ArrayList <Game> allGameList = new ArrayList <Game> (0);
 			Game [] allGame;
+			int ctr = 0;
 			
 			int id;
 			int timeServer;
 			int timedraw;
 			
-			String sql = "SELECT * FROM game;"; 
+			String sql = "SELECT * FROM game ORDER BY gameID DESC;"; 
 			ResultSet rs = this.sendSelectStatementInternal(sql);
 			
 			try{
 				while ( rs.next() ){
+					ctr++;
 					//Infos aus rs holen und auflisten
 					String sID = rs.getString(1);
 			        String srole = rs.getString(2);
 			        String soppName = rs.getString(3);
-			        String sownPoints = rs.getString(4);
-			        String soppPoints = rs.getString(5);
+			        @SuppressWarnings("unused")
+					String sownPoints = rs.getString(4); // wird nur zur Überprüfung im Debug-Mode gebracuht
+			        @SuppressWarnings("unused")
+					String soppPoints = rs.getString(5); // wird nur zur überprüfung im Debug-Mode gebraucht
 			        String spath = rs.getString(6);
 			        String stimeServer = rs.getString(7);
 			        String stimeDraw = rs.getString(8);
-			        String resultset = sID + ","+ srole +  ","+ soppName +  ","+ sownPoints +',' +soppPoints +  ","
-			        		+ spath +  ","+ stimeServer + ", " + stimeDraw;
 			        
 			        //in game übernehmen
 			        if (sID != null)
@@ -496,14 +486,14 @@ public class DBConnection {
 					}else timedraw = 0;
 					int columns = Constants.gamefieldcolcount;
 					int rows = Constants.gamefieldrowcount;
-			        log.write("Game geladen: "+ resultset);
 			        
 			        // Game an die Liste hängen
 			        Game newGame = new Game (columns, rows, role, oppname, path, timeServer, timedraw, id);
 			        allGameList.add(newGame);
 				}//while
-			}catch (SQLException e){
-				e.printStackTrace();
+				log.write("Anzahl der geladenen Games: "+ ctr);
+			}catch (Exception e){
+				log.write("Lade der Games in DB fehlgeschlagen");
 			}
 			int noGames = allGameList.size();
 			if (noGames == 0)
@@ -527,19 +517,18 @@ public class DBConnection {
 			Log log = Log.getInstance();
 			ArrayList <Set> allSetList = new ArrayList <Set> (0);
 			Set [] allSet;
+			int ctr = 0;
 			
 			String sql = "Select * FROM gameSet WHERE gameID = " + gameID + ";";
 			ResultSet rs = this.sendSelectStatementInternal(sql);
 			try{
 				while ( rs.next() ){
+					ctr++;
 					//Infos aus rs holen und auflisten
 			        String ssetID = rs.getString(2);
 			        String swinner = rs.getString(3);
 			        String sstarttime = rs.getString(4);
 			        String sendtime = rs.getString(5);
-			        String resultset = gameID + ","+ ssetID +  ","+ swinner +  ","+ sstarttime +',' +sendtime;
-			        System.out.println (resultset);
-			        log.write("Set geladen: "+ resultset);
 			        
 			        // in entsprechende Typen umwandeln:
 			        int setID;
@@ -557,8 +546,9 @@ public class DBConnection {
 			        // an die Liste ranhängen
 			        allSetList.add(newSet);
 			      }	
-			}catch (SQLException e){
-				e.printStackTrace();
+				log.write("Anzahl der geladenen Sets:" + ctr);
+			}catch (Exception e){
+				log.write("Load all sets in der DB gehlgeschlagen");
 			}
 			int noSets = allSetList.size();
 			if (noSets == 0)
@@ -583,6 +573,7 @@ public class DBConnection {
 			Log log = Log.getInstance();
 			ArrayList <Move> allMoveList = new ArrayList <Move> (0);
 			Move [] allMove;
+			int ctr = 0;
 	
 	        String sql = "Select * FROM move WHERE gameID = " + gameID + " AND setID = "+ setID +";";
 			ResultSet rs = this.sendSelectStatementInternal(sql);
@@ -593,9 +584,7 @@ public class DBConnection {
 			        String srole = rs.getString(4);
 			        String scolumn = rs.getString(5);
 			        String stime = rs.getString(6);
-			        String resultset = gameID + ","+ setID +  ","+ smoveID +  ","+ srole +',' +scolumn +  "," + stime;
-			        System.out.println (resultset);
-			        log.write("Move geladen: "+ resultset);
+			        ctr++;
 			        
 			        // in entsprechende Typen umwandeln:
 			        int moveID;
@@ -614,8 +603,9 @@ public class DBConnection {
 			        // an die Liste ranhängen
 			        allMoveList.add(newMove);
 			      }//while	
-			}catch (SQLException e){
-				e.printStackTrace();
+				log.write("Anzahl geladener Moves: "+ ctr);
+			}catch (Exception e){
+				log.write("Move laden in der DB fehlgeschlagen");
 			}
 			int noMoves = allMoveList.size();
 			if (noMoves == 0)
