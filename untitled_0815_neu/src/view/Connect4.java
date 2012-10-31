@@ -22,14 +22,14 @@ public class Connect4 extends Application {
 
 	@Override
 	public void start(Stage stage) throws Exception {
-		stage.setTitle("Test für Spielfeld mit FXML"); 
+		stage.setTitle("4 Gewinnt - untitled0815"); 
         Parent root = FXMLLoader.load(getClass().getResource("MainUI.fxml")); 
         stage.setScene(new Scene(root)); 
         stage.setResizable(false);	
         stage.show();
         
         /**
-         * @TODO setOnCloseRequest für Schließen der App
+         * @TODO setOnCloseRequest noch mit Statusabfrage versehen
          */
         stage.setOnCloseRequest(new EventHandler<WindowEvent>(){
         	public void handle(WindowEvent e){

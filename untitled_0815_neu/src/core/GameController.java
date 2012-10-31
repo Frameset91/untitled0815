@@ -34,13 +34,14 @@ public class GameController implements GameEventListener, Observer{
 	public final int OWNPOINTS_PROPERTY = 1;
 	public final int OPPPOINTS_PROPERTY = 2;
 	public final int OPPNAME_PROPERTY = 3;
-	public final int PATH_PROPERTY = 4;
-	public final int TIMEOUTSERVER_PROPERTY = 5;
-	public final int TIMEOUTDRAW_PROPERTY = 6;
-	public final int OPPTOKEN_PROPERTY = 7;
-	public final int OWNTOKEN_PROPERTY = 8;
-	public final int STATE_PROPERTY = 9;
-	public final int WINNER_PROPERTY = 10;
+	public final int OWNNAME_PROPERTY = 3;
+	public final int PATH_PROPERTY = 5;
+	public final int TIMEOUTSERVER_PROPERTY = 6;
+	public final int TIMEOUTDRAW_PROPERTY = 7;
+	public final int OPPTOKEN_PROPERTY = 8;
+	public final int OWNTOKEN_PROPERTY = 9;
+	public final int STATE_PROPERTY = 10;
+	public final int WINNER_PROPERTY = 11;
 	
 	//Properties für DataBinding	
 	private SimpleStringProperty[] properties;
@@ -71,7 +72,7 @@ public class GameController implements GameEventListener, Observer{
 			}
 		}
 		
-		properties = new SimpleStringProperty[11];
+		properties = new SimpleStringProperty[12];
 		for(int i = 0; i < properties.length; i++){
 			properties[i] = new SimpleStringProperty();
 		}
@@ -298,13 +299,28 @@ public class GameController implements GameEventListener, Observer{
 				properties[OWNPOINTS_PROPERTY].set(String.valueOf(model.getOwnPoints()));
 				properties[OPPPOINTS_PROPERTY].set(String.valueOf(model.getOppPoints()));
 				properties[OPPNAME_PROPERTY].set(model.getOppName());
+				properties[OWNNAME_PROPERTY].set(model.getOwnName());
 				properties[PATH_PROPERTY].set(model.getPath());
 				properties[TIMEOUTSERVER_PROPERTY].set(String.valueOf(model.getTimeoutServer()));
 				properties[TIMEOUTDRAW_PROPERTY].set(String.valueOf(model.getTimeoutDraw()));
 				setTokens();				
 			}
 		});	
-		properties[STATE_PROPERTY].set(Constants.STATE_GAME_RUNNING);			
+		//Falls kein Replay -> letzten Satz anzeigen  (zum weiterspielen)
+		if(loadedSets != null && !isReplay.get()){
+			model.addSet(loadedSets[loadedSets.length-1]);
+			loadedMoves = DBConnection.getInstance().loadAllMoves(model.getID(), model.getLatestSet().getID());
+			for(Move move: loadedMoves){
+				model.addMove(move);
+			}
+		}
+		
+		//Falls Replay, aber kein Set vorhanden -> Replay beenden 
+		if(loadedSets == null && isReplay.get()) 
+		{
+			isReplay.set(false);				
+		}
+		properties[STATE_PROPERTY].set(Constants.STATE_GAME_RUNNING);
 	}
 	
 	//Methode um den nächsten Move zu laden
@@ -409,6 +425,7 @@ public class GameController implements GameEventListener, Observer{
 		//create new model		
 		model = new Game(cols, rows, properties[ROLE_PROPERTY].get().charAt(0), 
 				properties[OPPNAME_PROPERTY].get(), 
+				properties[OWNNAME_PROPERTY].get(),
 				properties[PATH_PROPERTY].get(), 
 				Integer.parseInt(properties[TIMEOUTSERVER_PROPERTY].get()), 
 				Integer.parseInt(properties[TIMEOUTDRAW_PROPERTY].get()));
