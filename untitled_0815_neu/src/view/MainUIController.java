@@ -81,7 +81,9 @@ public class MainUIController implements Initializable{
 	@FXML
 	private Button timeoutHochZugzeit;
 	@FXML
-	private TextField gegnername;
+	private TextField oppName;
+	@FXML
+	private TextField ownName;
 	@FXML
 	private TextField verzeichnispfad;
 	@FXML
@@ -172,7 +174,7 @@ public class MainUIController implements Initializable{
 		rolle.valueProperty().bindBidirectional(viewModel.properties()[viewModel.ROLE_PROPERTY]);
 		rolle.getItems().addAll(String.valueOf(Constants.xRole), String.valueOf(Constants.oRole));
 		
-		labelOpp.textProperty().bind(gegnername.textProperty());
+		labelOpp.textProperty().bind(oppName.textProperty());
 		
 		//manuelles Spiel ohne Server oder gegen Server?
 		cbWithoutServer.selectedProperty().bindBidirectional(viewModel.isWithoutServer());
@@ -198,7 +200,8 @@ public class MainUIController implements Initializable{
 		//Properties
 		timeoutAbfrage.textProperty().bindBidirectional(viewModel.properties()[viewModel.TIMEOUTSERVER_PROPERTY]);
 		timeoutZugzeit.textProperty().bindBidirectional(viewModel.properties()[viewModel.TIMEOUTDRAW_PROPERTY]);
-		gegnername.textProperty().bindBidirectional(viewModel.properties()[viewModel.OPPNAME_PROPERTY]);
+		oppName.textProperty().bindBidirectional(viewModel.properties()[viewModel.OPPNAME_PROPERTY]);
+		ownName.textProperty().bindBidirectional(viewModel.properties()[viewModel.OWNNAME_PROPERTY]);
 		verzeichnispfad.textProperty().bindBidirectional(viewModel.properties()[viewModel.PATH_PROPERTY]);
 		punkteGegner.textProperty().bindBidirectional(viewModel.properties()[viewModel.OPPPOINTS_PROPERTY]);
 		punkteSpieler.textProperty().bindBidirectional(viewModel.properties()[viewModel.OWNPOINTS_PROPERTY]);
@@ -395,7 +398,7 @@ public class MainUIController implements Initializable{
 	//Spiel starten gedrückt
 	@FXML
 	private void handleStartGame(ActionEvent e){
-		if ((rolle.getValue() != null && gegnername.getText() != null && verzeichnispfad.getText() != null) || viewModel.isWithoutServer().get()){
+		if ((rolle.getValue() != null && oppName.getText() != null && verzeichnispfad.getText() != null) || viewModel.isWithoutServer().get()){
 			viewModel.startGame();
 		}
 		else{
