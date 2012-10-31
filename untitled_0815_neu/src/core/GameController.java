@@ -304,7 +304,21 @@ public class GameController implements GameEventListener, Observer{
 				setTokens();				
 			}
 		});	
-		properties[STATE_PROPERTY].set(Constants.STATE_GAME_RUNNING);			
+		//Falls kein Replay -> letzten Satz anzeigen  (zum weiterspielen)
+		if(loadedSets != null && !isReplay.get()){
+			model.addSet(loadedSets[loadedSets.length-1]);
+			loadedMoves = DBConnection.getInstance().loadAllMoves(model.getID(), model.getLatestSet().getID());
+			for(Move move: loadedMoves){
+				model.addMove(move);
+			}
+		}
+		
+		//Falls Replay, aber kein Set vorhanden -> Replay beenden 
+		if(loadedSets == null && isReplay.get()) 
+		{
+			isReplay.set(false);				
+		}
+		properties[STATE_PROPERTY].set(Constants.STATE_GAME_RUNNING);
 	}
 	
 	//Methode um den nächsten Move zu laden
