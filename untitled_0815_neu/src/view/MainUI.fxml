@@ -44,12 +44,13 @@
         			<Label text="Spieleinstellungen" GridPane.columnIndex="0" GridPane.rowIndex="0" styleClass="labelSpieleinstellungen"></Label>   
      		   		<Label text="Rolle:" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
         			<Label text="ohne Server spielen:" GridPane.columnIndex="0" GridPane.rowIndex="2"/>
-        			<Label fx:id="labelName" text="Gegner:" GridPane.columnIndex="0" GridPane.rowIndex="3"/>
-        			<Label text="Verzeichnispfad:" GridPane.columnIndex="0" GridPane.rowIndex="4"/>
-        			<Label text="Timeout File-Abfrage" GridPane.columnIndex="0" GridPane.rowIndex="5"></Label>
-        			<Label text="Timeout Zugzeit:" GridPane.columnIndex="0" GridPane.rowIndex="6"/>
-        			<Button fx:id="spielStarten" text="Spiel starten" onAction="#handleStartGame" GridPane.columnIndex="0" GridPane.rowIndex="7"/>
-         			<Button fx:id="btnLoadGame" text="Spiel laden" onAction="#handleLoadGame" GridPane.columnIndex="1" GridPane.rowIndex="7"/>
+        			<Label text="Dein Name:" GridPane.columnIndex="0" GridPane.rowIndex="3"/>
+        			<Label fx:id="labelName" text="Gegner:" GridPane.columnIndex="0" GridPane.rowIndex="4"/>
+        			<Label text="Verzeichnispfad:" GridPane.columnIndex="0" GridPane.rowIndex="5"/>
+        			<Label text="Timeout File-Abfrage" GridPane.columnIndex="0" GridPane.rowIndex="6"></Label>
+        			<Label text="Timeout Zugzeit:" GridPane.columnIndex="0" GridPane.rowIndex="7"/>
+        			<Button fx:id="spielStarten" text="Spiel starten" onAction="#handleStartGame" GridPane.columnIndex="0" GridPane.rowIndex="8"/>
+         			<Button fx:id="btnLoadGame" text="Spiel laden" onAction="#handleLoadGame" GridPane.columnIndex="1" GridPane.rowIndex="9"/>
          		<!-- Rechte Spalte -->	
          			<!-- Rolle definieren -->
         			<ChoiceBox fx:id="rolle" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
@@ -58,13 +59,14 @@
         				<CheckBox fx:id="cbWithoutServer" maxWidth="30" selected="false"/>
         			</HBox>
         			<!-- Eingabefelder fuer Gegner und Verzeichnis -->
-        			<TextField fx:id="gegnername" maxWidth="150" GridPane.columnIndex="1" GridPane.rowIndex="3" styleClass="textfeld"/>
-        			<HBox fx:id="boxDirectory" GridPane.columnIndex="1" GridPane.rowIndex="4">
+        			<TextField fx:id="ownName" maxWidth="150" GridPane.columnIndex="1" GridPane.rowIndex="3" styleClass="textfeld"/>
+        			<TextField fx:id="oppName" maxWidth="150" GridPane.columnIndex="1" GridPane.rowIndex="4" styleClass="textfeld"/>
+        			<HBox fx:id="boxDirectory" GridPane.columnIndex="1" GridPane.rowIndex="5">
         				<TextField fx:id="verzeichnispfad" maxWidth="150" styleClass="textfeld"/>
         				<Button fx:id="btnDirectory" text="..." onAction="#handleChooseDirectory"/>
         			</HBox>
         			<!-- Timeout File-Abfrage -->
- 		       		<HBox fx:id="boxTimeoutServer" GridPane.columnIndex="1" GridPane.rowIndex="5"><!-- spacing="5" -->
+ 		       		<HBox fx:id="boxTimeoutServer" GridPane.columnIndex="1" GridPane.rowIndex="6"><!-- spacing="5" -->
         				<TextField fx:id="timeoutAbfrage" maxWidth="60" text="300" styleClass="textfeld"/>
         				<VBox>
         					<Button text="+" maxHeight="16" maxWidth="23" styleClass="timeoutButton" onMouseClicked="#handleHoch1"/>
@@ -73,7 +75,7 @@
        	 				<Label text="ms"/>
         			</HBox>
         			<!-- Timeout Zugzeit -->
-        			<HBox fx:id="boxTimeoutDraw" GridPane.columnIndex="1" GridPane.rowIndex="6"> <!-- spacing="5" -->
+        			<HBox fx:id="boxTimeoutDraw" GridPane.columnIndex="1" GridPane.rowIndex="7"> <!-- spacing="5" -->
         				<TextField fx:id="timeoutZugzeit" maxWidth="60" text="2000" styleClass="textfeld"/>
         				<VBox> <!-- Hoch/Runter -->
         					<Button text="+" maxHeight="16" maxWidth="23" styleClass="timeoutButton" onMouseClicked="#handleHoch2"/>
