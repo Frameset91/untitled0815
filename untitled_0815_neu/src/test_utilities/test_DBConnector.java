@@ -75,7 +75,7 @@ public class test_DBConnector {
 	 * testet saveGame(...)
 	 */
 	public static void testGame() {
-		Game game = new Game(7, 6, 'x', "abc", "", 1,1);
+		Game game = new Game(7, 6, 'x', "", "abc", "", 1,1);
 		
 		int i = con.saveGame(game);
 		System.out.println("id:" + i);
@@ -114,8 +114,28 @@ public class test_DBConnector {
 		
 		System.out.println("Game: "+myGame.getID() +" opp: "+ myGame.getOppName() +" oppPoint: "+ myGame.getOppPoints() 
 				+" ownPoints: "+ myGame.getOwnPoints() +" path: "+ myGame.getPath() +" role: "+ myGame.getRole() 
-				+ " timoutDraw: "+ myGame.getTimeoutDraw() +" timoutServer: "+ myGame.getTimeoutServer());
+				+ " timoutDraw: "+ myGame.getTimeoutDraw() +" timoutServer: "+ myGame.getTimeoutServer() +" Ownname: " + myGame.getOwnName());
 	}
+	
+	/**
+	 * testet loadAllGames, loadAllSets und loadAllMoves
+	 */
+	public static void testLoadAllMethods(){
+		Game [] myGames = con.loadAllGames();
+		System.out.println("Anzahl geladener Spiele: " + myGames.length);
+		
+		try{
+			Set [] mySets = con.loadAllSets(myGames[0].getID());
+			System.out.println("Anzahl geladener Sets: " + mySets.length);
+		
+			Move [] myMoves = con.loadAllMoves(myGames[0].getID(), mySets[0].getID());
+			System.out.println("Anzahl geladener Moves: " + myMoves.length);
+		}catch (NullPointerException e){
+			System.out.println ("Keine Sets oder Moves zur ID gefunden");
+		}
+		
+	}
+	
 	
 	/**
 	 * @param args
@@ -125,10 +145,11 @@ public class test_DBConnector {
 		con = DBConnection.getInstance();
 		
 		// zum testen jeweils auskommentieren (und bei Move und Set je in den Methoden eins hoch zählen):
-		//testMove();
-		//testSet();
-		//testGame();
+		testMove();
+		testSet();
+		testGame();
 		testLoadGame();
+		testLoadAllMethods();
 				
 	}
 

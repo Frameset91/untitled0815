@@ -21,6 +21,7 @@ public class Game extends Observable implements Observer{
 	private int ownPoints;
 	private int oppPoints;
 	private String oppName;
+	private String ownName;
 	private String path;
 	private int timeoutServer;
 	private int timeoutDraw;
@@ -34,15 +35,17 @@ public class Game extends Observable implements Observer{
 	 * @param rows Zeilenanzahl des Spielfelds
 	 * @param role Rolle
 	 * @param oppName Name des Gegners
+	 * @param ownName eigener Name
 	 * @param path Serverpfad
 	 * @param timeoutServer Min Intervall zur Serverabfrage
 	 * @param timeoutDraw Zeit für einen Zug
 	 */
-	public Game(int cols, int rows, char role, String oppName, String path, int timeoutServer, int timeoutDraw){
+	public Game(int cols, int rows, char role, String oppName, String ownName, String path, int timeoutServer, int timeoutDraw){
 		this.cols = cols;
 		this.rows = rows;
 		this.role = role;
 		this.oppName = oppName;
+		this.ownName = ownName;
 		this.path = path;
 		this.timeoutServer = timeoutServer;
 		this.timeoutDraw = timeoutDraw;
@@ -57,16 +60,18 @@ public class Game extends Observable implements Observer{
 	 * @param rows Zeilenanzahl des Spielfelds
 	 * @param role Rolle
 	 * @param oppName Name des Gegners
+	 * @param ownName eigener Name
 	 * @param path Serverpfad
 	 * @param timeoutServer Min Intervall zur Serverabfrage
 	 * @param timeoutDraw Zeit für einen Zug
 	 * @param ID Primarykey von Game
 	 */
-	public Game(int cols, int rows, char role, String oppName, String path, int timeoutServer, int timeoutDraw, int ID){
+	public Game(int cols, int rows, char role, String oppName, String ownName, String path, int timeoutServer, int timeoutDraw, int ID){
 		this.cols = cols;
 		this.rows = rows;
 		this.role = role;
 		this.oppName = oppName;
+		this.ownName = ownName;
 		this.path = path;
 		this.timeoutServer = timeoutServer;
 		this.timeoutDraw = timeoutDraw;
@@ -257,6 +262,13 @@ public class Game extends Observable implements Observer{
 	 */
 	public String getOppName() {
 		return oppName;
+	}
+	
+	/**
+	 * @return eigener Name
+	 */
+	public String getOwnName() {
+		return ownName;
 	}
 
 	/**

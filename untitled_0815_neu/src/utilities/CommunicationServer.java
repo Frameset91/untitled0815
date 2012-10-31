@@ -82,12 +82,13 @@ public class CommunicationServer {
 	 * die alte, bereits gelesene, Datei noch vorhanden ist und wartet bis diese
 	 * gelöscht ist.
 	 */
-	public void enableReading(int timeout, String serverFilePath, char role, boolean Set) {
+	public synchronized void enableReading(int timeout, String serverFilePath,
+			char role, boolean Set) {
 		this.timeout = timeout;
 		this.serverfilepath = serverFilePath;
 		this.ownRole = role;
 		this.newSet = Set;
-		
+
 		// Puefung, ob noch ein Leserthread läuft
 		if (this.leserthread != null) {
 			// alten Leserthread stoppen
@@ -97,8 +98,19 @@ public class CommunicationServer {
 
 		// neuen Thread starten
 		this.leserthread = new Thread(new ReadServerFileThread());
-		this.leserthread.start();
+		this.leserthread.setDaemon(true);
 		this.leserthread.setName("CommunicationServer Thread");
+		this.leserthread.start();
+	}
+
+	/**
+	 * Beendet die Abfrage der Serverdatei
+	 */
+	public void disableReading() {
+		if (this.leserthread.isAlive()) {
+			this.leserthread.interrupt();
+		}
+		this.leserthread = null;
 
 	}
 
@@ -112,53 +124,48 @@ public class CommunicationServer {
 	}
 
 	/**
-	 * Beendet die Abfrage der Serverdatei
-	 */
-	public void disableReading() {
-		if (this.leserthread.isAlive())
-			this.leserthread.interrupt();
-	}
-
-	/**
 	 * Ueberwachung der Serverdatei Meldung an alle Event Listener auslösen
 	 */
 	public void ueberwachen() {
-		
-		
+
 		try {
-			File old = new File(serverfilepath + "/server2spieler"
-					+ ownRole + ".xml");
+			File old = new File(serverfilepath + "/server2spieler" + ownRole
+					+ ".xml");
 			// neuer Satz
-			if(this.newSet){
-				if (old.exists()){
-					ServerMessage msg = XmlParser.getInstance()
-							.readXML(old);
+			if (this.newSet) {
+				if (old.exists()) {
+					ServerMessage msg = XmlParser.getInstance().readXML(old);
 					if (msg.getSatzstatus().equals("beendet")) {
 						old.delete();
 					}
 				}
-			} else{
-				while(true){
-				if (old.exists() && (lastchange ==  old.lastModified())){
-					Thread.sleep(300);
-				}else{
-					break;
+			} else {
+				while (true) {
+					if (this.leserthread.isInterrupted()) {
+						break;
+					}
+
+					if (old.exists() && (lastchange == old.lastModified())) {
+						Thread.sleep(300);
+					} else {
+						break;
+					}
 				}
-				}
-				
+
 			}
-			
-					} catch (Exception e) {
+
+		} catch (Exception e) {
 		}
 
 		// Umwandlung von backslashes im Pfad in normale Slashes
 		if (serverfilepath.contains("\\")) {
 			serverfilepath = serverfilepath.replace("\\", "/");
 		}
-		
-		//Slash am Ende entfernen, falls vorhanden
-		if(serverfilepath.lastIndexOf("/") == serverfilepath.length()-1){
-			serverfilepath = serverfilepath.substring(0, serverfilepath.length()-1);
+
+		// Slash am Ende entfernen, falls vorhanden
+		if (serverfilepath.lastIndexOf("/") == serverfilepath.length() - 1) {
+			serverfilepath = serverfilepath.substring(0,
+					serverfilepath.length() - 1);
 		}
 
 		// vollstaendige Pfade mit Dateinamen bauen
@@ -169,36 +176,42 @@ public class CommunicationServer {
 
 		// Auslesen der Datei
 		Log.getInstance().write("Communication Server:Ueberwachen startet");
+		ServerMessage msg;
 		try {
-			ServerMessage msg = this.read();
-			// Auswerten des ServerFiles und werfen der entsprehenden Events
-			if (msg.getFreigabe().equals("true")) {
-				this.fireGameEvent(GameEvent.Type.OppMove,
-						String.valueOf(msg.getGegnerzug()));
-				Log.getInstance().write(
-						"Communication Server: Event OppMove gesendet");
-			}
-			// Sieger ist bestimmt
-			if (!msg.getSieger().equals("offen")) {
-				char Winner = msg.getSieger()
-						.substring(msg.getSieger().indexOf(" ") + 1).charAt(0);
+			do {
+				msg = this.read();
+			} while (msg == null);
 
-				this.fireGameEvent(GameEvent.Type.WinnerSet,
-						String.valueOf(Winner));
-				Log.getInstance().write(
-						"Communication Server: WinnerSet Event gesendet "
-								+ Winner);
-			}
-			// Satz ist beendet
-			if (msg.getSatzstatus().equals("beendet")) {
-				this.fireGameEvent(GameEvent.Type.EndSet,
-						String.valueOf(msg.getGegnerzug()));
-				Log.getInstance().write(
-						"Communication Server: Event EndSet gesendet");
-			}
+			if (msg != null) {
+				// Auswerten des ServerFiles und werfen der entsprehenden Events
+				if (msg.getFreigabe().equals("true")) {
+					this.fireGameEvent(GameEvent.Type.OppMove,
+							String.valueOf(msg.getGegnerzug()));
+					Log.getInstance().write(
+							"Communication Server: Event OppMove gesendet");
+				}
+				// Sieger ist bestimmt
+				if (!msg.getSieger().equals("offen")) {
+					char Winner = msg.getSieger()
+							.substring(msg.getSieger().indexOf(" ") + 1)
+							.charAt(0);
 
-			lastchange = serverFile.lastModified();
+					this.fireGameEvent(GameEvent.Type.WinnerSet,
+							String.valueOf(Winner));
+					Log.getInstance().write(
+							"Communication Server: WinnerSet Event gesendet "
+									+ Winner);
+				}
+				// Satz ist beendet
+				if (msg.getSatzstatus().equals("beendet")) {
+					this.fireGameEvent(GameEvent.Type.EndSet,
+							String.valueOf(msg.getGegnerzug()));
+					Log.getInstance().write(
+							"Communication Server: Event EndSet gesendet");
+				}
 
+				lastchange = serverFile.lastModified();
+			}
 		} catch (Exception e) {
 			Log.getInstance().write("Communication Server: Lesefehler.....");
 		}
@@ -211,14 +224,24 @@ public class CommunicationServer {
 	 * Lesen des Serverfiles
 	 */
 
-	public ServerMessage read() throws Exception {
+	public ServerMessage read() {
 		// Serverfile auslesen
 		ServerMessage msg = null;
 		// while (msg == null) {
 		while (!serverFile.exists()) {
-			Thread.sleep(this.timeout);
+			if (this.leserthread.isInterrupted()) {
+				return msg;
+			}
+			try {
+				Thread.sleep(this.timeout);
+			} catch (Exception e) {
+			}
 		}
-		msg = XmlParser.getInstance().readXML(serverFile);
+		try {
+			msg = XmlParser.getInstance().readXML(serverFile);
+		} catch (Exception e) {
+			return null;
+		}
 		return msg;
 	}
 
@@ -239,15 +262,16 @@ public class CommunicationServer {
 				if (agentFilePath.contains("\\")) {
 					agentFilePath = agentFilePath.replace("\\", "/");
 				}
-				
-				//Slash am Ende entfernen, falls vorhanden
-				if(agentFilePath.lastIndexOf("/") == agentFilePath.length()-1){
-					agentFilePath = agentFilePath.substring(0, agentFilePath.length()-1);
+
+				// Slash am Ende entfernen, falls vorhanden
+				if (agentFilePath.lastIndexOf("/") == agentFilePath.length() - 1) {
+					agentFilePath = agentFilePath.substring(0,
+							agentFilePath.length() - 1);
 				}
 
 				this.agentfilepath = agentFilePath + "/spieler" + role
 						+ "2server.txt";
-				
+
 				this.agentFile = new File(agentfilepath);
 				FileWriter schreiber = new FileWriter(this.agentFile);
 				schreiber.write(Integer.toString(spalte));
@@ -284,5 +308,4 @@ class ReadServerFileThread extends Thread {
 		this.interrupt();
 	}
 
-	
 }
