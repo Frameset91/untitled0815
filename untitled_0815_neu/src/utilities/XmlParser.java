@@ -89,7 +89,7 @@ public class XmlParser {
 	 * @param eElement
 	 * @return String Wert des Tags
 	 */
-	private String getTagValue(String sTag, Element eElement) {
+	private String getTagValue(String sTag, Element eElement) throws Exception {
 		NodeList nlList = eElement.getElementsByTagName(sTag).item(0)
 				.getChildNodes();
 
