@@ -59,7 +59,7 @@
         				<CheckBox fx:id="cbWithoutServer" maxWidth="30" selected="false"/>
         			</HBox>
         			<!-- Eingabefelder fuer Gegner und Verzeichnis -->
-        			<TextField fx:id="ownName" text="untitled0815" maxWidth="150" GridPane.columnIndex="1" GridPane.rowIndex="3" styleClass="textfeld"/>
+        			<TextField fx:id="ownName" maxWidth="150" GridPane.columnIndex="1" text="untitled0815" GridPane.rowIndex="3" styleClass="textfeld"/>
         			<TextField fx:id="oppName" maxWidth="150" GridPane.columnIndex="1" GridPane.rowIndex="4" styleClass="textfeld"/>
         			<HBox fx:id="boxDirectory" GridPane.columnIndex="1" GridPane.rowIndex="5">
         				<TextField fx:id="verzeichnispfad" maxWidth="150" styleClass="textfeld"/>
