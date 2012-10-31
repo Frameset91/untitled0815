@@ -12,6 +12,7 @@ import core.GameController;
 import core.GameProperty;
 import core.SetProperty;
 
+import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
@@ -134,6 +135,7 @@ public class MainUIController implements Initializable{
 	private TableView<LogEntry> logTabelle; 
 	private ChoiceBox<String> winner;
 	private TableView<GameProperty> savedGamesTable; 
+	private SimpleStringProperty tempWinner;
 
 	//Methode die für "Controller" vorgeschrieben ist und nach dem Aufbau des UI Konstrukts aufgerufen wird
 	@Override
@@ -227,11 +229,35 @@ public class MainUIController implements Initializable{
 		//nur laden wenn DB verfügbar
 		btnLoadGame.disableProperty().bind(viewModel.isDBAvailable().not());
 		
+		tempWinner = new SimpleStringProperty();
+		tempWinner.bindBidirectional(viewModel.properties()[viewModel.WINNER_PROPERTY], new WinnerRoleConverter());		
+		winner = new ChoiceBox<String>();
+		winner.valueProperty().bindBidirectional(tempWinner);
+		
 		//Properties
 		timeoutAbfrage.textProperty().bindBidirectional(viewModel.properties()[viewModel.TIMEOUTSERVER_PROPERTY]);
 		timeoutZugzeit.textProperty().bindBidirectional(viewModel.properties()[viewModel.TIMEOUTDRAW_PROPERTY]);
 		oppName.textProperty().bindBidirectional(viewModel.properties()[viewModel.OPPNAME_PROPERTY]);
+		oppName.textProperty().addListener(new ChangeListener<String>() {
+			@Override
+			public void changed(ObservableValue<? extends String> arg0,
+					String arg1, String arg2) {
+				winner.getItems().clear();
+				winner.getItems().addAll(Constants.textTie, ownName.getText(), oppName.getText());		
+//				winner.setValue(Constants.textTie);
+			}
+		});
+		
 		ownName.textProperty().bindBidirectional(viewModel.properties()[viewModel.OWNNAME_PROPERTY]);
+		ownName.textProperty().addListener(new ChangeListener<String>() {
+			@Override
+			public void changed(ObservableValue<? extends String> arg0,
+					String arg1, String arg2) {
+				winner.getItems().clear();
+				winner.getItems().addAll(Constants.textTie, ownName.getText(), oppName.getText());
+//				winner.setValue(Constants.textTie);
+			}
+		});
 		verzeichnispfad.textProperty().bindBidirectional(viewModel.properties()[viewModel.PATH_PROPERTY]);
 		punkteGegner.textProperty().bindBidirectional(viewModel.properties()[viewModel.OPPPOINTS_PROPERTY]);
 		punkteSpieler.textProperty().bindBidirectional(viewModel.properties()[viewModel.OWNPOINTS_PROPERTY]);
@@ -241,7 +267,9 @@ public class MainUIController implements Initializable{
 		tokenSpieler.textProperty().bindBidirectional(viewModel.properties()[viewModel.OWNTOKEN_PROPERTY]);
 		satzstatus.textProperty().bind(viewModel.properties()[viewModel.STATE_PROPERTY]);
 		
-		//Tabelle für die Logs
+		//----------------------------------------------- Tabellen ----------------------------------------------
+		
+		//------Tabelle für die Logs
 		logTabelle = new TableView<LogEntry>();
 		TableColumn<Log.LogEntry, String> spalte1 = new TableColumn<Log.LogEntry, String>("Log-Eintrag");
 		spalte1.setEditable(false);
@@ -254,7 +282,7 @@ public class MainUIController implements Initializable{
 		logTabelle.setItems(viewModel.logEntries());
 		Log.getInstance().write("Binding fuer Log erstellt");
 		
-		//Tabelle für die gespeicherten Spiele
+		//----------Tabelle für die gespeicherten Spiele
 		savedGamesTable = new TableView<GameProperty>();
 		savedGamesTable.getColumns().clear();
 		savedGamesTable.setMinWidth(300);
@@ -286,16 +314,18 @@ public class MainUIController implements Initializable{
 		//Elemente hinzufügen
 		savedGamesTable.setItems(viewModel.savedGames());
 				
-		//Tabelle für Sets
+		//------------Tabelle für Sets
 		tableColumnSet.setCellValueFactory(
 				new PropertyValueFactory<SetProperty, String>("setNr"));
+		tableColumnSet.prefWidthProperty().bind(tableStatistic.widthProperty().divide(2).subtract(20));
 		tableColumnWinner.setCellValueFactory(
 				new PropertyValueFactory<SetProperty, String>("winner"));
+		tableColumnWinner.prefWidthProperty().bind(tableStatistic.widthProperty().divide(2).add(20));
 		tableStatistic.setItems(viewModel.sets());
+	
 		
-		winner = new ChoiceBox<String>();
-		winner.valueProperty().bindBidirectional(viewModel.properties()[viewModel.WINNER_PROPERTY]);
-		winner.getItems().addAll(String.valueOf(Constants.noRole), String.valueOf(Constants.xRole), String.valueOf(Constants.oRole));
+//		winner.getItems().addAll(String.valueOf(Constants.noRole), String.valueOf(Constants.xRole), String.valueOf(Constants.oRole));
+//		winner.getItems().addAll(Constants.textTie, ownName.getText(), oppName.getText());
 		
 		viewModel.initialize();
 	 }
@@ -365,9 +395,6 @@ public class MainUIController implements Initializable{
 		Button confirm = new Button("Bestätigen");		
 		confirm.setOnMouseClicked(new EventHandler<MouseEvent>(){
 			public void handle(MouseEvent close){
-				/**
-				 * @TODO "Bestätigen" nur möglich, wenn eine Rolle ausgewählt wurde
-				 */
 				stageConfirmWinner.close();
 				viewModel.confirmSetWinner();
 			}
@@ -379,6 +406,7 @@ public class MainUIController implements Initializable{
 				viewModel.discardSet();
 			}
 		});
+		
 		//Anordnen
 		GridPane gpconfirm = new GridPane();
 		gpconfirm.setLayoutX(20);
@@ -392,6 +420,9 @@ public class MainUIController implements Initializable{
 		gpconfirm.add(confirm, 1, 2);
 		gpconfirm.add(discard, 2, 2);
 		rootConfirm.getChildren().add(gpconfirm);
+		
+		if(winner.getValue() == null) 
+			winner.setValue(Constants.textTie);
 		
 	}
 	
@@ -453,7 +484,7 @@ public class MainUIController implements Initializable{
 	//Spiel starten gedrückt
 	@FXML
 	private void handleStartGame(ActionEvent e){
-		if ((rolle.getValue() != null && oppName.getText() != null && verzeichnispfad.getText() != null) || viewModel.isWithoutServer().get()){
+		if ((rolle.getValue() != null && oppName.getText() != null && ownName.getText() != null && verzeichnispfad.getText() != null) || (viewModel.isWithoutServer().get() && oppName.getText() != null)){
 			viewModel.startGame();
 		}
 		else{
@@ -646,6 +677,43 @@ public class MainUIController implements Initializable{
 		}
 		
 	}
+	
+	private class WinnerRoleConverter extends StringConverter<String>{
+
+		@Override
+		public String fromString(String arg0) {
+			//Von Text zu char konvertieren
+			String value = String.valueOf(Constants.noRole);
+			if(arg0 != null){
+				if(arg0.equals(viewModel.properties()[viewModel.OWNNAME_PROPERTY].get())){
+					value = viewModel.properties()[viewModel.ROLE_PROPERTY].get();
+				}else if (arg0.equals(viewModel.properties()[viewModel.OPPNAME_PROPERTY].get())){
+					if(viewModel.properties()[viewModel.ROLE_PROPERTY].get().charAt(0) == Constants.oRole)
+						value = String.valueOf(Constants.xRole);
+					else
+						value = String.valueOf(Constants.oRole);
+				}
+			}
+			return value;
+		}
+
+		@Override
+		public String toString(String arg0) {
+			//Von char zu Text konvertieren
+			String value = Constants.textTie;
+			if(arg0 != null){		
+				char winner = arg0.charAt(0);
+				if( winner == viewModel.properties()[viewModel.ROLE_PROPERTY].get().charAt(0)){
+					value = viewModel.properties()[viewModel.OWNNAME_PROPERTY].get();
+				}else if(winner != viewModel.properties()[viewModel.ROLE_PROPERTY].get().charAt(0) && ( winner == Constants.oRole || winner == Constants.xRole)){
+					value = viewModel.properties()[viewModel.OPPNAME_PROPERTY].get();
+				}
+			}
+			return value;
+		}
+		
+	}
+	
 	
 	private class StyleConverter extends StringConverter<String> {	
 

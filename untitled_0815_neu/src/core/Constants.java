@@ -22,6 +22,10 @@ public class Constants {
 	public static final int defaultTimeoutServer = 300;
 	public static final int defaultTimeoutDraw = 2000;
 	
+	public static final int pointsWin = 2;
+	public static final int pointsLoose = 0;
+	public static final int pointsTie = 1;
+	
 	public static final String STATE_APP_RUNNING = "Programm läuft, warte auf Spielbeginn";
 	public static final String STATE_GAME_RUNNING = "Spiel läuft, warte auf Satzbeginn";
 	public static final String STATE_SET_RUNNING = "Satz läuft, warte auf Satzende oder Satzabbruch";
