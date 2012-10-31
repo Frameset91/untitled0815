@@ -16,6 +16,7 @@ public class Constants {
 	public static final char winMarker = '!';
 	
 	public static final String defaultOwnName = "untitled0815";
+	public static final String textTie = "Unentschieden";
 	
 	
 	public static final int defaultTimeoutServer = 300;
