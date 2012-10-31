@@ -34,15 +34,15 @@
     	<!--Anordnung für Einstellungen und Trennlinie zum Spielfeld-->
         <HBox styleClass="settings">
         <!--Unteinander die Einstellungen/ Buttons-->
-        <VBox>   
+        <VBox spacing = "20">   
         	<padding><Insets top="10" right="10" bottom="10" left="10"/></padding>
         	<!--Einstellungen für 1 spezielles Spiel-->
-        	<VBox spacing="5"><!--  spacing="20" -->
+        	<VBox spacing="10"><!--  spacing="20" -->
+        		<Label text="Spieleinstellungen" GridPane.columnIndex="0" GridPane.rowIndex="0" styleClass="labelSpieleinstellungen"></Label>
         		<!-- Tabelle zum Anordnen der Einstellungen -->
-        		<GridPane fx:id="gameSettings" disable="false" vgap="5"> <!-- hgap="5" vgap="15"  > -->
-        		<!-- Linke Spalte -->
-        			<Label text="Spieleinstellungen" GridPane.columnIndex="0" GridPane.rowIndex="0" styleClass="labelSpieleinstellungen"></Label>   
-     		   		<Label text="Rolle:" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
+        		<GridPane fx:id="gameSettings" disable="false" vgap="5" hgap="15"> <!-- hgap="5" vgap="15"  > -->
+        		<!-- Linke Spalte -->   
+     		   		<Label text="Deine Rolle:" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
         			<Label text="ohne Server spielen:" GridPane.columnIndex="0" GridPane.rowIndex="2"/>
         			<Label text="Dein Name:" GridPane.columnIndex="0" GridPane.rowIndex="3"/>
         			<Label fx:id="labelName" text="Gegner:" GridPane.columnIndex="0" GridPane.rowIndex="4"/>
@@ -59,7 +59,7 @@
         				<CheckBox fx:id="cbWithoutServer" maxWidth="30" selected="false"/>
         			</HBox>
         			<!-- Eingabefelder fuer Gegner und Verzeichnis -->
-        			<TextField fx:id="ownName" maxWidth="150" GridPane.columnIndex="1" text="untitled0815" GridPane.rowIndex="3" styleClass="textfeld"/>
+        			<TextField fx:id="ownName" maxWidth="150" GridPane.columnIndex="1" GridPane.rowIndex="3" styleClass="textfeld"/>
         			<TextField fx:id="oppName" maxWidth="150" GridPane.columnIndex="1" GridPane.rowIndex="4" styleClass="textfeld"/>
         			<HBox fx:id="boxDirectory" GridPane.columnIndex="1" GridPane.rowIndex="5">
         				<TextField fx:id="verzeichnispfad" maxWidth="150" styleClass="textfeld"/>
@@ -89,12 +89,12 @@
         	<!--Trennlinie Einstellungen Spiel/ Satz-->
         	<Line startX="0" startY="500" endX="200" endY="500"/>
         	<!-- Einstellungen für Sätze -->
-        	<HBox> <!-- spacing="10" alignment="CENTER_LEFT" -->
-        		<VBox>
-       				<Button fx:id="btnNewSet" text="neuen Satz spielen" disable="false" onMouseClicked="#handleStartSet"/>
+        	<HBox spacing="20"> <!-- spacing="10" alignment="CENTER_LEFT" -->
+        		<VBox spacing="5">
+       				<Button fx:id="btnNewSet" text="Satz spielen" disable="false" onMouseClicked="#handleStartSet"/>
        				<Button fx:id="btnEndSet" text="Satz abbrechen" onMouseClicked="#handleEndSet"/>
        			</VBox>
-       			<VBox>
+       			<VBox spacing="5">
        				<Label text="Statistik"/>
        				<TableView fx:id="tableStatistic" maxHeight="100" maxWidth="150">
        					<columns>
