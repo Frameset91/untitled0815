@@ -214,6 +214,7 @@ public class CommunicationServer {
 			}
 		} catch (Exception e) {
 			Log.getInstance().write("Communication Server: Lesefehler.....");
+			e.printStackTrace();
 		}
 
 		Log.getInstance().write("Communication Server: Ende Überwachung");

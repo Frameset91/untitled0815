@@ -1,9 +1,9 @@
 package test_utilities;
 import java.io.File;
 import java.io.FileWriter;
-
-import core.Constants;
 import utilities.*;
+import core.Constants;
+
 
 public class test_CommunicationServer implements GameEventListener {
 	private GameEvent[] events;
@@ -26,7 +26,7 @@ public class test_CommunicationServer implements GameEventListener {
 										GameEvent.Type.EndSet.toString(),"-1",GameEvent.Type.WinnerSet.toString(),String.valueOf(Constants.xRole)} 
 								};		
 		//Pfad, eigene Rolle, TimeoutServer
-		path = "C:\\TestServer";
+		path = "C:/viergewinnt2/";
 		role = Constants.xRole;
 		timeoutServer = 300;
 		
@@ -35,7 +35,6 @@ public class test_CommunicationServer implements GameEventListener {
 		//ComServer initialisieren
 		comServer = CommunicationServer.getInstance();
 		EventDispatcher.getInstance().addListener(this);
-		
 		// ----Testdaten abarbeiten
 		for(int i = 0; i < testdata.length; i++){
 			processTestData(testdata[i]);
@@ -45,15 +44,15 @@ public class test_CommunicationServer implements GameEventListener {
 	
 	private void processTestData(String[] data){
 		//ComServer starten
-		comServer.enableReading(timeoutServer, path, role, false);		
+				
 	
 		events[0] = null;
 		events[1] = null;
 		
 		//Datei schreiben ("Server2spielerx") -> write(data[0]);
-		System.out.println("Schreibe Datei");
+		System.out.println("Schreibe Datei --> " + path);
 		try{
-			File file = new File(path + "\\server2spielerx.xml");
+			File file = new File(path + "server2spielerx.xml");
 			FileWriter schreiber = new FileWriter(file);
 			schreiber.write(data[0]);
 			schreiber.flush();
@@ -62,6 +61,9 @@ public class test_CommunicationServer implements GameEventListener {
 			System.err.println(e);
 		}
 
+		
+		comServer = CommunicationServer.getInstance();
+		comServer.enableReading(timeoutServer, path, role, false);
 		//Auf Event warten
 		int ctr = 0;
 		System.out.println("Warte auf Events");
@@ -115,11 +117,19 @@ public class test_CommunicationServer implements GameEventListener {
 
 	@Override
 	public void handleEvent(GameEvent e) throws Exception {
+//		System.out.println("EventHandler aufgerufen");
 		if(events[0] == null){
 			events[0] = e;
+			System.out.println("Eventtyp: " +events[0].getType() + "########## TEST ERFOLGREICH #########");
+			
 		}else if(events[1] == null){
 			events[1] = e;
+			System.out.println("Eventtyp: " +events[1].getType() + "########## TEST ERFOLGREICH #########");
+		}else{
+			System.out.println("****************  Test nicht erfolgreich ******************");
 		}
+		
+		
 	}
 	
 	public static void main(String[] args) {		
