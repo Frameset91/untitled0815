@@ -33,6 +33,8 @@ public class GameController implements GameEventListener, Observer{
 	private KI ki;
 	private KIWorkerThread kiwt;
 	private boolean myTurn;
+	private byte[][] winMarkers;
+	private boolean winTokensMarked;
 
 	//Konstanten für Zugriff auf Property Array
 	public final int ROLE_PROPERTY = 0;
@@ -120,10 +122,10 @@ public class GameController implements GameEventListener, Observer{
 		if(buffer > ((1-Constants.minTimeforKI) * model.getTimeoutDraw()))
 			buffer = (1-Constants.minTimeforKI) * model.getTimeoutDraw();
 		Log.getInstance().write("Controller: Buffer für Zugberechnung: " + buffer.intValue());
-		
-//		int buffer = 100;
-		
 		ki = new KI(model, model.getTimeoutDraw() - buffer.intValue());
+		
+		winMarkers = new byte[4][2];
+		winTokensMarked = false;
 		
 		model.newSet().setStatus(Constants.STATE_SET_RUNNING);
 		
@@ -235,8 +237,8 @@ public class GameController implements GameEventListener, Observer{
 		Log.getInstance().write("Controller: Gewinner bestätigt, FxThread:" + Platform.isFxApplicationThread());		
 		properties[STATE_PROPERTY].set(Constants.STATE_GAME_RUNNING);
 		model.save();
-		properties[OWNPOINTS_PROPERTY].setValue(String.valueOf(model.getOwnPoints()));
-		properties[OPPPOINTS_PROPERTY].setValue(String.valueOf(model.getOppPoints()));
+//		properties[OWNPOINTS_PROPERTY].setValue(String.valueOf(model.getOwnPoints()));
+//		properties[OPPPOINTS_PROPERTY].setValue(String.valueOf(model.getOppPoints()));
 	}
 	
 	/**
@@ -420,19 +422,20 @@ public class GameController implements GameEventListener, Observer{
 			case WinDetected: //Die KI hat 4 Tokens entdeckt -> Event.getArg() = "t1x,t1y;t2x,t2y;t3x,t3y;t4x,t4y;x||o (winner)"
 				Log.getInstance().write("Controller: WinDetected empfangen, FxThread:" + Platform.isFxApplicationThread());
 				//Parse String als byte[][]
-				byte[][] data = new byte[4][2];				
+				winMarkers = new byte[4][2];				
 				String[] tokens = event.getArg().split(";");
 				for(int i=0; i < 4; i++){
-					data[i][0] =  (byte)Integer.parseInt(tokens[i].split(",")[0]);
-					data[i][1] = (byte)Integer.parseInt(tokens[i].split(",")[1]);
+					winMarkers[i][0] =  (byte)Integer.parseInt(tokens[i].split(",")[0]);
+					winMarkers[i][1] = (byte)Integer.parseInt(tokens[i].split(",")[1]);
 				}
 				if(tokens.length > 4){
 					char winner = tokens[4].charAt(0);
 					if (winner == Constants.xRole || winner == Constants.oRole)
 						model.getLatestSet().setWinner(winner);
 				}
+				winTokensMarked = true;
 				//Gewinner Tokens markieren
-				markWinTokens(data);
+				markWinTokens();
 				
 				//Satz beenden, falls es ein manuelles Spiel ist
 				if(isWithoutServer.get()  && !isReplay.get()){
@@ -487,11 +490,13 @@ public class GameController implements GameEventListener, Observer{
 	}
 	
 	//Methode um die Tokens, die zum Gewinn geführt haben zu markieren
-	private void markWinTokens(byte[][] data){
-		for(byte[] token: data){
-			field[token[0]][token[1]].set(
-					field[token[0]][token[1]].get().charAt(0) + 
-					String.valueOf(Constants.winMarker));
+	private void markWinTokens(){
+		if(winTokensMarked){
+			for(byte[] token: winMarkers){
+				field[token[0]][token[1]].set(
+						field[token[0]][token[1]].get().charAt(0) + 
+						String.valueOf(Constants.winMarker));
+			}
 		}
 	}
 	
@@ -521,8 +526,8 @@ public class GameController implements GameEventListener, Observer{
 					updateSets();
 
 					properties[WINNER_PROPERTY].setValue(String.valueOf(model.getLatestSet().getWinner()));
-					properties[OWNPOINTS_PROPERTY].setValue(String.valueOf(model.getOwnPoints()));
-					properties[OPPPOINTS_PROPERTY].setValue(String.valueOf(model.getOppPoints()));					
+//					properties[OWNPOINTS_PROPERTY].setValue(String.valueOf(model.getOwnPoints()));
+//					properties[OPPPOINTS_PROPERTY].setValue(String.valueOf(model.getOppPoints()));					
 				}
 			});								
 			break;
@@ -536,13 +541,16 @@ public class GameController implements GameEventListener, Observer{
 				sets.clear();
 				sets.add(new SetProperty("keine", "Sätze"));
 			}
-			properties[OWNPOINTS_PROPERTY].setValue(String.valueOf(model.getOwnPoints()));
-			properties[OPPPOINTS_PROPERTY].setValue(String.valueOf(model.getOppPoints()));
+//			properties[OWNPOINTS_PROPERTY].setValue(String.valueOf(model.getOwnPoints()));
+//			properties[OPPPOINTS_PROPERTY].setValue(String.valueOf(model.getOppPoints()));
 			break;
 		case "field":
 			Log.getInstance().write("Controller: Field changed empfangen; FxThread:" + Platform.isFxApplicationThread());
 			updateField();
 			break;
+		case "points":
+			properties[OWNPOINTS_PROPERTY].setValue(String.valueOf(model.getOwnPoints()));
+			properties[OPPPOINTS_PROPERTY].setValue(String.valueOf(model.getOppPoints()));
 		default:
 			break;
 		}
@@ -570,7 +578,8 @@ public class GameController implements GameEventListener, Observer{
 							
 							if(field[i][j].getValue() != newStyle) field[i][j].set(newStyle);
 						}
-					}				
+					}
+					markWinTokens();
 				}
 			});
 		}
@@ -613,12 +622,13 @@ public class GameController implements GameEventListener, Observer{
 		properties[OPPTOKEN_PROPERTY].set(String.valueOf(Constants.oRole));
 		properties[OWNTOKEN_PROPERTY].set(String.valueOf(Constants.xRole));		
 		properties[STATE_PROPERTY].set(Constants.STATE_APP_RUNNING);
+		properties[PATH_PROPERTY].set("");
 		properties[WINNER_PROPERTY].set(String.valueOf(Constants.noRole));
 		properties[WINNER_PROPERTY].addListener(new ChangeListener<String>() {
 			@Override
 			public void changed(ObservableValue<? extends String> arg0,
 					String arg1, String arg2) {
-				if(model.getLatestSet() != null)
+				if(model != null && model.getLatestSet() != null)
 					model.getLatestSet().setWinner(properties[WINNER_PROPERTY].get().charAt(0));}
 		});
 		
