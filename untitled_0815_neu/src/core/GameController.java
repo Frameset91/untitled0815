@@ -509,7 +509,10 @@ public class GameController implements GameEventListener, Observer{
 			Log.getInstance().write("Controller: Set changed empfangen; FxThread:" + Platform.isFxApplicationThread());
 			updateField();
 			updateSets();
-			if(model.getLatestSet() != null) properties[WINNER_PROPERTY].setValue(String.valueOf(model.getLatestSet().getWinner()));
+			if(model.getLatestSet() != null) 
+				properties[WINNER_PROPERTY].setValue(String.valueOf(model.getLatestSet().getWinner()));
+			else
+				reset();
 			properties[OWNPOINTS_PROPERTY].setValue(String.valueOf(model.getOwnPoints()));
 			properties[OPPPOINTS_PROPERTY].setValue(String.valueOf(model.getOppPoints()));
 			break;
@@ -554,6 +557,8 @@ public class GameController implements GameEventListener, Observer{
 	private void updateSets() {
 		sets.clear();
 		Iterator<Set> it = model.getSets().listIterator();
+		if(!it.hasNext())
+			
 		while(it.hasNext()){
 			Set set = it.next();
 			String winner = Constants.textTie;
@@ -623,7 +628,7 @@ public class GameController implements GameEventListener, Observer{
 		
 		//Liste der Sätze zurück setzen
 		sets.clear();
-		sets.add(new SetProperty("keine ", "Sätze"));		
+				
 		
 		//Liste der gespeicherten Spiele laden
 		if(isDBAvailable.get()) 
