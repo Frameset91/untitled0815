@@ -16,12 +16,13 @@ public class GameProperty {
 	/**
 	 * Konstruktor von GameProperty
 	 * @param gameID ID des Spiels
-	 * @param oppName Name des Gegners
+	 * @param players Namen der Spieler
+	 * @param points Spielstand
 	 */
-	public GameProperty(String gameID, String players, String time){
+	public GameProperty(String gameID, String players, String points){
 		this.gameID = new SimpleStringProperty(gameID);
 		this.players = new SimpleStringProperty(players);
-		this.points = new SimpleStringProperty(time);
+		this.points = new SimpleStringProperty(points);
 	}
 
 	/**

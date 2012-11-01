@@ -206,7 +206,7 @@ public class GameController implements GameEventListener, Observer{
 		    	}else{
 		    		kiwt = new KIWorkerThread(col);
 		    		kiwt.start();
-		    		Log.getInstance().write("Controller: KI Workerthread gestartet");
+		    		Log.getInstance().write("Controller: KI Workerthread wird gestartet");
 		    	}
 			}
 		}
@@ -317,8 +317,10 @@ public class GameController implements GameEventListener, Observer{
 		if(loadedSets != null && !isReplay.get()){
 			model.addSet(loadedSets[loadedSets.length-1]);
 			loadedMoves = DBConnection.getInstance().loadAllMoves(model.getID(), model.getLatestSet().getID());
-			for(Move move: loadedMoves){
-				model.addMove(move);
+			if(loadedMoves != null){
+				for(Move move: loadedMoves){
+					model.addMove(move);
+				}
 			}
 		}
 		
@@ -661,6 +663,7 @@ public class GameController implements GameEventListener, Observer{
 		 */
 		@Override
 		public void run() {
+			Log.getInstance().write("Controller: KI Workerthread läuft");
 			byte newCol = ki.calculateNextMove(oppMove);			
 			//Zug auf Server schreiben und Server wieder überwachen
 			if(!isWithoutServer.get()  && !isReplay.get()){
