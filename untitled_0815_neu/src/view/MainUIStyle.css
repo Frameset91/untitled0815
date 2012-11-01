@@ -1,33 +1,33 @@
 @CHARSET "ISO-8859-1";
 
+.menuBar {
+    -fx-background-color: linear-gradient(#afe9af 0%, #669966 25%, #afe9af 100%);
+}
+
 .border{
-		-fx-border-width: 1;
+	-fx-border-width: 2;
 	-fx-border-color: #297fd5;
+
 }
 
 .settings{
-	-fx-background-color: #0dbd0d;
-	-fx-border-width: 2;
-	-fx-border-color: #297fd5;
+	-fx-background-color: linear-gradient(to bottom, #afe9af, #669966);
 }
 
 .game {
-    -fx-background-color: 
-        #c3c4c4,
-      /*  linear-gradient(#d6d6d6 50%, white 100%),*/
-        radial-gradient(center 50% -40%, radius 200%, #e6e6e6 45%, rgba(230,230,230,0) 50%);
-    -fx-background-insets: 0,1,1;
-    -fx-text-fill: black;
-    -fx-effect: dropshadow( three-pass-box , rgba(0,0,0,0.6) , 3, 0.0 , 0 , 1 );
+    -fx-background-color: linear-gradient(to bottom right, white, #999999);
+    -fx-border-width: 1;
+    -fx-border-color: #999999;
 }
 
 #gameSettings .choice-box {
   -fx-background-color: green;
 }
+
 #gameSetting .choice-box .context-menu{
-	-fx-background-color: blue;
-	
+	-fx-background-color: blue;	
 }
+
 .field{
 	-fx-padding:5; 
 	-fx-background-color: #1a3399;

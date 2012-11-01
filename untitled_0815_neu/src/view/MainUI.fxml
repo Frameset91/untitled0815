@@ -16,7 +16,7 @@
 <BorderPane xmlns:fx="http://javafx.com/fxml" fx:id="borderPane" stylesheets="view/MainUIStyle.css" fx:controller="view.MainUIController" prefWidth="900"><!-- prefHeight="200" prefWidth="320"  -->
     <!-- Oberer Bereich: Menu-Bar -->
     <top>
-    	<MenuBar minWidth="820">
+    	<MenuBar minWidth="820" styleClass="menuBar">
     		<Menu text="Spielsteuerung">
     			<MenuItem fx:id="menuSpielStarten" text="Spiel starten" onAction="#handleStartGame"/>
     			<MenuItem fx:id="menuSpielLaden" text="Spiel laden" onAction="#handleLoadGame"/>
@@ -32,14 +32,14 @@
     <!-- Linker Bereich: Einstellungen-->
     <left>
         <!--Unteinander die Einstellungen/ Buttons-->
-        <VBox spacing = "20" styleClass="settings">   
+        <VBox spacing = "20" styleClass="settings, border">   
          <padding><Insets top="10" right="10" bottom="10" left="10"/></padding>
         	<!--Einstellungen für 1 spezielles Spiel-->
-        	<VBox spacing="10" styleClass="settings"><!--  spacing="20" -->
+        	<VBox spacing="10" styleClass="border"><!--  spacing="20" -->
         	    <padding><Insets top="10" right="10" bottom="10" left="10"/></padding>
         		<Label text="Spieleinstellungen" GridPane.columnIndex="0" GridPane.rowIndex="0" styleClass="labelSpieleinstellungen"></Label>
         		<!-- Tabelle zum Anordnen der Einstellungen -->
-        		<GridPane fx:id="gameSettings" disable="false" vgap="5" hgap="15"> <!-- hgap="5" vgap="15"  > -->
+        		<GridPane fx:id="gameSettings" id="gameSettings" disable="false" vgap="5" hgap="15"> <!-- hgap="5" vgap="15"  > -->
         		<!-- Linke Spalte -->   
      		   		<Label text="Deine Rolle:" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
         			<Label text="ohne Server spielen:" GridPane.columnIndex="0" GridPane.rowIndex="2"/>
@@ -82,7 +82,7 @@
         		<Button text="Spiel beenden" fx:id="btnEndGame" onAction="#handleEndGame" alignment="CENTER" minWidth="100"/>
         	</VBox>
         	<!-- Einstellungen für Sätze -->
-        	<HBox fx:id="setSettings" spacing="20"  styleClass="settings">
+        	<HBox fx:id="setSettings" spacing="20"  styleClass="border">
  				<padding><Insets top="10" right="10" bottom="10" left="10"/></padding>
         		<VBox spacing="5">
        				<Button fx:id="btnNewSet" text="Satz spielen" disable="false" onMouseClicked="#handleStartSet"/>
@@ -119,15 +119,6 @@
         			<Label text=":" GridPane.halignment="center" GridPane.columnIndex="2" GridPane.rowIndex="1"/>
         			<Label fx:id="punkteGegner" text="0" GridPane.halignment="center" GridPane.columnIndex="3" GridPane.rowIndex="1" alignment="center"/>
 				</GridPane>
-        		<!--<HBox fx:id="boxColButtons" styleClass="border" alignment="center">
-        			<Button text="1" userData="0" maxHeight="20" maxWidth="30" styleClass="colButton" onMouseClicked="#handleColButton"/>
-        			<Button text="2" userData="1" maxHeight="20" maxWidth="30" styleClass="colButton" onMouseClicked="#handleColButton"/>
-        			<Button text="3" userData="2" maxHeight="20" maxWidth="30" styleClass="colButton" onMouseClicked="#handleColButton"/>
-        			<Button text="4" userData="3" maxHeight="20" maxWidth="30" styleClass="colButton" onMouseClicked="#handleColButton"/>
-        			<Button text="5" userData="4" maxHeight="20" maxWidth="30" styleClass="colButton" onMouseClicked="#handleColButton"/>
-        			<Button text="6" userData="5" maxHeight="20" maxWidth="30" styleClass="colButton" onMouseClicked="#handleColButton"/>
-        			<Button text="7" userData="6" maxHeight="20" maxWidth="30" styleClass="colButton" onMouseClicked="#handleColButton"/>
-        		</HBox>-->
         		<GridPane fx:id="feld" hgap="3" vgap="3" styleClass="field" maxWidth="10"/>
         		<HBox alignment="center" spacing="10">
         			<Button text="ZurÃ¼ck" fx:id="btnRemoveMove" minWidth="70" onMouseClicked="#handleRemoveMove"></Button>
