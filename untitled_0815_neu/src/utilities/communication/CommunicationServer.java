@@ -79,17 +79,19 @@ public class CommunicationServer {
 	public int getTimeout() {
 		return timeout;
 	}
+	
+	
+	private void testConnection(){
+		//Datei schreiben
+		
+	}
 
 	/**
 	 * Startet die Abfrage der Serverdatei in einem neuen Thread. Überprüft, ob
 	 * die alte, bereits gelesene, Datei noch vorhanden ist und wartet bis diese
 	 * gelöscht ist.
 	 */
-	public synchronized void enableReading(int timeout, String serverFilePath,
-			char role, boolean Set) {
-		this.timeout = timeout;
-		this.serverfilepath = serverFilePath;
-		this.ownRole = role;
+	public synchronized void enableReading(boolean Set) {
 		this.newSet = Set;
 
 		// Puefung, ob noch ein Leserthread läuft
@@ -132,8 +134,7 @@ public class CommunicationServer {
 	public void observe() {
 
 		try {
-			File old = new File(serverfilepath + "/server2spieler" + ownRole
-					+ ".xml");
+			File old = new File(serverfilepath);
 			// neuer Satz
 			if (this.newSet) {
 				if (old.exists()) {
@@ -158,29 +159,17 @@ public class CommunicationServer {
 			}
 
 		} catch (Exception e) {
+		
 		}
 
-		// Umwandlung von backslashes im Pfad in normale Slashes
-		if (serverfilepath.contains("\\")) {
-			serverfilepath = serverfilepath.replace("\\", "/");
-		}
 
-		// Slash am Ende entfernen, falls vorhanden
-		if (serverfilepath.lastIndexOf("/") == serverfilepath.length() - 1) {
-			serverfilepath = serverfilepath.substring(0,
-					serverfilepath.length() - 1);
-		}
-
-		// vollstaendige Pfade mit Dateinamen bauen
-		this.serverfilepath = serverfilepath + "/server2spieler" + ownRole
-				+ ".xml";
-		this.serverfilepath = this.serverfilepath.toLowerCase();
-		this.serverFile = new File(serverfilepath);
-
+//		this.setFiles(this.serverfilepath, this.ownRole);
+		
 		// Auslesen der Datei
 		Log.getInstance().write("Communication Server:Ueberwachen startet");
+		
 		ServerMessage msg;
-		try {
+			try {
 			do {
 				msg = this.read();
 			} while (msg == null);
@@ -223,12 +212,45 @@ public class CommunicationServer {
 		Log.getInstance().write("Communication Server: Ende Überwachung");
 
 	}
+	
+	
+	private boolean init(int timeout,String serverFilePath,char role){
+		this.timeout = timeout;
+		this.ownRole = role;
+		
+		//Umwandlung von backslashes im Pfad in normale Slashes
+				if (serverfilepath.contains("\\")) {
+					serverfilepath = serverfilepath.replace("\\", "/");
+				}
+
+				// Slash am Ende entfernen, falls vorhanden
+				if (serverfilepath.lastIndexOf("/") == serverfilepath.length() - 1) {
+					serverfilepath = serverfilepath.substring(0,
+							serverfilepath.length() - 1);
+				}
+				
+				File testpath = new File(serverfilepath);
+				// vollstaendige Pfade mit Dateinamen bauen
+				this.serverfilepath = serverfilepath + "/server2spieler" + ownRole
+						+ ".xml";
+				this.serverfilepath = this.serverfilepath.toLowerCase();
+				this.serverFile = new File(serverfilepath);
+				
+				if(testpath.exists()){
+				 this.testConnection();
+				 return true;	
+				}else{
+					return false;
+				}
+				
+	}
 
 	/**
 	 * Lesen des Serverfiles
 	 */
 
-	public ServerMessage read() {
+	private ServerMessage read(){
+		try {
 		// Serverfile auslesen
 		ServerMessage msg = null;
 		// while (msg == null) {
@@ -241,12 +263,13 @@ public class CommunicationServer {
 			} catch (Exception e) {
 			}
 		}
-		try {
+		
 			msg = XMLParser.getInstance().readXML(serverFile);
+			return msg;
 		} catch (Exception e) {
 			return null;
 		}
-		return msg;
+		
 	}
 
 	/**
