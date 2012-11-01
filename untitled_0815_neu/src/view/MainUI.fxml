@@ -113,7 +113,8 @@
     <VBox styleClass="game, border">
         	<VBox fx:id="gameField" alignment="CENTER" styleClass="border" >
         		<GridPane styleClass="spieleranzeige, ueberschrift" hgap="15" vgap="15" alignment="center">
-        			<Label fx:id="labelOwn" text="untitled0815:" maxWidth="175" GridPane.halignment="center" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
+        		<!-- maxWidth="175" -->
+        			<Label fx:id="labelOwn" text="untitled0815:" GridPane.halignment="center" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
         			<Label fx:id="tokenSpieler" text=" " styleClass="token" minWidth="40" prefHeight="40" GridPane.columnIndex="1" GridPane.rowIndex="0"/> 
         			<Label text=":" GridPane.halignment="center" GridPane.columnIndex="2" GridPane.rowIndex="0"/>
         			<Label fx:id="tokenGegner" text=" " styleClass="token" minWidth="40" prefHeight="40" GridPane.columnIndex="3" GridPane.rowIndex="0"/> 

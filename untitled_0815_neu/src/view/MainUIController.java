@@ -388,8 +388,9 @@ public class MainUIController implements Initializable{
 	
 	private void showConfirmWinner() {
 		final Stage stageConfirmWinner = new Stage();
+//		stageConfirmWinner.setResizable(false);
 		Group rootConfirm = new Group();
-		Scene sceneConfirm = new Scene(rootConfirm, 500,180, Color.WHITESMOKE);
+		Scene sceneConfirm = new Scene(rootConfirm, 300,160, Color.WHITESMOKE);
 		sceneConfirm.getStylesheets().add("view/MainUIStyle.css");
 		stageConfirmWinner.setScene(sceneConfirm);
 		stageConfirmWinner.centerOnScreen();
