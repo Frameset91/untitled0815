@@ -77,12 +77,16 @@
 	-fx-font-weight: bold;
 }
 
+.status{
+	-fx-padding: 20;
+	-fx-font-size: 15;
+	-fx-font-weight: bold;
+	-fx-font-color: #666666;
+}
+
 .statusanzeige{
 	-fx-padding: 20;
 	-fx-font-size: 15;
 	-fx-font-weight: bold;
-}
-
-.confirmWinner{
-	
+	-fx-font-style: italic;
 }

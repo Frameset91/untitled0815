@@ -39,7 +39,7 @@ public class Connect4 extends Application {
         	public void handle(WindowEvent e){
         		final Stage closing = new Stage();
         		Group rootClosing = new Group();
-        		Scene sceneClosing = new Scene(rootClosing, 420,120, Color.WHITE);
+        		Scene sceneClosing = new Scene(rootClosing, 420,80, Color.WHITE);
         		closing.setScene(sceneClosing);
         		closing.centerOnScreen();
         		Text text = new Text("Wollen Sie das Programm wirklich beenden?");
