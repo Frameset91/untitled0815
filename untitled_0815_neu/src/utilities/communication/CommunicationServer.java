@@ -21,6 +21,7 @@ public class CommunicationServer {
 	private Thread readerthread;
 	private String serverfilepath;
 	private File serverFile;
+	private String seperator;
 	// Singleton Referenz
 	private static CommunicationServer singleton = null;
 	private int timeout;
@@ -125,21 +126,28 @@ public class CommunicationServer {
 			this.timeout = timeout;
 			this.ownRole = role;
 			
-			//Umwandlung von backslashes im Pfad in normale Slashes
-					if (serverFilePath.contains("\\")) {
-						serverFilePath = serverFilePath.replace("\\", "/");
-					}
-	
-					// Slash am Ende entfernen, falls vorhanden
-					if (serverFilePath.lastIndexOf("/") == serverFilePath.length() - 1) {
-						serverFilePath = serverFilePath.substring(0,
-								serverFilePath.length() - 1);
-					}
-					String testpath = serverFilePath;
+			//Serverpfad
+				if(serverFilePath.contains("\\")){
+					this.seperator ="\\";
+					
+				}else{
+					this.seperator = "/";
+				}
+				
+			//letztes Trennzeichen löschen, wenn vorhanden
+				if(serverFilePath.lastIndexOf(this.seperator) == serverFilePath.length()-1){
+					serverFilePath = serverFilePath.substring(0,
+							serverFilePath.length() - 1);
+				}
+				
+			
+				   String testpath = serverFilePath;
 					File test = new File(testpath);
 					// vollstaendige Pfade mit Dateinamen bauen
-					this.serverfilepath = serverFilePath + "/server2spieler" + ownRole
-							+ ".xml";
+					String r = String.valueOf(ownRole);
+					r = r.toLowerCase();
+					this.serverfilepath = serverFilePath + this.seperator + Constants.FilenameServer_pre + r
+							+ Constants.FilenameServer_post;
 					this.serverFile = new File(serverfilepath);
 					
 					if(test.exists()){
@@ -319,19 +327,17 @@ public class CommunicationServer {
 				Log.getInstance().write(
 						"Zug schreiben im Pfad " + agentFilePath + "in Spalte "
 								+ spalte);
-				// Backslash in slash umwandeln
-				if (agentFilePath.contains("\\")) {
-					agentFilePath = agentFilePath.replace("\\", "/");
-				}
-
-				// Slash am Ende entfernen, falls vorhanden
-				if (agentFilePath.lastIndexOf("/") == agentFilePath.length() - 1) {
+				
+				
+				if(agentFilePath.lastIndexOf(this.seperator) == agentFilePath.length()-1){
 					agentFilePath = agentFilePath.substring(0,
 							agentFilePath.length() - 1);
 				}
-
-				this.agentfilepath = agentFilePath + "/spieler" + role
-						+ "2server.txt";
+				
+				String r = String.valueOf(role);
+				r = r.toLowerCase();
+				this.agentfilepath = agentFilePath + this.seperator + Constants.FilenameAgent_pre + r
+						+ Constants.FilenameAgent_post;
 
 				this.agentFile = new File(agentfilepath);
 				FileWriter schreiber = new FileWriter(this.agentFile);
