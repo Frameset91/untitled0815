@@ -16,7 +16,6 @@ import model.Set;
 /**
  * TO DO: 
  * 
- * an 2 Stellen großer auskemmentierter Block: erst testen
  *
  */
 
@@ -332,15 +331,15 @@ public class DBConnection {
 			try{
 				if ( rs.next() ){
 					//Infos aus rs holen und auflisten
-			        srole = rs.getString(2);
-			        soppName = rs.getString(3);
-			        sownPoints = rs.getString(4);
-			        soppPoints = rs.getString(5);
-			        spath = rs.getString(6);
-			        stimeServer = rs.getString(7);
-			        stimeDraw = rs.getString(8);
-			        sownname = rs.getString(9);
-			        log.write("DB: 1Game geladen");
+			        srole = rs.getString(2).trim();
+			        soppName = rs.getString(3).trim();
+			        sownPoints = rs.getString(4).trim();
+			        soppPoints = rs.getString(5).trim();
+			        spath = rs.getString(6).trim();
+			        stimeServer = rs.getString(7).trim();
+			        stimeDraw = rs.getString(8).trim();
+			        sownname = rs.getString(9).trim();
+			        log.write("DB: 1 Game geladen");
 			      }else return null; // dann wäre nichts im resultset und nichts in der DB gefunden
 			}catch (SQLException e){
 				log.write("Fehler in DB beim Laden eines Spiels");
@@ -402,15 +401,15 @@ public class DBConnection {
 				while ( rs.next() ){
 					ctr++;
 					//Infos aus rs holen und auflisten
-					String sID = rs.getString(1);
-			        String srole = rs.getString(2);
-			        String soppName = rs.getString(3);
-					String sownPoints = rs.getString(4); 
-					String soppPoints = rs.getString(5); 
-			        String spath = rs.getString(6);
-			        String stimeServer = rs.getString(7);
-			        String stimeDraw = rs.getString(8);
-			        String sownname = rs.getString(9);
+					String sID = rs.getString(1).trim();
+			        String srole = rs.getString(2).trim();
+			        String soppName = rs.getString(3).trim();
+					String sownPoints = rs.getString(4).trim(); 
+					String soppPoints = rs.getString(5).trim(); 
+			        String spath = rs.getString(6).trim();
+			        String stimeServer = rs.getString(7).trim();
+			        String stimeDraw = rs.getString(8).trim();
+			        String sownname = rs.getString(9).trim();
 			        
 			        //in game übernehmen
 			        if (sID != null)
@@ -473,10 +472,10 @@ public class DBConnection {
 				while ( rs.next() ){
 					ctr++;
 					//Infos aus rs holen und auflisten
-			        String ssetID = rs.getString(2);
-			        String swinner = rs.getString(3);
-			        String sstarttime = rs.getString(4);
-			        String sendtime = rs.getString(5);
+			        String ssetID = rs.getString(2).trim();
+			        String swinner = rs.getString(3).trim();
+			        String sstarttime = rs.getString(4).trim();
+			        String sendtime = rs.getString(5).trim();
 			        
 			        // in entsprechende Typen umwandeln:
 			        int setID;
@@ -528,10 +527,10 @@ public class DBConnection {
 			try{
 				while ( rs.next() ){
 					//Infos aus rs holen und auflisten
-			        String smoveID = rs.getString(3);
-			        String srole = rs.getString(4);
-			        String scolumn = rs.getString(5);
-			        String stime = rs.getString(6);
+			        String smoveID = rs.getString(3).trim();
+			        String srole = rs.getString(4).trim();
+			        String scolumn = rs.getString(5).trim();
+			        String stime = rs.getString(6).trim();
 			        ctr++;
 			        
 			        // in entsprechende Typen umwandeln:
