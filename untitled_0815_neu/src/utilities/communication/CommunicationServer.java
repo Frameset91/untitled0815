@@ -33,7 +33,7 @@ public class CommunicationServer {
 	 * Beendet die Abfrage der Serverdatei
 	 */
 	public void disableReading() {
-		if (this.readerthread.isAlive()) {
+		if (this.readerthread != null && this.readerthread.isAlive()) {
 			this.readerthread.interrupt();
 		}
 		this.readerthread = null;
@@ -278,6 +278,7 @@ public class CommunicationServer {
 			pr.flush();
 			pr.close();
 			time[i] = System.nanoTime()-temp;
+			x.delete();
 			} catch (FileNotFoundException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -290,8 +291,9 @@ public class CommunicationServer {
 				watermark = time[i];
 			}
 		}
+		double watermark_db = watermark/1000000;
 		
-		Log.getInstance().write("Der hoechste Wert zum schreiben ist: " + watermark);
+		Log.getInstance().write("Der hoechste Wert zum schreiben ist: " + watermark_db);
 		
 	}
 

@@ -19,6 +19,7 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.*;
 import javafx.scene.control.*;
@@ -181,7 +182,6 @@ public class MainUIController implements Initializable{
 		menuSpielStarten.disableProperty().bind(gameSettings.disableProperty());
 		menuSpielBeenden.disableProperty().bind(btnEndGame.disableProperty());
 		menuSpielLaden.disableProperty().bind(gameSettings.disableProperty());
-		menuSchliessen.disableProperty().bind(gameSettings.disabledProperty());
 		
 		//Rollen Auswahl
 //		rolle.valueProperty().bindBidirectional(viewModel.properties()[viewModel.ROLE_PROPERTY]);
@@ -583,7 +583,41 @@ public class MainUIController implements Initializable{
 	
 	@FXML
     // Menü: Schließen des Programms
-	private void handleSchliessen(ActionEvent close){System.exit(0);}
+	private void handleSchliessen(ActionEvent close){
+		final Stage closing = new Stage();
+		Group rootClosing = new Group();
+		Scene sceneClosing = new Scene(rootClosing, 420,120, Color.WHITESMOKE);
+		closing.setScene(sceneClosing);
+		closing.centerOnScreen();
+		Text text = new Text("Wollen Sie das Programm wirklich beenden?");
+		Text text2 = new Text("Falls noch ein Satz oder Spiel läuft, kann dies zu Datenverlust führen.");
+		text.setFont(new Font(14));
+		text2.setFont(new Font(13));
+		Button button = new Button("Beenden");
+		button.setOnAction(new EventHandler<ActionEvent>(){
+			public void handle(ActionEvent close){
+				System.exit(0);
+			}
+		});
+		Button button2 = new Button("Abbrechen");
+		button2.setOnAction(new EventHandler<ActionEvent>(){
+			public void handle(ActionEvent close){
+				closing.close();
+			}
+		});
+		VBox vbox = new VBox(10);
+		vbox.setLayoutX(10);
+		vbox.setLayoutY(10);
+		HBox hbox = new HBox(10);
+		hbox.setAlignment(Pos.CENTER);
+		VBox.setMargin(hbox, new Insets(10,10,10,10));
+		hbox.getChildren().addAll(button, button2);
+		vbox.getChildren().addAll(text, text2, hbox);
+		rootClosing.getChildren().add(vbox);
+		closing.initModality(Modality.APPLICATION_MODAL);
+		closing.showAndWait();
+		close.consume();
+	}
 	@FXML
 	// Menü: Spielsteuerung aufrufen
 	private void handleSteuerung(ActionEvent steuerung){

@@ -4,12 +4,16 @@ import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -35,11 +39,13 @@ public class Connect4 extends Application {
         	public void handle(WindowEvent e){
         		final Stage closing = new Stage();
         		Group rootClosing = new Group();
-        		Scene sceneClosing = new Scene(rootClosing, 620,120, Color.WHITESMOKE);
+        		Scene sceneClosing = new Scene(rootClosing, 420,120, Color.WHITESMOKE);
         		closing.setScene(sceneClosing);
         		closing.centerOnScreen();
-        		Text text = new Text(20,40,"Wollen Sie das Programm wirklich beenden? Falls noch ein Satz oder Spiel läuft, kann dies zu Datenverlust führen.");
-        		Text text2 = new Text(20,40,"Bitte das Programm über das Menü schließen.");
+        		Text text = new Text("Wollen Sie das Programm wirklich beenden?");
+        		Text text2 = new Text("Falls noch ein Satz oder Spiel läuft, kann dies zu Datenverlust führen.");
+        		text.setFont(new Font(14));
+        		text2.setFont(new Font(13));
         		Button button = new Button("Beenden");
         		button.setOnAction(new EventHandler<ActionEvent>(){
         			public void handle(ActionEvent close){
@@ -53,7 +59,13 @@ public class Connect4 extends Application {
         			}
         		});
         		VBox vbox = new VBox(10);
-        		vbox.getChildren().addAll(text, text2, button, button2);
+        		vbox.setLayoutX(10);
+        		vbox.setLayoutY(10);
+        		HBox hbox = new HBox(10);
+        		hbox.setAlignment(Pos.CENTER);
+        		VBox.setMargin(hbox, new Insets(10,10,10,10));
+        		hbox.getChildren().addAll(button, button2);
+        		vbox.getChildren().addAll(text, text2, hbox);
         		rootClosing.getChildren().add(vbox);
         		closing.initModality(Modality.APPLICATION_MODAL);
         		closing.showAndWait();
