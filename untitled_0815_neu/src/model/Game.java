@@ -122,23 +122,31 @@ public class Game extends Observable implements Observer{
 		String changed = (String)arg1;
 		
 		switch (changed) {
+		case "status":
 		case "winner":
 			Log.getInstance().write("Game: recalculate Points");
 			int opp = 0;
 			int own = 0;
 			char win;
+			Set set;
 			ListIterator<Set> iterator = sets.listIterator();
 			while (iterator.hasNext())
 			{
-				if((win = iterator.next().getWinner()) == role){
-					//Gewonnen
-					own++;
-				}
-				else if(win != role && (win == Constants.oRole || win == Constants.xRole)){
-					//Verloren
-					opp++;
-				}else{
-					//Unentschieden
+				if((set = iterator.next()).getStatus().equals(Constants.STATE_SET_ENDED)){
+					if((win = set.getWinner()) == role){
+						//Gewonnen
+						own += Constants.pointsWin;
+						opp += Constants.pointsLoose;
+					}
+					else if(win != role && (win == Constants.oRole || win == Constants.xRole)){
+						//Verloren
+						opp += Constants.pointsWin;
+						own += Constants.pointsLoose;
+					}else{
+						//Unentschieden
+						own += Constants.pointsTie;
+						opp += Constants.pointsTie;
+					}
 				}
 			}
 			oppPoints = opp;

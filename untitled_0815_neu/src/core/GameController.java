@@ -142,8 +142,9 @@ public class GameController implements GameEventListener, Observer{
 		Platform.runLater(new Runnable() {			
 			@Override
 			public void run() {
-				properties[STATE_PROPERTY].set(Constants.STATE_SET_ENDED);
 				model.getLatestSet().setStatus(Constants.STATE_SET_ENDED);
+				properties[STATE_PROPERTY].set(Constants.STATE_SET_ENDED);
+				
 			}
 		});
 	}
@@ -163,7 +164,7 @@ public class GameController implements GameEventListener, Observer{
 	 */	
 	public void loadGame(int gameID){
 		Log.getInstance().write("Controller: Spiel wird geladen, FxThread:" + Platform.isFxApplicationThread());
-		isReplay.set(true);
+//		isReplay.set(true);
 		processGameLoad(gameID);
 	}
 	
@@ -329,7 +330,6 @@ public class GameController implements GameEventListener, Observer{
 		if(loadedMoves.length <= nextMove){
 			if(currentSet == loadedSets.length -1){
 				//letzter Satz -> Replay beenden			
-				//properties[STATE_PROPERTY].set(Constants.STATE_APP_RUNNING);	
 				isReplay.set(false);						
 				properties[STATE_PROPERTY].set(Constants.STATE_GAME_RUNNING);
 			}else{
@@ -389,7 +389,7 @@ public class GameController implements GameEventListener, Observer{
 					model.getLatestSet().setWinner(((String)event.getArg()).charAt(0));
 				}
 				break;
-			case WinDetected: //Die KI hat 4 Tokens entdeckt -> Event.getArg() = "t1x,t1y;t2x,t2y;t3x,t3y;t4x,t4y;"
+			case WinDetected: //Die KI hat 4 Tokens entdeckt -> Event.getArg() = "t1x,t1y;t2x,t2y;t3x,t3y;t4x,t4y;x||o (winner)"
 				Log.getInstance().write("Controller: WinDetected empfangen, FxThread:" + Platform.isFxApplicationThread());
 				//Parse String als byte[][]
 				byte[][] data = new byte[4][2];				
@@ -397,6 +397,11 @@ public class GameController implements GameEventListener, Observer{
 				for(int i=0; i < 4; i++){
 					data[i][0] =  (byte)Integer.parseInt(tokens[i].split(",")[0]);
 					data[i][1] = (byte)Integer.parseInt(tokens[i].split(",")[1]);
+				}
+				if(tokens.length > 4){
+					char winner = tokens[4].charAt(0);
+					if (winner == Constants.xRole || winner == Constants.oRole)
+						model.getLatestSet().setWinner(winner);
 				}
 				//Gewinner Tokens markieren
 				markWinTokens(data);
@@ -542,7 +547,13 @@ public class GameController implements GameEventListener, Observer{
 		Iterator<Set> it = model.getSets().listIterator();
 		while(it.hasNext()){
 			Set set = it.next();
-			sets.add(new SetProperty(String.valueOf(set.getID()), String.valueOf(set.getWinner())));
+			String winner = Constants.textTie;
+			if(set.getWinner() == model.getRole()){
+				winner = model.getOwnName();
+			}else if(set.getWinner() != model.getRole() && ( set.getWinner() == Constants.oRole || set.getWinner() == Constants.xRole)){
+				winner = model.getOppName();
+			}
+			sets.add(new SetProperty(String.valueOf(set.getID()), winner));
 		}
 	}
 	
@@ -566,7 +577,9 @@ public class GameController implements GameEventListener, Observer{
 		properties[WINNER_PROPERTY].addListener(new ChangeListener<String>() {
 			@Override
 			public void changed(ObservableValue<? extends String> arg0,
-					String arg1, String arg2) {model.getLatestSet().setWinner(properties[WINNER_PROPERTY].get().charAt(0));}
+					String arg1, String arg2) {
+				if(model.getLatestSet() != null)
+					model.getLatestSet().setWinner(properties[WINNER_PROPERTY].get().charAt(0));}
 		});
 		
 				
