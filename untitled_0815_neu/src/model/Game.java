@@ -66,7 +66,7 @@ public class Game extends Observable implements Observer{
 	 * @param timeoutDraw Zeit für einen Zug
 	 * @param ID Primarykey von Game
 	 */
-	public Game(int cols, int rows, char role, String oppName, String ownName, String path, int timeoutServer, int timeoutDraw, int ID){
+	public Game(int cols, int rows, char role, String oppName, String ownName, String path, int timeoutServer, int timeoutDraw, int ID, int oppPoints, int ownPoints){
 		this.cols = cols;
 		this.rows = rows;
 		this.role = role;
@@ -75,6 +75,8 @@ public class Game extends Observable implements Observer{
 		this.path = path;
 		this.timeoutServer = timeoutServer;
 		this.timeoutDraw = timeoutDraw;
+		this.oppPoints = oppPoints;
+		this.ownPoints = ownPoints;
 		sets = new ArrayList<Set>();
 		this.ID = ID;
 	}
