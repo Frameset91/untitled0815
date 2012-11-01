@@ -214,7 +214,7 @@ public class CommunicationServer {
 	}
 	
 	
-	private boolean init(int timeout,String serverFilePath,char role){
+	public boolean init(int timeout,String serverFilePath,char role){
 		this.timeout = timeout;
 		this.ownRole = role;
 		
