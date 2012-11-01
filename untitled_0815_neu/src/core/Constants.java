@@ -5,6 +5,8 @@ package core;
  */
 
 public class Constants {
+	
+	public static final double minTimeforKI = 0.25;
 
 	public static final int gamefieldcolcount = 7;
 	public static final int gamefieldrowcount = 6;
