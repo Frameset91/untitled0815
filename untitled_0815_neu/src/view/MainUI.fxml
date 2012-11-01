@@ -109,23 +109,19 @@
     </left>
    
     <center><!-- Mittlerer Bereich -->
-        <!-- Spielflaeche (neue BorderPane) -->
+        <!-- Spielflaeche -->
     <VBox styleClass="game, border">
         	<VBox fx:id="gameField" alignment="CENTER" styleClass="border" >
-        		<GridPane styleClass="spieleranzeige, spieler" hgap="15">
-        		<!-- <HBox fx:id="spielerAnzeige" spacing="20" styleClass="spieler, border"> -->
-        			<Label fx:id="labelOwn" text="untitled0815:" minWidth="150" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
+        		<GridPane styleClass="spieleranzeige, spieler" hgap="15" alignment="center">
+        			<Label fx:id="labelOwn" text="untitled0815:" minWidth="175" maxWidth="175" GridPane.halignment="center" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
         			<Label fx:id="tokenSpieler" text=" " styleClass="token" minWidth="40" prefHeight="40" GridPane.columnIndex="1" GridPane.rowIndex="0"/> 
-        			<Label text=":" GridPane.columnIndex="2" GridPane.rowIndex="0"/>
-        			<Label fx:id="tokenGegner" text=" " styleClass="token" minWidth="40" prefHeight="40" GridPane.columnIndex="4" GridPane.rowIndex="0"/> 
-        			<Label fx:id="labelOpp" text="Gegner" GridPane.columnIndex="5" GridPane.rowIndex="0"/>
-        		<!-- </HBox> -->
-        		<!-- <HBox fx:id="spielstandAnzeige" styleClass="border"> -->
+        			<Label text=":" GridPane.halignment="center" GridPane.columnIndex="2" GridPane.rowIndex="0"/>
+        			<Label fx:id="tokenGegner" text=" " styleClass="token" minWidth="40" prefHeight="40" GridPane.columnIndex="3" GridPane.rowIndex="0"/> 
+        			<Label fx:id="labelOpp" text="Gegner" minWidth="175" maxWidth="175" GridPane.columnIndex="4" GridPane.rowIndex="0"/>
         			<Label text="Spielstand" styleClass="punkte" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
-        			<Label fx:id="punkteSpieler" text="0" styleClass="punkte" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
-        			<Label text=":" styleClass="punkte" GridPane.columnIndex="2" GridPane.rowIndex="1"/>
-        			<Label fx:id="punkteGegner" text="0" styleClass="punkte" GridPane.columnIndex="3" GridPane.rowIndex="1"/>
-        		<!-- </HBox> -->
+        			<Label fx:id="punkteSpieler" text="0" styleClass="punkte" GridPane.halignment="center" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+        			<Label text=":" styleClass="punkte" GridPane.halignment="center" GridPane.columnIndex="2" GridPane.rowIndex="1"/>
+        			<Label fx:id="punkteGegner" text="0" styleClass="punkte" GridPane.halignment="center" GridPane.columnIndex="3" GridPane.rowIndex="1" alignment="center"/>
 				</GridPane>
         		<HBox fx:id="boxColButtons" styleClass="border" alignment="center">
         			<Button text="1" userData="0" maxHeight="20" maxWidth="30" styleClass="colButton" onMouseClicked="#handleColButton"/>

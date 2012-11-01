@@ -8,6 +8,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
 /**
+ * Hilfsklasse für Entwickler zur Ausgabe der Programmaktionen
  * 
  * @author Alexander Busch
  * 
@@ -49,9 +50,6 @@ public class Log {
 		logEnabled = true;
 	}
 	
-	/**
-	 * @param args
-	 */
 	public static Log getInstance() {
 		// Wenn noch kein Objekt besteht, Objekt erzeugen
 
@@ -64,7 +62,10 @@ public class Log {
 		return instance;
 
 	}
-	
+	/**
+	 * 
+	 * @param text Text welcher im Log angezeigt wird.
+	 */
 	public synchronized void write (String text) {
 		if(logEnabled){			
 			Date timestamp = new Date(System.currentTimeMillis());
@@ -72,7 +73,6 @@ public class Log {
 	        String zeitstempel = ausgabe.format(timestamp);
 			
 			LogEntry nachricht = new LogEntry(zeitstempel + " - " + text);
-			//System.out.println(nachricht);
 			//Muss im ApplicationThread laufen, weil durch Binding mit UI verbunden 
 			LogWorker worker = new LogWorker(nachricht);
 			Platform.runLater(worker);			
