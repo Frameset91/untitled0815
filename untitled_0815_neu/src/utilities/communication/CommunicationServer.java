@@ -22,6 +22,8 @@ public class CommunicationServer {
 	// Singleton Referenz
 	private static CommunicationServer singleton = null;
 	private int timeout;
+	private double WriteLatency = 0;
+	
 	/**
 	 * privater Konstruktor Erzeugung der Singletoninstanz
 	 */
@@ -110,6 +112,11 @@ public class CommunicationServer {
 	 */
 	public int getTimeout() {
 		return timeout;
+	}
+	
+	
+	public double getWriteLatency(){
+		return this.WriteLatency;
 	}
 
 	public boolean init(int timeout,String serverFilePath,char role){
@@ -291,9 +298,9 @@ public class CommunicationServer {
 				watermark = time[i];
 			}
 		}
-		double watermark_db = watermark/1000000;
+		this.WriteLatency = watermark/1000000;
 		
-		Log.getInstance().write("Der hoechste Wert zum schreiben ist: " + watermark_db);
+		Log.getInstance().write("Der hoechste Wert zum schreiben ist: " + this.WriteLatency + " ms");
 		
 	}
 
