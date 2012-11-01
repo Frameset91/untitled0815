@@ -98,9 +98,9 @@ public class GameController implements GameEventListener, Observer{
 		newGame(Constants.gamefieldcolcount, Constants.gamefieldrowcount);	
 		
 		//Communication Server nutzen?
-//		if(!isWithoutServer.get() && !isReplay.get()){
-//			comServ = CommunicationServer.getInstance();
-//		}
+		if(!isWithoutServer.get()){
+			CommunicationServer.getInstance().init(model.getTimeoutServer(), model.getPath(), model.getRole());
+		}
 		Log.getInstance().write("Controller: Spiel gestartet, FxThread:" + Platform.isFxApplicationThread());
 		properties[STATE_PROPERTY].set(Constants.STATE_GAME_RUNNING);
 	}
@@ -116,7 +116,7 @@ public class GameController implements GameEventListener, Observer{
 		
 		//ComServer starten
 		if(!isWithoutServer.get() && !isReplay.get()){
-			CommunicationServer.getInstance().enableReading(model.getTimeoutServer(), model.getPath(), model.getRole(),true);
+			CommunicationServer.getInstance().enableReading(true);
 		}
 		properties[STATE_PROPERTY].set(Constants.STATE_SET_RUNNING);		
 		
@@ -206,7 +206,7 @@ public class GameController implements GameEventListener, Observer{
 		    	}else{
 		    		kiwt = new KIWorkerThread(col);
 		    		kiwt.start();
-		    		Log.getInstance().write("Controller: KI Workerthread gestartet");
+		    		Log.getInstance().write("Controller: KI Workerthread wird gestartet");
 		    	}
 			}
 		}
@@ -317,8 +317,10 @@ public class GameController implements GameEventListener, Observer{
 		if(loadedSets != null && !isReplay.get()){
 			model.addSet(loadedSets[loadedSets.length-1]);
 			loadedMoves = DBConnection.getInstance().loadAllMoves(model.getID(), model.getLatestSet().getID());
-			for(Move move: loadedMoves){
-				model.addMove(move);
+			if(loadedMoves != null){
+				for(Move move: loadedMoves){
+					model.addMove(move);
+				}
 			}
 		}
 		
@@ -661,11 +663,12 @@ public class GameController implements GameEventListener, Observer{
 		 */
 		@Override
 		public void run() {
+			Log.getInstance().write("Controller: KI Workerthread läuft");
 			byte newCol = ki.calculateNextMove(oppMove);			
 			//Zug auf Server schreiben und Server wieder überwachen
 			if(!isWithoutServer.get()  && !isReplay.get()){
 				CommunicationServer.getInstance().writeMove(newCol, model.getPath(), model.getRole());
-				CommunicationServer.getInstance().enableReading(model.getTimeoutServer(), model.getPath(), model.getRole(), false);
+				CommunicationServer.getInstance().enableReading(false);
 			}
 			model.addMove(new Move(model.getRole(), newCol));
 		}		

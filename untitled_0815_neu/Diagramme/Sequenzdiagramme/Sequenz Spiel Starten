@@ -1,0 +1,19 @@
+#![Spiel starten]
+#!Anfang Deklaration
+Actor:Actor
+MainUIController:MainUIController[a]
+GameController:GameController [a]
+/Game:Game [a]
+DBConnection:DBConnection [a, r]
+/con:DBConnection [a]
+#! Ende Deklaration
+
+#! Anfang Aktionen
+Actor:MainUIController.SpielStarten
+MainUIController:GameController.startGame()
+GameController:GameController.newGame(...)
+GameController:Game=Game.new()
+GameController[1]:Game.save()
+Game:connection=DBConnection.getInstance()
+DBConnection:connection=con.new()
+Game:id=con.saveGame(this)
