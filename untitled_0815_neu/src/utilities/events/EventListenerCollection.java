@@ -1,11 +1,7 @@
 package utilities.events;
 
 import java.util.ArrayList;
-import test_utilities.*;
-
 import java.util.Iterator;
-
-import javafx.concurrent.Task;
 
 /**
  * Sicherung aller Event Listener
@@ -69,7 +65,7 @@ public class EventListenerCollection {
 	/**
 	 * Iterator für die Verarbeitung der Listener
 	 * 
-	 * @return
+	 * @return Iterator
 	 */
 	public Iterator<GameEventListener> iterator() {
 		return this.listeners.iterator();

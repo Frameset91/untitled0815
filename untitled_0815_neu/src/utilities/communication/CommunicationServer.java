@@ -8,9 +8,7 @@ package utilities.communication;
 import java.io.*;
 
 import utilities.Log;
-import utilities.events.EventDispatcher;
-import utilities.events.GameEvent;
-import utilities.events.GameEvent.Type;
+import utilities.events.*;
 
 public class CommunicationServer {
 	// Singleton Referenz
@@ -31,14 +29,14 @@ public class CommunicationServer {
 	 * 
 	 * @param type
 	 *            Typ des GameEvents
-	 * @param args
+	 * @param arguments
 	 *            Argumente, die zusätzlich mit dem GameEvent übergeben werden
 	 */
 
-	public void fireGameEvent(final GameEvent.Type type, final String arg) {
+	public void fireGameEvent(final GameEvent.Type type, final String arguments) {
 		Log.getInstance().write("GameEvent gefeuert: " + type.toString());
 
-		GameEvent event = new GameEvent(type, arg);
+		GameEvent event = new GameEvent(type, arguments);
 		try {
 			EventDispatcher.getInstance().triggerEvent(event);
 		} catch (Exception e) {
@@ -139,7 +137,7 @@ public class CommunicationServer {
 			// neuer Satz
 			if (this.newSet) {
 				if (old.exists()) {
-					ServerMessage msg = XmlParser.getInstance().readXML(old);
+					ServerMessage msg = XMLParser.getInstance().readXML(old);
 					if (msg.getSetstatus().equals("beendet")) {
 						old.delete();
 					}
@@ -244,7 +242,7 @@ public class CommunicationServer {
 			}
 		}
 		try {
-			msg = XmlParser.getInstance().readXML(serverFile);
+			msg = XMLParser.getInstance().readXML(serverFile);
 		} catch (Exception e) {
 			return null;
 		}

@@ -65,17 +65,23 @@ public class Set extends Observable{
 	/**
 	 * Methode zum Hinzufügen eines Zuges, falls die ID des Zuges nicht gesetzt ist (-1), wird eine ID vergeben (= Position in Liste)
 	 * @param move der einzufügende Zug
+	 * @return Ob Zug eingetragen wurde
 	 */
-	public synchronized void addMove(Move move){
+	public synchronized boolean addMove(Move move){
 		if(move.getID() == -1){
 			move.setID(moves.size()+1);
 		}
-		moves.add(move);
-		field.addMove(move);
-		setChanged();
-		isSaved = false;
-		Log.getInstance().write("Einen Move hinzugefügt");
-		notifyObservers("field");
+		if(field.addMove(move)){
+			moves.add(move);		
+			setChanged();
+			isSaved = false;
+			Log.getInstance().write("Einen Move hinzugefügt");
+			notifyObservers("field");
+			return true;
+		}else{
+			Log.getInstance().write("Move hinzufügen fehlgeschlagen");
+			return false;
+		}
 	}
 	
 	/**

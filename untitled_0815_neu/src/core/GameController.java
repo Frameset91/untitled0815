@@ -28,7 +28,7 @@ import javafx.collections.ObservableList;
 public class GameController implements GameEventListener, Observer{
 
 	private Game model;
-	private CommunicationServer comServ;
+//	private CommunicationServer comServ;
 	private KI ki;
 	private KIWorkerThread kiwt;
 
@@ -98,9 +98,9 @@ public class GameController implements GameEventListener, Observer{
 		newGame(Constants.gamefieldcolcount, Constants.gamefieldrowcount);	
 		
 		//Communication Server nutzen?
-		if(!isWithoutServer.get() && !isReplay.get()){
-			comServ = CommunicationServer.getInstance();
-		}
+//		if(!isWithoutServer.get() && !isReplay.get()){
+//			comServ = CommunicationServer.getInstance();
+//		}
 		Log.getInstance().write("Controller: Spiel gestartet, FxThread:" + Platform.isFxApplicationThread());
 		properties[STATE_PROPERTY].set(Constants.STATE_GAME_RUNNING);
 	}
@@ -116,7 +116,7 @@ public class GameController implements GameEventListener, Observer{
 		
 		//ComServer starten
 		if(!isWithoutServer.get() && !isReplay.get()){
-			comServ.enableReading(model.getTimeoutServer(), model.getPath(), model.getRole(),true);
+			CommunicationServer.getInstance().enableReading(model.getTimeoutServer(), model.getPath(), model.getRole(),true);
 		}
 		properties[STATE_PROPERTY].set(Constants.STATE_SET_RUNNING);		
 		
@@ -133,7 +133,7 @@ public class GameController implements GameEventListener, Observer{
 	public void endSet(byte oppMove){
 		Log.getInstance().write("Controller: beende Satz, FxThread:" + Platform.isFxApplicationThread());
 		if(!isWithoutServer.get()  && !isReplay.get()){
-			comServ.disableReading();
+			CommunicationServer.getInstance().disableReading();
 		}
 		if (oppMove > -1){
 			addOppMove(oppMove);					
@@ -195,17 +195,20 @@ public class GameController implements GameEventListener, Observer{
 	public void oppMove(byte col){
 		Log.getInstance().write("Controller: gegnerischen Zug empfangen, FxThread:" + Platform.isFxApplicationThread());
 		if(model.getLatestSet() != null && model.getLatestSet().getStatus() == Constants.STATE_SET_RUNNING){
-			if (col > -1){
-				addOppMove(col);					
+			
+//			if (col > -1){
+//				addOppMove(col);					
+//			}
+			if(addOppMove(col) || col < -1){	
+				//KI Workerthread starten
+		    	if(kiwt != null && kiwt.isAlive()){
+		    		Log.getInstance().write("Controller: Neuer oppMove obwohl KI Thread noch läuft!");
+		    	}else{
+		    		kiwt = new KIWorkerThread(col);
+		    		kiwt.start();
+		    		Log.getInstance().write("Controller: KI Workerthread gestartet");
+		    	}
 			}
-			//KI Workerthread starten
-		    if(kiwt != null && kiwt.isAlive()){
-		    	Log.getInstance().write("Controller: Neuer oppMove obwohl KI Thread noch läuft!");
-		    }else{
-				kiwt = new KIWorkerThread(col);
-				kiwt.start();
-				Log.getInstance().write("Controller: KI Workerthread gestartet");
-		    }
 		}
 	}
 	
@@ -421,11 +424,11 @@ public class GameController implements GameEventListener, Observer{
 	//-------------Hilfsmethoden 
 	
 	// Anhand der eigenen Rolle bestimme welche Rolle der Gegner hat und Zug entsprechend einfügen
-	private void addOppMove(byte col) {
+	private boolean addOppMove(byte col) {
 		if(model.getRole() == Constants.xRole)
-			model.addMove(new Move(Constants.oRole, col));
+			return model.addMove(new Move(Constants.oRole, col));
 		else
-			model.addMove(new Move(Constants.xRole, col));		
+			return model.addMove(new Move(Constants.xRole, col));		
 	}
 	
 	//neues Spiel mit einer bestimmten Spalten- und Zeilenanzahl
@@ -661,8 +664,8 @@ public class GameController implements GameEventListener, Observer{
 			byte newCol = ki.calculateNextMove(oppMove);			
 			//Zug auf Server schreiben und Server wieder überwachen
 			if(!isWithoutServer.get()  && !isReplay.get()){
-				comServ.writeMove(newCol, model.getPath(), model.getRole());
-				comServ.enableReading(model.getTimeoutServer(), model.getPath(), model.getRole(), false);
+				CommunicationServer.getInstance().writeMove(newCol, model.getPath(), model.getRole());
+				CommunicationServer.getInstance().enableReading(model.getTimeoutServer(), model.getPath(), model.getRole(), false);
 			}
 			model.addMove(new Move(model.getRole(), newCol));
 		}		

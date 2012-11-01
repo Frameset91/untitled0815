@@ -13,14 +13,14 @@ import org.w3c.dom.*;
  * @author Bjoern List
  * 
  */
-public class XmlParser {
+public class XMLParser {
 
-	private static XmlParser singleton = null;
+	private static XMLParser singleton = null;
 
 	/**
 	 * privater Konstruktor
 	 */
-	private XmlParser() {
+	private XMLParser() {
 
 	}
 	
@@ -28,9 +28,9 @@ public class XmlParser {
 	 * Liefert das Singleton Objekt zurück und erstellt es wenn notwendig
 	 * @return XmlParser singleton
 	 */
-	public static XmlParser getInstance() {
+	public static XMLParser getInstance() {
 		if (singleton == null) {
-			singleton = new XmlParser();
+			singleton = new XMLParser();
 		}
 		return singleton;
 

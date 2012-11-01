@@ -15,10 +15,10 @@ public class GameEvent {
 	private String arg;
 
 	/**
-	 * Neues Event erzeugen
+	 * Konstruktor für ein Event
 	 * 
-	 * @param name
-	 *            Event Type und weitere Argumente
+	 * @param t Type des Events
+	 * @param arg Zusatzangaben als String
 	 */
 	public GameEvent(Type t, String arg) {
 
