@@ -43,5 +43,11 @@ public class Constants {
 //	public static final String emptyToken = "-fx-fill: white; -fx-effect: innershadow(two-pass-box, grey, 10, 0.5, 0, 0);";
 //	
 	public static final int KImaxbewertung = 100000;
+	
+	public static final String FilenameServer_pre = "server2spieler";
+	public static final String FilenameServer_post = ".xml";
+	public static final String FilenameAgent_pre = "spieler";
+	public static final String FilenameAgent_post = "2server.txt";
+	
 
 }
