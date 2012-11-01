@@ -290,8 +290,9 @@ public class CommunicationServer {
 				watermark = time[i];
 			}
 		}
+		double watermark_db = watermark/1000000;
 		
-		Log.getInstance().write("Der hoechste Wert zum schreiben ist: " + watermark);
+		Log.getInstance().write("Der hoechste Wert zum schreiben ist: " + watermark_db);
 		
 	}
 
