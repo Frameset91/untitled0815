@@ -1,4 +1,4 @@
-package utilities.Events;
+package utilities.events;
 
 
 public class Event_Handler_Thread implements Runnable {

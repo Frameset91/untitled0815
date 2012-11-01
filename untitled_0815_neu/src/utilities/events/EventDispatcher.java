@@ -1,4 +1,4 @@
-package utilities.Events;
+package utilities.events;
 
 import test_utilities.*;
 /**

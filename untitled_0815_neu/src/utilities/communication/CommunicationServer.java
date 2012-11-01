@@ -8,9 +8,9 @@ package utilities.communication;
 import java.io.*;
 
 import utilities.Log;
-import utilities.Events.EventDispatcher;
-import utilities.Events.GameEvent;
-import utilities.Events.GameEvent.Type;
+import utilities.events.EventDispatcher;
+import utilities.events.GameEvent;
+import utilities.events.GameEvent.Type;
 
 public class CommunicationServer {
 	// Singleton Referenz

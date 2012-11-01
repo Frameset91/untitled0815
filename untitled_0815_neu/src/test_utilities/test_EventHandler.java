@@ -1,8 +1,8 @@
 package test_utilities;
 
-import utilities.Events.EventDispatcher;
-import utilities.Events.GameEvent;
-import utilities.Events.GameEventListener;
+import utilities.events.EventDispatcher;
+import utilities.events.GameEvent;
+import utilities.events.GameEventListener;
 
 public class test_EventHandler implements GameEventListener{
 private EventDispatcher disp;

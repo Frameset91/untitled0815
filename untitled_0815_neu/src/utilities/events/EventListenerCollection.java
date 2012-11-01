@@ -1,4 +1,4 @@
-package utilities.Events;
+package utilities.events;
 
 import java.util.ArrayList;
 import test_utilities.*;

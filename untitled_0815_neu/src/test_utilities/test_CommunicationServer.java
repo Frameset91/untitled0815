@@ -5,10 +5,10 @@ import java.io.FileReader;
 import java.io.FileWriter;
 
 import utilities.*;
-import utilities.Events.EventDispatcher;
-import utilities.Events.GameEvent;
-import utilities.Events.GameEventListener;
 import utilities.communication.CommunicationServer;
+import utilities.events.EventDispatcher;
+import utilities.events.GameEvent;
+import utilities.events.GameEventListener;
 import core.Constants;
 
 
