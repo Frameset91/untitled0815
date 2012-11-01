@@ -21,7 +21,7 @@
     			<MenuItem fx:id="menuSpielStarten" text="Spiel starten" onAction="#handleStartGame"/>
     			<MenuItem fx:id="menuSpielLaden" text="Spiel laden" onAction="#handleLoadGame"/>
     			<MenuItem fx:id="menuSpielBeenden" text="Spiel beenden" disable="true" onAction="#handleEndGame"/>
-    			<MenuItem fx:id="menuSchliessen" text="Schließen" onAction="#handleSchliessen"/>
+    			<MenuItem fx:id="menuSchliessen" text="Programm Schließen" onAction="#handleSchliessen"/>
     		</Menu>
     		<Menu text="Hilfe">
     			<MenuItem fx:id="LogAnzeigen" text="Log anzeigen" onAction="#handleLogAnzeigen"/>
@@ -110,8 +110,8 @@
    
     <center><!-- Mittlerer Bereich -->
         <!-- Spielflaeche -->
-    <VBox styleClass="game, border">
-        	<VBox fx:id="gameField" alignment="CENTER" styleClass="border" >
+    <VBox styleClass="game">
+        	<VBox fx:id="gameField" alignment="CENTER" spacing="10">
         		<GridPane styleClass="spieleranzeige, ueberschrift" hgap="15" vgap="15" alignment="center">
         		<!-- maxWidth="175" -->
         			<Label fx:id="labelOwn" text="untitled0815:" GridPane.halignment="center" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
@@ -124,7 +124,7 @@
         			<Label text=":" GridPane.halignment="center" GridPane.columnIndex="2" GridPane.rowIndex="1"/>
         			<Label fx:id="punkteGegner" text="0" GridPane.halignment="center" GridPane.columnIndex="3" GridPane.rowIndex="1" alignment="center"/>
 				</GridPane>
-        		<HBox fx:id="boxColButtons" styleClass="border" alignment="center">
+        		<!--<HBox fx:id="boxColButtons" styleClass="border" alignment="center">
         			<Button text="1" userData="0" maxHeight="20" maxWidth="30" styleClass="colButton" onMouseClicked="#handleColButton"/>
         			<Button text="2" userData="1" maxHeight="20" maxWidth="30" styleClass="colButton" onMouseClicked="#handleColButton"/>
         			<Button text="3" userData="2" maxHeight="20" maxWidth="30" styleClass="colButton" onMouseClicked="#handleColButton"/>
@@ -132,14 +132,14 @@
         			<Button text="5" userData="4" maxHeight="20" maxWidth="30" styleClass="colButton" onMouseClicked="#handleColButton"/>
         			<Button text="6" userData="5" maxHeight="20" maxWidth="30" styleClass="colButton" onMouseClicked="#handleColButton"/>
         			<Button text="7" userData="6" maxHeight="20" maxWidth="30" styleClass="colButton" onMouseClicked="#handleColButton"/>
-        		</HBox>
+        		</HBox>-->
         		<GridPane fx:id="feld" hgap="3" vgap="3" styleClass="field" maxWidth="10"/>
-        		<HBox alignment="center">
-        			<Button text="Zurück" fx:id="btnRemoveMove" onMouseClicked="#handleRemoveMove"></Button>
-        			<Button text="Vor" fx:id="btnNextMove" onMouseClicked="#handleNextMove"></Button>
+        		<HBox alignment="center" spacing="10">
+        			<Button text="Zurück" fx:id="btnRemoveMove" minWidth="70" onMouseClicked="#handleRemoveMove"></Button>
+        			<Button text="Vor" fx:id="btnNextMove" minWidth="70" onMouseClicked="#handleNextMove"></Button>
         		</HBox>
         	</VBox>
-        	    <HBox alignment="TOP_LEFT" styleClass="border">
+        	    <HBox alignment="center">
         		<Label text="Status:" styleClass="statusanzeige" />
         		<Label fx:id="satzstatus" text="Status" styleClass="statusanzeige"/>
        		</HBox>
