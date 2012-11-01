@@ -1,4 +1,4 @@
-package utilities;
+package utilities.Events;
 
 /**
  * Event klasse
