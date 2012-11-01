@@ -32,6 +32,7 @@ public class GameController implements GameEventListener, Observer{
 //	private CommunicationServer comServ;
 	private KI ki;
 	private KIWorkerThread kiwt;
+	private boolean myTurn;
 
 	//Konstanten für Zugriff auf Property Array
 	public final int ROLE_PROPERTY = 0;
@@ -75,6 +76,8 @@ public class GameController implements GameEventListener, Observer{
 				field[i][j] = new SimpleStringProperty(); 
 			}
 		}
+		
+		myTurn = false;
 		
 		properties = new SimpleStringProperty[12];
 		for(int i = 0; i < properties.length; i++){
@@ -204,20 +207,23 @@ public class GameController implements GameEventListener, Observer{
 	 */	
 	public void oppMove(byte col){
 		Log.getInstance().write("Controller: gegnerischen Zug empfangen, FxThread:" + Platform.isFxApplicationThread());
-		if(model.getLatestSet() != null && model.getLatestSet().getStatus() == Constants.STATE_SET_RUNNING){
-			
-//			if (col > -1){
-//				addOppMove(col);					
-//			}
-			if(addOppMove(col) || col == -1){	
-				//KI Workerthread starten
-		    	if(kiwt != null && kiwt.isAlive()){
-		    		Log.getInstance().write("Controller: Neuer oppMove obwohl KI Thread noch läuft!");
-		    	}else{
-		    		kiwt = new KIWorkerThread(col);
-		    		kiwt.start();
-		    		Log.getInstance().write("Controller: KI Workerthread wird gestartet");
-		    	}
+		//nächsten Gegnerzug verhindern, falls bereits gültig gesetzt wurde oder Startzug (-1), AUßER: Bei Spiel mit Server Gegnerzüger immer zulassen
+		if(!myTurn || !isWithoutServer.get()){			
+			if(model.getLatestSet() != null && model.getLatestSet().getStatus() == Constants.STATE_SET_RUNNING){
+				myTurn = addOppMove(col);
+				if(col == -1)
+					myTurn = true;
+				//Falls mit Server -> Gegnerzug unabhängig von Gültigkeit -> Gegenzug
+				if(myTurn || !isWithoutServer.get()){	
+					//KI Workerthread starten
+			    	if(kiwt != null && kiwt.isAlive()){
+			    		Log.getInstance().write("Controller: Neuer oppMove obwohl KI Thread noch läuft!");
+			    	}else{
+			    		kiwt = new KIWorkerThread(col);
+			    		kiwt.start();
+			    		Log.getInstance().write("Controller: KI Workerthread wird gestartet");
+				    }
+				}
 			}
 		}
 	}
@@ -325,7 +331,9 @@ public class GameController implements GameEventListener, Observer{
 		});	
 		//Falls kein Replay -> letzten Satz anzeigen  (zum weiterspielen)
 		if(loadedSets != null && !isReplay.get()){
-			model.addSet(loadedSets[loadedSets.length-1]);
+			for(Set set: loadedSets){
+				model.addSet(set);
+			}
 			loadedMoves = DBConnection.getInstance().loadAllMoves(model.getID(), model.getLatestSet().getID());
 			if(loadedMoves != null){
 				for(Move move: loadedMoves){
@@ -695,6 +703,7 @@ public class GameController implements GameEventListener, Observer{
 				CommunicationServer.getInstance().enableReading(false);
 			}
 			model.addMove(new Move(model.getRole(), newCol));
+			myTurn = false;
 		}		
 	}
 }
