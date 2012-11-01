@@ -319,10 +319,8 @@ public class DBConnection {
 			// Daten aus DB laden
 			String srole = "";
 	        String soppName = "";
-	        @SuppressWarnings("unused")
-			String sownPoints = ""; //wird nur zur Überprüfung gebraucht
-	        @SuppressWarnings("unused")
-			String soppPoints = ""; //wird nur zur Überprüfung gebraucht
+			String sownPoints = ""; 
+			String soppPoints = ""; 
 	        String spath = "";
 	        String stimeServer = "";
 	        String stimeDraw = "";
@@ -351,6 +349,8 @@ public class DBConnection {
 			//in game übernehmen
 			int timeServer;
 			int timedraw;
+			int ownpoints;
+			int opppoints;
 			
 			char role = srole.charAt(0);
 			String oppname = soppName; 
@@ -362,10 +362,16 @@ public class DBConnection {
 				timedraw = Integer.valueOf(stimeDraw);
 			}else timedraw = 0;
 			String ownname = sownname;
+			if (sownPoints != null){
+				ownpoints = Integer.valueOf(sownPoints);
+			} else ownpoints = 0;
+			if (soppPoints != null){
+				opppoints = Integer.valueOf(soppPoints);
+			} else opppoints = 0;
 			int columns = Constants.gamefieldcolcount;
 			int rows = Constants.gamefieldrowcount;
 			
-			Game game = new Game(columns, rows, role, oppname, ownname, path, timeServer, timedraw, gameID);
+			Game game = new Game(columns, rows, role, oppname, ownname, path, timeServer, timedraw, gameID, opppoints, ownpoints);
 			
 			return game;
 		}else
@@ -386,6 +392,8 @@ public class DBConnection {
 			int id;
 			int timeServer;
 			int timedraw;
+			int opppoints;
+			int ownpoints;
 			
 			String sql = "SELECT * FROM game ORDER BY gameID DESC;"; 
 			ResultSet rs = this.sendSelectStatementInternal(sql);
@@ -397,10 +405,8 @@ public class DBConnection {
 					String sID = rs.getString(1);
 			        String srole = rs.getString(2);
 			        String soppName = rs.getString(3);
-			        @SuppressWarnings("unused")
-					String sownPoints = rs.getString(4); // wird nur zur Überprüfung im Debug-Mode gebracuht
-			        @SuppressWarnings("unused")
-					String soppPoints = rs.getString(5); // wird nur zur überprüfung im Debug-Mode gebraucht
+					String sownPoints = rs.getString(4); 
+					String soppPoints = rs.getString(5); 
 			        String spath = rs.getString(6);
 			        String stimeServer = rs.getString(7);
 			        String stimeDraw = rs.getString(8);
@@ -420,11 +426,17 @@ public class DBConnection {
 						timedraw = Integer.valueOf(stimeDraw);
 					}else timedraw = 0;
 					String ownname = sownname;
+					if (sownPoints != null){
+						ownpoints = Integer.valueOf(sownPoints);
+					} else ownpoints = 0;
+					if (soppPoints != null){
+						opppoints = Integer.valueOf(soppPoints);
+					} else opppoints = 0;
 					int columns = Constants.gamefieldcolcount;
 					int rows = Constants.gamefieldrowcount;
 			        
 			        // Game an die Liste hängen
-			        Game newGame = new Game (columns, rows, role, oppname, ownname, path, timeServer, timedraw, id);
+			        Game newGame = new Game (columns, rows, role, oppname, ownname, path, timeServer, timedraw, id, opppoints, ownpoints);
 			        allGameList.add(newGame);
 				}//while
 				log.write("Anzahl der geladenen Games: "+ ctr);
