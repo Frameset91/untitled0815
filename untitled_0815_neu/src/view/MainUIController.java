@@ -348,16 +348,14 @@ public class MainUIController implements Initializable{
 		case Constants.STATE_APP_RUNNING:
 			gameSettings.disableProperty().set(false);
 			gameField.disableProperty().set(true);
-//			btnNewSet.disableProperty().set(true);
-//			btnEndSet.disableProperty().set(true);
 			btnEndGame.disableProperty().set(true);
 			setSettings.disableProperty().set(true);
 			break;
 		case Constants.STATE_SET_ENDED:	
 			gameSettings.disableProperty().set(true);
 			gameField.disableProperty().set(false);
-			btnNewSet.disableProperty().set(true);
-			btnEndSet.disableProperty().set(true);
+//			btnNewSet.disableProperty().set(true);
+//			btnEndSet.disableProperty().set(true);
 			btnEndGame.disableProperty().set(true);
 			if(!viewModel.isReplay().get()) showConfirmWinner();
 			break;
@@ -371,7 +369,7 @@ public class MainUIController implements Initializable{
 		case Constants.STATE_GAME_RUNNING:
 			gameSettings.disableProperty().set(true);
 			gameField.disableProperty().set(true);
-//			btnNewSet.disableProperty().set(false);
+			btnNewSet.disableProperty().set(false);
 			setSettings.disableProperty().set(false);
 			btnEndSet.disableProperty().set(true);
 			btnEndGame.disableProperty().set(false);

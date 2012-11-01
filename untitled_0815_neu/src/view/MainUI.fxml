@@ -93,7 +93,7 @@
        				<Button fx:id="btnEndSet" text="Satz abbrechen" onMouseClicked="#handleEndSet"/>
        			</VBox>
        			<VBox spacing="5">
-       				<Label text="Statistik"/>
+       				<Label text="Spiel-Statistik"/>
        				<TableView fx:id="tableStatistic" maxHeight="100" maxWidth="150">
        					<columns>
        						<TableColumn fx:id="tableColumnSet" text="Satznr." maxWidth="50"/>
