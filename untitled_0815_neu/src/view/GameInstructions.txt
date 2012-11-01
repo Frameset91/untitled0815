@@ -1,0 +1,28 @@
+Bevor das Spiel beginnt, muss der Benutzer die Wahl treffen, ob die KI gegen den Server spielt [A], der Spieler gegen die KI spielt [B] oder ein Spielstand geladen werden soll [C].
+
+[A] KI gegen Server
+1.	Deine Rolle: Wählen Sie Ihre Rolle aus (X – Rot oder O – Gelb).
+2.	Ohne Server spielen: Lassen Sie das Feld „ohne Server spielen“ deaktiviert.
+3.	Dein Name: Tragen Sie ihren Namen ein.
+4.	Gegner: Tragen Sie den gegnerischen Namen ein.
+5.	Verzeichnispfad: Tragen Sie den Verzeichnispfad, in welchem sich die Serverdatei befindet, ein oder wählen Sie ihn über einen Klick auf „…“ aus.
+6.	Timeout File-Abfrage: Tragen Sie den Wert ein, in welchen Abständen nach neuen Serverdaten abgefragt werden darf (oder erhöhen/mindern sie mit + oder -).
+7.	Timeout Zugzeit: Tragen Sie den Wert ein, wie lange der Agent Zeit hat, um seinen Zug durchzuführen (oder erhöhen/mindern sie mit + oder -).
+8.	Log aktiv: Wählen Sie aus, ob die Spielaktionen dokumentiert werden sollen.
+9.	Spiel starten: Drücken Sie nun „Spiel starten“ um mit dem Spiel zu beginnen. Die Einstellungen werden übernommen und fixiert.
+10.	Satz spielen: Klicken sie nun auf „neuen Satz spielen“ um den Agenten in Bereitschaft zu versetzen.
+
+[B] Spieler gegen KI
+1.	Deine Rolle: Wählen Sie ihre Rolle (X – Rot oder O – Gelb).
+2.	Ohne Server spielen: Wählen Sie das Feld an.
+3.	Dein Name: Tragen Sie ihren Namen ein.
+4.	Timeout Zugzeit: Tragen Sie den Wert ein, wie lange der Agent Zeit hat, um seinen Zug durchzuführen (oder erhöhen/mindern sie mit + oder -).
+5.	Log aktiv: Wählen Sie aus, ob die Spielaktionen dokumentiert werden sollen.
+6.	Spiel starten: Drücken Sie nun „Spiel starten“ um mit dem Spiel zu beginnen. Die Einstellungen werden übernommen und fixiert.
+7.	Neuen Satz spielen: Klicken sie nun auf „neuen Satz spielen“ um den Satz zu beginnen.
+8.	Um einen Stein zu platzieren, klicken Sie auf die jeweilige Position, Spalte oder auf den Button mit der Spaltennummer.
+
+[C] Spielstand laden
+1.	Klicken Sie auf die Schaltfläche „Spiel laden“
+2.	Wählen Sie ein entsprechendes Spiel aus.
+3.	Wählen Sie die Option Wiederholung manuell abspielen, wenn Sie das Spiel Schritt für Schritt wiederholen lassen möchten.

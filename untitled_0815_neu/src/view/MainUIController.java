@@ -1,6 +1,9 @@
 package view;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.net.URL;
 import java.util.ResourceBundle;
 
@@ -624,7 +627,7 @@ public class MainUIController implements Initializable{
 		//Fenster mit Steuerung öffnen
 		final Stage stageSteuerung = new Stage();
 		Group rootSteuerung = new Group();
-		Scene sceneSteuerung = new Scene(rootSteuerung, 400,400, Color.WHITESMOKE);
+		Scene sceneSteuerung = new Scene(rootSteuerung, 700,600, Color.WHITESMOKE);
 		stageSteuerung.setScene(sceneSteuerung);
 		stageSteuerung.centerOnScreen();
 		stageSteuerung.show();
@@ -633,14 +636,34 @@ public class MainUIController implements Initializable{
 		ueberschrift.setFill(Color.BLACK);
 		ueberschrift.setEffect(new Lighting());
 		ueberschrift.setFont(Font.font(Font.getDefault().getFamily(), 20));
-		Label text = new Label("Ententententententententententententente");
+		TextArea area = new TextArea();
+		File instructions = new File("bin/view/GameInstructions.txt");
+		FileReader fr;
+		try {
+			fr = new FileReader(instructions);
+			BufferedReader br = new BufferedReader(fr);
+			String line="";
+			String text="";
+			while((line = br.readLine())!=null){
+				text = text + "\n \r" + line;
+			}
+			area.setText(text);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		area.setMinWidth(700);
+		area.setMinHeight(500);
+		area.editableProperty().set(false);
+		area.setWrapText(true);
 		Button close = new Button("Schließen");
 		close.setOnAction(new EventHandler<ActionEvent>(){
 			public void handle(ActionEvent close){
 				stageSteuerung.close();
 			}});
-		VBox textUndButton = new VBox(100);
-		textUndButton.getChildren().addAll(ueberschrift,text, close);
+		VBox textUndButton = new VBox(20);
+		textUndButton.setAlignment(Pos.CENTER);
+		textUndButton.getChildren().addAll(ueberschrift, area, close);
 		rootSteuerung.getChildren().add(textUndButton);
 	}
 	
