@@ -389,6 +389,7 @@ public class MainUIController implements Initializable{
 		Scene sceneConfirm = new Scene(rootConfirm, 500,180, Color.WHITESMOKE);
 		stageConfirmWinner.setScene(sceneConfirm);
 		stageConfirmWinner.centerOnScreen();
+		stageConfirmWinner.initModality(Modality.APPLICATION_MODAL); 
 		stageConfirmWinner.show();
 		
 		stageConfirmWinner.setOnCloseRequest(new EventHandler<WindowEvent>(){
