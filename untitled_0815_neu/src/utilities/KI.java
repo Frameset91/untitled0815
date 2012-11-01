@@ -29,7 +29,7 @@ public class KI{
 	private ArrayList<Byte> moeglichezuege;
 	
 
-	public KI(Game currentgame){
+	public KI(Game currentgame, int timeout){
 		gameobject = currentgame;
 		moeglichezuege = new ArrayList<Byte>(0);
 		for (Byte i=0; i < Constants.gamefieldcolcount; i++)

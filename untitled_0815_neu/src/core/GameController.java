@@ -110,7 +110,11 @@ public class GameController implements GameEventListener, Observer{
 	 */
 	public void startSet(){
 		Log.getInstance().write("Controller: starte Satz, FxThread:" + Platform.isFxApplicationThread());
-		ki = new KI(model);
+		
+//		int buffer = 2*CommunicationServer.getInstance().getWriteLatencie();		
+		int buffer = 100;
+		
+		ki = new KI(model, model.getTimeoutDraw() - buffer);
 		
 		model.newSet().setStatus(Constants.STATE_SET_RUNNING);
 		
@@ -669,7 +673,8 @@ public class GameController implements GameEventListener, Observer{
 		@Override
 		public void run() {
 			Log.getInstance().write("Controller: KI Workerthread läuft");
-			byte newCol = ki.calculateNextMove(oppMove);			
+			byte newCol = ki.calculateNextMove(oppMove);	
+			Log.getInstance().write("Controller: Neuer Zug berechnet");
 			//Zug auf Server schreiben und Server wieder überwachen
 			if(!isWithoutServer.get()  && !isReplay.get()){
 				CommunicationServer.getInstance().writeMove(newCol, model.getPath(), model.getRole());

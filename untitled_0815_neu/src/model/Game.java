@@ -51,6 +51,8 @@ public class Game extends Observable implements Observer{
 		this.path = path;
 		this.timeoutServer = timeoutServer;
 		this.timeoutDraw = timeoutDraw;
+		this.oppPoints = 0;
+		this.ownPoints = 0;
 		sets = new ArrayList<Set>();
 		ID = -1;
 		isSaved = false;
