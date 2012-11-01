@@ -38,6 +38,7 @@ public class Set extends Observable{
 		moves = new ArrayList<Move>();
 		winner = Constants.noRole;
 		isSaved = false;
+		status = "";
 	}
 	
 	/**
