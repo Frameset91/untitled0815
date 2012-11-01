@@ -6,7 +6,7 @@
 }
 
 .settings{
-	-fx-background-color: #accbf9;
+	-fx-background-color: #0dbd0d;
 	-fx-border-width: 2;
 	-fx-border-color: #297fd5;
 }
@@ -23,13 +23,15 @@
 
 .token{
 	-fx-background-color: white;
-	-fx-background-radius: 20;
+	-fx-background-radius: 30;
 	-fx-font-size: 15;
 	-fx-effect: innershadow(gaussian, grey, 10, 0.5, 0, 0);
 	-fx-alignment: center;
 	-fx-font-weight: bold;
 	-fx-text-fill: RGB(100,100,100,0.5);
 }
+
+. 
 
 .token-yellow{
 	-fx-fill: yellow;
@@ -52,8 +54,11 @@
 }
 
 .timeoutButton{
-	-fx-font-size: 9;
-	-fx-text-alignment: left;
+	-fx-font-size: 14;
+}
+
+.timeoutButton2{
+	-fx-font-size: 16;
 }
 
 .colButton{
@@ -77,12 +82,21 @@
 	-fx-font-weight: bold;
 }
 
+.status{
+	-fx-padding: 20;
+	-fx-font-size: 15;
+	-fx-font-weight: bold;
+	-fx-font-color: #666666;
+}
+
 .statusanzeige{
 	-fx-padding: 20;
 	-fx-font-size: 15;
 	-fx-font-weight: bold;
+	-fx-font-style: italic;
 }
 
-.confirmWinner{
-	
+.btnTimeout{
+	-fx-padding: 3 5 3 5;
+    -fx-font-size: 14px;
 }
