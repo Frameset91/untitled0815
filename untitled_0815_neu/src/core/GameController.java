@@ -613,6 +613,7 @@ public class GameController implements GameEventListener, Observer{
 		properties[OPPTOKEN_PROPERTY].set(String.valueOf(Constants.oRole));
 		properties[OWNTOKEN_PROPERTY].set(String.valueOf(Constants.xRole));		
 		properties[STATE_PROPERTY].set(Constants.STATE_APP_RUNNING);
+		properties[PATH_PROPERTY].set("");
 		properties[WINNER_PROPERTY].set(String.valueOf(Constants.noRole));
 		properties[WINNER_PROPERTY].addListener(new ChangeListener<String>() {
 			@Override
