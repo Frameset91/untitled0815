@@ -13,7 +13,7 @@
 
 
 <!-- BorderPane zum Anordnen -->   
-<BorderPane xmlns:fx="http://javafx.com/fxml" fx:id="borderPane" stylesheets="view/MainUIStyle.css" fx:controller="view.MainUIController"><!-- prefHeight="200" prefWidth="320"  -->
+<BorderPane xmlns:fx="http://javafx.com/fxml" fx:id="borderPane" stylesheets="view/MainUIStyle.css" fx:controller="view.MainUIController" prefWidth="900"><!-- prefHeight="200" prefWidth="320"  -->
     <!-- Oberer Bereich: Menu-Bar -->
     <top>
     	<MenuBar minWidth="820">
@@ -48,14 +48,14 @@
         			<Label text="Verzeichnispfad:" GridPane.columnIndex="0" GridPane.rowIndex="5"/>
         			<Label text="Timeout File-Abfrage" GridPane.columnIndex="0" GridPane.rowIndex="6"></Label>
         			<Label text="Timeout Zugzeit:" GridPane.columnIndex="0" GridPane.rowIndex="7"/>
-        			<Button fx:id="spielStarten" text="Spiel starten" onAction="#handleStartGame" GridPane.columnIndex="0" GridPane.rowIndex="8"/>
-         			<Button fx:id="btnLoadGame" text="Spiel laden" onAction="#handleLoadGame" GridPane.columnIndex="1" GridPane.rowIndex="8"/>
+        			<Button fx:id="spielStarten" minWidth="100" text="Spiel starten" onAction="#handleStartGame" GridPane.columnIndex="0" GridPane.rowIndex="8"/>
+         			<Button fx:id="btnLoadGame" minWidth="100" text="Spiel laden" onAction="#handleLoadGame" GridPane.columnIndex="1" GridPane.rowIndex="8"/>
          		<!-- Rechte Spalte -->	
          			<!-- Rolle definieren -->
-        			<ChoiceBox fx:id="rolle" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+        			<ChoiceBox fx:id="rolle" styleClass=".choice" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
         			<!-- Spielstand einstellen -->
         			<HBox GridPane.columnIndex="1" GridPane.rowIndex="2" styleClass="textfeld">
-        				<CheckBox fx:id="cbWithoutServer" maxWidth="30" selected="false"/>
+        				<CheckBox fx:id="cbWithoutServer" maxWidth="30" selected="false" styleClass=".choice"/>
         			</HBox>
         			<!-- Eingabefelder fuer Gegner und Verzeichnis -->
         			<TextField fx:id="ownName" maxWidth="150" GridPane.columnIndex="1" GridPane.rowIndex="3" styleClass="textfeld"/>
@@ -65,25 +65,21 @@
         				<Button fx:id="btnDirectory" text="..." onAction="#handleChooseDirectory"/>
         			</HBox>
         			<!-- Timeout File-Abfrage -->
- 		       		<HBox fx:id="boxTimeoutServer" GridPane.columnIndex="1" GridPane.rowIndex="6"><!-- spacing="5" -->
+ 		       		<HBox fx:id="boxTimeoutServer" spacing="2" GridPane.columnIndex="1" GridPane.rowIndex="6">
+        				<Button text="-" styleClass="windows7" minHeight="25" minWidth="23" maxWidth="23" onMouseClicked="#handleRunter1"/>
         				<TextField fx:id="timeoutAbfrage" maxWidth="60" text="300" styleClass="textfeld"/>
-        				<VBox>
-        					<Button text="+" maxHeight="16" maxWidth="23" styleClass="timeoutButton" onMouseClicked="#handleHoch1"/>
-        					<Button text="-" maxHeight="16" maxWidth="23" styleClass="timeoutButton" onMouseClicked="#handleRunter1"/>
-        				</VBox>
+       					<Button text="+" styleClass="windows7" minHeight="25" minWidth="23" maxWidth="23" onMouseClicked="#handleHoch1"/>
        	 				<Label text="ms"/>
         			</HBox>
         			<!-- Timeout Zugzeit -->
-        			<HBox fx:id="boxTimeoutDraw" GridPane.columnIndex="1" GridPane.rowIndex="7"> <!-- spacing="5" -->
+        			<HBox fx:id="boxTimeoutDraw" spacing="2" GridPane.columnIndex="1" GridPane.rowIndex="7">
+        			    <Button text="-" styleClass="windows7" minHeight="25" minWidth="23" maxWidth="23" onMouseClicked="#handleRunter2"/>
         				<TextField fx:id="timeoutZugzeit" maxWidth="60" text="2000" styleClass="textfeld"/>
-        				<VBox> <!-- Hoch/Runter -->
-        					<Button text="+" maxHeight="16" maxWidth="23" styleClass="timeoutButton" onMouseClicked="#handleHoch2"/>
-        					<Button  text="-" maxHeight="16" maxWidth="23" styleClass="timeoutButton" onMouseClicked="#handleRunter2"/>
-        				</VBox>
+        				<Button text="+" styleClass="windows7" minHeight="25" minWidth="23" maxWidth="23" onMouseClicked="#handleHoch2"/>	
         				<Label text="ms"/>
         			</HBox>        			
         		</GridPane><!--Button Spiel beenden noch einrücken-->
-        		<Button text="Spiel beenden" fx:id="btnEndGame" onAction="#handleEndGame" alignment="CENTER"/>
+        		<Button text="Spiel beenden" fx:id="btnEndGame" onAction="#handleEndGame" alignment="CENTER" minWidth="100"/>
         	</VBox>
         	<!-- Einstellungen für Sätze -->
         	<HBox fx:id="setSettings" spacing="20"  styleClass="settings">
@@ -139,7 +135,7 @@
         		</HBox>
         	</VBox>
         	    <HBox alignment="center">
-        		<Label text="Status:" styleClass="statusanzeige" />
+        		<Label text="Status:" styleClass="status" textFill="gray"/>
         		<Label fx:id="satzstatus" text="Status" styleClass="statusanzeige"/>
        		</HBox>
 		</VBox>

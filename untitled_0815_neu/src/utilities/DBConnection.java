@@ -1,6 +1,8 @@
 package utilities;
 
 /**
+ * Zugriff auf die Datenbank erfolgt über die Singleton-Instanz dieser Klasse
+ * 
  * @author Henny
  * 
  */
@@ -12,12 +14,6 @@ import core.Constants;
 import model.Game;
 import model.Move;
 import model.Set;
-
-/**
- * TO DO: 
- * 
- *
- */
 
 public class DBConnection {
 	private static DBConnection singleton = null;
