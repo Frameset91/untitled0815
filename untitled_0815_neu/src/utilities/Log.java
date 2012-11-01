@@ -69,12 +69,12 @@ public class Log {
 	public synchronized void write (String text) {
 		if(logEnabled){			
 			Date timestamp = new Date(System.currentTimeMillis());
-			SimpleDateFormat ausgabe = new SimpleDateFormat("yyyy-MM-dd kk:mm:ss:S"); 
-	        String zeitstempel = ausgabe.format(timestamp);
+			SimpleDateFormat output = new SimpleDateFormat("yyyy-MM-dd kk:mm:ss:S"); 
+	        String timestampString = output.format(timestamp);
 			
-			LogEntry nachricht = new LogEntry(zeitstempel + " - " + text);
+			LogEntry message = new LogEntry(timestampString + " - " + text);
 			//Muss im ApplicationThread laufen, weil durch Binding mit UI verbunden 
-			LogWorker worker = new LogWorker(nachricht);
+			LogWorker worker = new LogWorker(message);
 			Platform.runLater(worker);			
 		}
 	}
