@@ -151,16 +151,16 @@ public class MainUIController implements Initializable{
 	public void initialize(URL arg0, ResourceBundle arg1) {
 		viewModel = new GameController();
 	
-		feld.minHeightProperty().set(265);
-		feld.minWidthProperty().set(308);
+		feld.minHeightProperty().set(265*1.5);
+		feld.minWidthProperty().set(300*1.5);
 		Label[][] spielfeld = new Label[Constants.gamefieldcolcount][Constants.gamefieldrowcount];
 		for (int i = 0; i < Constants.gamefieldcolcount; i++)
 	    {
 	      for (int j = 0; j < Constants.gamefieldrowcount; j++)
 	      {
 	        spielfeld[i][j] = new Label(" ");
-            spielfeld[i][j].prefHeightProperty().set(40);
-	        spielfeld[i][j].prefWidthProperty().set(40); 
+            spielfeld[i][j].prefHeightProperty().set(40*1.5);
+	        spielfeld[i][j].prefWidthProperty().set(40*1.5); 
 	        spielfeld[i][j].getStyleClass().add("token");
 	        spielfeld[i][j].styleProperty().bindBidirectional(viewModel.field()[i][Constants.gamefieldrowcount -1 -j], new StyleConverter());
 	        spielfeld[i][j].textProperty().bindBidirectional(viewModel.field()[i][Constants.gamefieldrowcount -1 -j], new TokenRoleConverter());
@@ -584,12 +584,13 @@ public class MainUIController implements Initializable{
 			final Stage stage = new Stage();
 			stage.initModality(Modality.APPLICATION_MODAL);
 			stage.setTitle("Achtung!");
+			stage.setResizable(false);
 			Group rootEinstellungen = new Group();
-			Scene scene = new Scene(rootEinstellungen, 250, 80, Color.WHITESMOKE);
+			Scene scene = new Scene(rootEinstellungen, 248, 80, Color.WHITESMOKE);
 			stage.setScene(scene);
 			stage.centerOnScreen();
 			Text text = new Text("Bitte alle Spieleinstellungen definieren!");
-			text.setFont(new Font(16));
+			text.setFont(new Font(13));
 			Button button = new Button("OK");
 			button.setOnAction(new EventHandler<ActionEvent>(){
 				public void handle(ActionEvent close){
@@ -599,6 +600,7 @@ public class MainUIController implements Initializable{
 			VBox vbox = new VBox(10);
 			vbox.setAlignment(Pos.CENTER);
 			vbox.setLayoutX(10);
+			vbox.setLayoutY(15);
 			vbox.getChildren().addAll(text, button);
 			rootEinstellungen.getChildren().add(vbox);
 			stage.show();
@@ -675,6 +677,7 @@ public class MainUIController implements Initializable{
 		Text text2 = new Text("Falls noch ein Satz oder Spiel läuft, kann dies zu Datenverlust führen.");
 		text.setFont(new Font(14));
 		text2.setFont(new Font(13));
+		text2.setFill(Color.rgb(187, 0, 0));
 		Button button = new Button("Beenden");
 		button.setOnAction(new EventHandler<ActionEvent>(){
 			public void handle(ActionEvent close){
@@ -705,6 +708,7 @@ public class MainUIController implements Initializable{
 	private void handleSteuerung(ActionEvent steuerung){
 		//Fenster mit Steuerung öffnen
 		final Stage stageSteuerung = new Stage();
+		stageSteuerung.setResizable(false);
 		Group rootSteuerung = new Group();
 		Scene sceneSteuerung = new Scene(rootSteuerung, 700,600, Color.WHITESMOKE);
 		stageSteuerung.setScene(sceneSteuerung);
@@ -784,6 +788,7 @@ public class MainUIController implements Initializable{
 		//Fenster mit Log öffnen
 		final Stage stageLog = new Stage();
 		stageLog.setTitle("Log");
+		stageLog.setResizable(false);
 		Group rootLog = new Group();
 		Scene sceneLog = new Scene(rootLog, 500,480, Color.WHITESMOKE);
 		stageLog.setScene(sceneLog);

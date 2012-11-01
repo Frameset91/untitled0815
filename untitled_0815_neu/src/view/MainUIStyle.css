@@ -6,7 +6,7 @@
 }
 
 .settings{
-	-fx-background-color: #accbf9;
+	-fx-background-color: #0dbd0d;
 	-fx-border-width: 2;
 	-fx-border-color: #297fd5;
 }
@@ -23,7 +23,7 @@
 
 .token{
 	-fx-background-color: white;
-	-fx-background-radius: 20;
+	-fx-background-radius: 30;
 	-fx-font-size: 15;
 	-fx-effect: innershadow(gaussian, grey, 10, 0.5, 0, 0);
 	-fx-alignment: center;
@@ -95,20 +95,8 @@
 	-fx-font-weight: bold;
 	-fx-font-style: italic;
 }
-.choiceBox{
-	-fx-background-color: yellow;
-        /* linear-gradient(#fcfcfc, #f3f3f3),*/
-        /* linear-gradient(#f2f2f2 0%, #ebebeb 49%, #dddddd 50%, #cfcfcf 100%);*/
-}
-.button {
-    -fx-background-color: 
-        #707070,
-        linear-gradient(#fcfcfc, #f3f3f3),
-        linear-gradient(#f2f2f2 0%, #ebebeb 49%, #dddddd 50%, #cfcfcf 100%);
-    -fx-background-insets: 0,1,2;
-    -fx-background-radius: 3,2,1;
+
+.btnTimeout{
 	-fx-padding: 3 5 3 5;
-    -fx-text-fill: black;
     -fx-font-size: 14px;
-    -fx-alignment: bottom-center;
 }
