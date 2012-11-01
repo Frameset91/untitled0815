@@ -13,6 +13,8 @@ import java.util.Observer;
 
 import model.*;
 import utilities.*;
+import utilities.communication.*;
+import utilities.events.*;
 
 import javafx.application.Platform;
 import javafx.beans.property.SimpleBooleanProperty;
@@ -136,8 +138,6 @@ public class GameController implements GameEventListener, Observer{
 		if (oppMove > -1){
 			addOppMove(oppMove);					
 		}
-		//TODO: TEST
-//		handleEvent(new GameEvent(GameEvent.Type.WinDetected, "1,1;2,2;3,3;4,4;"));
 		
 		Platform.runLater(new Runnable() {			
 			@Override
