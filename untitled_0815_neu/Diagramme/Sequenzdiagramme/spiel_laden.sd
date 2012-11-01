@@ -1,0 +1,36 @@
+#![Spiel laden]
+#!Anfang Deklaration
+Actor:Actor
+MainUIController:MainUIController[a,x]
+/Stage:Stage[a,x]
+GameController:GameController[a]
+DBConnClass:DBConnnection[r] "DBConnection"
+/DBCon:DBConnection [a,x]
+/Game:Game[a,x]
+
+Actor:MainUIController.handleLoadGame()
+MainUIController:=Stage.new()
+MainUIController:=MainUIController.bindGameTable()
+MainUIController[1]:Stage.show()
+MainUIController:Actor.showOldGames
+MainUIController:stop
+Actor:=MainUIController.setOnAction(gameID)
+MainUIController:Stage.close()
+Stage:close
+MainUIController[0]:GameController.loadGame(gameID)
+GameController:GameController.processGameLoad(gameID)
+GameController:Object=DBConnClass.getInstance()
+DBConnClass:=DBCon.new()
+GameController:Game=DBCon.loadGame(gameID)
+DBCon:=Game.new(args)
+GameController:Sets=DBCon.loadAllSets(gameID)	
+GameController:GameController.updateGui()
+[c:if kein Replay]
+GameController:Game.addSet(lastSet)
+GameController:Move[]=DBCon.loadAllMoves(gameID,lastSetID)
+[c: foreach Move]
+GameController:=Game.addmove(Move)
+[/c]
+[/c]
+GameController:=Game.setStatus(running)
+
