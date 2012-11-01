@@ -192,10 +192,10 @@ public class Game extends Observable implements Observer{
 	 */
 	public void discardLatestSet(){
 		if(sets.size() > 0){
-			sets.remove(sets.size()-1);	
+			sets.remove(sets.size()-1);				
 			calcPoints();
 			setChanged();
-			notifyObservers("sets");	
+			notifyObservers("sets");			
 		}
 	}
 	
@@ -221,6 +221,7 @@ public class Game extends Observable implements Observer{
 	 * Methode zum Speichern des Datenmodells
 	 */
 	public void save(){
+		calcPoints();
 		//In Datenbank speichern (Primarykey = GameID), erzeugte GameID an Sets weitergeben, ID speichern
 		if(ID == -1){
 			ID = DBConnection.getInstance().saveGame(this);
