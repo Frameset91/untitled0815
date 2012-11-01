@@ -11,6 +11,7 @@ import java.lang.Math;
 
 /**
  * Klasse enthält alle Methoden für die KI des Spiels
+ * 
  * @author Johannes Riedel
  */
 
@@ -549,7 +550,34 @@ public class KI{
 			watermark[oppMove]++;
 			if(watermark[oppMove]+1 >= Constants.gamefieldrowcount)
 				moeglichezuege.remove(moeglichezuege.indexOf(oppMove));
-			Bewertung(/*(byte) oppMove.getColumn()*/);
+			RatingResult bewertung = Bewertung(true);
+			// prüfe ob Gegner gewonnen
+			if(java.lang.Math.abs(bewertung.getRating())==Constants.KImaxbewertung)
+				{
+				String ausgabe = "";
+				for(Position onechip: bewertung.getWinningchips())
+					ausgabe += onechip + ";";
+				if(bewertung.getRating()==Constants.KImaxbewertung)
+					if(self)
+						ausgabe += Constants.xRole;
+					else
+						ausgabe += Constants.oRole;
+				else
+					if(self)
+						ausgabe += Constants.oRole;
+					else
+						ausgabe += Constants.xRole;
+				
+				Log.getInstance().write("Feuere WinDeteced-Event mit Parameter: " + ausgabe);
+				try {
+					EventDispatcher.getInstance().triggerEvent(new GameEvent(GameEvent.Type.WinDetected, ausgabe));
+					} 
+				catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+					}
+				return -1;
+				}
 			}
 		
 		//Random r = new Random();
@@ -616,6 +644,10 @@ public class KI{
 		if(watermark[col]+2 == Constants.gamefieldrowcount)
 			moeglichezuege.add(col);
 	}
+	
+	protected synchronized void setNextMove(){
+		// hi
+	} 
 
 
 }
