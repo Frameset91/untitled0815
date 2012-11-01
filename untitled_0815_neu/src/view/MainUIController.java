@@ -504,46 +504,10 @@ public class MainUIController implements Initializable{
 	private void handleStartGame(ActionEvent e){
 		int timeoutZ;
 		int timeoutF;
-//		try{
-//			timeoutZ = Integer.parseInt(timeoutZugzeit.getText());System.out.println(timeoutZ);
-//			timeoutF = Integer.parseInt(timeoutAbfrage.getText());System.out.println(timeoutF);
-//		}
-//		catch(NumberFormatException wrongTimeout){
-//			timeoutF=-1;
-//			timeoutZ=-1;
-//		}
-//		if (timeoutZ<=0 || timeoutF<=0 || timeoutZugzeit.getText().equals("") || timeoutAbfrage.getText().equals("")){
-//			final Stage stage = new Stage();
-//			stage.initModality(Modality.APPLICATION_MODAL);
-//			stage.setTitle("Achtung!");
-//			stage.setResizable(false);
-//			Group rootEinstellungen = new Group();
-//			Scene scene = new Scene(rootEinstellungen, 350, 90, Color.WHITESMOKE);
-//			scene.getStylesheets().add("view/MainUIStyle.css");
-//			stage.setScene(scene);
-//			stage.centerOnScreen();
-//			Text text = new Text("Ungültige Timeout-Zeiten!");
-//			text.getStyleClass().add("ueberschrift");
-//			Text text2 = new Text("Timeout-Zeiten müssen zwischen 1.000 und 10.000 ms liegen.");
-//			text.getStyleClass().add("ueberschrift2");
-//			Button button = new Button("OK");
-//			button.setOnAction(new EventHandler<ActionEvent>(){
-//				public void handle(ActionEvent close){
-//					stage.close();
-//				}
-//			});
-//			VBox vbox = new VBox(10);
-//			vbox.setAlignment(Pos.CENTER);
-//			vbox.setLayoutX(10);
-//			vbox.getChildren().addAll(text, text2, button);
-//			rootEinstellungen.getChildren().add(vbox);
-//			stage.show();
-//		}
-//		else{
 		if (((rolle.getValue() != null && oppName.getText() != null && ownName.getText() != null && verzeichnispfad.getText() != null && !verzeichnispfad.getText().equals("") && !oppName.getText().equals("") && !ownName.getText().equals("")) || (viewModel.isWithoutServer().get() && oppName.getText() != null))){
 			try{
-				timeoutZ = Integer.parseInt(timeoutZugzeit.getText());System.out.println(timeoutZ);
-				timeoutF = Integer.parseInt(timeoutAbfrage.getText());System.out.println(timeoutF);
+				timeoutZ = Integer.parseInt(timeoutZugzeit.getText());
+				timeoutF = Integer.parseInt(timeoutAbfrage.getText());
 			}
 			catch(Exception wrongTimeout){
 				timeoutF=-1;

@@ -52,7 +52,7 @@
          			<Button fx:id="btnLoadGame" minWidth="100" text="Spiel laden" onAction="#handleLoadGame" GridPane.columnIndex="1" GridPane.rowIndex="8"/>
          		<!-- Rechte Spalte -->	
          			<!-- Rolle definieren -->
-        			<ChoiceBox fx:id="rolle" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+        			<ChoiceBox fx:id="rolle" style="-fx-text-fill: green" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
         			<!-- Spielstand einstellen -->
         			<HBox GridPane.columnIndex="1" GridPane.rowIndex="2" styleClass="textfeld">
         				<CheckBox fx:id="cbWithoutServer" maxWidth="30" selected="false" styleClass=".choice"/>
