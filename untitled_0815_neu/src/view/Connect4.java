@@ -29,7 +29,9 @@ public class Connect4 extends Application {
 		stage.setTitle("4 Gewinnt - untitled0815"); 
         Parent root = FXMLLoader.load(getClass().getResource("MainUI.fxml")); 
         stage.setScene(new Scene(root)); 
-        //stage.setResizable(false);	
+        //stage.setResizable(false);
+        stage.minWidthProperty().set(930);
+        stage.minHeightProperty().set(730);
         stage.show();
         
         /**
@@ -39,13 +41,14 @@ public class Connect4 extends Application {
         	public void handle(WindowEvent e){
         		final Stage closing = new Stage();
         		Group rootClosing = new Group();
-        		Scene sceneClosing = new Scene(rootClosing, 420,80, Color.WHITE);
+        		Scene sceneClosing = new Scene(rootClosing, 420, 120, Color.WHITE);
         		closing.setScene(sceneClosing);
         		closing.centerOnScreen();
         		Text text = new Text("Wollen Sie das Programm wirklich beenden?");
         		Text text2 = new Text("Falls noch ein Satz oder Spiel läuft, kann dies zu Datenverlust führen.");
         		text.setFont(new Font(14));
         		text2.setFont(new Font(13));
+        		text2.setFill(Color.rgb(187, 0, 0));
         		Button button = new Button("Beenden");
         		button.setOnAction(new EventHandler<ActionEvent>(){
         			public void handle(ActionEvent close){
