@@ -175,6 +175,8 @@ public class Game extends Observable implements Observer{
 		oppPoints = opp;
 		ownPoints = own;
 		isSaved = false;
+		setChanged();
+		notifyObservers("points");
 	}
 	
 	/**
