@@ -30,7 +30,7 @@ public class Connect4 extends Application {
         Parent root = FXMLLoader.load(getClass().getResource("MainUI.fxml")); 
         stage.setScene(new Scene(root)); 
         //stage.setResizable(false);
-        stage.minWidthProperty().set(850);
+        stage.minWidthProperty().set(930);
         stage.minHeightProperty().set(730);
         stage.show();
         

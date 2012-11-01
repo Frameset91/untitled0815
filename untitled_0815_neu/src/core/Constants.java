@@ -18,6 +18,7 @@ public class Constants {
 	public static final char winMarker = '!';
 	
 	public static final String defaultOwnName = "untitled0815";
+	public static final String defaultKIName = "Computer";
 	public static final String textTie = "Unentschieden";
 	
 	
