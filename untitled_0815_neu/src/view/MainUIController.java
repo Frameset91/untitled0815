@@ -225,7 +225,7 @@ public class MainUIController implements Initializable{
 				
 				if(cbWithoutServer.selectedProperty().get()){
 					labelOwnName.setText("Gegner: ");
-					ownName.setText("Computer");
+					ownName.setText(Constants.defaultKIName);
 					labelOppName.setText("Dein Name: ");
 				}else{
 					labelOwnName.setText("Dein Name: ");
@@ -491,12 +491,21 @@ public class MainUIController implements Initializable{
 		DirectoryChooser dc = new DirectoryChooser();
 		dc.setTitle("Pfad auswählen:");
 		String initial = "C:\\";
-		if(verzeichnispfad.getText() != null)
-			initial = verzeichnispfad.getText();
+		if(verzeichnispfad.getText() != null && verzeichnispfad.getText().equals("")){
+			try{
+			File f = new File(verzeichnispfad.getText());
+			if(f.exists()){
+				initial = verzeichnispfad.getText();
+			}
+			}catch(Exception ex){
+				
+			}
+		}
 		dc.setInitialDirectory(new File(initial));
-		File f = dc.showDialog(borderPane.getScene().getWindow());
-		if(f != null)
-			verzeichnispfad.setText(f.getPath());		
+		File fi = dc.showDialog(borderPane.getScene().getWindow());
+		if(fi != null){
+			verzeichnispfad.setText(fi.getPath());
+		}
 	}
 	
 	//Spiel starten gedrückt
