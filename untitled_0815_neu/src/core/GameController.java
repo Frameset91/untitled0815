@@ -628,7 +628,7 @@ public class GameController implements GameEventListener, Observer{
 			@Override
 			public void changed(ObservableValue<? extends String> arg0,
 					String arg1, String arg2) {
-				if(model.getLatestSet() != null)
+				if(model != null && model.getLatestSet() != null)
 					model.getLatestSet().setWinner(properties[WINNER_PROPERTY].get().charAt(0));}
 		});
 		
