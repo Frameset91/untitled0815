@@ -94,7 +94,7 @@
        			</VBox>
        			<VBox spacing="5">
        				<Label text="Spiel-Statistik"/>
-       				<TableView fx:id="tableStatistic" maxHeight="100" maxWidth="150">
+       				<TableView fx:id="tableStatistic" maxHeight="110" maxWidth="160">
        					<columns>
        						<TableColumn fx:id="tableColumnSet" text="Satznr." maxWidth="50"/>
        						<TableColumn fx:id="tableColumnWinner" text="Gewinner"/>

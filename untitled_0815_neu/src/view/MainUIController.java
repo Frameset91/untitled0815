@@ -181,7 +181,6 @@ public class MainUIController implements Initializable{
 		menuSpielStarten.disableProperty().bind(gameSettings.disableProperty());
 		menuSpielBeenden.disableProperty().bind(btnEndGame.disableProperty());
 		menuSpielLaden.disableProperty().bind(gameSettings.disableProperty());
-		menuSchliessen.disableProperty().bind(gameSettings.disabledProperty());
 		
 		//Rollen Auswahl
 //		rolle.valueProperty().bindBidirectional(viewModel.properties()[viewModel.ROLE_PROPERTY]);
@@ -583,7 +582,33 @@ public class MainUIController implements Initializable{
 	
 	@FXML
     // Menü: Schließen des Programms
-	private void handleSchliessen(ActionEvent close){System.exit(0);}
+	private void handleSchliessen(ActionEvent close){
+		final Stage closing = new Stage();
+		Group rootClosing = new Group();
+		Scene sceneClosing = new Scene(rootClosing, 620,120, Color.WHITESMOKE);
+		closing.setScene(sceneClosing);
+		closing.centerOnScreen();
+		Text text = new Text(20,40,"Wollen Sie das Programm wirklich beenden? Falls noch ein Satz oder Spiel läuft, kann dies zu Datenverlust führen.");
+		Text text2 = new Text(20,40,"Bitte das Programm über das Menü schließen.");
+		Button button = new Button("Beenden");
+		button.setOnAction(new EventHandler<ActionEvent>(){
+			public void handle(ActionEvent close){
+				System.exit(0);
+			}
+		});
+		Button button2 = new Button("Abbrechen");
+		button2.setOnAction(new EventHandler<ActionEvent>(){
+			public void handle(ActionEvent close){
+				closing.close();
+			}
+		});
+		VBox vbox = new VBox(10);
+		vbox.getChildren().addAll(text, text2, button, button2);
+		rootClosing.getChildren().add(vbox);
+		closing.initModality(Modality.APPLICATION_MODAL);
+		closing.showAndWait();
+		close.consume();
+	}
 	@FXML
 	// Menü: Spielsteuerung aufrufen
 	private void handleSteuerung(ActionEvent steuerung){
