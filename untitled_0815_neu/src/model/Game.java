@@ -27,6 +27,8 @@ public class Game extends Observable implements Observer{
 	private int timeoutDraw;
 	
 	private int ID;
+	private boolean isSaved;
+	
 	
 	/**
 	 * Konstruktor von Game 
@@ -51,6 +53,7 @@ public class Game extends Observable implements Observer{
 		this.timeoutDraw = timeoutDraw;
 		sets = new ArrayList<Set>();
 		ID = -1;
+		isSaved = false;
 	}
 	
 	/**
@@ -65,8 +68,10 @@ public class Game extends Observable implements Observer{
 	 * @param timeoutServer Min Intervall zur Serverabfrage
 	 * @param timeoutDraw Zeit für einen Zug
 	 * @param ID Primarykey von Game
+	 * @param oppPoints Punkte des Gegners
+	 * @param ownPoints Eigene Punkte
 	 */
-	public Game(int cols, int rows, char role, String oppName, String ownName, String path, int timeoutServer, int timeoutDraw, int ID){
+	public Game(int cols, int rows, char role, String oppName, String ownName, String path, int timeoutServer, int timeoutDraw, int ID, int oppPoints, int ownPoints){
 		this.cols = cols;
 		this.rows = rows;
 		this.role = role;
@@ -75,8 +80,11 @@ public class Game extends Observable implements Observer{
 		this.path = path;
 		this.timeoutServer = timeoutServer;
 		this.timeoutDraw = timeoutDraw;
+		this.oppPoints = oppPoints;
+		this.ownPoints = ownPoints;
 		sets = new ArrayList<Set>();
 		this.ID = ID;
+		isSaved = true;
 	}
 	
 	/**
@@ -124,33 +132,7 @@ public class Game extends Observable implements Observer{
 		switch (changed) {
 		case "status":
 		case "winner":
-			Log.getInstance().write("Game: recalculate Points");
-			int opp = 0;
-			int own = 0;
-			char win;
-			Set set;
-			ListIterator<Set> iterator = sets.listIterator();
-			while (iterator.hasNext())
-			{
-				if((set = iterator.next()).getStatus().equals(Constants.STATE_SET_ENDED)){
-					if((win = set.getWinner()) == role){
-						//Gewonnen
-						own += Constants.pointsWin;
-						opp += Constants.pointsLoose;
-					}
-					else if(win != role && (win == Constants.oRole || win == Constants.xRole)){
-						//Verloren
-						opp += Constants.pointsWin;
-						own += Constants.pointsLoose;
-					}else{
-						//Unentschieden
-						own += Constants.pointsTie;
-						opp += Constants.pointsTie;
-					}
-				}
-			}
-			oppPoints = opp;
-			ownPoints = own;
+			calcPoints();
 //			break;
 			
 		default:
@@ -159,6 +141,38 @@ public class Game extends Observable implements Observer{
 			notifyObservers(changed);			
 			break;
 		}
+	}
+	
+	//hilfsmethode zum kalkulieren der Punkte
+	private void calcPoints(){
+		Log.getInstance().write("Game: recalculate Points");
+		int opp = 0;
+		int own = 0;
+		char win;
+		Set set;
+		ListIterator<Set> iterator = sets.listIterator();
+		while (iterator.hasNext())
+		{
+			if((set = iterator.next()).getStatus().equals(Constants.STATE_SET_ENDED)){
+				if((win = set.getWinner()) == role){
+					//Gewonnen
+					own += Constants.pointsWin;
+					opp += Constants.pointsLoose;
+				}
+				else if(win != role && (win == Constants.oRole || win == Constants.xRole)){
+					//Verloren
+					opp += Constants.pointsWin;
+					own += Constants.pointsLoose;
+				}else{
+					//Unentschieden
+					own += Constants.pointsTie;
+					opp += Constants.pointsTie;
+				}
+			}
+		}
+		oppPoints = opp;
+		ownPoints = own;
+		isSaved = false;
 	}
 	
 	/**
@@ -178,9 +192,10 @@ public class Game extends Observable implements Observer{
 	 */
 	public void discardLatestSet(){
 		if(sets.size() > 0){
-			sets.remove(sets.size()-1);	
+			sets.remove(sets.size()-1);				
+			calcPoints();
 			setChanged();
-			notifyObservers("sets");	
+			notifyObservers("sets");			
 		}
 	}
 	
@@ -206,9 +221,12 @@ public class Game extends Observable implements Observer{
 	 * Methode zum Speichern des Datenmodells
 	 */
 	public void save(){
+		calcPoints();
 		//In Datenbank speichern (Primarykey = GameID), erzeugte GameID an Sets weitergeben, ID speichern
 		if(ID == -1){
 			ID = DBConnection.getInstance().saveGame(this);
+		}else if(!isSaved){
+			DBConnection.getInstance().saveGame(this);
 		}
 		
 		//alle Moves speichern 
@@ -220,6 +238,7 @@ public class Game extends Observable implements Observer{
 			if(set.getStatus() == Constants.STATE_SET_ENDED && !set.isSaved())
 				set.save(ID);
 		}
+		isSaved = true;
 	}
 	
 	//-------------------get set	

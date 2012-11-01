@@ -216,6 +216,8 @@ public class GameController implements GameEventListener, Observer{
 		Log.getInstance().write("Controller: Gewinner bestätigt, FxThread:" + Platform.isFxApplicationThread());		
 		properties[STATE_PROPERTY].set(Constants.STATE_GAME_RUNNING);
 		model.save();
+		properties[OWNPOINTS_PROPERTY].setValue(String.valueOf(model.getOwnPoints()));
+		properties[OPPPOINTS_PROPERTY].setValue(String.valueOf(model.getOppPoints()));
 	}
 	
 	/**
@@ -503,6 +505,8 @@ public class GameController implements GameEventListener, Observer{
 			updateField();
 			updateSets();
 			if(model.getLatestSet() != null) properties[WINNER_PROPERTY].setValue(String.valueOf(model.getLatestSet().getWinner()));
+			properties[OWNPOINTS_PROPERTY].setValue(String.valueOf(model.getOwnPoints()));
+			properties[OPPPOINTS_PROPERTY].setValue(String.valueOf(model.getOppPoints()));
 			break;
 		case "field":
 			Log.getInstance().write("Controller: Field changed empfangen; FxThread:" + Platform.isFxApplicationThread());
