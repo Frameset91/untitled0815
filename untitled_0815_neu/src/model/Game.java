@@ -203,9 +203,10 @@ public class Game extends Observable implements Observer{
 	 * Methode zum Hinzufügen eines Zuges  
 	 *  
 	 * @param move der Zug, der hinzugefügt werden soll
+	 * @return Ob Zug eingetragen wurde
 	 */
-	public void addMove(Move move){
-		sets.get(sets.size()-1).addMove(move);
+	public boolean addMove(Move move){
+		return sets.get(sets.size()-1).addMove(move);
 	}
 	
 	/**

@@ -31,12 +31,15 @@ public class GameField{
 	 * Methode zum Hinzufügen eines Zuges  
 	 *  
 	 * @param move der neue Zug
+	 * @return Ob Zug eingetragen wurde
 	 */
-	public void addMove(Move move){		
+	public boolean addMove(Move move){		
 		int col = move.getColumn();
-		if(col < field.length && col > -1){
+		boolean success = false;
+		if(col < field.length && col > -1){			
 			for(int i=0; i<field[col].length; i++){
 				if (field[col][i] == null){
+					success=true;
 					if(move.getRole() == Constants.xRole)
 						field[col][i] = true;
 					else
@@ -45,6 +48,7 @@ public class GameField{
 				}
 			}
 		}
+		return success;
 	}
 	
 	/**
