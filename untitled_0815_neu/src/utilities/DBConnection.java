@@ -209,7 +209,7 @@ public class DBConnection {
 	/**
 	 * 
 	 * Speichert einen Satz
-	 * @param Set Satz der gespeichert werden soll
+	 * @param set Satz der gespeichert werden soll
 	 * @param gameID ID des sazugehörigen Spiels
 	 * @return boolean true, wenn erfolgreich gespeichert, false bei Fehler
 	 */
