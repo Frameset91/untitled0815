@@ -1,4 +1,4 @@
-package utilities.ki;
+package utilities.KI;
 
 import java.util.ArrayList;
 

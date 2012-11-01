@@ -1,4 +1,4 @@
-package utilities.ki;
+package utilities.KI;
 /**
  * @author Johannes Riedel
  * speichert eine mögliche 4er-Kette zu gewinnen
