@@ -312,6 +312,9 @@ public class GameController implements GameEventListener, Observer{
 		//game laden
 		model = DBConnection.getInstance().loadGame(gameID);
 		model.addObserver(this);
+		if(model.getOwnName().equals(Constants.defaultKIName)){
+			isWithoutServer.set(true);
+		}
 		loadedSets = DBConnection.getInstance().loadAllSets(model.getID());
 		loadedMoves = new Move[0];
 		currentSet = -1;
