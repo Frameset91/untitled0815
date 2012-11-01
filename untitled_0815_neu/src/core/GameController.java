@@ -203,7 +203,7 @@ public class GameController implements GameEventListener, Observer{
 //			if (col > -1){
 //				addOppMove(col);					
 //			}
-			if(addOppMove(col) || col < -1){	
+			if(addOppMove(col) || col == -1){	
 				//KI Workerthread starten
 		    	if(kiwt != null && kiwt.isAlive()){
 		    		Log.getInstance().write("Controller: Neuer oppMove obwohl KI Thread noch läuft!");
