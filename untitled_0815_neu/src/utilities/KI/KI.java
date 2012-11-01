@@ -18,6 +18,7 @@ import java.lang.Math;
 
 public class KI{	
 	private Game gameobject;
+	private int timeout;
 	private byte KINextMove;	
 
 	private Boolean[][] spielfeld;
@@ -27,7 +28,7 @@ public class KI{
 	public KI(Game currentgame, int timeout){
 		//TODO timeout
 		gameobject = currentgame;
-
+		this.timeout = timeout;
 		moeglichezuege = new ArrayList<Byte>(0);
 		for (Byte i=0; i < Constants.gamefieldcolcount; i++)
 			{
@@ -57,7 +58,7 @@ public class KI{
 		// solange schlafen bis Timeout
 		try 
 			{
-			Thread.sleep(gameobject.getTimeoutDraw()-1100);
+			Thread.sleep(timeout-100);
 			}
 		catch (InterruptedException e) 
 			{
@@ -67,9 +68,12 @@ public class KI{
 		
 		// KI-Thread abbrechen
 		kithread.interrupt();
-		
 		// aktuelles Ergebnis des KI-Threads zurückgeben
-		return getNextMove();
+		byte nextMoveLocal = getNextMove();
+		
+		setNextMove((byte) -1);
+		
+		return nextMoveLocal;
 		
 		
 	}

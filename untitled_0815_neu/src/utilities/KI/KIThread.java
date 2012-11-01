@@ -95,9 +95,9 @@ public void run(){
 		// TODO	setzestein(self, spalte);
 		GameFieldStatistics.insertchipandupdate(watermark, spielfeld, moeglichezuege, self, spalte);
 		Log.getInstance().write("KI hat Stein in Spalte " + String.valueOf(spalte)
-				+ " gesetzt! Rechenzeit in ms: " + ((System.nanoTime()-laufzeit)/100000));
+				+ " gesetzt! Rechenzeit in ms: " + ((System.nanoTime()-laufzeit)/1000000));
 		bewertung = Bewertung(true);
-		//Log.getInstance().write(""+bewertungvar);
+		Log.getInstance().write("KI: Bewertung des Feldes:" + bewertung.getRating());
 		if(java.lang.Math.abs(bewertung.getRating())==Constants.KImaxbewertung)
 			{
 			
@@ -311,16 +311,18 @@ private RatingResult Bewertung(){
 		for (Trap einefalle : bisherbesteFalleSelf)
 			if(einefalle.getSize()>0)
 				{
-				//Log.getInstance().write("KI: Reihen-Falle für KI." + einefalle);
+				if(findwinningchips)
+					Log.getInstance().write("KI: Reihen-Falle für KI." + einefalle);
 				if(einefalle.getSize()==4)
 					return new RatingResult(Constants.KImaxbewertung);
 				else
 					bewertung += einefalle.getSize()*einefalle.getSize();
-				}
+					}
 		for (Trap einefalle : bisherbesteFalleOpp)
 			if(einefalle.getSize()>0)
 				{
-				//Log.getInstance().write("KI: Reihen-Falle für Gegner." + einefalle);
+				if(findwinningchips)
+					Log.getInstance().write("KI: Reihen-Falle für Gegner." + einefalle);
 				if(einefalle.getSize()==4)
 					return new RatingResult(-Constants.KImaxbewertung);
 				else
@@ -349,8 +351,9 @@ private RatingResult Bewertung(){
 				{
 				// TODO: wirklich neue Falle?
 				// für wen ist die Falle?
-				//Log.getInstance().write("KI: Spalten-Falle in " + i + " für jemanden. Größe: " + anzsteine
-				//		+ " für mich? " + (spielfeld[i][j]==self));
+				if(findwinningchips)
+					Log.getInstance().write("KI: Spalten-Falle in " + i + " für jemanden. Größe: " + anzsteine
+						+ " für mich? " + (spielfeld[i][j]==self));
 				if(spielfeld[i][watermark[i]]==self)
 					if(anzsteine==4)
 						{
@@ -385,12 +388,12 @@ private RatingResult Bewertung(){
 	RatingResult ratingresult;
 	ratingresult = ueberpruefediagonale(bewertung,(byte)1,(byte)1,(byte) 0,(byte) (Constants.gamefieldrowcount-4),
 			findwinningchips);
-	if(ratingresult.getRating() == Constants.KImaxbewertung || bewertung == -Constants.KImaxbewertung)
+	if(ratingresult.getRating() == Constants.KImaxbewertung || ratingresult.getRating() == -Constants.KImaxbewertung)
 		return ratingresult;
 	
 	ratingresult = ueberpruefediagonale(ratingresult.getRating(),(byte)-1,(byte)1,
 			(byte)(Constants.gamefieldcolcount-1),(byte) (Constants.gamefieldrowcount-4),findwinningchips);
-	if(ratingresult.getRating() == Constants.KImaxbewertung || bewertung == -Constants.KImaxbewertung)
+	if(ratingresult.getRating() == Constants.KImaxbewertung || ratingresult.getRating() == -Constants.KImaxbewertung)
 		return ratingresult;
 	else
 		bewertung = ratingresult.getRating();
@@ -455,8 +458,9 @@ private RatingResult ueberpruefediagonale(int bewertung, byte deltax, byte delta
 			String message = "KI: KI-Diagonale der Größe " + anzself + " gefunden. Noch benötigt: ";
 			
 			for (Position einfreierstein : freiesteine) 
-				message += "(" + einfreierstein.getX() + "," + einfreierstein.getY() + "), "; 
-			//Log.getInstance().write(message);
+				message += "(" + einfreierstein.getX() + "," + einfreierstein.getY() + "), ";
+			if(findwinningchips)
+				Log.getInstance().write(message);
 			if(anzself==4)
 				{
 				ArrayList<Position> winningchips = new ArrayList<Position>(0);
@@ -479,7 +483,8 @@ private RatingResult ueberpruefediagonale(int bewertung, byte deltax, byte delta
 			
 			for (Position einfreierstein : freiesteine) 
 				message += "(" + einfreierstein.getX() + "," + einfreierstein.getY() + "), "; 
-			//Log.getInstance().write(message);	
+			if(findwinningchips)
+				Log.getInstance().write(message);	
 			if(anzopp==4)
 				{
 				ArrayList<Position> winningchips = new ArrayList<Position>(0);
