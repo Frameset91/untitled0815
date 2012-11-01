@@ -4,6 +4,7 @@ Actor:Actor
 MainUIController:MainUIController[a]
 GameController:GameController [a]
 /Game:Game [a]
+EventListenerCollection:EventListenerCollektion [a]
 DBConnection:DBConnection [a, r]
 /con:DBConnection [a]
 #! Ende Deklaration
@@ -13,6 +14,7 @@ Actor:MainUIController.SpielStarten
 MainUIController:GameController.startGame()
 GameController:GameController.newGame(...)
 GameController:Game=Game.new()
+GameController:EventListenerCollection.addObserver()
 GameController[1]:Game.save()
 Game:connection=DBConnection.getInstance()
 DBConnection:connection=con.new()
