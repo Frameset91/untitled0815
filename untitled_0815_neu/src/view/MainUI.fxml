@@ -21,7 +21,7 @@
     			<MenuItem fx:id="menuSpielStarten" text="Spiel starten" onAction="#handleStartGame"/>
     			<MenuItem fx:id="menuSpielLaden" text="Spiel laden" onAction="#handleLoadGame"/>
     			<MenuItem fx:id="menuSpielBeenden" text="Spiel beenden" disable="true" onAction="#handleEndGame"/>
-    			<MenuItem fx:id="menuSchliessen" text="Programm Schließen" onAction="#handleSchliessen"/>
+    			<MenuItem fx:id="menuSchliessen" text="Programm s 	chließen" onAction="#handleSchliessen"/>
     		</Menu>
     		<Menu text="Hilfe">
     			<MenuItem fx:id="LogAnzeigen" text="Log anzeigen" onAction="#handleLogAnzeigen"/>
@@ -113,8 +113,7 @@
     <VBox styleClass="game">
         	<VBox fx:id="gameField" alignment="CENTER" spacing="10">
         		<GridPane styleClass="spieleranzeige, ueberschrift" hgap="15" vgap="15" alignment="center">
-        		<!-- maxWidth="175" -->
-        			<Label fx:id="labelOwn" text="untitled0815:" GridPane.halignment="center" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
+        			<Label fx:id="labelOwn" text="untitled0815:" maxWidth="175" GridPane.halignment="center" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
         			<Label fx:id="tokenSpieler" text=" " styleClass="token" minWidth="40" prefHeight="40" GridPane.columnIndex="1" GridPane.rowIndex="0"/> 
         			<Label text=":" GridPane.halignment="center" GridPane.columnIndex="2" GridPane.rowIndex="0"/>
         			<Label fx:id="tokenGegner" text=" " styleClass="token" minWidth="40" prefHeight="40" GridPane.columnIndex="3" GridPane.rowIndex="0"/> 
