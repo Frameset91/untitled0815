@@ -7,6 +7,8 @@ package utilities.communication;
  */
 import java.io.*;
 
+import core.Constants;
+
 import utilities.Log;
 import utilities.events.*;
 
@@ -312,7 +314,7 @@ public class CommunicationServer {
 	 */
 	public synchronized void writeMove(byte spalte, String agentFilePath,
 			char role) {
-		if ((spalte > -1 && spalte < 7) && (agentFilePath != null)) {
+		if ((spalte > -1 && spalte < Constants.gamefieldcolcount) && (agentFilePath != null)) {
 			try {
 				Log.getInstance().write(
 						"Zug schreiben im Pfad " + agentFilePath + "in Spalte "

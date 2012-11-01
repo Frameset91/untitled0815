@@ -2,5 +2,7 @@ core
 model
 test_utilities
 utilities
-utilities.ki
+utilities.KI
+utilities.communication
+utilities.events
 view

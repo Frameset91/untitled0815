@@ -15,7 +15,6 @@ public class test_select_all {
 	/**
 	 * Die Klasse gibt alle Einträge von Game, move und Set aus
 	 * zu testzwecken
-	 * @param args
 	 */
 	
 	public static DBConnection con;
