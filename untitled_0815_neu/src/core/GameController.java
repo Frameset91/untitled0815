@@ -13,6 +13,7 @@ import java.util.Observer;
 
 import model.*;
 import utilities.*;
+import utilities.KI.KI;
 import utilities.communication.*;
 import utilities.events.*;
 
@@ -112,7 +113,7 @@ public class GameController implements GameEventListener, Observer{
 		Log.getInstance().write("Controller: starte Satz, FxThread:" + Platform.isFxApplicationThread());
 		
 		Double buffer = CommunicationServer.getInstance().getWriteLatency();
-		buffer = buffer * 2 * 1.1;
+		buffer = (buffer * 2 * 1.1) + 100;
 		Log.getInstance().write("Controller: Buffer für Zugberechnung: " + buffer);
 		
 //		int buffer = 100;
