@@ -19,6 +19,7 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.geometry.Pos;
 import javafx.scene.*;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -49,6 +50,8 @@ public class MainUIController implements Initializable{
 	private GridPane gameSettings;
 	@FXML
 	private VBox gameField;
+	@FXML
+	private HBox setSettings;
 	@FXML
 	private Button btnNewSet;
 	@FXML
@@ -345,15 +348,14 @@ public class MainUIController implements Initializable{
 		case Constants.STATE_APP_RUNNING:
 			gameSettings.disableProperty().set(false);
 			gameField.disableProperty().set(true);
-			btnNewSet.disableProperty().set(true);
-			btnEndSet.disableProperty().set(true);
 			btnEndGame.disableProperty().set(true);
+			setSettings.disableProperty().set(true);
 			break;
 		case Constants.STATE_SET_ENDED:	
 			gameSettings.disableProperty().set(true);
 			gameField.disableProperty().set(false);
-			btnNewSet.disableProperty().set(true);
-			btnEndSet.disableProperty().set(true);
+//			btnNewSet.disableProperty().set(true);
+//			btnEndSet.disableProperty().set(true);
 			btnEndGame.disableProperty().set(true);
 			if(!viewModel.isReplay().get()) showConfirmWinner();
 			break;
@@ -368,6 +370,7 @@ public class MainUIController implements Initializable{
 			gameSettings.disableProperty().set(true);
 			gameField.disableProperty().set(true);
 			btnNewSet.disableProperty().set(false);
+			setSettings.disableProperty().set(false);
 			btnEndSet.disableProperty().set(true);
 			btnEndGame.disableProperty().set(false);
 			if(!viewModel.isReplay().get()) break;
@@ -387,6 +390,7 @@ public class MainUIController implements Initializable{
 		final Stage stageConfirmWinner = new Stage();
 		Group rootConfirm = new Group();
 		Scene sceneConfirm = new Scene(rootConfirm, 500,180, Color.WHITESMOKE);
+		sceneConfirm.getStylesheets().add("view/MainUIStyle.css");
 		stageConfirmWinner.setScene(sceneConfirm);
 		stageConfirmWinner.centerOnScreen();
 		stageConfirmWinner.initModality(Modality.APPLICATION_MODAL); 
@@ -399,7 +403,8 @@ public class MainUIController implements Initializable{
 		});
 						
 	//Inhalt
-		Text ueberschrift = new Text(20, 20,"Der Satz wurde beendet, bitte den Gewinner bestätigen oder den Satz verwerfen:");
+		Text ueberschrift = new Text(20, 20,"Bitte den Gewinner bestätigen:");
+		ueberschrift.getStyleClass().add("ueberschrift2");
 		Button confirm = new Button("Bestätigen");		
 		confirm.setOnMouseClicked(new EventHandler<MouseEvent>(){
 			public void handle(MouseEvent close){
@@ -416,18 +421,14 @@ public class MainUIController implements Initializable{
 		});
 		
 		//Anordnen
-		GridPane gpconfirm = new GridPane();
-		gpconfirm.setLayoutX(20);
-		gpconfirm.setVgap(20);
-		gpconfirm.setHgap(10);
-		gpconfirm.add(ueberschrift, 0, 0);
-		GridPane.setColumnSpan(ueberschrift, 3);
-//		gpconfirm.setColumnSpan(ueberschrift, 3);
-		gpconfirm.add(new Label("Gewinner:"), 0, 1);
-		gpconfirm.add(winner, 1, 1);
-		gpconfirm.add(confirm, 1, 2);
-		gpconfirm.add(discard, 2, 2);
-		rootConfirm.getChildren().add(gpconfirm);
+		VBox vconfirm = new VBox(30);
+		vconfirm.setLayoutX(20);
+		HBox hconfirmwinner = new HBox(15);
+		hconfirmwinner.getChildren().addAll(new Label("Gewinner:"), winner);
+		HBox hconfirmbuttons = new HBox(15);
+		hconfirmbuttons.getChildren().addAll(confirm, discard);
+		vconfirm.getChildren().addAll(ueberschrift,hconfirmwinner, hconfirmbuttons);
+		rootConfirm.getChildren().add(vconfirm);
 		
 		if(winner.getValue() == null) 
 			winner.setValue(Constants.textTie);

@@ -1,0 +1,27 @@
+#![Programm starten]
+#!Anfang Deklaration
+Actor:Actor
+Connect4:Connect4 [a, r]
+/Con4:Connect4 [a]
+/Stage:Stage [a]
+FXMLLoader:FXMLLoader [a]
+/Scene:Scene [a]
+/MainUIController:MainUIController [a]
+/Gamecontroller:Gamecontroller [a]
+/DBConnection:DBConnection [a]
+#! Ende Deklaration
+
+#! Anfang Aktionen
+Actor:=Connect4.Spiel starten
+Connect4:Connect4.launch()
+Connect4:Connect4=Con4.new()
+Connect4:Stage=Stage.new
+Connect4:Con4.start()
+Con4:Stage.setTitle(title)
+Con4:root=FXMLLoader.load()
+FXMLLoader:MainUIController.new()
+MainUIController:Gamecontroller.new()
+Con4:Stage.setScene(new Scene)
+Stage:Scene.new(root)
+Con4:Stage.show()
+Con4:Stage.setOnCloseEvent(...)

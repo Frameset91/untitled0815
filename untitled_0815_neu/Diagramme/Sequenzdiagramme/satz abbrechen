@@ -1,0 +1,20 @@
+#! [Satz beenden]
+#! Anfang Deklaration
+Actor:Actor
+MainUI:MainUIController [a]
+GameController:GameController [a]
+CommServer:ComunicationServer [a]
+ReadServFileThread:ReadServerFileThread [a, x]
+Game:Game [a, x]
+Set:Set [a]
+#! Ende Deklaration
+
+#!Anfang Aktionen
+CommServer:>ReadServFileThread.start()
+
+Actor:MainUI.Satz abrrechen
+MainUI:GameController.endset(oppMove)
+GameController:CommServer.disableReading()
+CommServer:ReadServFileThread.interrupt()
+GameController:>Game.start()
+Game:Set.Status(Set_ended)
