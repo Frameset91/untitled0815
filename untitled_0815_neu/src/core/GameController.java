@@ -562,19 +562,22 @@ public class GameController implements GameEventListener, Observer{
 	//Tabelle der Sets neu erstellen
 	private void updateSets() {
 		sets.clear();
-		Iterator<Set> it = model.getSets().listIterator();
-		if(!it.hasNext())
-			
-		while(it.hasNext()){
-			Set set = it.next();
-			String winner = Constants.textTie;
-			if(set.getWinner() == model.getRole()){
-				winner = model.getOwnName();
-			}else if(set.getWinner() != model.getRole() && ( set.getWinner() == Constants.oRole || set.getWinner() == Constants.xRole)){
-				winner = model.getOppName();
+		if(model != null){
+			Iterator<Set> it = model.getSets().listIterator();
+			while(it.hasNext()){
+				Set set = it.next();
+				String winner = Constants.textTie;
+				if(set.getWinner() == model.getRole()){
+					winner = model.getOwnName();
+				}else if(set.getWinner() != model.getRole() && ( set.getWinner() == Constants.oRole || set.getWinner() == Constants.xRole)){
+					winner = model.getOppName();
+				}
+				sets.add(new SetProperty(String.valueOf(set.getID()), winner));
 			}
-			sets.add(new SetProperty(String.valueOf(set.getID()), winner));
 		}
+		if(sets.isEmpty())
+			sets.add(new SetProperty("keine", "Sätze"));
+			
 	}
 	
 	//----------------------------------------------------------------------------------- Initialisieren der Properties ----------------------------------
@@ -633,8 +636,9 @@ public class GameController implements GameEventListener, Observer{
 		}
 		
 		//Liste der Sätze zurück setzen
-		sets.clear();
-		sets.add(new SetProperty("keine", "Sätze"));
+		updateSets();
+//		sets.clear();
+//		sets.add(new SetProperty("keine", "Sätze"));
 		
 				
 		
