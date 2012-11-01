@@ -11,17 +11,56 @@ import utilities.Log;
 import utilities.events.*;
 
 public class CommunicationServer {
-	// Singleton Referenz
-	private static CommunicationServer singleton = null;
-	private String serverfilepath;
 	private String agentfilepath;
-	private long lastchange = 0;
-	private int timeout;
-	private File serverFile;
 	private File agentFile;
-	private Thread readerthread;
+	private long lastchange = 0;
 	private boolean newSet;
 	private char ownRole;
+	private Thread readerthread;
+	private String serverfilepath;
+	private File serverFile;
+	// Singleton Referenz
+	private static CommunicationServer singleton = null;
+	private int timeout;
+	/**
+	 * privater Konstruktor Erzeugung der Singletoninstanz
+	 */
+	private CommunicationServer() {
+	
+	}
+
+	/**
+	 * Beendet die Abfrage der Serverdatei
+	 */
+	public void disableReading() {
+		if (this.readerthread.isAlive()) {
+			this.readerthread.interrupt();
+		}
+		this.readerthread = null;
+	
+	}
+
+	/**
+	 * Startet die Abfrage der Serverdatei in einem neuen Thread. Überprüft, ob
+	 * die alte, bereits gelesene, Datei noch vorhanden ist und wartet bis diese
+	 * gelöscht ist.
+	 */
+	public synchronized void enableReading(boolean Set) {
+		this.newSet = Set;
+	
+		// Puefung, ob noch ein Leserthread läuft
+		if (this.readerthread != null) {
+			// alten Leserthread stoppen
+			this.readerthread.interrupt();
+			this.readerthread = null;
+		} // if
+	
+		// neuen Thread starten
+		this.readerthread = new Thread(new ReadServerFileThread());
+		this.readerthread.setDaemon(true);
+		this.readerthread.setName("CommunicationServer Thread");
+		this.readerthread.start();
+	}
 
 	/**
 	 * Diese Methode löst die jeweiligen Events aus und startet deren
@@ -64,13 +103,6 @@ public class CommunicationServer {
 	}
 
 	/**
-	 * privater Konstruktor Erzeugung der Singletoninstanz
-	 */
-	private CommunicationServer() {
-
-	}
-
-	/**
 	 * Liefert den eingestellten Timeoutwert zwischen 2 Zugriffen auf die
 	 * Serverdatei
 	 * 
@@ -80,155 +112,127 @@ public class CommunicationServer {
 		return timeout;
 	}
 
-	/**
-	 * Startet die Abfrage der Serverdatei in einem neuen Thread. Überprüft, ob
-	 * die alte, bereits gelesene, Datei noch vorhanden ist und wartet bis diese
-	 * gelöscht ist.
-	 */
-	public synchronized void enableReading(int timeout, String serverFilePath,
-			char role, boolean Set) {
-		this.timeout = timeout;
-		this.serverfilepath = serverFilePath;
-		this.ownRole = role;
-		this.newSet = Set;
-
-		// Puefung, ob noch ein Leserthread läuft
-		if (this.readerthread != null) {
-			// alten Leserthread stoppen
-			this.readerthread.interrupt();
-			this.readerthread = null;
-		} // if
-
-		// neuen Thread starten
-		this.readerthread = new Thread(new ReadServerFileThread());
-		this.readerthread.setDaemon(true);
-		this.readerthread.setName("CommunicationServer Thread");
-		this.readerthread.start();
-	}
-
-	/**
-	 * Beendet die Abfrage der Serverdatei
-	 */
-	public void disableReading() {
-		if (this.readerthread.isAlive()) {
-			this.readerthread.interrupt();
+	public boolean init(int timeout,String serverFilePath,char role){
+			this.timeout = timeout;
+			this.ownRole = role;
+			
+			//Umwandlung von backslashes im Pfad in normale Slashes
+					if (serverFilePath.contains("\\")) {
+						serverFilePath = serverFilePath.replace("\\", "/");
+					}
+	
+					// Slash am Ende entfernen, falls vorhanden
+					if (serverFilePath.lastIndexOf("/") == serverFilePath.length() - 1) {
+						serverFilePath = serverFilePath.substring(0,
+								serverFilePath.length() - 1);
+					}
+					String testpath = serverFilePath;
+					File test = new File(testpath);
+					// vollstaendige Pfade mit Dateinamen bauen
+					this.serverfilepath = serverFilePath + "/server2spieler" + ownRole
+							+ ".xml";
+					this.serverFile = new File(serverfilepath);
+					
+					if(test.exists()){
+					 this.testConnection(testpath);
+					 return true;	
+					}else{
+						return false;
+					}
+					
 		}
-		this.readerthread = null;
-
-	}
 
 	/**
-	 * Diese Methode setzt die Variable lastchange zurück, damit eine neue Datei
-	 * gelesen werden kann.
-	 */
-
-	public void resetLastChange() {
-		this.lastchange = (Long) null;
-	}
-
-	/**
-	 * Ueberwachung der Serverdatei Meldung an alle Event Listener auslösen
-	 */
-	public void observe() {
-
-		try {
-			File old = new File(serverfilepath + "/server2spieler" + ownRole
-					+ ".xml");
-			// neuer Satz
-			if (this.newSet) {
-				if (old.exists()) {
-					ServerMessage msg = XMLParser.getInstance().readXML(old);
+		 * Ueberwachung der Serverdatei Meldung an alle Event Listener auslösen
+		 */
+		public void observe() {
+	
+			try {
+				File old = new File(serverfilepath);
+				// neuer Satz
+				if (this.newSet) {
+					if (old.exists()) {
+						ServerMessage msg = XMLParser.getInstance().readXML(old);
+						if (msg.getSetstatus().equals("beendet")) {
+							old.delete();
+						}
+					}
+				} else {
+					while (true) {
+						if (this.readerthread.isInterrupted()) {
+							break;
+						}
+	
+						if (old.exists() && (lastchange == old.lastModified())) {
+							Thread.sleep(300);
+						} else {
+							break;
+						}
+					}
+	
+				}
+	
+			} catch (Exception e) {
+			
+			}
+	
+	
+	//		this.setFiles(this.serverfilepath, this.ownRole);
+			
+			// Auslesen der Datei
+			Log.getInstance().write("Communication Server:Ueberwachen startet");
+			
+			ServerMessage msg;
+				try {
+				do {
+					msg = this.read();
+				} while (msg == null);
+	
+				if (msg != null) {
+					// Auswerten des ServerFiles und werfen der entsprehenden Events
+					if (msg.getRelease().equals("true")) {
+						this.fireGameEvent(GameEvent.Type.OppMove,
+								String.valueOf(msg.getOppmove()));
+						Log.getInstance().write(
+								"Communication Server: Event OppMove gesendet");
+					}
+					// Sieger ist bestimmt
+					if (!msg.getWinner().equals("offen")) {
+						char Winner = msg.getWinner()
+								.substring(msg.getWinner().indexOf(" ") + 1)
+								.charAt(0);
+	
+						this.fireGameEvent(GameEvent.Type.WinnerSet,
+								String.valueOf(Winner));
+						Log.getInstance().write(
+								"Communication Server: WinnerSet Event gesendet "
+										+ Winner);
+					}
+					// Satz ist beendet
 					if (msg.getSetstatus().equals("beendet")) {
-						old.delete();
+						this.fireGameEvent(GameEvent.Type.EndSet,
+								String.valueOf(msg.getOppmove()));
+						Log.getInstance().write(
+								"Communication Server: Event EndSet gesendet");
 					}
+	
+					lastchange = serverFile.lastModified();
 				}
-			} else {
-				while (true) {
-					if (this.readerthread.isInterrupted()) {
-						break;
-					}
-
-					if (old.exists() && (lastchange == old.lastModified())) {
-						Thread.sleep(300);
-					} else {
-						break;
-					}
-				}
-
+			} catch (Exception e) {
+				Log.getInstance().write("Communication Server: Lesefehler.....");
+				e.printStackTrace();
 			}
-
-		} catch (Exception e) {
+	
+			Log.getInstance().write("Communication Server: Ende Überwachung");
+	
 		}
-
-		// Umwandlung von backslashes im Pfad in normale Slashes
-		if (serverfilepath.contains("\\")) {
-			serverfilepath = serverfilepath.replace("\\", "/");
-		}
-
-		// Slash am Ende entfernen, falls vorhanden
-		if (serverfilepath.lastIndexOf("/") == serverfilepath.length() - 1) {
-			serverfilepath = serverfilepath.substring(0,
-					serverfilepath.length() - 1);
-		}
-
-		// vollstaendige Pfade mit Dateinamen bauen
-		this.serverfilepath = serverfilepath + "/server2spieler" + ownRole
-				+ ".xml";
-		this.serverfilepath = this.serverfilepath.toLowerCase();
-		this.serverFile = new File(serverfilepath);
-
-		// Auslesen der Datei
-		Log.getInstance().write("Communication Server:Ueberwachen startet");
-		ServerMessage msg;
-		try {
-			do {
-				msg = this.read();
-			} while (msg == null);
-
-			if (msg != null) {
-				// Auswerten des ServerFiles und werfen der entsprehenden Events
-				if (msg.getRelease().equals("true")) {
-					this.fireGameEvent(GameEvent.Type.OppMove,
-							String.valueOf(msg.getOppmove()));
-					Log.getInstance().write(
-							"Communication Server: Event OppMove gesendet");
-				}
-				// Sieger ist bestimmt
-				if (!msg.getWinner().equals("offen")) {
-					char Winner = msg.getWinner()
-							.substring(msg.getWinner().indexOf(" ") + 1)
-							.charAt(0);
-
-					this.fireGameEvent(GameEvent.Type.WinnerSet,
-							String.valueOf(Winner));
-					Log.getInstance().write(
-							"Communication Server: WinnerSet Event gesendet "
-									+ Winner);
-				}
-				// Satz ist beendet
-				if (msg.getSetstatus().equals("beendet")) {
-					this.fireGameEvent(GameEvent.Type.EndSet,
-							String.valueOf(msg.getOppmove()));
-					Log.getInstance().write(
-							"Communication Server: Event EndSet gesendet");
-				}
-
-				lastchange = serverFile.lastModified();
-			}
-		} catch (Exception e) {
-			Log.getInstance().write("Communication Server: Lesefehler.....");
-			e.printStackTrace();
-		}
-
-		Log.getInstance().write("Communication Server: Ende Überwachung");
-
-	}
 
 	/**
 	 * Lesen des Serverfiles
 	 */
-
-	public ServerMessage read() {
+	
+	private ServerMessage read(){
+		try {
 		// Serverfile auslesen
 		ServerMessage msg = null;
 		// while (msg == null) {
@@ -241,12 +245,55 @@ public class CommunicationServer {
 			} catch (Exception e) {
 			}
 		}
-		try {
+		
 			msg = XMLParser.getInstance().readXML(serverFile);
+			return msg;
 		} catch (Exception e) {
 			return null;
 		}
-		return msg;
+		
+	}
+
+	/**
+	 * Diese Methode setzt die Variable lastchange zurück, damit eine neue Datei
+	 * gelesen werden kann.
+	 */
+	
+	public void resetLastChange() {
+		this.lastchange = (Long) null;
+	}
+
+	private void testConnection(String testpath){
+		//Datei schreiben
+		long[] time = new long[10];
+		long watermark = 0;
+		
+		long temp;
+		for (int i = 0; i < time.length; i++) {
+			try {
+			temp = System.nanoTime();
+			File x = new File(testpath + "/" + i +".txt");
+			PrintWriter pr = new PrintWriter(x);
+			pr.println(i);
+			pr.flush();
+			pr.close();
+			time[i] = System.nanoTime()-temp;
+			} catch (FileNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		} //for
+		
+		//hoechtser Wert
+		for (int i = 0; i < time.length; i++) {
+			if(time[i]>watermark){
+				watermark = time[i];
+			}
+		}
+		double watermark_db = watermark/1000000;
+		
+		Log.getInstance().write("Der hoechste Wert zum schreiben ist: " + watermark_db);
+		
 	}
 
 	/**
