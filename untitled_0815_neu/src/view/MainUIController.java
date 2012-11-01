@@ -513,7 +513,13 @@ public class MainUIController implements Initializable{
 	private void handleStartGame(ActionEvent e){
 		int timeoutZ;
 		int timeoutF;
-		if (((rolle.getValue() != null && oppName.getText() != null && ownName.getText() != null && verzeichnispfad.getText() != null && !verzeichnispfad.getText().equals("") && !oppName.getText().equals("") && !ownName.getText().equals("")) || (viewModel.isWithoutServer().get() && oppName.getText() != null))){
+		boolean path = false;
+		try{
+		File f;
+		f = new File(verzeichnispfad.getText());
+		if(f.exists())path=true;}
+		catch(Exception e1){path=false;}
+		if (((path && rolle.getValue() != null && oppName.getText() != null && ownName.getText() != null && verzeichnispfad.getText() != null && !verzeichnispfad.getText().equals("") && !oppName.getText().equals("") && !ownName.getText().equals("")) || (viewModel.isWithoutServer().get() && oppName.getText() != null))){
 			try{
 				timeoutZ = Integer.parseInt(timeoutZugzeit.getText());
 				timeoutF = Integer.parseInt(timeoutAbfrage.getText());
