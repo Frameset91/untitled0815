@@ -1,4 +1,4 @@
-package utilities;
+package utilities.communication;
 
 /**
  * Diese Klasse fungiert zur Kommunikation mit dem Server und der Benachrichtigung der KI.
@@ -6,6 +6,11 @@ package utilities;
  *
  */
 import java.io.*;
+
+import utilities.Log;
+import utilities.events.EventDispatcher;
+import utilities.events.GameEvent;
+import utilities.events.GameEvent.Type;
 
 public class CommunicationServer {
 	// Singleton Referenz
@@ -16,7 +21,7 @@ public class CommunicationServer {
 	private int timeout;
 	private File serverFile;
 	private File agentFile;
-	private Thread leserthread;
+	private Thread readerthread;
 	private boolean newSet;
 	private char ownRole;
 
@@ -90,27 +95,27 @@ public class CommunicationServer {
 		this.newSet = Set;
 
 		// Puefung, ob noch ein Leserthread läuft
-		if (this.leserthread != null) {
+		if (this.readerthread != null) {
 			// alten Leserthread stoppen
-			this.leserthread.interrupt();
-			this.leserthread = null;
+			this.readerthread.interrupt();
+			this.readerthread = null;
 		} // if
 
 		// neuen Thread starten
-		this.leserthread = new Thread(new ReadServerFileThread());
-		this.leserthread.setDaemon(true);
-		this.leserthread.setName("CommunicationServer Thread");
-		this.leserthread.start();
+		this.readerthread = new Thread(new ReadServerFileThread());
+		this.readerthread.setDaemon(true);
+		this.readerthread.setName("CommunicationServer Thread");
+		this.readerthread.start();
 	}
 
 	/**
 	 * Beendet die Abfrage der Serverdatei
 	 */
 	public void disableReading() {
-		if (this.leserthread.isAlive()) {
-			this.leserthread.interrupt();
+		if (this.readerthread.isAlive()) {
+			this.readerthread.interrupt();
 		}
-		this.leserthread = null;
+		this.readerthread = null;
 
 	}
 
@@ -126,7 +131,7 @@ public class CommunicationServer {
 	/**
 	 * Ueberwachung der Serverdatei Meldung an alle Event Listener auslösen
 	 */
-	public void ueberwachen() {
+	public void observe() {
 
 		try {
 			File old = new File(serverfilepath + "/server2spieler" + ownRole
@@ -135,13 +140,13 @@ public class CommunicationServer {
 			if (this.newSet) {
 				if (old.exists()) {
 					ServerMessage msg = XmlParser.getInstance().readXML(old);
-					if (msg.getSatzstatus().equals("beendet")) {
+					if (msg.getSetstatus().equals("beendet")) {
 						old.delete();
 					}
 				}
 			} else {
 				while (true) {
-					if (this.leserthread.isInterrupted()) {
+					if (this.readerthread.isInterrupted()) {
 						break;
 					}
 
@@ -184,16 +189,16 @@ public class CommunicationServer {
 
 			if (msg != null) {
 				// Auswerten des ServerFiles und werfen der entsprehenden Events
-				if (msg.getFreigabe().equals("true")) {
+				if (msg.getRelease().equals("true")) {
 					this.fireGameEvent(GameEvent.Type.OppMove,
-							String.valueOf(msg.getGegnerzug()));
+							String.valueOf(msg.getOppmove()));
 					Log.getInstance().write(
 							"Communication Server: Event OppMove gesendet");
 				}
 				// Sieger ist bestimmt
-				if (!msg.getSieger().equals("offen")) {
-					char Winner = msg.getSieger()
-							.substring(msg.getSieger().indexOf(" ") + 1)
+				if (!msg.getWinner().equals("offen")) {
+					char Winner = msg.getWinner()
+							.substring(msg.getWinner().indexOf(" ") + 1)
 							.charAt(0);
 
 					this.fireGameEvent(GameEvent.Type.WinnerSet,
@@ -203,9 +208,9 @@ public class CommunicationServer {
 									+ Winner);
 				}
 				// Satz ist beendet
-				if (msg.getSatzstatus().equals("beendet")) {
+				if (msg.getSetstatus().equals("beendet")) {
 					this.fireGameEvent(GameEvent.Type.EndSet,
-							String.valueOf(msg.getGegnerzug()));
+							String.valueOf(msg.getOppmove()));
 					Log.getInstance().write(
 							"Communication Server: Event EndSet gesendet");
 				}
@@ -230,7 +235,7 @@ public class CommunicationServer {
 		ServerMessage msg = null;
 		// while (msg == null) {
 		while (!serverFile.exists()) {
-			if (this.leserthread.isInterrupted()) {
+			if (this.readerthread.isInterrupted()) {
 				return msg;
 			}
 			try {
@@ -305,7 +310,7 @@ class ReadServerFileThread extends Thread {
 	@Override
 	public void run() {
 		Log.getInstance().write("Ueberwachung gestartet");
-		CommunicationServer.getInstance().ueberwachen();
+		CommunicationServer.getInstance().observe();
 		this.interrupt();
 	}
 

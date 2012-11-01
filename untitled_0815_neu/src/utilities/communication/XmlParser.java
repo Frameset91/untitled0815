@@ -1,9 +1,10 @@
-package utilities;
+package utilities.communication;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.*;
 import org.w3c.dom.*;
+
 
 /**
  * Klasse zum Parsen des Serverfiles und zur Erstellung eines ServerMessage
@@ -66,10 +67,10 @@ public class XmlParser {
 				// Wenn ein ELEMENT und kein KOPF Node
 				if (nNode.getNodeType() == Node.ELEMENT_NODE) {
 					Element eElement = (Element) nNode;
-					msg.setFreigabe(getTagValue("freigabe", eElement));
-					msg.setSatzstatus(getTagValue("satzstatus", eElement));
-					msg.setGegnerzug(getTagValue("gegnerzug", eElement));
-					msg.setSieger(getTagValue("sieger", eElement));
+					msg.setRelease(getTagValue("freigabe", eElement));
+					msg.setSetstatus(getTagValue("satzstatus", eElement));
+					msg.setOppmove(getTagValue("gegnerzug", eElement));
+					msg.setWinner(getTagValue("sieger", eElement));
 
 				}
 			}
