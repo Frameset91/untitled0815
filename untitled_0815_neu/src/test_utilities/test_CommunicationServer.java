@@ -93,7 +93,8 @@ public class test_CommunicationServer implements GameEventListener {
 
 		
 		comServer = CommunicationServer.getInstance();
-		comServer.enableReading(timeoutServer, path, role, false);
+		comServer.init(timeoutServer, path, role);
+		comServer.enableReading(false);
 		//Auf Event warten
 		int ctr = 0;
 		System.out.println("Warte auf Events");
