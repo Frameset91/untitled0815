@@ -114,7 +114,9 @@ public class GameController implements GameEventListener, Observer{
 		
 		Double buffer = CommunicationServer.getInstance().getWriteLatency();
 		buffer = (buffer * 2 * 1.1) + 100;
-		Log.getInstance().write("Controller: Buffer für Zugberechnung: " + buffer);
+		if(buffer > ((1-Constants.minTimeforKI) * model.getTimeoutDraw()))
+			buffer = (1-Constants.minTimeforKI) * model.getTimeoutDraw();
+		Log.getInstance().write("Controller: Buffer für Zugberechnung: " + buffer.intValue());
 		
 //		int buffer = 100;
 		
