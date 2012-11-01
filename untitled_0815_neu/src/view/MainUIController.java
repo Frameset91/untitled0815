@@ -121,8 +121,8 @@ public class MainUIController implements Initializable{
 	private HBox boxTimeoutServer;
 	@FXML
 	private HBox boxDirectory;
-	@FXML
-	private HBox boxColButtons;
+//	@FXML
+//	private HBox boxColButtons;
 	@FXML
 	private Button btnLoadGame;
 	@FXML
@@ -212,7 +212,7 @@ public class MainUIController implements Initializable{
 		boxDirectory.disableProperty().bind(cbWithoutServer.selectedProperty());
 //		boxTimeoutDraw.disableProperty().bind(cbWithoutServer.selectedProperty());
 		boxTimeoutServer.disableProperty().bind(cbWithoutServer.selectedProperty());
-		boxColButtons.disableProperty().bind(cbWithoutServer.selectedProperty().not());
+//		boxColButtons.disableProperty().bind(cbWithoutServer.selectedProperty().not());
 		ownName.disableProperty().bind(cbWithoutServer.selectedProperty());
 		
 		cbWithoutServer.onActionProperty().set(new EventHandler<ActionEvent>() {			
@@ -451,14 +451,14 @@ public class MainUIController implements Initializable{
 
 	//------------------------------------------------------------------ Methoden zum handeln von UI Input ----------------------------
 	
-	@FXML
-	//reagieren auf Buttons über den Spalten (zum manuellen Spielen)
-	private void handleColButton(MouseEvent e){
-		try{
-			String data = (String)((Button) e.getSource()).getUserData();
-			viewModel.oppMove((byte)Integer.parseInt(data));
-		}catch(Exception ex){ ex.printStackTrace();}
-	}
+//	@FXML
+//	//reagieren auf Buttons über den Spalten (zum manuellen Spielen)
+//	private void handleColButton(MouseEvent e){
+//		try{
+//			String data = (String)((Button) e.getSource()).getUserData();
+//			viewModel.oppMove((byte)Integer.parseInt(data));
+//		}catch(Exception ex){ ex.printStackTrace();}
+//	}
 	
 	@FXML
 	//Reagieren auf CheckBox für Log 
@@ -682,14 +682,14 @@ public class MainUIController implements Initializable{
 	private void handleLogAnzeigen(ActionEvent log){
 		//Fenster mit Log öffnen
 		final Stage stageLog = new Stage();
+		stageLog.setTitle("Log");
 		Group rootLog = new Group();
-		Scene sceneLog = new Scene(rootLog, 500,500, Color.WHITESMOKE);
+		Scene sceneLog = new Scene(rootLog, 500,480, Color.WHITESMOKE);
 		stageLog.setScene(sceneLog);
 		stageLog.centerOnScreen();
 		stageLog.show();
 						
 	//Inhalt
-		Text ueberschrift = new Text(20, 20,"Log");
 		Button close = new Button("Schließen");
 		close.setOnAction(new EventHandler<ActionEvent>(){
 			public void handle(ActionEvent close){
@@ -697,11 +697,13 @@ public class MainUIController implements Initializable{
 			}
 		});
 		//Anordnen
-		VBox Logs = new VBox(20);
+		VBox logs = new VBox(20);
+		logs.setLayoutY(10);
+		logs.setAlignment(Pos.CENTER);
 		logTabelle.prefWidthProperty().bind(sceneLog.widthProperty().subtract(100));
-		Logs.getChildren().addAll(ueberschrift, logTabelle, close);
-		Logs.setLayoutX(50);
-		rootLog.getChildren().add(Logs);
+		logs.getChildren().addAll(logTabelle, close);
+		logs.setLayoutX(50);
+		rootLog.getChildren().add(logs);
 	}
 	
 //---------------------------------------------------------------------------- Konverter Klassen ----------------------------------
