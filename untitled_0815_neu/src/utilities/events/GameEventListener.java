@@ -1,4 +1,6 @@
-package utilities;
+package utilities.events;
+
+
 
 /**
  * Interface für die EventListener

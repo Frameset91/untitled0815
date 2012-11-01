@@ -1,7 +1,14 @@
 package test_utilities;
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileReader;
 import java.io.FileWriter;
+
 import utilities.*;
+import utilities.communication.CommunicationServer;
+import utilities.events.EventDispatcher;
+import utilities.events.GameEvent;
+import utilities.events.GameEventListener;
 import core.Constants;
 
 
@@ -35,10 +42,33 @@ public class test_CommunicationServer implements GameEventListener {
 		//ComServer initialisieren
 		comServer = CommunicationServer.getInstance();
 		EventDispatcher.getInstance().addListener(this);
-		// ----Testdaten abarbeiten
+		
+		System.out.println("TEST - DATEN LESEN");
 		for(int i = 0; i < testdata.length; i++){
 			processTestData(testdata[i]);
 		}
+		
+		int[] resp = {2,4,6,8,0,2};
+		
+		//Daten schreiben
+		System.out.println("TEST - DATEN SCHREIBEN");
+		for (int i = 0; i < resp.length; i++) {
+			char role = "X".charAt(0);
+			System.out.println("zu schreiben: " + resp[i]);
+			comServer.writeMove((byte) resp[i], path,role);
+			
+			//Datei lesen
+			File antwort = new File(path +"spielerx2server.txt");
+			FileReader reader = new FileReader(antwort);
+			BufferedReader r = new BufferedReader(reader);
+			System.out.println("gelesen: " + r.readLine());
+			System.out.println("###########");
+			antwort.delete();
+			reader.close();
+			r.close();
+			
+		}
+		
 	}
 	
 	
@@ -104,6 +134,7 @@ public class test_CommunicationServer implements GameEventListener {
 				System.out.println("Event " + data[3] + " nicht angekommen");
 			}
 		}
+		System.out.println("###############################################");
 		comServer.disableReading();
 		
 		//Datei wieder löschen
@@ -117,16 +148,10 @@ public class test_CommunicationServer implements GameEventListener {
 
 	@Override
 	public void handleEvent(GameEvent e) throws Exception {
-//		System.out.println("EventHandler aufgerufen");
 		if(events[0] == null){
 			events[0] = e;
-			System.out.println("Eventtyp: " +events[0].getType() + "########## TEST ERFOLGREICH #########");
-			
 		}else if(events[1] == null){
 			events[1] = e;
-			System.out.println("Eventtyp: " +events[1].getType() + "########## TEST ERFOLGREICH #########");
-		}else{
-			System.out.println("****************  Test nicht erfolgreich ******************");
 		}
 		
 		
