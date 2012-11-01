@@ -7,6 +7,7 @@ import utilities.ki.*;
 import core.Constants;
 
 import model.*;
+import java.lang.Math;
 
 /**
  * Klasse enthält alle Methoden für die KI des Spiels
@@ -36,10 +37,14 @@ public class KI{
 	}
 	/**
 	 * 
+	 * @param b 
 	 * @return Bewertungszahl des aktuellen Feldes: Je höher, umso besser ist die 
 	 * Situation für uns
 	 */
-	 private int Bewertung(/*byte neuerzug*/){
+	private RatingResult Bewertung(){
+		return Bewertung(false);
+	}
+	 private RatingResult Bewertung(boolean findwinningchips){
 		 // Tabelle, gibt an, ob für bestimmtes Feld schon Falle existiert und
 		 // wie groß die Falle ist, die durch dieses Feld ermöglicht wird
 		 long startzeit = System.nanoTime();
@@ -123,6 +128,16 @@ public class KI{
 								anzself,noetigfuerfalleself);
 						if(besseralsanderefallen)
 							{
+							if(anzself==4 && findwinningchips)
+								{
+								ArrayList<Position> winningchips = new ArrayList<Position>(0);
+								winningchips.add(new Position((byte) (j-3),i));
+								winningchips.add(new Position((byte) (j-2),i));
+								winningchips.add(new Position((byte) (j-1),i));
+								winningchips.add(new Position((byte) (j-0),i));
+								
+								return new RatingResult(Constants.KImaxbewertung, winningchips);
+								}
 							// dann (kleinere) löschen und neue speichern
 							bisherbesteFalleSelf.clear();
 							bisherbesteFalleSelf.add(new Trap(anzself,freiesteine));
@@ -161,6 +176,16 @@ public class KI{
 								anzopp,noetigfuerfalleopp);
 						if(besseralsanderefallen)
 							{
+							if(anzopp==4 && findwinningchips)
+							{
+							ArrayList<Position> winningchips = new ArrayList<Position>(0);
+							winningchips.add(new Position((byte) (j-3),i));
+							winningchips.add(new Position((byte) (j-2),i));
+							winningchips.add(new Position((byte) (j-1),i));
+							winningchips.add(new Position((byte) (j-0),i));
+							
+							return new RatingResult(-Constants.KImaxbewertung, winningchips);
+							}
 							// dann (kleinere) löschen und neue speichern
 							bisherbesteFalleOpp.clear();
 							bisherbesteFalleOpp.add(new Trap(anzopp,freiesteine));
@@ -196,7 +221,7 @@ public class KI{
 					{
 					//Log.getInstance().write("KI: Reihen-Falle für KI." + einefalle);
 					if(einefalle.getSize()==4)
-						return Constants.KImaxbewertung;
+						return new RatingResult(Constants.KImaxbewertung);
 					else
 						bewertung += einefalle.getSize()*einefalle.getSize();
 					}
@@ -205,7 +230,7 @@ public class KI{
 					{
 					//Log.getInstance().write("KI: Reihen-Falle für Gegner." + einefalle);
 					if(einefalle.getSize()==4)
-						return -Constants.KImaxbewertung;
+						return new RatingResult(-Constants.KImaxbewertung);
 					else
 						bewertung -= einefalle.getSize()*einefalle.getSize();
 					}
@@ -236,12 +261,26 @@ public class KI{
 					//		+ " für mich? " + (spielfeld[i][j]==self));
 					if(spielfeld[i][watermark[i]]==self)
 						if(anzsteine==4)
-							return Constants.KImaxbewertung;
+							{
+							ArrayList<Position> winningchips = new ArrayList<Position>(0);
+							winningchips.add(new Position(i,(byte) (j+3)));
+							winningchips.add(new Position(i,(byte) (j+2)));
+							winningchips.add(new Position(i,(byte) (j+1)));
+							winningchips.add(new Position(i,(byte) (j)));
+							return new RatingResult(Constants.KImaxbewertung, winningchips);
+							}
 						else
 							bewertung += anzsteine * anzsteine;
 					else
 						if(anzsteine==4)
-							return -Constants.KImaxbewertung;
+							{
+							ArrayList<Position> winningchips = new ArrayList<Position>(0);
+							winningchips.add(new Position(i,(byte) (j+3)));
+							winningchips.add(new Position(i,(byte) (j+2)));
+							winningchips.add(new Position(i,(byte) (j+1)));
+							winningchips.add(new Position(i,(byte) (j)));
+							return new RatingResult(-Constants.KImaxbewertung, winningchips);
+							}
 						else
 							bewertung -= anzsteine * anzsteine;
 					}
@@ -251,17 +290,26 @@ public class KI{
 		// #####################################
 		// zähle diagonale Fallen Richtung nach rechts oben:
 		// #####################################
-		bewertung = ueberpruefediagonale(bewertung,(byte)1,(byte)1,(byte) 0,(byte) (Constants.gamefieldrowcount-4));
-		if(bewertung != Constants.KImaxbewertung && bewertung != -Constants.KImaxbewertung)
-		bewertung = ueberpruefediagonale(bewertung,(byte)-1,(byte)1,
-				(byte)(Constants.gamefieldcolcount-1),(byte) (Constants.gamefieldrowcount-4));
-		 
+		RatingResult ratingresult;
+		ratingresult = ueberpruefediagonale(bewertung,(byte)1,(byte)1,(byte) 0,(byte) (Constants.gamefieldrowcount-4),
+				findwinningchips);
+		if(ratingresult.getRating() == Constants.KImaxbewertung || bewertung == -Constants.KImaxbewertung)
+			return ratingresult;
+		
+		ratingresult = ueberpruefediagonale(ratingresult.getRating(),(byte)-1,(byte)1,
+				(byte)(Constants.gamefieldcolcount-1),(byte) (Constants.gamefieldrowcount-4),findwinningchips);
+		if(ratingresult.getRating() == Constants.KImaxbewertung || bewertung == -Constants.KImaxbewertung)
+			return ratingresult;
+		else
+			bewertung = ratingresult.getRating();
+		
 		/*Log.getInstance().write("Bewertung des Feldes: " + String.valueOf(bewertung) + 
 			 " Ausführungszeit: " + String.valueOf((System.nanoTime() - startzeit)/1000000));*/
-		return bewertung;
+		return new RatingResult(bewertung);
 	 }
 	 
-	private int ueberpruefediagonale(int bewertung, byte deltax, byte deltay,byte _startx, byte _starty) {
+	private RatingResult ueberpruefediagonale(int bewertung, byte deltax, byte deltay,byte _startx, byte _starty,
+			boolean findwinningchips) {
 		// TODO Auto-generated method stub
 		byte startx = _startx;
 		byte starty = _starty;
@@ -318,7 +366,15 @@ public class KI{
 					message += "(" + einfreierstein.getX() + "," + einfreierstein.getY() + "), "; 
 				//Log.getInstance().write(message);
 				if(anzself==4)
-					return Constants.KImaxbewertung;
+					{
+					ArrayList<Position> winningchips = new ArrayList<Position>(0);
+					
+					winningchips.add(new Position((byte) (i),j));
+					winningchips.add(new Position((byte) (i-deltax),(byte) (j-deltay)));
+					winningchips.add(new Position((byte) (i-2*deltax),(byte) (j-2*deltay)));
+					winningchips.add(new Position((byte) (i-3*deltax),(byte) (j-3*deltay)));
+					return new RatingResult(Constants.KImaxbewertung, winningchips);
+					}
 				else
 					bewertung += anzself*anzself;
 				}
@@ -333,7 +389,15 @@ public class KI{
 					message += "(" + einfreierstein.getX() + "," + einfreierstein.getY() + "), "; 
 				//Log.getInstance().write(message);	
 				if(anzopp==4)
-					return -Constants.KImaxbewertung;
+					{
+					ArrayList<Position> winningchips = new ArrayList<Position>(0);
+					
+					winningchips.add(new Position((byte) (i),j));
+					winningchips.add(new Position((byte) (i-deltax),(byte) (j-deltay)));
+					winningchips.add(new Position((byte) (i-2*deltax),(byte) (j-2*deltay)));
+					winningchips.add(new Position((byte) (i-3*deltax),(byte) (j-3*deltay)));
+					return new RatingResult(-Constants.KImaxbewertung, winningchips);
+					}
 				else
 					bewertung -= anzopp*anzopp;
 				}
@@ -353,7 +417,7 @@ public class KI{
 					startx--;
 		}
 		while((startx<=3 && deltax>0) || (startx>=3 && deltax<0));
-		return bewertung;
+		return new RatingResult(bewertung);
 		
 	}
 	private boolean besseralsanderefallen(
@@ -378,7 +442,7 @@ public class KI{
 	//Log.getInstance().write("KI: Max " + tiefe);
 	/*return beta;*/
 	   if (tiefe == 0)
-	       return Bewertung();
+	       return Bewertung().getRating();
 	   // GeneriereMoeglicheZuege();
 	   ArrayList<Byte> moeglichezuegelokal = new ArrayList<Byte>(0);
 	   for (int i = 0; i < moeglichezuege.size(); i++)
@@ -397,7 +461,7 @@ public class KI{
 		    setzestein(self,aktzuginspalte);
 		    // Der Gegner ist dran und wird sich für den Zug entscheiden, bei dem er am besten ist
 		    // (== Bewertungsfunktion minimal)
-		    wert = Bewertung();
+		    wert = Bewertung().getRating();
 		    if(wert<Constants.KImaxbewertung)
 		    	wert = (int) (0.9 * Min(tiefe-1, alpha, beta));       
 		    //MacheZugRueckgaengig();
@@ -437,7 +501,7 @@ public class KI{
 	int Min(int tiefe, int alpha, int beta) {
 		//Log.getInstance().write("KI: Min " + tiefe);
 		if (tiefe == 0)
-			return Bewertung();
+			return Bewertung().getRating();
 		// GeneriereMoeglicheZuege();
 		ArrayList<Byte> moeglichezuegelokal = new ArrayList<Byte>(0);
 		for (int i = 0; i < moeglichezuege.size(); i++)
@@ -451,7 +515,7 @@ public class KI{
 			//FuehreNaechstenZugAus();
 			aktzuginspalte = moeglichezuegelokal.get(i);
 			setzestein(opp,aktzuginspalte);
-		    wert = Bewertung();
+		    wert = Bewertung().getRating();
 		    if(wert> -Constants.KImaxbewertung)
 		    	wert = (int) (0.9 * Max(tiefe-1, alpha, beta));       
 			//wert = Max(tiefe-1,alpha, beta);       
@@ -488,7 +552,7 @@ public class KI{
 			Bewertung(/*(byte) oppMove.getColumn()*/);
 			}
 		
-		Random r = new Random();
+		//Random r = new Random();
 		
 		//byte spalte = 6;
 		//byte spalte = (byte) (5 + r.nextInt(2));
@@ -499,10 +563,35 @@ public class KI{
 		setzestein(self, spalte);
 		Log.getInstance().write("KI hat Stein in Spalte " + String.valueOf(spalte)
 				+ " gesetzt! Rechenzeit in ms: " + ((System.nanoTime()-laufzeit)/100000));
-		int bewertungvar = Bewertung();
-		Log.getInstance().write(""+bewertungvar);
-		if(Bewertung()==Constants.KImaxbewertung)
-			Log.getInstance().write("KI HAT GEWONNEN!");
+		RatingResult bewertung = Bewertung(true);
+		//Log.getInstance().write(""+bewertungvar);
+		if(java.lang.Math.abs(bewertung.getRating())==Constants.KImaxbewertung)
+			{
+			
+			String ausgabe = "";
+			for(Position onechip: bewertung.getWinningchips())
+				ausgabe += onechip + ";";
+			if(bewertung.getRating()==Constants.KImaxbewertung)
+				if(self)
+					ausgabe += Constants.xRole;
+				else
+					ausgabe += Constants.oRole;
+			else
+				if(self)
+					ausgabe += Constants.oRole;
+				else
+					ausgabe += Constants.xRole;
+			
+			Log.getInstance().write("Feuere WinDeteced-Event mit Parameter: " + ausgabe);
+			try {
+				EventDispatcher.getInstance().triggerEvent(new GameEvent(GameEvent.Type.WinDetected, ausgabe));
+				} 
+			catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				}
+			}
+			//Log.getInstance().write("KI HAT GEWONNEN!");
 		
 		
 		return spalte;
