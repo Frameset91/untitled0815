@@ -118,7 +118,7 @@ public class GameController implements GameEventListener, Observer{
 		Log.getInstance().write("Controller: starte Satz, FxThread:" + Platform.isFxApplicationThread());
 		
 		Double buffer = CommunicationServer.getInstance().getWriteLatency();
-		buffer = (buffer * 2 * 1.1) + 100;
+		buffer = (buffer * 2 * 1.1) + 100 + model.getTimeoutServer();
 		if(buffer > ((1-Constants.minTimeforKI) * model.getTimeoutDraw()))
 			buffer = (1-Constants.minTimeforKI) * model.getTimeoutDraw();
 		Log.getInstance().write("Controller: Buffer für Zugberechnung: " + buffer.intValue());
