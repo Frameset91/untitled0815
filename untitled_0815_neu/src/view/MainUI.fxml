@@ -60,7 +60,7 @@
         			<!-- Eingabefelder fuer Gegner und Verzeichnis -->
         			<TextField fx:id="ownName" maxWidth="150" GridPane.columnIndex="1" GridPane.rowIndex="3" styleClass="textfeld"/>
         			<TextField fx:id="oppName" maxWidth="150" prefColumnCount="2" GridPane.columnIndex="1" GridPane.rowIndex="4" styleClass="textfeld"/>
-        			<HBox fx:id="boxDirectory" GridPane.columnIndex="1" GridPane.rowIndex="5">
+        			<HBox fx:id="boxDirectory" spacing="2" GridPane.columnIndex="1" GridPane.rowIndex="5">
         				<TextField fx:id="directoryPath" maxWidth="150" styleClass="textfeld"/>
         				<Button fx:id="btnDirectory" text="..." onAction="#handleChooseDirectory"/>
         			</HBox>
@@ -81,7 +81,7 @@
         		</GridPane><!--Button Spiel beenden noch einr�cken-->
         		<Button text="Spiel beenden" fx:id="btnEndGame" onAction="#handleEndGame" alignment="CENTER" minWidth="100"/>
         	</VBox>
-        	<Line startX="0" startY="500" endX="300" endY="500" fx:id="border"/>
+        	<Line startX="0" startY="500" endX="320" endY="500" fx:id="border"/>
         	<!-- Einstellungen f�r S�tze -->
         	<HBox fx:id="setSettings" spacing="20">
  				<padding><Insets top="10" right="10" bottom="10" left="10"/></padding>

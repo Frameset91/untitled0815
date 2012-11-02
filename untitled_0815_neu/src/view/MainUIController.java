@@ -556,7 +556,7 @@ public class MainUIController implements Initializable{
 				timeoutF=-1;
 				timeoutZ=-1;
 			}
-			if (timeoutZ>0 && timeoutF>0 && !timeoutMoveTime.getText().equals("") && !timeoutRequest.getText().equals("")){
+			if (timeoutZ>500 && timeoutF>0 && !timeoutMoveTime.getText().equals("") && !timeoutRequest.getText().equals("")){
 				viewModel.startGame();
 			}
 			else{
