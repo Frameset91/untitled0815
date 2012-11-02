@@ -284,13 +284,13 @@ public class MainUIController implements Initializable{
 		
 		//------Tabelle für die Logs
 		logTable = new TableView<LogEntry>();
-		TableColumn<Log.LogEntry, String> spalte1 = new TableColumn<Log.LogEntry, String>("Log-Eintrag");
-		spalte1.setEditable(false);
-		spalte1.prefWidthProperty().bind(logTable.widthProperty().subtract(2));
+		TableColumn<Log.LogEntry, String> column1 = new TableColumn<Log.LogEntry, String>("Log-Eintrag");
+		column1.setEditable(false);
+		column1.prefWidthProperty().bind(logTable.widthProperty().subtract(2));
 		logTable.getColumns().clear();
-		logTable.getColumns().add(spalte1);
+		logTable.getColumns().add(column1);
 		logTable.setMinWidth(384);
-		spalte1.setCellValueFactory(
+		column1.setCellValueFactory(
 				new PropertyValueFactory<Log.LogEntry, String>("text"));
 		logTable.setItems(viewModel.logEntries());
 		Log.getInstance().write("Binding fuer Log erstellt");
@@ -407,8 +407,8 @@ public class MainUIController implements Initializable{
 		});
 						
 	//Inhalt
-		Text ueberschrift = new Text(20, 20,"Bitte den Gewinner bestätigen:");
-		ueberschrift.getStyleClass().add("ueberschrift2");
+		Text headline = new Text(20, 20,"Bitte den Gewinner bestätigen:");
+		headline.getStyleClass().add("ueberschrift2");
 		Button confirm = new Button("Bestätigen");		
 		confirm.setOnMouseClicked(new EventHandler<MouseEvent>(){
 			public void handle(MouseEvent close){
@@ -431,7 +431,7 @@ public class MainUIController implements Initializable{
 		hconfirmwinner.getChildren().addAll(new Label("Gewinner:"), winner);
 		HBox hconfirmbuttons = new HBox(15);
 		hconfirmbuttons.getChildren().addAll(confirm, discard);
-		vconfirm.getChildren().addAll(ueberschrift,hconfirmwinner, hconfirmbuttons);
+		vconfirm.getChildren().addAll(headline,hconfirmwinner, hconfirmbuttons);
 		rootConfirm.getChildren().add(vconfirm);
 		
 		if(winner.getValue() == null) 
