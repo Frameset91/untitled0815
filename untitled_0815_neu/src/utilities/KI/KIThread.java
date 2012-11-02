@@ -21,16 +21,18 @@ public class KIThread extends Thread {
 	private Boolean self;
 	private Boolean opp;
 	private final Boolean empty = null;
-	private final byte suchtiefe = 4;
+	private int suchtiefe = 0;
 
-	private Boolean[][] spielfeld;
+	private Boolean[][] spielfeld,orgspielfeld;
 	private Byte[] watermark = new Byte[Constants.gamefieldcolcount];
-	private ArrayList<Byte> moeglichezuege;
+	private Byte[] orgwatermark = new Byte[Constants.gamefieldcolcount];
+	private ArrayList<Byte> moeglichezuege,orgmoeglichezuege;
 
 	private KI ki; 
 	
 	private byte oppMove;
 	
+	private int searchedvertices;
 	
 	public KIThread(KI ki, Byte[] watermark, Boolean[][] spielfeld, ArrayList<Byte> moeglichezuege, boolean self, byte oppMove) {
 		setDaemon(true);
@@ -43,13 +45,41 @@ public class KIThread extends Thread {
 		this.moeglichezuege = moeglichezuege;
 		this.watermark = watermark;
 		this.oppMove = oppMove;
+		this.searchedvertices = 0;
 		
+		/*this.spielfeld = new Boolean[Constants.gamefieldcolcount][Constants.gamefieldrowcount];
+		this.moeglichezuege = new ArrayList<Byte>(0);*/
 	}
 	
 public void run(){
-	//while(!isInterrupted()){
-	RatingResult bewertung = null;
+	int i=1;
+	while(!isInterrupted() && i<=20)
+		{
+		// aktuelles Gamefield ausgeben
+		//GameFieldStatistics.printgamefield(spielfeld);
+		
+		// Kopiere alle nötigen Variablen(Tiefenkopie)
+		/*for (int j = 0; j < orgspielfeld.length; j++)
+			for (int k = 0; k < orgspielfeld[0].length; k++)
+				spielfeld[j][k]=orgspielfeld[j][k];
+		for (int j = 0; j < watermark.length; j++) 
+			watermark[j] = orgwatermark[j];
+		for (int j = 0; j < orgmoeglichezuege.size(); j++)
+			moeglichezuege.add(orgmoeglichezuege.get(j));*/
 	
+		
+		Log.getInstance().write("Starte Alpha-Beta-Suche Tiefe " + i);
+		alphabetasuche(i);
+		Log.getInstance().write("Alpha-Beta-Suche Tiefe " + i + " abgeschlossen. Ergebnis: " + ki.getNextMove());
+		i += 2;
+		}
+}
+
+private void alphabetasuche(int searchdepth){
+	this.suchtiefe = searchdepth;
+	
+	RatingResult bewertung = null;
+		
 	if(oppMove != -1)
 		{
 		bewertung = Bewertung(true);
@@ -95,9 +125,10 @@ public void run(){
 		// TODO	setzestein(self, spalte);
 		GameFieldStatistics.insertchipandupdate(watermark, spielfeld, moeglichezuege, self, spalte);
 		Log.getInstance().write("KI hat Stein in Spalte " + String.valueOf(spalte)
-				+ " gesetzt! Rechenzeit in ms: " + ((System.nanoTime()-laufzeit)/1000000));
+				+ " gesetzt! Rechenzeit in ms: " + ((System.nanoTime()-laufzeit)/1000000) + ". Durchsuchte "
+				+ "Knoten :" + searchedvertices);
 		bewertung = Bewertung(true);
-		Log.getInstance().write("KI: Bewertung des Feldes:" + bewertung.getRating());
+		//Log.getInstance().write("KI: Bewertung des Feldes:" + bewertung.getRating());
 		if(java.lang.Math.abs(bewertung.getRating())==Constants.KImaxbewertung)
 			{
 			
@@ -124,8 +155,10 @@ public void run(){
 				e.printStackTrace();
 				}
 			}
-			ki.setNextMove(spalte);
+		ki.setNextMove(spalte);
+		GameFieldStatistics.removechipandupdate(watermark, spielfeld, moeglichezuege, spalte);
 		}
+	
 }
 
 /**
@@ -311,8 +344,8 @@ private RatingResult Bewertung(){
 		for (Trap einefalle : bisherbesteFalleSelf)
 			if(einefalle.getSize()>0)
 				{
-				if(findwinningchips)
-					Log.getInstance().write("KI: Reihen-Falle für KI." + einefalle);
+				/*if(findwinningchips)
+					Log.getInstance().write("KI: Reihen-Falle für KI." + einefalle);*/
 				if(einefalle.getSize()==4)
 					return new RatingResult(Constants.KImaxbewertung);
 				else
@@ -321,8 +354,8 @@ private RatingResult Bewertung(){
 		for (Trap einefalle : bisherbesteFalleOpp)
 			if(einefalle.getSize()>0)
 				{
-				if(findwinningchips)
-					Log.getInstance().write("KI: Reihen-Falle für Gegner." + einefalle);
+				/*if(findwinningchips)
+					Log.getInstance().write("KI: Reihen-Falle für Gegner." + einefalle);*/
 				if(einefalle.getSize()==4)
 					return new RatingResult(-Constants.KImaxbewertung);
 				else
@@ -351,9 +384,9 @@ private RatingResult Bewertung(){
 				{
 				// TODO: wirklich neue Falle?
 				// für wen ist die Falle?
-				if(findwinningchips)
+				/*if(findwinningchips)
 					Log.getInstance().write("KI: Spalten-Falle in " + i + " für jemanden. Größe: " + anzsteine
-						+ " für mich? " + (spielfeld[i][j]==self));
+						+ " für mich? " + (spielfeld[i][j]==self));*/
 				if(spielfeld[i][watermark[i]]==self)
 					if(anzsteine==4)
 						{
@@ -459,8 +492,8 @@ private RatingResult ueberpruefediagonale(int bewertung, byte deltax, byte delta
 			
 			for (Position einfreierstein : freiesteine) 
 				message += "(" + einfreierstein.getX() + "," + einfreierstein.getY() + "), ";
-			if(findwinningchips)
-				Log.getInstance().write(message);
+			/*if(findwinningchips)
+				Log.getInstance().write(message);*/
 			if(anzself==4)
 				{
 				ArrayList<Position> winningchips = new ArrayList<Position>(0);
@@ -483,8 +516,8 @@ private RatingResult ueberpruefediagonale(int bewertung, byte deltax, byte delta
 			
 			for (Position einfreierstein : freiesteine) 
 				message += "(" + einfreierstein.getX() + "," + einfreierstein.getY() + "), "; 
-			if(findwinningchips)
-				Log.getInstance().write(message);	
+			/*if(findwinningchips)
+				Log.getInstance().write(message);*/	
 			if(anzopp==4)
 				{
 				ArrayList<Position> winningchips = new ArrayList<Position>(0);
@@ -536,14 +569,15 @@ return result;
  * @return Bewertungszahl des besten Spielzuges
  */
 private int Max(int tiefe, int alpha, int beta) {
-//Log.getInstance().write("KI: Max " + tiefe);
-/*return beta;*/
+   if(isInterrupted())
+		return -1;
    if (tiefe == 0)
        return Bewertung().getRating();
    // GeneriereMoeglicheZuege();
    ArrayList<Byte> moeglichezuegelokal = new ArrayList<Byte>(0);
    for (int i = 0; i < moeglichezuege.size(); i++)
 	   moeglichezuegelokal.add(moeglichezuege.get(i));
+	//Log.getInstance().write("KI: Max " + tiefe + " Züge möglich: " + moeglichezuegelokal);
     int localAlpha = -Constants.KImaxbewertung; //solange wir noch keine bessere Idee haben
     											// sind alle Züge für uns extrem schlecht
     byte i=0; //aktuell geprüfter Zug
@@ -554,19 +588,19 @@ private int Max(int tiefe, int alpha, int beta) {
     while (i < moeglichezuegelokal.size())
 	    {
 	    //FuehreNaechstenZugAus();
+    	searchedvertices++;
 	    aktzuginspalte = moeglichezuegelokal.get(i);
 	    //TODO setzestein(self,aktzuginspalte);
 	    GameFieldStatistics.insertchipandupdate(watermark, spielfeld, moeglichezuege, self, aktzuginspalte);
-	   
 	    // Der Gegner ist dran und wird sich für den Zug entscheiden, bei dem er am besten ist
 	    // (== Bewertungsfunktion minimal)
 	    wert = Bewertung().getRating();
 	    if(wert<Constants.KImaxbewertung)
-	    	wert = (int) (0.9 * Min(tiefe-1, alpha, beta));       
+	    	wert = (int) (1 * Min(tiefe-1, alpha, beta));       
 	    //MacheZugRueckgaengig();
 	    //TODO loeschestein(aktzuginspalte);
 	    GameFieldStatistics.removechipandupdate(watermark, spielfeld, moeglichezuege, aktzuginspalte);
-		if (wert > (int) (0.9 * localAlpha))       
+		if (wert > (int) (1 * localAlpha))       
 			{          
 			besterspielzug = aktzuginspalte;
 			
@@ -599,13 +633,15 @@ private int Max(int tiefe, int alpha, int beta) {
  * @return Bewertungszahl des schlechtesten Spielzuges
  */
 int Min(int tiefe, int alpha, int beta) {
-	//Log.getInstance().write("KI: Min " + tiefe);
-	if (tiefe == 0)
+	if(isInterrupted())
+		return -1;
+	if (tiefe == 0 )
 		return Bewertung().getRating();
 	// GeneriereMoeglicheZuege();
 	ArrayList<Byte> moeglichezuegelokal = new ArrayList<Byte>(0);
 	for (int i = 0; i < moeglichezuege.size(); i++)
 		   moeglichezuegelokal.add(moeglichezuege.get(i));
+	//Log.getInstance().write("KI: Min " + tiefe + " Züge möglich: " + moeglichezuegelokal);
 	int localBeta = Constants.KImaxbewertung;   
 	byte i=0; //aktuell geprüfter Zug
 	byte aktzuginspalte=-1;
@@ -613,17 +649,18 @@ int Min(int tiefe, int alpha, int beta) {
 	while (i < moeglichezuegelokal.size())
 		{
 		//FuehreNaechstenZugAus();
+		searchedvertices++;
 		aktzuginspalte = moeglichezuegelokal.get(i);
 		//TODO setzestein(opp,aktzuginspalte);
 		GameFieldStatistics.insertchipandupdate(watermark, spielfeld, moeglichezuege, opp, aktzuginspalte);
 	    wert = Bewertung().getRating();
 	    if(wert> -Constants.KImaxbewertung)
-	    	wert = (int) (0.9 * Max(tiefe-1, alpha, beta));       
+	    	wert = (int) (1 * Max(tiefe-1, alpha, beta));       
 		//wert = Max(tiefe-1,alpha, beta);       
 		//MacheZugRueckgaengig();
 	    //TODO loeschestein(aktzuginspalte);
 	    GameFieldStatistics.removechipandupdate(watermark, spielfeld, moeglichezuege, aktzuginspalte);
-		if (wert < (int) (0.9*localBeta))       
+		if (wert < (int) (1*localBeta))       
 			{          
 			   if (wert <= alpha)             
 				   return wert;      // Alpha-Cutoff    
