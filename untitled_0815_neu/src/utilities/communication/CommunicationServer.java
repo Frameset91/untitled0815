@@ -22,7 +22,6 @@ public class CommunicationServer {
 	private String serverfilepath;
 	private File serverFile;
 	private String seperator;
-	// Singleton Referenz
 	private static CommunicationServer singleton = null;
 	private int timeout;
 	private double WriteLatency = 0;
@@ -45,10 +44,13 @@ public class CommunicationServer {
 	
 	}
 
+	
 	/**
 	 * Startet die Abfrage der Serverdatei in einem neuen Thread. Überprüft, ob
 	 * die alte, bereits gelesene, Datei noch vorhanden ist und wartet bis diese
 	 * gelöscht ist.
+	 * 
+	 * @param Set Angabe, ob ein neuer Satz beginnt
 	 */
 	public synchronized void enableReading(boolean Set) {
 		this.newSet = Set;
@@ -117,11 +119,24 @@ public class CommunicationServer {
 		return timeout;
 	}
 	
+	/**
+	 * Liefert die hoechste Schreiblatenz zurück
+	 * @return Double Latenz
+	 */
 	
 	public double getWriteLatency(){
 		return this.WriteLatency;
 	}
 
+	/**
+	 * Initialisierung des Communication Servers
+	 * 
+	 * @param timeout	int Zeit zwischen 2 Fileabfragen
+	 * @param serverFilePath Verzeichnispfad
+	 * @param role Rolle des eigenen Agenten
+	 * @return Wert, ob Pfad in Ordnung
+	 */
+	
 	public boolean init(int timeout,String serverFilePath,char role){
 			this.timeout = timeout;
 			this.ownRole = role;
@@ -194,8 +209,6 @@ public class CommunicationServer {
 			}
 	
 	
-	//		this.setFiles(this.serverfilepath, this.ownRole);
-			
 			// Auslesen der Datei
 			Log.getInstance().write("Communication Server:Ueberwachen startet");
 			
@@ -279,6 +292,11 @@ public class CommunicationServer {
 	public void resetLastChange() {
 		this.lastchange = (Long) null;
 	}
+	
+	/**
+	 * Die Methode testest die Geschwindigkeit um auf den Serverpfad Dateien zu schreiben.
+	 * @param testpath Dateipfad
+	 */
 
 	private void testConnection(String testpath){
 		//Datei schreiben
