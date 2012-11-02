@@ -557,8 +557,13 @@ public class GameController implements GameEventListener, Observer{
 			break;
 		case "points":
 			if(!isReplay.get()){
-				properties[OWNPOINTS_PROPERTY].setValue(String.valueOf(model.getOwnPoints()));
-				properties[OPPPOINTS_PROPERTY].setValue(String.valueOf(model.getOppPoints()));
+				Platform.runLater(new Runnable() {					
+					@Override
+					public void run() {
+						properties[OWNPOINTS_PROPERTY].setValue(String.valueOf(model.getOwnPoints()));
+						properties[OPPPOINTS_PROPERTY].setValue(String.valueOf(model.getOppPoints()));						
+					}
+				});				
 			}
 		default:
 			break;
