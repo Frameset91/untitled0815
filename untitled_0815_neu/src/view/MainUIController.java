@@ -200,9 +200,15 @@ public class MainUIController implements Initializable{
 			@Override
 			public void changed(ObservableValue<? extends String> arg0,
 					String arg1, String arg2) {
-				if(!viewModel.isWithoutServer().get())
-						role.setValue(viewModel.properties()[viewModel.ROLE_PROPERTY].get());
-				
+
+if(!viewModel.isWithoutServer().get())
+role.setValue(viewModel.properties()[viewModel.ROLE_PROPERTY].get());
+else{
+if(viewModel.properties()[viewModel.ROLE_PROPERTY].get().charAt(0) == Constants.xRole)
+role.setValue(String.valueOf(Constants.oRole));
+else
+role.setValue(String.valueOf(Constants.xRole));
+}
 			}			
 		});
 		role.getItems().addAll(String.valueOf(Constants.xRole), String.valueOf(Constants.oRole));
@@ -675,7 +681,7 @@ public class MainUIController implements Initializable{
 	
 	@FXML
     // Menü: Schließen des Programms
-	private void handleSchliessen(ActionEvent close){
+	private void handleClose(ActionEvent close){
 		final Stage closing = new Stage();
 		Group rootClosing = new Group();
 		Scene sceneClosing = new Scene(rootClosing, 420,120, Color.WHITESMOKE);
@@ -714,7 +720,7 @@ public class MainUIController implements Initializable{
 	}
 	@FXML
 	// Menü: Spielsteuerung aufrufen
-	private void handleSteuerung(ActionEvent steuerung){
+	private void handleControl(ActionEvent steuerung){
 		//Fenster mit Steuerung öffnen
 		final Stage stageSteuerung = new Stage();
 		stageSteuerung.setResizable(false);
@@ -760,7 +766,7 @@ public class MainUIController implements Initializable{
 	
 	// Einstellungen: Timeouts hoch/ runter setzen
 	@FXML
-	private void handleHoch1(MouseEvent arg0){
+	private void handleUp1(MouseEvent arg0){
 		int timeoutFileabfruf;
 		timeoutFileabfruf = Integer.parseInt(timeoutRequest.getText());
 		timeoutFileabfruf = timeoutFileabfruf + 25;
@@ -768,7 +774,7 @@ public class MainUIController implements Initializable{
 		timeoutRequest.setText(zeitz);
 	}
 	@FXML
-	private void handleRunter1(MouseEvent arg0){
+	private void handleDown1(MouseEvent arg0){
 		int timeoutFileabruf;
 		timeoutFileabruf = Integer.parseInt(timeoutRequest.getText());
 		timeoutFileabruf = timeoutFileabruf - 25;
@@ -776,7 +782,7 @@ public class MainUIController implements Initializable{
 		timeoutRequest.setText(zeitz);
 	}
 	@FXML
-	private void handleHoch2(MouseEvent arg0){
+	private void handleUp2(MouseEvent arg0){
 		int timeoutFileabfruf;
 		timeoutFileabfruf = Integer.parseInt(timeoutMoveTime.getText());
 		timeoutFileabfruf = timeoutFileabfruf + 100;
@@ -784,7 +790,7 @@ public class MainUIController implements Initializable{
 		timeoutMoveTime.setText(zeitz);
 	}
 	@FXML
-	private void handleRunter2(MouseEvent arg0){
+	private void handleDown2(MouseEvent arg0){
 		int timeoutFileabruf;
 		timeoutFileabruf = Integer.parseInt(timeoutMoveTime.getText());
 		timeoutFileabruf = timeoutFileabruf - 100;
@@ -793,7 +799,7 @@ public class MainUIController implements Initializable{
 	}
 	// Log anzeigen
 	@FXML
-	private void handleLogAnzeigen(ActionEvent log){
+	private void handleShowLog(ActionEvent log){
 		//Fenster mit Log öffnen
 		final Stage stageLog = new Stage();
 		stageLog.setMinWidth(500);
