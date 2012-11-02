@@ -668,7 +668,7 @@ public class GameController implements GameEventListener, Observer{
 	//Methode um die initialen Werte zu setzen, die auch nach einem Spiel, wieder gesetzt werden müssen
 	private void reset(){
 		if(model != null) model = null;
-		
+		winMarkers = new byte[4][2];
 		//Feld leeren
 		for(int i = 0; i < Constants.gamefieldcolcount; i++){
 			for(int j = 0; j< Constants.gamefieldrowcount; j++){
