@@ -170,7 +170,7 @@ public class CommunicationServer {
 				if (this.newSet) {
 					if (old.exists()) {
 						ServerMessage msg = XMLParser.getInstance().readXML(old);
-						if (msg.getSetstatus().equals("beendet")) {
+						if (msg.getSetstatus().equals("beendet") || (old.lastModified() == this.lastchange)) {
 							old.delete();
 						}
 					}
