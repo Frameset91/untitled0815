@@ -391,13 +391,13 @@ public class MainUIController implements Initializable{
 	
 	private void showConfirmWinner() {
 		final Stage stageConfirmWinner = new Stage();
-//		stageConfirmWinner.setResizable(false);
 		Group rootConfirm = new Group();
 		Scene sceneConfirm = new Scene(rootConfirm, 300,160, Color.WHITESMOKE);
 		sceneConfirm.getStylesheets().add("view/MainUIStyle.css");
 		stageConfirmWinner.setScene(sceneConfirm);
 		stageConfirmWinner.centerOnScreen();
-		stageConfirmWinner.initModality(Modality.APPLICATION_MODAL); 
+		stageConfirmWinner.initModality(Modality.APPLICATION_MODAL);
+		stageConfirmWinner.setX(300); stageConfirmWinner.setY(300);
 		stageConfirmWinner.show();
 		stageConfirmWinner.setOnCloseRequest(new EventHandler<WindowEvent>(){
 			public void handle(WindowEvent e){
