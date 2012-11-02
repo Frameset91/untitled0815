@@ -519,7 +519,7 @@ public class MainUIController implements Initializable{
 		f = new File(verzeichnispfad.getText());
 		if(f.exists())path=true;}
 		catch(Exception e1){path=false;}
-		if(!path){
+		if(!path && !viewModel.isWithoutServer().get()){
 			final Stage stage = new Stage();
 			stage.initModality(Modality.APPLICATION_MODAL);
 			stage.setTitle("Achtung!");
