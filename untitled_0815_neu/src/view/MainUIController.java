@@ -680,6 +680,7 @@ public class MainUIController implements Initializable{
 		Group rootClosing = new Group();
 		Scene sceneClosing = new Scene(rootClosing, 420,120, Color.WHITESMOKE);
 		closing.setScene(sceneClosing);
+		closing.setResizable(false);
 		closing.centerOnScreen();
 		Text text = new Text("Wollen Sie das Programm wirklich beenden?");
 		Text text2 = new Text("Falls noch ein Satz oder Spiel läuft, kann dies zu Datenverlust führen.");
