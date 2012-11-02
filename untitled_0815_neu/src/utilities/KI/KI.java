@@ -1,15 +1,9 @@
 package utilities.KI;
 import java.util.ArrayList;
-import java.util.Random;
-
 import utilities.Log;
-import utilities.KI.*;
-
 import core.Constants;
 
 import model.*;
-
-import java.lang.Math;
 
 /**
  * Klasse enthält alle Methoden für die KI des Spiels

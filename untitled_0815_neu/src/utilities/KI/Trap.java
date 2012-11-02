@@ -1,7 +1,9 @@
 package utilities.KI;
 /**
- * @author Johannes Riedel
  * speichert eine mögliche 4er-Kette zu gewinnen
+ * 
+ * 
+ * @author Johannes Riedel
  */
 
 import java.util.ArrayList;
@@ -16,7 +18,6 @@ public class Trap {
 	}
 	
 	public Trap(byte groesse, ArrayList<Position> freiechips) {
-		// TODO Auto-generated constructor stub
 		this.size = groesse;
 		this.stillnecessarychips= new ArrayList<Position>(freiechips.size());
 	    for (Position freierchip : freiechips) 
