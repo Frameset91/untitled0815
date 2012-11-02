@@ -237,8 +237,6 @@ public class GameController implements GameEventListener, Observer{
 		Log.getInstance().write("Controller: Gewinner bestätigt, FxThread:" + Platform.isFxApplicationThread());		
 		properties[STATE_PROPERTY].set(Constants.STATE_GAME_RUNNING);
 		model.save();
-//		properties[OWNPOINTS_PROPERTY].setValue(String.valueOf(model.getOwnPoints()));
-//		properties[OPPPOINTS_PROPERTY].setValue(String.valueOf(model.getOppPoints()));
 	}
 	
 	/**
@@ -464,7 +462,7 @@ public class GameController implements GameEventListener, Observer{
 	
 	//neues Spiel mit einer bestimmten Spalten- und Zeilenanzahl
 	private void newGame(int cols, int rows){		
-		//create new model		
+		//erstelle neues Model	
 		model = new Game(cols, rows, properties[ROLE_PROPERTY].get().charAt(0), 
 				properties[OPPNAME_PROPERTY].get(), 
 				properties[OWNNAME_PROPERTY].get(),
@@ -533,8 +531,7 @@ public class GameController implements GameEventListener, Observer{
 					updateSets();
 
 					properties[WINNER_PROPERTY].setValue(String.valueOf(model.getLatestSet().getWinner()));
-//					properties[OWNPOINTS_PROPERTY].setValue(String.valueOf(model.getOwnPoints()));
-//					properties[OPPPOINTS_PROPERTY].setValue(String.valueOf(model.getOppPoints()));					
+				
 				}
 			});								
 			break;
@@ -544,12 +541,6 @@ public class GameController implements GameEventListener, Observer{
 			updateSets();
 			if(model.getLatestSet() != null) 
 				properties[WINNER_PROPERTY].setValue(String.valueOf(model.getLatestSet().getWinner()));
-//			else{
-//				sets.clear();
-//				sets.add(new SetProperty("keine", "Sätze"));
-//			}
-//			properties[OWNPOINTS_PROPERTY].setValue(String.valueOf(model.getOwnPoints()));
-//			properties[OPPPOINTS_PROPERTY].setValue(String.valueOf(model.getOppPoints()));
 			break;
 		case "field":
 			Log.getInstance().write("Controller: Field changed empfangen; FxThread:" + Platform.isFxApplicationThread());
@@ -567,8 +558,7 @@ public class GameController implements GameEventListener, Observer{
 			}
 		default:
 			break;
-		}
-		
+		}		
 	}
 	
 	//---------------Hilfsmethoden
@@ -678,10 +668,6 @@ public class GameController implements GameEventListener, Observer{
 		
 		//Liste der Sätze zurück setzen
 		updateSets();
-//		sets.clear();
-//		sets.add(new SetProperty("keine", "Sätze"));
-		
-				
 		
 		//Liste der gespeicherten Spiele laden
 		if(isDBAvailable.get()) 
