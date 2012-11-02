@@ -19,6 +19,7 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
+import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -468,6 +469,14 @@ role.setValue(String.valueOf(Constants.xRole));
 //			viewModel.oppMove((byte)Integer.parseInt(data));
 //		}catch(Exception ex){ ex.printStackTrace();}
 //	}
+	
+	@FXML
+	private void handleMaxLength(Event e){
+		TextField t = (TextField) e.getSource();
+		if(t.getLength() > 14){
+			t.deleteText(t.getLength()-1, t.getLength());
+		}
+	}
 	
 	@FXML
 	//Reagieren auf CheckBox für Log 

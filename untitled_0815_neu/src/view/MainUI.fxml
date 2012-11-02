@@ -58,8 +58,8 @@
         				<CheckBox fx:id="cbWithoutServer" maxWidth="30" selected="false" styleClass=".choice"/>
         			</HBox>
         			<!-- Eingabefelder fuer Gegner und Verzeichnis -->
-        			<TextField fx:id="ownName" maxWidth="150" GridPane.columnIndex="1" GridPane.rowIndex="3" styleClass="textfeld"/>
-        			<TextField fx:id="oppName" maxWidth="150" prefColumnCount="2" GridPane.columnIndex="1" GridPane.rowIndex="4" styleClass="textfeld"/>
+        			<TextField fx:id="ownName" onKeyPressed="#handleMaxLength" maxWidth="150" GridPane.columnIndex="1" GridPane.rowIndex="3" styleClass="textfeld"/>
+        			<TextField fx:id="oppName" onKeyPressed="#handleMaxLength" maxWidth="150" prefColumnCount="2" GridPane.columnIndex="1" GridPane.rowIndex="4" styleClass="textfeld"/>
         			<HBox fx:id="boxDirectory" spacing="2" GridPane.columnIndex="1" GridPane.rowIndex="5">
         				<TextField fx:id="directoryPath" maxWidth="150" styleClass="textfeld"/>
         				<Button fx:id="btnDirectory" text="..." onAction="#handleChooseDirectory"/>
@@ -73,7 +73,7 @@
         			</HBox>
         			<!-- Timeout Zugzeit -->
         			<HBox fx:id="boxTimeoutDraw" spacing="2" GridPane.columnIndex="1" GridPane.rowIndex="7">
-        			    <Button text="-" styleClass="btnTimeout" minHeight="25" minWidth="23" maxWidth="23" onMouseClicked="#handleDownr2"/>
+        			    <Button text="-" styleClass="btnTimeout" minHeight="25" minWidth="23" maxWidth="23" onMouseClicked="#handleDown2"/>
         				<TextField fx:id="timeoutMoveTime" maxWidth="60" text="2000" styleClass="textfeld"/>
         				<Button text="+" styleClass="btnTimeout" minHeight="25" minWidth="23" maxWidth="23" onMouseClicked="#handleUp2"/>	
         				<Label text="ms"/>
