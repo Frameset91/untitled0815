@@ -33,9 +33,9 @@
     <left>
         <!--Unteinander die Einstellungen/ Buttons-->
         <VBox spacing = "20" styleClass="settings, border">   
-         <padding><Insets top="10" right="10" bottom="10" left="10"/></padding>
-        	<!--Einstellungen für 1 spezielles Spiel-->
-        	<VBox spacing="10" styleClass="border"><!--  spacing="20" -->
+         <padding><Insets top="10" right="10" bottom="10" left="10"/></padding> 
+         <!--Einstellungen für 1 spezielles Spiel-->
+        	<VBox spacing="10">
         	    <padding><Insets top="10" right="10" bottom="10" left="10"/></padding>
         		<Label text="Spieleinstellungen" GridPane.columnIndex="0" GridPane.rowIndex="0" styleClass="labelSpieleinstellungen"></Label>
         		<!-- Tabelle zum Anordnen der Einstellungen -->
@@ -81,8 +81,9 @@
         		</GridPane><!--Button Spiel beenden noch einrücken-->
         		<Button text="Spiel beenden" fx:id="btnEndGame" onAction="#handleEndGame" alignment="CENTER" minWidth="100"/>
         	</VBox>
+        	<Line startX="0" startY="500" endX="300" endY="500"/>
         	<!-- Einstellungen für Sätze -->
-        	<HBox fx:id="setSettings" spacing="20"  styleClass="border">
+        	<HBox fx:id="setSettings" spacing="20"><!-- styleClass="border" -->
  				<padding><Insets top="10" right="10" bottom="10" left="10"/></padding>
         		<VBox spacing="5">
        				<Button fx:id="btnNewSet" text="Satz spielen" disable="false" onMouseClicked="#handleStartSet"/>
