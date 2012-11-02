@@ -2,6 +2,7 @@ package utilities.KI;
 import java.util.ArrayList;
 import java.util.Random;
 
+import utilities.Log;
 import utilities.KI.*;
 
 import core.Constants;
@@ -23,17 +24,18 @@ public class KI{
 
 	private Boolean[][] spielfeld;
 	private Byte[] watermark = new Byte[Constants.gamefieldcolcount];
-	private ArrayList<Byte> moeglichezuege;
+	private Byte[] orgwatermark = new Byte[Constants.gamefieldcolcount];
+	private ArrayList<Byte> moeglichezuege,orgmoeglichezuege;
 
 	public KI(Game currentgame, int timeout){
 		//TODO timeout
 		gameobject = currentgame;
 		this.timeout = timeout;
-		moeglichezuege = new ArrayList<Byte>(0);
+		orgmoeglichezuege = new ArrayList<Byte>(0);
 		for (Byte i=0; i < Constants.gamefieldcolcount; i++)
 			{
-			watermark[i]=-1;
-			moeglichezuege.add(i);
+			orgwatermark[i]=-1;
+			orgmoeglichezuege.add(i);
 			}
 		
 	}
@@ -46,9 +48,15 @@ public class KI{
 	public byte calculateNextMove(byte oppMove) {	
 		
 		spielfeld = gameobject.getLatestSet().getField();
-		
+	
 		if(oppMove!=-1)
-			GameFieldStatistics.updateafterinsert(watermark, spielfeld, moeglichezuege, oppMove);
+			GameFieldStatistics.updateafterinsert(orgwatermark, spielfeld, orgmoeglichezuege, oppMove);
+
+		for (int j = 0; j < watermark.length; j++) 
+			watermark[j] = orgwatermark[j];
+		moeglichezuege = new ArrayList<Byte>(0);
+		for (int j = 0; j < orgmoeglichezuege.size(); j++)
+			moeglichezuege.add(orgmoeglichezuege.get(j));
 		
 		
 		KIThread kithread = new KIThread(this,watermark,spielfeld,moeglichezuege,
@@ -72,6 +80,10 @@ public class KI{
 		byte nextMoveLocal = getNextMove();
 		
 		setNextMove((byte) -1);
+		GameFieldStatistics.insertchipandupdate(orgwatermark, spielfeld, orgmoeglichezuege, 
+				(gameobject.getRole()==(Constants.xRole)), nextMoveLocal);
+		
+		Log.getInstance().write("Ki-Thread abgebrochen. Finales Ergebnis: " + nextMoveLocal);
 		
 		return nextMoveLocal;
 		
@@ -82,7 +94,7 @@ public class KI{
 		this.KINextMove = KINextMove;
 	} 
 	
-	private synchronized byte getNextMove(){
+	protected synchronized byte getNextMove(){
 		return KINextMove;
 	}
 
