@@ -513,7 +513,41 @@ public class MainUIController implements Initializable{
 	private void handleStartGame(ActionEvent e){
 		int timeoutZ;
 		int timeoutF;
-		if (((rolle.getValue() != null && oppName.getText() != null && ownName.getText() != null && verzeichnispfad.getText() != null && !verzeichnispfad.getText().equals("") && !oppName.getText().equals("") && !ownName.getText().equals("")) || (viewModel.isWithoutServer().get() && oppName.getText() != null))){
+		boolean path = false;
+		try{
+		File f;
+		f = new File(verzeichnispfad.getText());
+		if(f.exists())path=true;}
+		catch(Exception e1){path=false;}
+		if(!path){
+			final Stage stage = new Stage();
+			stage.initModality(Modality.APPLICATION_MODAL);
+			stage.setTitle("Achtung!");
+			stage.setResizable(false);
+			Group rootEinstellungen = new Group();
+			Scene scene = new Scene(rootEinstellungen, 350, 90, Color.WHITESMOKE);
+			scene.getStylesheets().add("view/MainUIStyle.css");
+			stage.setScene(scene);
+			stage.centerOnScreen();
+			Text text = new Text("Ungültige Pfadangabe!");
+			text.getStyleClass().add("ueberschrift");
+			Text text2 = new Text("Der angegebene Pfad existiert nicht.");
+			text.getStyleClass().add("ueberschrift2");
+			Button button = new Button("OK");
+			button.setOnAction(new EventHandler<ActionEvent>(){
+				public void handle(ActionEvent close){
+					stage.close();
+				}
+			});
+			VBox vbox = new VBox(10);
+			vbox.setAlignment(Pos.CENTER);
+			vbox.setLayoutX(10);
+			vbox.getChildren().addAll(text, text2, button);
+			rootEinstellungen.getChildren().add(vbox);
+			stage.show();
+	
+		}else{
+		if (((path && rolle.getValue() != null && oppName.getText() != null && ownName.getText() != null && verzeichnispfad.getText() != null && !verzeichnispfad.getText().equals("") && !oppName.getText().equals("") && !ownName.getText().equals("")) || (viewModel.isWithoutServer().get() && oppName.getText() != null))){
 			try{
 				timeoutZ = Integer.parseInt(timeoutZugzeit.getText());
 				timeoutF = Integer.parseInt(timeoutAbfrage.getText());
@@ -578,7 +612,8 @@ public class MainUIController implements Initializable{
 			rootEinstellungen.getChildren().add(vbox);
 			stage.show();
 		}
-	}
+		}
+		}
 	//Spiel beenden gedrückt
 	@FXML
 	private void handleEndGame(ActionEvent e){
