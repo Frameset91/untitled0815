@@ -1,4 +1,9 @@
 package utilities.KI;
+/**
+ * @author Johannes Riedel
+ * 
+ * Rückgabewert der KI-Bewertungsfunktion
+ */
 
 import java.util.ArrayList;
 

@@ -16,7 +16,7 @@ public class KI{
 	private int timeout;
 	private byte KINextMove;	
 
-	private Boolean[][] spielfeld;
+	private Boolean[][] gamefield;
 	private Byte[] watermark = new Byte[Constants.gamefieldcolcount];
 	private Byte[] orgwatermark = new Byte[Constants.gamefieldcolcount];
 	private ArrayList<Byte> moeglichezuege,orgmoeglichezuege;
@@ -41,10 +41,10 @@ public class KI{
 	 */
 	public byte calculateNextMove(byte oppMove) {	
 		
-		spielfeld = gameobject.getLatestSet().getField();
+		gamefield = gameobject.getLatestSet().getField();
 	
 		if(oppMove!=-1)
-			GameFieldStatistics.updateafterinsert(orgwatermark, spielfeld, orgmoeglichezuege, oppMove);
+			GameFieldStatistics.updateafterinsert(orgwatermark, gamefield, orgmoeglichezuege, oppMove);
 
 		for (int j = 0; j < watermark.length; j++) 
 			watermark[j] = orgwatermark[j];
@@ -53,7 +53,7 @@ public class KI{
 			moeglichezuege.add(orgmoeglichezuege.get(j));
 		
 		
-		KIThread kithread = new KIThread(this,watermark,spielfeld,moeglichezuege,
+		KIThread kithread = new KIThread(this,watermark,gamefield,moeglichezuege,
 				(gameobject.getRole()==(Constants.xRole)), oppMove);
 		kithread.start();
 		
@@ -74,7 +74,7 @@ public class KI{
 		byte nextMoveLocal = getNextMove();
 		
 		setNextMove((byte) -1);
-		GameFieldStatistics.insertchipandupdate(orgwatermark, spielfeld, orgmoeglichezuege, 
+		GameFieldStatistics.insertchipandupdate(orgwatermark, gamefield, orgmoeglichezuege, 
 				(gameobject.getRole()==(Constants.xRole)), nextMoveLocal);
 		
 		Log.getInstance().write("Ki-Thread abgebrochen. Finales Ergebnis: " + nextMoveLocal);

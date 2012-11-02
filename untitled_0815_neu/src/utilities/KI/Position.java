@@ -2,6 +2,7 @@ package utilities.KI;
 /**
  * 
  * @author Johannes Riedel
+ * 
  * kapselt x und y-Koordinate eines Chips
  */
 public class Position {
