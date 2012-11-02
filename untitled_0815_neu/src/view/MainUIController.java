@@ -586,7 +586,7 @@ role.setValue(String.valueOf(Constants.xRole));
 				stage.centerOnScreen();
 				Text text = new Text("Ungültige Timeout-Zeiten!");
 				text.getStyleClass().add("ueberschrift");
-				Text text2 = new Text("Timeout-Zeiten müssen zwischen 1.000 und 10.000 ms liegen.");
+				Text text2 = new Text("Timeout-Zeiten müssen größer als 500ms sein.");
 				text.getStyleClass().add("ueberschrift2");
 				Button button = new Button("OK");
 				button.setOnAction(new EventHandler<ActionEvent>(){
