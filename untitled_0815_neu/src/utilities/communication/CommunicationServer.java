@@ -315,8 +315,6 @@ public class CommunicationServer {
 			time[i] = System.nanoTime()-temp;
 			x.delete();
 			} catch (FileNotFoundException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
 			}
 		} //for
 		
