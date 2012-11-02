@@ -21,11 +21,11 @@
     			<MenuItem fx:id="menuStartGame" text="Spiel starten" onAction="#handleStartGame"/>
     			<MenuItem fx:id="menuLoadGame" text="Spiel laden" onAction="#handleLoadGame"/>
     			<MenuItem fx:id="menuEndGame" text="Spiel beenden" disable="true" onAction="#handleEndGame"/>
-    			<MenuItem fx:id="menuClose" text="Programm schließen" onAction="#handleClose"/>
+    			<MenuItem fx:id="menuClose" text="Programm schließen" onAction="#handleSchliessen"/>
     		</Menu>
     		<Menu text="Hilfe">
-    			<MenuItem fx:id="showLog" text="Log anzeigen" onAction="#handleShowLog"/>
-    			<MenuItem fx:id="menuControl" text="Spielanleitung" onAction="#handleControl"/>
+    			<MenuItem fx:id="showLog" text="Log anzeigen" onAction="#handleLogAnzeigen"/>
+    			<MenuItem fx:id="menuControl" text="Spielanleitung" onAction="#handleSteuerung"/>
     		</Menu>
     	</MenuBar>
     </top>
@@ -52,30 +52,30 @@
          			<Button fx:id="btnLoadGame" minWidth="100" text="Spiel laden" onAction="#handleLoadGame" GridPane.columnIndex="1" GridPane.rowIndex="8"/>
          		<!-- Rechte Spalte -->	
          			<!-- Rolle definieren -->
-        			<ChoiceBox fx:id="role" style="-fx-text-fill: green" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+        			<ChoiceBox fx:id="role" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
         			<!-- Spielstand einstellen -->
         			<HBox GridPane.columnIndex="1" GridPane.rowIndex="2" styleClass="textfeld">
         				<CheckBox fx:id="cbWithoutServer" maxWidth="30" selected="false" styleClass=".choice"/>
         			</HBox>
         			<!-- Eingabefelder fuer Gegner und Verzeichnis -->
-        			<TextField fx:id="ownName" onKeyPressed="#handleMaxLength" maxWidth="150" GridPane.columnIndex="1" GridPane.rowIndex="3" styleClass="textfeld"/>
-        			<TextField fx:id="oppName" onKeyPressed="#handleMaxLength" maxWidth="150" prefColumnCount="2" GridPane.columnIndex="1" GridPane.rowIndex="4" styleClass="textfeld"/>
+        			<TextField fx:id="ownName" maxWidth="150" GridPane.columnIndex="1" GridPane.rowIndex="3" styleClass="textfeld"/>
+        			<TextField fx:id="oppName" maxWidth="150" prefColumnCount="2" GridPane.columnIndex="1" GridPane.rowIndex="4" styleClass="textfeld"/>
         			<HBox fx:id="boxDirectory" spacing="2" GridPane.columnIndex="1" GridPane.rowIndex="5">
         				<TextField fx:id="directoryPath" maxWidth="150" styleClass="textfeld"/>
         				<Button fx:id="btnDirectory" text="..." onAction="#handleChooseDirectory"/>
         			</HBox>
         			<!-- Timeout File-Abfrage -->
  		       		<HBox fx:id="boxTimeoutServer" spacing="2" GridPane.columnIndex="1" GridPane.rowIndex="6">
-        				<Button text="-" styleClass="btnTimeout" minHeight="25" minWidth="23" maxWidth="23" onMouseClicked="#handleDown1"/>
+        				<Button text="-" styleClass="btnTimeout" minHeight="25" minWidth="23" maxWidth="23" onMouseClicked="#handleRunter1"/>
         				<TextField fx:id="timeoutRequest" maxWidth="60" text="300" styleClass="textfeld"/>
-       					<Button text="+" styleClass="btnTimeout" minHeight="25" minWidth="23" maxWidth="23" onMouseClicked="#handleUp1"/>
+       					<Button text="+" styleClass="btnTimeout" minHeight="25" minWidth="23" maxWidth="23" onMouseClicked="#handleHoch1"/>
        	 				<Label text="ms"/>
         			</HBox>
         			<!-- Timeout Zugzeit -->
         			<HBox fx:id="boxTimeoutDraw" spacing="2" GridPane.columnIndex="1" GridPane.rowIndex="7">
-        			    <Button text="-" styleClass="btnTimeout" minHeight="25" minWidth="23" maxWidth="23" onMouseClicked="#handleDown2"/>
+        			    <Button text="-" styleClass="btnTimeout" minHeight="25" minWidth="23" maxWidth="23" onMouseClicked="#handleRunter2"/>
         				<TextField fx:id="timeoutMoveTime" maxWidth="60" text="2000" styleClass="textfeld"/>
-        				<Button text="+" styleClass="btnTimeout" minHeight="25" minWidth="23" maxWidth="23" onMouseClicked="#handleUp2"/>	
+        				<Button text="+" styleClass="btnTimeout" minHeight="25" minWidth="23" maxWidth="23" onMouseClicked="#handleHoch2"/>	
         				<Label text="ms"/>
         			</HBox>        			
         		</GridPane><!--Button Spiel beenden noch einr�cken-->
