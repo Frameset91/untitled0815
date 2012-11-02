@@ -40,6 +40,7 @@ public class Connect4 extends Application {
         		closing.setResizable(false);
         		Group rootClosing = new Group();
         		Scene sceneClosing = new Scene(rootClosing, 420, 120, Color.WHITE);
+        		sceneClosing.getStylesheets().add("view/MainUIStyle.css");
         		closing.setScene(sceneClosing);
         		closing.centerOnScreen();
         		Text text = new Text("Wollen Sie das Programm wirklich beenden?");
