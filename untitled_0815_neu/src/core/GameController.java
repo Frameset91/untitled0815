@@ -493,9 +493,11 @@ public class GameController implements GameEventListener, Observer{
 	private void markWinTokens(){
 		if(winTokensMarked){
 			for(byte[] token: winMarkers){
-				field[token[0]][token[1]].set(
-						field[token[0]][token[1]].get().charAt(0) + 
-						String.valueOf(Constants.winMarker));
+				if(field[token[0]][token[1]].get().charAt(0) != Constants.noRole){
+					field[token[0]][token[1]].set(
+							field[token[0]][token[1]].get().charAt(0) + 
+							String.valueOf(Constants.winMarker));
+				}
 			}
 		}
 	}
