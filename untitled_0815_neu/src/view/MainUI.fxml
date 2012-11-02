@@ -32,7 +32,7 @@
     <!-- Linker Bereich: Einstellungen-->
     <left>
         <!--Unteinander die Einstellungen/ Buttons-->
-        <VBox spacing = "20" styleClass="settings, border">   
+        <VBox spacing = "20" styleClass="settings">   
          <padding><Insets top="10" right="10" bottom="10" left="10"/></padding> 
          <!--Einstellungen für 1 spezielles Spiel-->
         	<VBox spacing="10">
@@ -81,9 +81,9 @@
         		</GridPane><!--Button Spiel beenden noch einrücken-->
         		<Button text="Spiel beenden" fx:id="btnEndGame" onAction="#handleEndGame" alignment="CENTER" minWidth="100"/>
         	</VBox>
-        	<Line startX="0" startY="500" endX="300" endY="500"/>
+        	<Line startX="0" startY="500" endX="300" endY="500" fx:id="border"/>
         	<!-- Einstellungen für Sätze -->
-        	<HBox fx:id="setSettings" spacing="20"><!-- styleClass="border" -->
+        	<HBox fx:id="setSettings" spacing="20">
  				<padding><Insets top="10" right="10" bottom="10" left="10"/></padding>
         		<VBox spacing="5">
        				<Button fx:id="btnNewSet" text="Satz spielen" disable="false" onMouseClicked="#handleStartSet"/>

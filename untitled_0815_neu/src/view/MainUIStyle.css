@@ -1,17 +1,13 @@
 @CHARSET "ISO-8859-1";
 
 .menuBar {
-    -fx-background-color: linear-gradient(#afe9af 0%, #669966 25%, #afe9af 100%);
-}
-
-.border{
-	-fx-border-width: 2;
-	-fx-border-color: #297fd5;
-
+    -fx-background-color: rgb(78,91,111);
 }
 
 .settings{
-	-fx-background-color: linear-gradient(to bottom, #afe9af, #669966);
+	-fx-background-color: rgb(127,209,59);
+	-fx-border-width: 2;
+	-fx-border-color: rgb(78,91,111);
 }
 
 .game {
@@ -21,16 +17,14 @@
 }
 
 #gameSettings .choice-box {
-  -fx-background-color: green;
+ /* -fx-background-color: green;
+ */
 }
 
-#gameSetting .choice-box .context-menu{
-	-fx-background-color: blue;	
-}
 
 .field{
 	-fx-padding:5; 
-	-fx-background-color: #1a3399;
+	-fx-background-color: rgb(78,91,111);
 }
 
 .token{

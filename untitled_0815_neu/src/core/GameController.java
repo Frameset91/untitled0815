@@ -324,8 +324,8 @@ public class GameController implements GameEventListener, Observer{
 			@Override
 			public void run() {
 				properties[ROLE_PROPERTY].set(String.valueOf(model.getRole()));
-				properties[OWNPOINTS_PROPERTY].set(String.valueOf(model.getOwnPoints()));
-				properties[OPPPOINTS_PROPERTY].set(String.valueOf(model.getOppPoints()));
+				properties[OWNPOINTS_PROPERTY].set("0");
+				properties[OPPPOINTS_PROPERTY].set("0");
 				properties[OPPNAME_PROPERTY].set(model.getOppName());
 				properties[OWNNAME_PROPERTY].set(model.getOwnName());
 				properties[PATH_PROPERTY].set(model.getPath());
@@ -358,6 +358,10 @@ public class GameController implements GameEventListener, Observer{
 	//Methode um den nächsten Move zu laden
 	private void processNextMove() {
 		if(loadedMoves.length <= nextMove){
+			if(currentSet != -1){
+				properties[OWNPOINTS_PROPERTY].setValue(String.valueOf(model.getOwnPoints()));
+				properties[OPPPOINTS_PROPERTY].setValue(String.valueOf(model.getOppPoints()));
+			}
 			if(currentSet == loadedSets.length -1){
 				//letzter Satz -> Replay beenden			
 				isReplay.set(false);						
@@ -372,7 +376,8 @@ public class GameController implements GameEventListener, Observer{
 				if(loadedMoves == null) loadedMoves = new Move[0];
 				updateField();
 				updateSets();
-			}		
+			}
+			
 		}else{	
 			//Spielzug laden
 			model.addMove(loadedMoves[nextMove]);
@@ -539,10 +544,10 @@ public class GameController implements GameEventListener, Observer{
 			updateSets();
 			if(model.getLatestSet() != null) 
 				properties[WINNER_PROPERTY].setValue(String.valueOf(model.getLatestSet().getWinner()));
-			else{
-				sets.clear();
-				sets.add(new SetProperty("keine", "Sätze"));
-			}
+//			else{
+//				sets.clear();
+//				sets.add(new SetProperty("keine", "Sätze"));
+//			}
 //			properties[OWNPOINTS_PROPERTY].setValue(String.valueOf(model.getOwnPoints()));
 //			properties[OPPPOINTS_PROPERTY].setValue(String.valueOf(model.getOppPoints()));
 			break;
@@ -551,8 +556,10 @@ public class GameController implements GameEventListener, Observer{
 			updateField();
 			break;
 		case "points":
-			properties[OWNPOINTS_PROPERTY].setValue(String.valueOf(model.getOwnPoints()));
-			properties[OPPPOINTS_PROPERTY].setValue(String.valueOf(model.getOppPoints()));
+			if(!isReplay.get()){
+				properties[OWNPOINTS_PROPERTY].setValue(String.valueOf(model.getOwnPoints()));
+				properties[OPPPOINTS_PROPERTY].setValue(String.valueOf(model.getOppPoints()));
+			}
 		default:
 			break;
 		}

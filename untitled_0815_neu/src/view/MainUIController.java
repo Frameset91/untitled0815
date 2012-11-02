@@ -65,45 +65,45 @@ public class MainUIController implements Initializable{
 	
 	//Menü
 	@FXML
-	private MenuItem menuSpielStarten;
+	private MenuItem menuStartGame;
 	@FXML
-	private MenuItem menuSchliessen; 
+	private MenuItem menuClose; 
 	@FXML
-	private MenuItem menuSpielLaden;
+	private MenuItem menuLoadGame;
 	@FXML
-	private MenuItem menuSteuerung;
+	private MenuItem menuControl;
 	@FXML
-	private MenuItem logAnzeigen;
+	private MenuItem showLog;
 	@FXML
-	private MenuItem menuSpielBeenden;
+	private MenuItem menuEndGame;
 	
 	//Für Binding relevant
 	@FXML
 	private GridPane feld;
 	@FXML
-	private ChoiceBox<String> rolle;	
+	private ChoiceBox<String> role;	
 	@FXML
-	private TextField timeoutAbfrage;
+	private TextField timeoutRequest;
 	@FXML
-	private TextField timeoutZugzeit;
+	private TextField timeoutMoveTime;
 	@FXML
-	private Button timeoutHochZugzeit;
+	private Button timeoutHighMoveTime;
 	@FXML
 	private TextField oppName;
 	@FXML
 	private TextField ownName;
 	@FXML
-	private TextField verzeichnispfad;
+	private TextField directoryPath;
 	@FXML
-	private Label satzstatus;
+	private Label setStatus;
 	@FXML
-	private Label punkteGegner;
+	private Label pointsOpponent;
 	@FXML
-	private Label punkteSpieler;	
+	private Label pointsPlayer;	
 	@FXML
-	private Label tokenGegner;
+	private Label tokenOpponent;
 	@FXML
-	private Label tokenSpieler;
+	private Label tokenPlayer;
 	@FXML
 	private TableView<SetProperty> tableStatistic;
 	@FXML
@@ -141,7 +141,7 @@ public class MainUIController implements Initializable{
 
 
 	//Elemente die nicht im FXML definiert sind
-	private TableView<LogEntry> logTabelle; 
+	private TableView<LogEntry> logTable; 
 	private ChoiceBox<String> winner;
 	private TableView<GameProperty> savedGamesTable; 
 	private SimpleStringProperty tempWinner;
@@ -182,13 +182,13 @@ public class MainUIController implements Initializable{
 		btnRemoveMove.disableProperty().bind(viewModel.isReplay().not());
 		
 		//Menü-Einträge an Buttons binden
-		menuSpielStarten.disableProperty().bind(gameSettings.disableProperty());
-		menuSpielBeenden.disableProperty().bind(btnEndGame.disableProperty());
-		menuSpielLaden.disableProperty().bind(gameSettings.disableProperty());
+		menuStartGame.disableProperty().bind(gameSettings.disableProperty());
+		menuEndGame.disableProperty().bind(btnEndGame.disableProperty());
+		menuLoadGame.disableProperty().bind(gameSettings.disableProperty());
 		
 		//Rollen Auswahl
 //		rolle.valueProperty().bindBidirectional(viewModel.properties()[viewModel.ROLE_PROPERTY]);
-		rolle.valueProperty().addListener(new ChangeListener<String>() {
+		role.valueProperty().addListener(new ChangeListener<String>() {
 			@Override
 			public void changed(ObservableValue<? extends String> arg0,
 					String arg1, String arg2) {
@@ -201,11 +201,11 @@ public class MainUIController implements Initializable{
 			public void changed(ObservableValue<? extends String> arg0,
 					String arg1, String arg2) {
 				if(!viewModel.isWithoutServer().get())
-						rolle.setValue(viewModel.properties()[viewModel.ROLE_PROPERTY].get());
+						role.setValue(viewModel.properties()[viewModel.ROLE_PROPERTY].get());
 				
 			}			
 		});
-		rolle.getItems().addAll(String.valueOf(Constants.xRole), String.valueOf(Constants.oRole));
+		role.getItems().addAll(String.valueOf(Constants.xRole), String.valueOf(Constants.oRole));
 		
 		labelOpp.textProperty().bind(oppName.textProperty());
 		labelOwn.textProperty().bind(ownName.textProperty());
@@ -248,8 +248,8 @@ public class MainUIController implements Initializable{
 		winner.valueProperty().bindBidirectional(tempWinner);
 		
 		//Properties
-		timeoutAbfrage.textProperty().bindBidirectional(viewModel.properties()[viewModel.TIMEOUTSERVER_PROPERTY]);
-		timeoutZugzeit.textProperty().bindBidirectional(viewModel.properties()[viewModel.TIMEOUTDRAW_PROPERTY]);
+		timeoutRequest.textProperty().bindBidirectional(viewModel.properties()[viewModel.TIMEOUTSERVER_PROPERTY]);
+		timeoutMoveTime.textProperty().bindBidirectional(viewModel.properties()[viewModel.TIMEOUTDRAW_PROPERTY]);
 		oppName.textProperty().bindBidirectional(viewModel.properties()[viewModel.OPPNAME_PROPERTY]);
 		oppName.textProperty().addListener(new ChangeListener<String>() {
 			@Override
@@ -271,28 +271,28 @@ public class MainUIController implements Initializable{
 //				winner.setValue(Constants.textTie);
 			}
 		});
-		verzeichnispfad.textProperty().bindBidirectional(viewModel.properties()[viewModel.PATH_PROPERTY]);
-		punkteGegner.textProperty().bindBidirectional(viewModel.properties()[viewModel.OPPPOINTS_PROPERTY]);
-		punkteSpieler.textProperty().bindBidirectional(viewModel.properties()[viewModel.OWNPOINTS_PROPERTY]);
-		tokenGegner.styleProperty().bindBidirectional(viewModel.properties()[viewModel.OPPTOKEN_PROPERTY], new StyleConverter());
-		tokenGegner.textProperty().bindBidirectional(viewModel.properties()[viewModel.OPPTOKEN_PROPERTY]);
-		tokenSpieler.styleProperty().bindBidirectional(viewModel.properties()[viewModel.OWNTOKEN_PROPERTY], new StyleConverter());		
-		tokenSpieler.textProperty().bindBidirectional(viewModel.properties()[viewModel.OWNTOKEN_PROPERTY]);
-		satzstatus.textProperty().bind(viewModel.properties()[viewModel.STATE_PROPERTY]);
+		directoryPath.textProperty().bindBidirectional(viewModel.properties()[viewModel.PATH_PROPERTY]);
+		pointsOpponent.textProperty().bindBidirectional(viewModel.properties()[viewModel.OPPPOINTS_PROPERTY]);
+		pointsPlayer.textProperty().bindBidirectional(viewModel.properties()[viewModel.OWNPOINTS_PROPERTY]);
+		tokenOpponent.styleProperty().bindBidirectional(viewModel.properties()[viewModel.OPPTOKEN_PROPERTY], new StyleConverter());
+		tokenOpponent.textProperty().bindBidirectional(viewModel.properties()[viewModel.OPPTOKEN_PROPERTY]);
+		tokenPlayer.styleProperty().bindBidirectional(viewModel.properties()[viewModel.OWNTOKEN_PROPERTY], new StyleConverter());		
+		tokenPlayer.textProperty().bindBidirectional(viewModel.properties()[viewModel.OWNTOKEN_PROPERTY]);
+		setStatus.textProperty().bind(viewModel.properties()[viewModel.STATE_PROPERTY]);
 		
 		//----------------------------------------------- Tabellen ----------------------------------------------
 		
 		//------Tabelle für die Logs
-		logTabelle = new TableView<LogEntry>();
-		TableColumn<Log.LogEntry, String> spalte1 = new TableColumn<Log.LogEntry, String>("Log-Eintrag");
-		spalte1.setEditable(false);
-		spalte1.prefWidthProperty().bind(logTabelle.widthProperty().subtract(2));
-		logTabelle.getColumns().clear();
-		logTabelle.getColumns().add(spalte1);
-		logTabelle.setMinWidth(384);
-		spalte1.setCellValueFactory(
+		logTable = new TableView<LogEntry>();
+		TableColumn<Log.LogEntry, String> column1 = new TableColumn<Log.LogEntry, String>("Log-Eintrag");
+		column1.setEditable(false);
+		column1.prefWidthProperty().bind(logTable.widthProperty().subtract(2));
+		logTable.getColumns().clear();
+		logTable.getColumns().add(column1);
+		logTable.setMinWidth(384);
+		column1.setCellValueFactory(
 				new PropertyValueFactory<Log.LogEntry, String>("text"));
-		logTabelle.setItems(viewModel.logEntries());
+		logTable.setItems(viewModel.logEntries());
 		Log.getInstance().write("Binding fuer Log erstellt");
 		
 		//----------Tabelle für die gespeicherten Spiele
@@ -391,13 +391,14 @@ public class MainUIController implements Initializable{
 	
 	private void showConfirmWinner() {
 		final Stage stageConfirmWinner = new Stage();
-//		stageConfirmWinner.setResizable(false);
 		Group rootConfirm = new Group();
 		Scene sceneConfirm = new Scene(rootConfirm, 300,160, Color.WHITESMOKE);
 		sceneConfirm.getStylesheets().add("view/MainUIStyle.css");
 		stageConfirmWinner.setScene(sceneConfirm);
+		stageConfirmWinner.setResizable(false);
 		stageConfirmWinner.centerOnScreen();
-		stageConfirmWinner.initModality(Modality.APPLICATION_MODAL); 
+		stageConfirmWinner.initModality(Modality.APPLICATION_MODAL);
+		stageConfirmWinner.setX(300); stageConfirmWinner.setY(300);
 		stageConfirmWinner.show();
 		stageConfirmWinner.setOnCloseRequest(new EventHandler<WindowEvent>(){
 			public void handle(WindowEvent e){
@@ -406,8 +407,8 @@ public class MainUIController implements Initializable{
 		});
 						
 	//Inhalt
-		Text ueberschrift = new Text(20, 20,"Bitte den Gewinner bestätigen:");
-		ueberschrift.getStyleClass().add("ueberschrift2");
+		Text headline = new Text(20, 20,"Bitte den Gewinner bestätigen:");
+		headline.getStyleClass().add("ueberschrift2");
 		Button confirm = new Button("Bestätigen");		
 		confirm.setOnMouseClicked(new EventHandler<MouseEvent>(){
 			public void handle(MouseEvent close){
@@ -430,7 +431,7 @@ public class MainUIController implements Initializable{
 		hconfirmwinner.getChildren().addAll(new Label("Gewinner:"), winner);
 		HBox hconfirmbuttons = new HBox(15);
 		hconfirmbuttons.getChildren().addAll(confirm, discard);
-		vconfirm.getChildren().addAll(ueberschrift,hconfirmwinner, hconfirmbuttons);
+		vconfirm.getChildren().addAll(headline,hconfirmwinner, hconfirmbuttons);
 		rootConfirm.getChildren().add(vconfirm);
 		
 		if(winner.getValue() == null) 
@@ -440,13 +441,13 @@ public class MainUIController implements Initializable{
 	
 	private void updateRole() {
 		if(viewModel.isWithoutServer().get()){
-			if(rolle.getValue().equals(String.valueOf(Constants.xRole))) {
+			if(role.getValue().equals(String.valueOf(Constants.xRole))) {
 				viewModel.properties()[viewModel.ROLE_PROPERTY].set(String.valueOf(Constants.oRole));
 			}else{
 				viewModel.properties()[viewModel.ROLE_PROPERTY].set(String.valueOf(Constants.xRole));
 			}
 		}else{
-			viewModel.properties()[viewModel.ROLE_PROPERTY].set(rolle.getValue());
+			viewModel.properties()[viewModel.ROLE_PROPERTY].set(role.getValue());
 		}
 		
 	}
@@ -490,11 +491,11 @@ public class MainUIController implements Initializable{
 		DirectoryChooser dc = new DirectoryChooser();
 		dc.setTitle("Pfad auswählen:");
 		String initial = "C:\\";
-		if(verzeichnispfad.getText() != null && verzeichnispfad.getText().equals("")){
+		if(directoryPath.getText() != null && directoryPath.getText().equals("")){
 			try{
-			File f = new File(verzeichnispfad.getText());
+			File f = new File(directoryPath.getText());
 			if(f.exists()){
-				initial = verzeichnispfad.getText();
+				initial = directoryPath.getText();
 			}
 			}catch(Exception ex){
 				
@@ -503,7 +504,7 @@ public class MainUIController implements Initializable{
 		dc.setInitialDirectory(new File(initial));
 		File fi = dc.showDialog(borderPane.getScene().getWindow());
 		if(fi != null){
-			verzeichnispfad.setText(fi.getPath());
+			directoryPath.setText(fi.getPath());
 		}
 	}
 	
@@ -515,7 +516,7 @@ public class MainUIController implements Initializable{
 		boolean path = false;
 		try{
 		File f;
-		f = new File(verzeichnispfad.getText());
+		f = new File(directoryPath.getText());
 		if(f.exists())path=true;}
 		catch(Exception e1){path=false;}
 		if(!path && !viewModel.isWithoutServer().get()){
@@ -546,16 +547,16 @@ public class MainUIController implements Initializable{
 			stage.show();
 	
 		}else{
-		if (((rolle.getValue() != null && oppName.getText() != null && ownName.getText() != null && verzeichnispfad.getText() != null && !verzeichnispfad.getText().equals("") && !oppName.getText().equals("") && !ownName.getText().equals("")) || (viewModel.isWithoutServer().get() && oppName.getText() != null))){
+		if (((role.getValue() != null && oppName.getText() != null && ownName.getText() != null && directoryPath.getText() != null && !directoryPath.getText().equals("") && !oppName.getText().equals("") && !ownName.getText().equals("")) || (viewModel.isWithoutServer().get() && oppName.getText() != null))){
 			try{
-				timeoutZ = Integer.parseInt(timeoutZugzeit.getText());
-				timeoutF = Integer.parseInt(timeoutAbfrage.getText());
+				timeoutZ = Integer.parseInt(timeoutMoveTime.getText());
+				timeoutF = Integer.parseInt(timeoutRequest.getText());
 			}
 			catch(Exception wrongTimeout){
 				timeoutF=-1;
 				timeoutZ=-1;
 			}
-			if (timeoutZ>0 && timeoutF>0 && !timeoutZugzeit.getText().equals("") && !timeoutAbfrage.getText().equals("")){
+			if (timeoutZ>0 && timeoutF>0 && !timeoutMoveTime.getText().equals("") && !timeoutRequest.getText().equals("")){
 				viewModel.startGame();
 			}
 			else{
@@ -679,6 +680,7 @@ public class MainUIController implements Initializable{
 		Group rootClosing = new Group();
 		Scene sceneClosing = new Scene(rootClosing, 420,120, Color.WHITESMOKE);
 		closing.setScene(sceneClosing);
+		closing.setResizable(false);
 		closing.centerOnScreen();
 		Text text = new Text("Wollen Sie das Programm wirklich beenden?");
 		Text text2 = new Text("Falls noch ein Satz oder Spiel läuft, kann dies zu Datenverlust führen.");
@@ -760,34 +762,34 @@ public class MainUIController implements Initializable{
 	@FXML
 	private void handleHoch1(MouseEvent arg0){
 		int timeoutFileabfruf;
-		timeoutFileabfruf = Integer.parseInt(timeoutAbfrage.getText());
+		timeoutFileabfruf = Integer.parseInt(timeoutRequest.getText());
 		timeoutFileabfruf = timeoutFileabfruf + 25;
 		String zeitz = String.valueOf(timeoutFileabfruf);
-		timeoutAbfrage.setText(zeitz);
+		timeoutRequest.setText(zeitz);
 	}
 	@FXML
 	private void handleRunter1(MouseEvent arg0){
 		int timeoutFileabruf;
-		timeoutFileabruf = Integer.parseInt(timeoutAbfrage.getText());
+		timeoutFileabruf = Integer.parseInt(timeoutRequest.getText());
 		timeoutFileabruf = timeoutFileabruf - 25;
 		String zeitz = String.valueOf(timeoutFileabruf);
-		timeoutAbfrage.setText(zeitz);
+		timeoutRequest.setText(zeitz);
 	}
 	@FXML
 	private void handleHoch2(MouseEvent arg0){
 		int timeoutFileabfruf;
-		timeoutFileabfruf = Integer.parseInt(timeoutZugzeit.getText());
+		timeoutFileabfruf = Integer.parseInt(timeoutMoveTime.getText());
 		timeoutFileabfruf = timeoutFileabfruf + 100;
 		String zeitz = String.valueOf(timeoutFileabfruf);
-		timeoutZugzeit.setText(zeitz);
+		timeoutMoveTime.setText(zeitz);
 	}
 	@FXML
 	private void handleRunter2(MouseEvent arg0){
 		int timeoutFileabruf;
-		timeoutFileabruf = Integer.parseInt(timeoutZugzeit.getText());
+		timeoutFileabruf = Integer.parseInt(timeoutMoveTime.getText());
 		timeoutFileabruf = timeoutFileabruf - 100;
 		String zeitz = String.valueOf(timeoutFileabruf);
-		timeoutZugzeit.setText(zeitz);
+		timeoutMoveTime.setText(zeitz);
 	}
 	// Log anzeigen
 	@FXML
@@ -814,9 +816,9 @@ public class MainUIController implements Initializable{
 		VBox logs = new VBox(20);
 		logs.setLayoutY(10);
 		logs.setAlignment(Pos.CENTER);
-		logTabelle.prefWidthProperty().bind(sceneLog.widthProperty().subtract(100));
-		logTabelle.prefHeightProperty().bind(sceneLog.heightProperty().subtract(100));
-		logs.getChildren().addAll(logTabelle, close);
+		logTable.prefWidthProperty().bind(sceneLog.widthProperty().subtract(100));
+		logTable.prefHeightProperty().bind(sceneLog.heightProperty().subtract(100));
+		logs.getChildren().addAll(logTable, close);
 		logs.setLayoutX(50);
 		rootLog.getChildren().add(logs);
 	}
