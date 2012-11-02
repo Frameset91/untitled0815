@@ -33,13 +33,11 @@ public class Connect4 extends Application {
         stage.minWidthProperty().set(930);
         stage.minHeightProperty().set(730);
         stage.show();
-        
-        /**
-         * @TODO setOnCloseRequest noch mit Statusabfrage versehen
-         */
+
         stage.setOnCloseRequest(new EventHandler<WindowEvent>(){
         	public void handle(WindowEvent e){
         		final Stage closing = new Stage();
+        		closing.setResizable(false);
         		Group rootClosing = new Group();
         		Scene sceneClosing = new Scene(rootClosing, 420, 120, Color.WHITE);
         		closing.setScene(sceneClosing);
