@@ -539,10 +539,10 @@ public class GameController implements GameEventListener, Observer{
 			updateSets();
 			if(model.getLatestSet() != null) 
 				properties[WINNER_PROPERTY].setValue(String.valueOf(model.getLatestSet().getWinner()));
-			else{
-				sets.clear();
-				sets.add(new SetProperty("keine", "Sätze"));
-			}
+//			else{
+//				sets.clear();
+//				sets.add(new SetProperty("keine", "Sätze"));
+//			}
 //			properties[OWNPOINTS_PROPERTY].setValue(String.valueOf(model.getOwnPoints()));
 //			properties[OPPPOINTS_PROPERTY].setValue(String.valueOf(model.getOppPoints()));
 			break;
