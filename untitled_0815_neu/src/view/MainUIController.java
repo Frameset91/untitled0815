@@ -399,7 +399,6 @@ public class MainUIController implements Initializable{
 		stageConfirmWinner.centerOnScreen();
 		stageConfirmWinner.initModality(Modality.APPLICATION_MODAL); 
 		stageConfirmWinner.show();
-		
 		stageConfirmWinner.setOnCloseRequest(new EventHandler<WindowEvent>(){
 			public void handle(WindowEvent e){
 				viewModel.discardSet();
@@ -547,7 +546,7 @@ public class MainUIController implements Initializable{
 			stage.show();
 	
 		}else{
-		if (((path && rolle.getValue() != null && oppName.getText() != null && ownName.getText() != null && verzeichnispfad.getText() != null && !verzeichnispfad.getText().equals("") && !oppName.getText().equals("") && !ownName.getText().equals("")) || (viewModel.isWithoutServer().get() && oppName.getText() != null))){
+		if (((rolle.getValue() != null && oppName.getText() != null && ownName.getText() != null && verzeichnispfad.getText() != null && !verzeichnispfad.getText().equals("") && !oppName.getText().equals("") && !ownName.getText().equals("")) || (viewModel.isWithoutServer().get() && oppName.getText() != null))){
 			try{
 				timeoutZ = Integer.parseInt(timeoutZugzeit.getText());
 				timeoutF = Integer.parseInt(timeoutAbfrage.getText());
@@ -742,8 +741,8 @@ public class MainUIController implements Initializable{
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		area.setMinWidth(700);
-		area.setMinHeight(500);
+		area.prefWidthProperty().bind(sceneSteuerung.widthProperty());
+		area.prefHeightProperty().bind(sceneSteuerung.heightProperty().subtract(100));
 		area.editableProperty().set(false);
 		area.setWrapText(true);
 		Button close = new Button("Schließen");
@@ -795,8 +794,9 @@ public class MainUIController implements Initializable{
 	private void handleLogAnzeigen(ActionEvent log){
 		//Fenster mit Log öffnen
 		final Stage stageLog = new Stage();
+		stageLog.setMinWidth(500);
 		stageLog.setTitle("Log");
-		stageLog.setResizable(false);
+		stageLog.setResizable(true);
 		Group rootLog = new Group();
 		Scene sceneLog = new Scene(rootLog, 500,480, Color.WHITESMOKE);
 		stageLog.setScene(sceneLog);
@@ -815,6 +815,7 @@ public class MainUIController implements Initializable{
 		logs.setLayoutY(10);
 		logs.setAlignment(Pos.CENTER);
 		logTabelle.prefWidthProperty().bind(sceneLog.widthProperty().subtract(100));
+		logTabelle.prefHeightProperty().bind(sceneLog.heightProperty().subtract(100));
 		logs.getChildren().addAll(logTabelle, close);
 		logs.setLayoutX(50);
 		rootLog.getChildren().add(logs);
@@ -906,7 +907,7 @@ public class MainUIController implements Initializable{
 						break;
 				}
 				if( arg0.length() > 1 && arg0.charAt(1) == Constants.winMarker){
-					style += "-fx-text-fill: RGB(0,0,0); -fx-effect: innershadow(gaussian, green, 10, 0.5, 0, 0);";
+					style += "-fx-text-fill: RGB(0,0,0); -fx-effect: dropshadow(gaussian, black, 5, 0.75, 0, 0);";
 				}
 			}
 			return style;
